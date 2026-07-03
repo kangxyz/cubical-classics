@@ -15,15 +15,19 @@ open import Cubical.Foundations.Univalence
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Sum
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
-open import Cubical.Data.Int.MoreInts.QuoInt
-  renaming (_+_ to _+ℤ_ ; _·_ to _·ℤ_ ; -_ to -ℤ_)
+open import Cubical.Data.Int
+  using    (ℤ ; pos ; neg ; negsuc ; sucℤ ; predℤ
+           ; fromNatℤ ; fromNegℤ)
+  renaming (_+_ to _+ℤ_ ; _·_ to _·ℤ_ ; -_ to -ℤ_ ; _-_ to _-ℤ_
+           ; ·AnnihilL to ·AnnihilLℤ ; sucℤ· to sucℤ·ℤ ; -DistL· to -DistL·ℤ
+           ; pos0+ to pos0+ℤ ; sucℤ+ to sucℤ+ℤ ; predℤ+ to predℤ+ℤ)
 
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
-open import Cubical.Algebra.CommRing.Instances.QuoInt
+open import Cubical.Algebra.CommRing.Instances.Int
 open import Classical.Algebra.OrderedRing.Instances.QuoInt
   using    (ℤOrderedRing)
   renaming (_>0 to _>ℤ0)
@@ -57,6 +61,9 @@ private
 
     helper6 : (x y : 𝓡 .fst) → y + (x · y) ≡ (1r + x) · y
     helper6 _ _ = solve! 𝓡
+
+    helper7 : (x : 𝓡 .fst) → x ≡ - 1r + (1r + x)
+    helper7 _ = solve! 𝓡
 
 
 -- The homomorphism between ordered rings is just ring homomorphism that preserves positive element
@@ -179,67 +186,77 @@ module InclusionFromℤ (𝓡 : OrderedRing ℓ ℓ') where
 
   ℤ→R : ℤ → R
   ℤ→R (pos n) = ℕ→R-Pos n
-  ℤ→R (neg n) = ℕ→R-Neg n
-  ℤ→R (posneg i) = 0Selfinverse (~ i)
+  ℤ→R (negsuc n) = ℕ→R-Neg (suc n)
 
-  ℤ→R-Pres-1 : ℤ→R 1 ≡ 1r
+  ℤ→R-Pres-1 : ℤ→R (pos 1) ≡ 1r
   ℤ→R-Pres-1 = refl
 
   ℤ→R-Suc : (n : ℤ) → ℤ→R (sucℤ n) ≡ 1r + ℤ→R n
   ℤ→R-Suc (pos n) = ℕ→R-PosSuc n
-  ℤ→R-Suc (neg zero) = helper1
-  ℤ→R-Suc (neg (suc n)) = helper2 _ ∙ (λ i → 1r - ℤ→R-Suc (pos n) (~ i))
-  ℤ→R-Suc (posneg i) = isSet→SquareP (λ _ _ → isSetR) (ℕ→R-PosSuc zero)
-    helper1 _ (λ i → 1r + 0Selfinverse (~ i)) i
+  ℤ→R-Suc (negsuc zero) = sym 0Selfinverse ∙ helper2 _ ∙ (λ i → 1r - ℤ→R-Suc (pos zero) (~ i))
+  ℤ→R-Suc (negsuc (suc n)) = helper2 _ ∙ (λ i → 1r - ℤ→R-Suc (pos (suc n)) (~ i))
 
   ℤ→R-Negate : (n : ℤ) → ℤ→R (-ℤ n) ≡ - ℤ→R n
-  ℤ→R-Negate (pos _) = refl
-  ℤ→R-Negate (neg _) = sym (-Idempotent _)
-  ℤ→R-Negate (posneg i) = isSet→SquareP (λ _ _ → isSetR) (ℤ→R-Negate (pos zero))
-    (ℤ→R-Negate (neg zero)) (λ i → ℤ→R (-ℤ (posneg i))) (λ i → - ℤ→R (posneg i)) i
+  ℤ→R-Negate (pos zero) = sym 0Selfinverse
+  ℤ→R-Negate (pos (suc _)) = refl
+  ℤ→R-Negate (negsuc _) = sym (-Idempotent _)
 
   ℤ→R-Pred : (n : ℤ) → ℤ→R (predℤ n) ≡ - 1r + ℤ→R n
-  ℤ→R-Pred n = ℤ→R-Negate (sucℤ (-ℤ n))
-    ∙ (λ i → - ℤ→R-Suc (-ℤ n) i)
-    ∙ (λ i → - (1r + ℤ→R-Negate n i)) ∙ helper3 _
+  ℤ→R-Pred (pos zero) = sym (+IdR (- 1r))
+  ℤ→R-Pred (pos (suc n)) = helper7 (ℕ→R-Pos n) ∙ (λ i → - 1r + ℕ→R-PosSuc n (~ i))
+  ℤ→R-Pred (negsuc n) = ℕ→R-NegSuc (suc n)
+
+  ℕ→R-Neg≡ℤ→Rneg : (n : ℕ) → ℕ→R-Neg n ≡ ℤ→R (neg n)
+  ℕ→R-Neg≡ℤ→Rneg zero = 0Selfinverse
+  ℕ→R-Neg≡ℤ→Rneg (suc _) = refl
+
+  predℤ-neg : (n : ℕ) → predℤ (neg n) ≡ negsuc n
+  predℤ-neg zero = refl
+  predℤ-neg (suc _) = refl
 
   ℤ→R-Pres-+ : (m n : ℤ) → ℤ→R (m +ℤ n) ≡ ℤ→R m + ℤ→R n
-  ℤ→R-Pres-+ (signed spos zero) n = sym (+IdL (ℤ→R n))
-  ℤ→R-Pres-+ (signed sneg zero) n = helper4 _
-  ℤ→R-Pres-+ (posneg i) n = isSet→SquareP (λ _ _ → isSetR)
-    (sym (+IdL (ℤ→R n))) (helper4 _) _ (λ i → ℤ→R (posneg i) + ℤ→R n) i
-  ℤ→R-Pres-+ (pos (suc m)) n = ℤ→R-Suc (pos m +ℤ n)
+  ℤ→R-Pres-+ (pos zero) n = (λ i → ℤ→R (pos0+ℤ n (~ i))) ∙ sym (+IdL (ℤ→R n))
+  ℤ→R-Pres-+ (pos (suc m)) n = (λ i → ℤ→R (sucℤ+ℤ (pos m) n (~ i)))
+    ∙ ℤ→R-Suc (pos m +ℤ n)
     ∙ (λ i → 1r + ℤ→R-Pres-+ (pos m) n i)
     ∙ +Assoc _ _ _ ∙ (λ i → ℕ→R-PosSuc m (~ i) + ℤ→R n)
-  ℤ→R-Pres-+ (neg (suc m)) n = ℤ→R-Pred (neg m +ℤ n)
-    ∙ (λ i → - 1r + ℤ→R-Pres-+ (neg m) n i)
-    ∙ +Assoc _ _ _ ∙ (λ i → ℕ→R-NegSuc m (~ i) + ℤ→R n)
+  ℤ→R-Pres-+ (negsuc zero) n = (λ i → ℤ→R (predℤ-neg zero (~ i) +ℤ n))
+    ∙ (λ i → ℤ→R (predℤ+ℤ (neg zero) n (~ i)))
+    ∙ ℤ→R-Pred (neg zero +ℤ n)
+    ∙ (λ i → - 1r + ℤ→R-Pres-+ (pos zero) n i)
+    ∙ +Assoc _ _ _
+    ∙ (λ i → (- 1r + ℕ→R-Neg≡ℤ→Rneg zero (~ i)) + ℤ→R n)
+    ∙ (λ i → ℕ→R-NegSuc zero (~ i) + ℤ→R n)
+  ℤ→R-Pres-+ (negsuc (suc m)) n = (λ i → ℤ→R (predℤ-neg (suc m) (~ i) +ℤ n))
+    ∙ (λ i → ℤ→R (predℤ+ℤ (neg (suc m)) n (~ i)))
+    ∙ ℤ→R-Pred (neg (suc m) +ℤ n)
+    ∙ (λ i → - 1r + ℤ→R-Pres-+ (negsuc m) n i)
+    ∙ +Assoc _ _ _
+    ∙ (λ i → (- 1r + ℕ→R-Neg≡ℤ→Rneg (suc m) (~ i)) + ℤ→R n)
+    ∙ (λ i → ℕ→R-NegSuc (suc m) (~ i) + ℤ→R n)
 
 
   ℤ→R-PresPos· : (m : ℕ)(n : ℤ) → ℤ→R (pos m ·ℤ n) ≡ ℤ→R (pos m) · ℤ→R n
-  ℤ→R-PresPos· zero n = (λ i → ℤ→R (·-zeroˡ {s = spos} n i)) ∙ sym (0LeftAnnihilates _)
-  ℤ→R-PresPos· (suc m) n = (λ i → ℤ→R (·-pos-suc m n i))
+  ℤ→R-PresPos· zero n = (λ i → ℤ→R (·AnnihilLℤ n i)) ∙ sym (0LeftAnnihilates _)
+  ℤ→R-PresPos· (suc m) n = (λ i → ℤ→R (sucℤ·ℤ (pos m) n i))
     ∙ ℤ→R-Pres-+ n (pos m ·ℤ n)
     ∙ (λ i → ℤ→R n + ℤ→R-PresPos· m n i)
     ∙ helper6 _ _ ∙ (λ i → ℤ→R-Suc (pos m) (~ i) · ℤ→R n)
 
   ℤ→R-Pres-· : (m n : ℤ) → ℤ→R (m ·ℤ n) ≡ ℤ→R m · ℤ→R n
   ℤ→R-Pres-· (pos m) n = ℤ→R-PresPos· m n
-  ℤ→R-Pres-· (neg m) n =
-      (λ i → ℤ→R (negate-·ˡ (pos m) n (~ i)))
-    ∙ ℤ→R-Negate (pos m ·ℤ n)
-    ∙ (λ i → - ℤ→R-PresPos· m n i) ∙ helper5 _ _
-    ∙ (λ i → ℤ→R-Negate (pos m) (~ i) · ℤ→R n)
-  ℤ→R-Pres-· (posneg i) n = isSet→SquareP (λ _ _ → isSetR)
-    (ℤ→R-Pres-· (pos zero) n) (ℤ→R-Pres-· (neg zero) n)
-    (λ i → ℤ→R ((posneg i) ·ℤ n)) (λ i → ℤ→R (posneg i) · ℤ→R n) i
+  ℤ→R-Pres-· (negsuc m) n =
+      (λ i → ℤ→R (-DistL·ℤ (pos (suc m)) n (~ i)))
+    ∙ ℤ→R-Negate (pos (suc m) ·ℤ n)
+    ∙ (λ i → - ℤ→R-PresPos· (suc m) n i) ∙ helper5 _ _
+    ∙ (λ i → ℤ→R-Negate (pos (suc m)) (~ i) · ℤ→R n)
 
 
   ℤ→R-Pres>0' : (n : ℤ) → n >ℤ0 → ℤ→R n > 0r
   ℤ→R-Pres>0' (pos (suc zero)) _ = 1>0
   ℤ→R-Pres>0' (pos (suc (suc n))) _ = +-Pres>0 1>0 (ℤ→R-Pres>0' (pos (suc n)) _)
 
-  ℤ→R-Pres>0'' : (n : ℤ) → n >ℤ 0 → ℤ→R n > 0r
+  ℤ→R-Pres>0'' : (n : ℤ) → n >ℤ pos 0 → ℤ→R n > 0r
   ℤ→R-Pres>0'' n n>0 = ℤ→R-Pres>0' n (transport (sym (>0≡>0r-ℤ _)) n>0)
 
   ℤ→R-Pres>0 : (n : ℤ) → n >ℤ0 → 𝓡 .snd ._>0 (ℤ→R n)

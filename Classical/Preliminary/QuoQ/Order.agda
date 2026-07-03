@@ -26,14 +26,14 @@ open import Cubical.Foundations.Univalence
 open import Cubical.Data.Sigma
 open import Cubical.Data.Empty
 open import Cubical.Data.NatPlusOne
-open import Cubical.Data.Int.MoreInts.QuoInt
-  using    (ℤ ; pos ; neg)
+open import Cubical.Data.Int
+  using    (ℤ)
   renaming (_·_ to _·ℤ_ ; -_ to -ℤ_)
-open import Cubical.Data.Rationals.MoreRationals.QuoQ
+open import Cubical.Data.Rationals
 open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
-open import Cubical.Algebra.CommRing.Instances.QuoQRationals
+open import Cubical.Algebra.CommRing.Instances.Rationals
   using    (ℚCommRing)
 open import Cubical.Relation.Nullary
 

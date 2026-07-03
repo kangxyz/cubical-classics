@@ -8,7 +8,7 @@ module Classical.Analysis.Real.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat.Literals public
-open import Cubical.Data.Rationals.MoreRationals.QuoQ
+open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Algebra.Ring
 
 open import Classical.Axioms

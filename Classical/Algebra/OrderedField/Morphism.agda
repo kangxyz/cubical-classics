@@ -334,10 +334,10 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
 module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
 
   open import Cubical.Data.NatPlusOne
-  open import Cubical.Data.Int.MoreInts.QuoInt
-    using    (ℤ)
+  open import Cubical.Data.Int
+    using    (ℤ ; pos ; pos·pos)
     renaming (_+_ to _+ℤ_ ; _·_ to _·ℤ_)
-  open import Cubical.Data.Rationals.MoreRationals.QuoQ
+  open import Cubical.Data.Rationals
     using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
     renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_)
 
@@ -345,7 +345,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
     using    (ℤOrderedRing)
   open import Classical.Algebra.OrderedRing.Morphism
 
-  open import Cubical.Algebra.CommRing.Instances.QuoQRationals
+  open import Cubical.Algebra.CommRing.Instances.Rationals
   open import Classical.Algebra.OrderedField.Instances.QuoQ
 
 
@@ -362,7 +362,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   open Helpers (𝒦 .fst .fst)
 
 
-  ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n >ℤ 0
+  ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n >ℤ pos 0
   ℕ₊₁→ℤ>0 (1+ n) = transport (>0≡>0r-ℤ (ℕ₊₁→ℤ (1+ n))) _
 
   ℕ₊₁→R : ℕ₊₁ → K
@@ -375,7 +375,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   ℕ₊₁→R≢0 n = >-arefl (ℕ₊₁→R>0 n)
 
   ℕ₊₁→ℤ-·₊₁-comm : (m n : ℕ₊₁) → ℕ₊₁→ℤ (m ·₊₁ n) ≡ (ℕ₊₁→ℤ m) ·ℤ (ℕ₊₁→ℤ n)
-  ℕ₊₁→ℤ-·₊₁-comm (1+ m) (1+ n) = refl
+  ℕ₊₁→ℤ-·₊₁-comm (1+ m) (1+ n) = pos·pos (suc m) (suc n)
 
 
   private
