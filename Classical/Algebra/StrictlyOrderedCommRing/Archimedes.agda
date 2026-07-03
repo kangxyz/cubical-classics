@@ -1,10 +1,10 @@
 {-
 
-  Archimedean-ness of Ordered Ring
+  Archimedean-ness of strictly ordered commutative rings
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedRing.Archimedes where
+module Classical.Algebra.StrictlyOrderedCommRing.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
@@ -13,20 +13,20 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Relation.Nullary
 
 open import Classical.Preliminary.Nat
-open import Classical.Algebra.OrderedRing
+open import Classical.Algebra.StrictlyOrderedCommRing
 
 private
   variable
     ℓ ℓ' : Level
 
 
-module _ (𝓡 : OrderedRing ℓ ℓ') where
+module _ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
 
   private
     R = 𝓡 .fst .fst
 
-  open CommRingStr   (𝓡 .fst .snd)
-  open OrderedRingStr 𝓡
+  open CommRingStr   ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
+  open StrictlyOrderedCommRingStr 𝓡
 
 
   -- We have two versions of Archimedean-ness.

@@ -19,6 +19,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
+open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.OrderedField
 
 private
@@ -52,7 +53,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
 
   open OrderedFieldStr 𝒦
 
-  open Helpers (𝒦 .fst .fst)
+  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   {-

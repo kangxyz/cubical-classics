@@ -20,7 +20,7 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Algebra.Field
-open import Classical.Algebra.OrderedRing
+open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.OrderedField.Base
 
 private
@@ -54,7 +54,7 @@ private
 module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
 
   open FieldStr       (OrderedField→Field 𝒦) public
-  open OrderedRingStr (𝒦 .fst) public
+  open StrictlyOrderedCommRingStr (𝒦 .fst) public
 
   private
     K = 𝒦 .fst .fst .fst
@@ -62,7 +62,7 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
     variable
       p q x y z : K
 
-  open Helpers (𝒦 .fst .fst)
+  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   {-
@@ -256,7 +256,7 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
 -}
 
 open import Classical.Preliminary.Nat
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 
 module _ (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 

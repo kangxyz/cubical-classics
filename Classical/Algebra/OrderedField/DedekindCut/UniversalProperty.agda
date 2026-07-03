@@ -25,9 +25,9 @@ open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Logic
 
 open import Classical.Algebra.Field
-open import Classical.Algebra.OrderedRing
-open import Classical.Algebra.OrderedRing.Morphism
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing
+open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
@@ -98,8 +98,8 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; <-+-Decompose to <-+-Decompose'
                ; <-·-Decompose to <-·-Decompose'
                ; >0≡>0r to >0≡>0r')
-    open OrderedRingHom    f
-    open OrderedRingHomStr f
+    open StrictlyOrderedCommRingHom    f
+    open StrictlyOrderedCommRingHomStr f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
     open IsCommRingHom (ring-hom .snd)
 
@@ -292,10 +292,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     map-helper-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → map-helper a >' 0r'
     map-helper-pres>0 a a>0 = subst (map-helper a >'_) map-pres0 (map-helper-pres> a 𝟘 a>0)
 
-
-    open OrderStrOnCommRing
-
-    map-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → 𝒦' .fst .fst .snd ._>0 (map-helper a)
+    map-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → StrictlyOrderedCommRingStr._>0 (𝒦' .fst .fst) (map-helper a)
     map-pres>0 a a>0 = transport (sym (>0≡>0r' _)) (map-helper-pres>0 a a>0)
 
 
@@ -352,7 +349,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
 
     open Helpers 𝕂CommRing renaming (helper1 to helper𝕂1 ; helper2 to helper𝕂2)
-    open Helpers (𝒦' .fst .fst .fst)
+    open Helpers (StrictlyOrderedCommRing→CommRing (𝒦' .fst .fst))
 
     map-pres·Pos : (a b : 𝕂) → a >𝕂 𝟘 → map-helper (a ·𝕂 b) ≡ map-helper a ·' map-helper b
     map-pres·Pos a b a>0 = case-split (trichotomy𝕂 b 𝟘)
@@ -397,14 +394,14 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
     -}
 
-    extendedRingHom : CommRingHom 𝕂CommRing (𝒦' .fst .fst .fst)
+    extendedRingHom : CommRingHom 𝕂CommRing (StrictlyOrderedCommRing→CommRing (𝒦' .fst .fst))
     extendedRingHom = map-helper , makeIsCommRingHom map-pres1 map-pres+ map-pres·
 
-    open OrderedRingHom
+    open StrictlyOrderedCommRingHom
 
-    extendedOrderedRingHom : OrderedRingHom 𝕂OrderedRing (𝒦' .fst .fst)
-    extendedOrderedRingHom .ring-hom = extendedRingHom
-    extendedOrderedRingHom .pres->0  = map-pres>0
+    extendedStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom 𝕂StrictlyOrderedCommRing (𝒦' .fst .fst)
+    extendedStrictlyOrderedCommRingHom .ring-hom = extendedRingHom
+    extendedStrictlyOrderedCommRingHom .pres->0  = map-pres>0
 
     extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
-    extendedOrderedFieldHom = extendedOrderedRingHom
+    extendedOrderedFieldHom = extendedStrictlyOrderedCommRingHom

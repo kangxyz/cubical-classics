@@ -19,7 +19,7 @@ open import Classical.Preliminary.Logic
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 open import Classical.Algebra.OrderedField.DedekindCut.Algebra

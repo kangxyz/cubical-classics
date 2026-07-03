@@ -34,8 +34,9 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
-open import Classical.Algebra.OrderedRing.Morphism
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing
+open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
@@ -145,7 +146,7 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
           return (suc n ,
             subst (_> p + ε) (sym (sucn⋆q≡n⋆q+q n _)) (+-rPres< {z = ε} n⋆ε>p))
 
-        open Helpers (𝒦 .fst .fst)
+        open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
 
         q<p+ε : p + ε > boundary .sup
         q<p+ε = subst (_< p + ε) (helper1 _ _) (+-rPres< {z = ε} p>q-ε)
@@ -205,8 +206,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
                ; <-asym  to <'-asym
                ; <-trans to <'-trans
                ; is-set  to is-set')
-    open OrderedRingHom    f
-    open OrderedRingHomStr f
+    open StrictlyOrderedCommRingHom    f
+    open StrictlyOrderedCommRingHomStr f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦'} f
 
     private

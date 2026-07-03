@@ -13,8 +13,8 @@ open import Cubical.Algebra.Ring
 
 open import Classical.Axioms
 open import Classical.Algebra.OrderedField.Instances.Rationals
-open import Classical.Algebra.OrderedRing
-open import Classical.Algebra.OrderedRing.Morphism
+open import Classical.Algebra.StrictlyOrderedCommRing
+open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
@@ -59,7 +59,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open CompleteOrderedField
   open InclusionFromℚ
-  open OrderedRingHom
+  open StrictlyOrderedCommRingHom
 
 
   abstract
@@ -80,7 +80,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -- Natural number and negative integer literals for ℝ
 
-  open OrderedRingStr (ℝCompleteOrderedField .fst .fst)
+  open StrictlyOrderedCommRingStr (ℝCompleteOrderedField .fst .fst)
 
   instance
     fromNatℝ : HasFromNat ℝ

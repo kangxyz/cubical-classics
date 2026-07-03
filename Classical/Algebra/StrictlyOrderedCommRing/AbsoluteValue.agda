@@ -4,7 +4,7 @@ Absolute Value
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedRing.AbsoluteValue where
+module Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Empty as Empty
@@ -15,7 +15,7 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.OrderedRing
+open import Classical.Algebra.StrictlyOrderedCommRing
 
 private
   variable
@@ -54,16 +54,16 @@ private
     helper9 _ _ = solve! 𝓡
 
 
-module AbsoluteValue (𝓡 : OrderedRing ℓ ℓ') where
+module AbsoluteValue (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
 
   private
     R = 𝓡 .fst .fst
 
-  open RingTheory (CommRing→Ring (𝓡 .fst))
-  open CommRingStr   (𝓡 .fst .snd)
-  open OrderedRingStr 𝓡
+  open RingTheory (CommRing→Ring (StrictlyOrderedCommRing→CommRing 𝓡))
+  open CommRingStr   ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
+  open StrictlyOrderedCommRingStr 𝓡
 
-  open Helpers (𝓡 .fst)
+  open Helpers (StrictlyOrderedCommRing→CommRing 𝓡)
 
 
   private

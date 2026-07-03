@@ -24,7 +24,7 @@ open import Cubical.Relation.Nullary
 open import Classical.Axioms
 open import Classical.Foundations.Powerset renaming ([_] to [[_]])
 
-open import Classical.Algebra.OrderedRing.AbsoluteValue
+open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness

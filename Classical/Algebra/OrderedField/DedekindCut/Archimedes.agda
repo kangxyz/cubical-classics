@@ -19,7 +19,8 @@ open import Classical.Axioms
 open import Classical.Preliminary.Nat
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 
@@ -58,7 +59,7 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
   open Basics   𝒦
   open DedekindCut
 
-  open Helpers (𝒦 .fst .fst)
+  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   module _  (a : 𝕂)(ε : K)(ε>0 : ε > 0r) where

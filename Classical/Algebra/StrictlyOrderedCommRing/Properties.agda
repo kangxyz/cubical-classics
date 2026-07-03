@@ -1,12 +1,13 @@
 {-
 
-  Properties of ordered ring
+  Properties of strictly ordered commutative rings
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedRing.Properties where
+module Classical.Algebra.StrictlyOrderedCommRing.Properties where
 
 open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Equiv
 
 open import Cubical.Data.Unit
 open import Cubical.Data.Empty as Empty
@@ -16,10 +17,13 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
+open import Cubical.Algebra.OrderedCommRing as CubicalOrderedCommRing
+  using (OrderedCommRing ; OrderedCommRingStr)
 open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.OrderedRing.Base
+open import Classical.Algebra.StrictlyOrderedCommRing.Base hiding (Trichotomy ; lt ; eq ; gt)
+import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
 
 private
   variable
@@ -91,16 +95,20 @@ private
     helper20 _ _ = solve! 𝓡
 
 
-module OrderedRingStr (𝓡 : OrderedRing ℓ ℓ') where
+module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
 
   private
-    R = 𝓡 .fst .fst
+    𝓡ᶜ = 𝓡 .fst
+    𝓡ᵣ = StrictlyOrderedCommRing→CommRing 𝓡
+    R = 𝓡ᶜ .fst
 
-  open RingTheory (CommRing→Ring (𝓡 .fst))
-  open CommRingStr   (𝓡 .fst .snd)
-  open OrderStrOnCommRing (𝓡 .snd)
+  module Ord = OrderedCommRingStr (𝓡ᶜ .snd)
 
-  open Helpers (𝓡 .fst)
+  open RingTheory (CommRing→Ring 𝓡ᵣ)
+  open CommRingStr  (𝓡ᵣ .snd)
+  open StrictOrderStrOnOrderedCommRing (𝓡 .snd) renaming (trichotomy to trichotomyᶜ)
+
+  open Helpers 𝓡ᵣ
 
 
   private
@@ -108,6 +116,50 @@ module OrderedRingStr (𝓡 : OrderedRing ℓ ℓ') where
 
     variable
       x y z w : R
+
+  _<ᶜ_ : R → R → Type ℓ'
+  _<ᶜ_ = Ord._<_
+
+  _≤ᶜ_ : R → R → Type ℓ'
+  _≤ᶜ_ = Ord._≤_
+
+  infix 4 _<ᶜ_ _≤ᶜ_
+
+  _>0 : R → Type ℓ'
+  x >0 = 0r <ᶜ x
+
+  isProp>0 : (x : R) → isProp (x >0)
+  isProp>0 x = Ord.is-prop-valued< 0r x
+
+  >0-1r : 1r >0
+  >0-1r = Ord.0<1
+
+  -Pos→Neg : (- x) >0 → x <ᶜ 0r
+  -Pos→Neg {x = x} -x>0 =
+    transport (λ i → +IdL x i <ᶜ +InvL x i) (Ord.+MonoR< 0r (- x) x -x>0)
+
+  >0-asym : (x : R) → x >0 → (- x) >0 → ⊥
+  >0-asym x x>0 -x>0 = Ord.is-asym 0r x x>0 (-Pos→Neg -x>0)
+
+  >0-arefl : (x : R) → x >0 → x ≡ 0r → ⊥
+  >0-arefl x x>0 x≡0 = Ord.is-irrefl 0r (subst (0r <ᶜ_) x≡0 x>0)
+
+  >0-+ : (x y : R) → x >0 → y >0 → (x + y) >0
+  >0-+ x y x>0 y>0 =
+    Ord.is-trans< 0r y (x + y) y>0
+      (subst (_<ᶜ x + y) (+IdL y) (Ord.+MonoR< 0r x y x>0))
+
+  >0-· : (x y : R) → x >0 → y >0 → (x · y) >0
+  >0-· x y x>0 y>0 =
+    subst (_<ᶜ x · y) (0LeftAnnihilates y) (Ord.·MonoR< 0r x y y>0 x>0)
+
+  <ᶜ→Diff>0 : {x y : R} → x <ᶜ y → (y - x) >0
+  <ᶜ→Diff>0 {x = x} {y = y} x<ᶜy =
+    transport (λ i → +InvR x i <ᶜ y - x) (Ord.+MonoR< x y (- x) x<ᶜy)
+
+  Diff>0→<ᶜ : {x y : R} → (y - x) >0 → x <ᶜ y
+  Diff>0→<ᶜ {x = x} {y = y} y-x>0 =
+    transport (λ i → +IdL x i <ᶜ helper4 x y i) (Ord.+MonoR< 0r (y - x) x y-x>0)
 
 
   {-
@@ -161,10 +213,10 @@ module OrderedRingStr (𝓡 : OrderedRing ℓ ℓ') where
   isPropTrichotomy x y (eq x≡y) (gt x>y) = Empty.rec (<-arefl x>y (sym x≡y))
 
   trichotomy : (x y : R) → Trichotomy x y
-  trichotomy x y with trichotomy>0 (y - x)
-  ... | lt x<y = gt (subst (_>0) (sym (helper2 x y)) x<y)
-  ... | eq x≡y = eq (sym (+IdL _) ∙ (λ i → x≡y (~ i) + x) ∙ helper4 x y)
-  ... | gt x>y = lt x>y
+  trichotomy x y with trichotomyᶜ x y
+  ... | StrictBase.lt x<ᶜy = lt (<ᶜ→Diff>0 x<ᶜy)
+  ... | StrictBase.eq x≡y = eq x≡y
+  ... | StrictBase.gt y<ᶜx = gt (<ᶜ→Diff>0 y<ᶜx)
 
   dec< : (x y : R) → Dec (x < y)
   dec< x y with trichotomy x y
@@ -500,7 +552,7 @@ module OrderedRingStr (𝓡 : OrderedRing ℓ ℓ') where
 
   {-
 
-    Ordered Ring is Integral
+    Strictly ordered commutative rings are integral
 
   -}
 

@@ -42,24 +42,24 @@ open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.OrderedRing.Instances.Int
-  using    (ℤOrderedRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
+open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
+  using    (ℤStrictlyOrderedCommRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
   renaming (archimedes' to archimedesℤ)
 open import Classical.Preliminary.Rationals.Order
-  using    (ℚOrderedRing ; _>0)
+  using    (ℚStrictlyOrderedCommRing)
 open import Classical.Preliminary.Nat
-open import Classical.Algebra.OrderedRing
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 
 
-open CommRingStr    (ℚOrderedRing .fst .snd)
-open OrderedRingStr  ℚOrderedRing renaming (_⋆_ to _⋆'_)
-open OrderedRingStr  ℤOrderedRing using    ()
+open CommRingStr    ((StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing) .snd)
+open StrictlyOrderedCommRingStr  ℚStrictlyOrderedCommRing renaming (_⋆_ to _⋆'_)
+open StrictlyOrderedCommRingStr  ℤStrictlyOrderedCommRing using    ()
   renaming (_<_ to _<ℤ_ ; _>_ to _>ℤ_
            ; ·-Pres>0 to ·ℤ-Pres>0)
 
-open Helpers (ℤOrderedRing .fst)
-open Helpers (ℚOrderedRing .fst) using ()
+open Helpers (StrictlyOrderedCommRing→CommRing ℤStrictlyOrderedCommRing)
+open Helpers (StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing) using ()
   renaming (helper3 to helper3ℚ)
 
 private
@@ -110,11 +110,18 @@ private
   archimedes-helper (a , b) (c , d) y>0 =
     let right = -ℤ a ·ℤ ℕ₊₁→ℤ d
         c>0 = transport (sym (>0≡>0r [ c , d ])) y>0
+        c>0' = subst (_>ℤ pos zero) (Int.·IdR c) c>0
         (n , ->-) =
           archimedesℤ right (c ·ℤ ℕ₊₁→ℤ b)
-            (·ℤ-Pres>0 {x = c} {y = ℕ₊₁→ℤ b} c>0 (ℕ₊₁→ℤ>0 b))
+            (·ℤ-Pres>0 {x = c} {y = ℕ₊₁→ℤ b} c>0' (ℕ₊₁→ℤ>0 b))
+        direct-core : pos n ·ℤ c ·ℤ ℕ₊₁→ℤ b +ℤ right >ℤ pos zero
+        direct-core = subst (λ t → t +ℤ right >ℤ pos zero) (helper1 (pos n) c (ℕ₊₁→ℤ b)) ->-
         direct-normalized : ([ pos n ·ℤ c , d ] + [ -ℤ a , b ]) >0
-        direct-normalized = subst (λ t → t +ℤ right >ℤ 0) (helper1 (pos n) c (ℕ₊₁→ℤ b)) ->-
+        direct-normalized =
+          subst (_>ℤ pos zero)
+            (sym (Int.·IdR (pos n ·ℤ c ·ℤ ℕ₊₁→ℤ b +ℤ right))
+              ∙ cong ((pos n ·ℤ c ·ℤ ℕ₊₁→ℤ b +ℤ right) ·ℤ_) one-den)
+            direct-core
         direct = subst (_>0) (sym (cong ([ pos n ·ℤ c , d ] +_) (neg-repr a b))) direct-normalized
     in  n , subst (_> [ a , b ]) (sym (⋆-repr n c d)) direct
 
@@ -132,5 +139,5 @@ archimedes q ε ε>0 = case-split (dec< q (zero ⋆ ε))
 
 -- Archimedean-ness of ℚ
 
-isArchimedeanℚ : isArchimedean ℚOrderedRing
+isArchimedeanℚ : isArchimedean ℚStrictlyOrderedCommRing
 isArchimedeanℚ = transport (λ i → (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] ⋆≡⋆' n ε i > q) archimedes

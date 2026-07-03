@@ -37,7 +37,7 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Nat
 open import Classical.Preliminary.Logic
-open import Classical.Algebra.OrderedRing.AbsoluteValue
+open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness

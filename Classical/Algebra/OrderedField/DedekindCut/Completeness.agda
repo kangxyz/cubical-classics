@@ -15,7 +15,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness

@@ -7,19 +7,29 @@ Multiplicative Structure on Dedekind Cuts
 module Classical.Algebra.OrderedField.DedekindCut.Multiplication where
 
 open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Equiv
 open import Cubical.Foundations.HLevels
+import Cubical.Functions.Logic as L
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Sum
 open import Cubical.HITs.PropositionalTruncation as Prop
+open import Cubical.HITs.PropositionalTruncation.Monad
 open import Cubical.Relation.Nullary
 open import Cubical.Algebra.CommRing
+open import Cubical.Algebra.OrderedCommRing
+open import Cubical.Relation.Binary.Base
+open import Cubical.Relation.Binary.Order.Poset
+open import Cubical.Relation.Binary.Order.Pseudolattice
+open import Cubical.Relation.Binary.Order.StrictOrder
+open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
 open import Classical.Algebra.Field
-open import Classical.Algebra.OrderedRing
-open import Classical.Algebra.OrderedRing.Archimedes
+open import Classical.Algebra.StrictlyOrderedCommRing
+import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
+open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 open import Classical.Algebra.OrderedField.DedekindCut.Algebra
@@ -307,7 +317,7 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
 
   {-
 
-    Ordered Ring Instance
+    Strictly ordered commutative ring instance
 
   -}
 
@@ -319,26 +329,197 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   ·𝕂'-Pres>0 a b a>0 b>0 =
     subst (_>𝕂 𝟘) (·𝕂-Pos-helper a b a>0 b>0) (·𝕂-Pres>0 (abs𝕂 a) (abs𝕂 b) (abs>0 a a>0) (abs>0 b b>0))
 
-  trichotomy>𝕂0 : (a : 𝕂) → Trichotomy>0 𝕂CommRing (_>𝕂 𝟘) a
-  trichotomy>𝕂0 a = case-split (trichotomy𝕂 a 𝟘)
-    where
-    case-split : Trichotomy𝕂 a 𝟘 → _
-    case-split (lt a<0) = lt (-reverse<0 a a<0)
-    case-split (eq a≡0) = eq a≡0
-    case-split (gt a>0) = gt a>0
+  private
+    open BinaryRelation
 
+    _≤𝕂ᶜ_ : 𝕂 → 𝕂 → Type (ℓ-max ℓ ℓ')
+    a ≤𝕂ᶜ b = Lift ℓ' (a ≤𝕂 b)
 
-  𝕂OrderedRing : OrderedRing (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂OrderedRing = 𝕂CommRing ,
-    orderstr
-      (_>𝕂 𝟘) (λ a → isProp<𝕂 {a = 𝟘} {b = a}) 1>𝕂0
-      (λ a → a>0+-a>0→⊥ {a = a}) +𝕂-Pres>0
-      ·𝕂'-Pres>0 trichotomy>𝕂0
+    isProp≤𝕂ᶜ : {a b : 𝕂} → isProp (a ≤𝕂ᶜ b)
+    isProp≤𝕂ᶜ = isOfHLevelLift 1 isProp≤𝕂
+
+    ≤𝕂ᶜ-trans : (a b c : 𝕂) → a ≤𝕂ᶜ b → b ≤𝕂ᶜ c → a ≤𝕂ᶜ c
+    ≤𝕂ᶜ-trans a b c a≤b b≤c = lift (λ x∈c → lower a≤b (lower b≤c x∈c))
+
+    𝕂≤Poset : Poset (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+    𝕂≤Poset = poset 𝕂 _≤𝕂ᶜ_
+      (isposet isSet𝕂 (λ a b → isProp≤𝕂ᶜ {a = a} {b = b})
+        (λ a → lift (≤𝕂-refl {a = a} refl))
+        ≤𝕂ᶜ-trans
+        (λ a b a≤b b≤a → ≤𝕂-asym (lower a≤b) (lower b≤a)))
+
+    min𝕂 : 𝕂 → 𝕂 → 𝕂
+    min𝕂 a b with dichotomy𝕂 a b
+    ... | lt a<b = a
+    ... | ge a≥b = b
+
+    max𝕂 : 𝕂 → 𝕂 → 𝕂
+    max𝕂 a b with dichotomy𝕂 a b
+    ... | lt a<b = b
+    ... | ge a≥b = a
+
+    min𝕂≤left : {a b : 𝕂} → min𝕂 a b ≤𝕂ᶜ a
+    min𝕂≤left {a = a} {b = b} with dichotomy𝕂 a b
+    ... | lt a<b = lift (≤𝕂-refl {a = a} refl)
+    ... | ge a≥b = lift a≥b
+
+    min𝕂≤right : {a b : 𝕂} → min𝕂 a b ≤𝕂ᶜ b
+    min𝕂≤right {a = a} {b = b} with dichotomy𝕂 a b
+    ... | lt a<b = lift (<𝕂→≤𝕂 {a = a} {b = b} a<b)
+    ... | ge a≥b = lift (≤𝕂-refl {a = b} refl)
+
+    ≤min𝕂 : {a b x : 𝕂} → x ≤𝕂ᶜ a → x ≤𝕂ᶜ b → x ≤𝕂ᶜ min𝕂 a b
+    ≤min𝕂 {a = a} {b = b} x≤a x≤b with dichotomy𝕂 a b
+    ... | lt a<b = x≤a
+    ... | ge a≥b = x≤b
+
+    left≤max𝕂 : {a b : 𝕂} → a ≤𝕂ᶜ max𝕂 a b
+    left≤max𝕂 {a = a} {b = b} with dichotomy𝕂 a b
+    ... | lt a<b = lift (<𝕂→≤𝕂 {a = a} {b = b} a<b)
+    ... | ge a≥b = lift (≤𝕂-refl {a = a} refl)
+
+    right≤max𝕂 : {a b : 𝕂} → b ≤𝕂ᶜ max𝕂 a b
+    right≤max𝕂 {a = a} {b = b} with dichotomy𝕂 a b
+    ... | lt a<b = lift (≤𝕂-refl {a = b} refl)
+    ... | ge a≥b = lift a≥b
+
+    max𝕂≤ : {a b x : 𝕂} → a ≤𝕂ᶜ x → b ≤𝕂ᶜ x → max𝕂 a b ≤𝕂ᶜ x
+    max𝕂≤ {a = a} {b = b} a≤x b≤x with dichotomy𝕂 a b
+    ... | lt a<b = b≤x
+    ... | ge a≥b = a≤x
+
+    𝕂≤Pseudolattice : Pseudolattice (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+    𝕂≤Pseudolattice =
+      makePseudolatticeFromPoset 𝕂≤Poset min𝕂 max𝕂
+        min𝕂≤left min𝕂≤right ≤min𝕂
+        left≤max𝕂 right≤max𝕂 max𝕂≤
+
+    <𝕂-trans : (a b c : 𝕂) → a <𝕂 b → b <𝕂 c → a <𝕂 c
+    <𝕂-trans a b c a<b b<c = do
+      (q , q<r∈c , q∈b) ← b<c
+      return (q , q<r∈c , <𝕂→≤𝕂 {a = a} {b = b} a<b q∈b)
+
+    <𝕂-weaklyLinear : (a b c : 𝕂) → a <𝕂 b → (a <𝕂 c) L.⊔′ (c <𝕂 b)
+    <𝕂-weaklyLinear a b c a<b with trichotomy𝕂 c b
+    ... | lt c<b = ∣ inr c<b ∣₁
+    ... | eq c≡b = ∣ inl (subst (a <𝕂_) (sym c≡b) a<b) ∣₁
+    ... | gt c>b = ∣ inl (<𝕂-trans a b c a<b c>b) ∣₁
+
+    <𝕂≤𝕂-trans : (a b c : 𝕂) → a <𝕂 b → b ≤𝕂ᶜ c → a <𝕂 c
+    <𝕂≤𝕂-trans a b c a<b b≤c with split≤𝕂 b c (lower b≤c)
+    ... | lt b<c = <𝕂-trans a b c a<b b<c
+    ... | eq b≡c = subst (a <𝕂_) b≡c a<b
+
+    ≤𝕂<𝕂-trans : (a b c : 𝕂) → a ≤𝕂ᶜ b → b <𝕂 c → a <𝕂 c
+    ≤𝕂<𝕂-trans a b c a≤b b<c with split≤𝕂 a b (lower a≤b)
+    ... | lt a<b = <𝕂-trans a b c a<b b<c
+    ... | eq a≡b = subst (_<𝕂 c) (sym a≡b) b<c
+
+    ≤𝕂≃¬>𝕂 : (a b : 𝕂) → (a ≤𝕂ᶜ b) ≃ (¬ (b <𝕂 a))
+    ≤𝕂≃¬>𝕂 a b =
+      propBiimpl→Equiv (isProp≤𝕂ᶜ {a = a} {b = b}) (isProp¬ (b <𝕂 a))
+        (λ a≤b b<a → <≤𝕂-asym b a b<a (lower a≤b))
+        (λ ¬b<a → lift (¬a>b→a≤b a b ¬b<a))
+
+    +𝕂-posSum : (x y : 𝕂) → 𝟘 <𝕂 (x +𝕂 y) → (𝟘 <𝕂 x) L.⊔′ (𝟘 <𝕂 y)
+    +𝕂-posSum x y 0<x+y with trichotomy𝕂 x 𝟘
+    ... | gt x>0 = ∣ inl x>0 ∣₁
+    ... | eq x≡0 = ∣ inr (subst (𝟘 <𝕂_) x+y≡y 0<x+y) ∣₁
+      where
+      x+y≡y : x +𝕂 y ≡ y
+      x+y≡y = (λ i → x≡0 i +𝕂 y) ∙ +𝕂IdL y
+    ... | lt x<0 = ∣ inr (<𝕂-trans 𝟘 (-𝕂 x) y (-reverse<0 x x<0) -x<y) ∣₁
+      where
+      -x<y : (-𝕂 x) <𝕂 y
+      -x<y = transport (λ i → +𝕂IdL (-𝕂 x) i <𝕂 x+y-x≡y i)
+        (+𝕂-rPres< 𝟘 (x +𝕂 y) (-𝕂 x) 0<x+y)
+        where
+        x+y-x≡y : (x +𝕂 y) +𝕂 (-𝕂 x) ≡ y
+        x+y-x≡y =
+          sym (+𝕂Assoc x y (-𝕂 x))
+          ∙ (λ i → x +𝕂 +𝕂Comm y (-𝕂 x) i)
+          ∙ +𝕂Assoc x (-𝕂 x) y
+          ∙ (λ i → +𝕂InvR x i +𝕂 y)
+          ∙ +𝕂IdL y
+
+    <𝕂→Diff>0 : (a b : 𝕂) → a <𝕂 b → (b +𝕂 (-𝕂 a)) >𝕂 𝟘
+    <𝕂→Diff>0 a b a<b =
+      subst ((b +𝕂 (-𝕂 a)) >𝕂_) (+𝕂InvR a)
+        (+𝕂-rPres< a b (-𝕂 a) a<b)
+
+    Diff>0→<𝕂 : (a b : 𝕂) → (b +𝕂 (-𝕂 a)) >𝕂 𝟘 → a <𝕂 b
+    Diff>0→<𝕂 a b 0<b-a =
+      transport (λ i → +𝕂IdL a i <𝕂 b-a+a≡b i)
+        (+𝕂-rPres< 𝟘 (b +𝕂 (-𝕂 a)) a 0<b-a)
+      where
+      b-a+a≡b : (b +𝕂 (-𝕂 a)) +𝕂 a ≡ b
+      b-a+a≡b = sym (+𝕂Assoc _ _ _) ∙ (λ i → b +𝕂 +𝕂InvL a i) ∙ +𝕂IdR b
+
+    ·𝕂-diffR : (x y z : 𝕂) → (y +𝕂 (-𝕂 x)) ·𝕂 z ≡ (y ·𝕂 z) +𝕂 (-𝕂 (x ·𝕂 z))
+    ·𝕂-diffR x y z =
+      ·𝕂Comm (y +𝕂 (-𝕂 x)) z
+      ∙ sym (·𝕂DistR z y (-𝕂 x))
+      ∙ (λ i → ·𝕂Comm z y i +𝕂 ·𝕂Comm z (-𝕂 x) i)
+      ∙ (λ i → (y ·𝕂 z) +𝕂 neg-·𝕂 x z i)
+
+    ·𝕂-rMono< : (x y z : 𝕂) → 𝟘 <𝕂 z → x <𝕂 y → (x ·𝕂 z) <𝕂 (y ·𝕂 z)
+    ·𝕂-rMono< x y z 0<z x<y =
+      Diff>0→<𝕂 (x ·𝕂 z) (y ·𝕂 z)
+        (subst (_>𝕂 𝟘) (·𝕂-diffR x y z)
+          (·𝕂'-Pres>0 (y +𝕂 (-𝕂 x)) z (<𝕂→Diff>0 x y x<y) 0<z))
+
+    ·𝕂-rMono≤ : (x y z : 𝕂) → 𝟘 ≤𝕂ᶜ z → x ≤𝕂ᶜ y → (x ·𝕂 z) ≤𝕂ᶜ (y ·𝕂 z)
+    ·𝕂-rMono≤ x y z 0≤z x≤y with split≤𝕂 𝟘 z (lower 0≤z) | split≤𝕂 x y (lower x≤y)
+    ... | lt 0<z | lt x<y = lift (<𝕂→≤𝕂 {a = x ·𝕂 z} {b = y ·𝕂 z} (·𝕂-rMono< x y z 0<z x<y))
+    ... | lt 0<z | eq x≡y = lift (≤𝕂-refl {a = x ·𝕂 z} (λ i → x≡y i ·𝕂 z))
+    ... | eq 0≡z | _ = lift (≤𝕂-refl {a = x ·𝕂 z} xz≡yz)
+      where
+      xz≡yz : x ·𝕂 z ≡ y ·𝕂 z
+      xz≡yz =
+        (λ i → x ·𝕂 0≡z (~ i))
+        ∙ ·𝕂ZeroR x
+        ∙ sym (·𝕂ZeroR y)
+        ∙ (λ i → y ·𝕂 0≡z i)
+
+  𝕂IsOrderedCommRing : IsOrderedCommRing 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂ᶜ_
+  𝕂IsOrderedCommRing .IsOrderedCommRing.isCommRing = 𝕂CommRing .snd .CommRingStr.isCommRing
+  𝕂IsOrderedCommRing .IsOrderedCommRing.isPseudolattice = 𝕂≤Pseudolattice .snd .PseudolatticeStr.is-pseudolattice
+  𝕂IsOrderedCommRing .IsOrderedCommRing.isStrictOrder =
+    isstrictorder isSet𝕂
+      (λ a b → isProp<𝕂 {a = a} {b = b})
+      (λ a a<a → <𝕂-arefl {a = a} {b = a} a<a refl)
+      <𝕂-trans
+      <𝕂-asym
+      <𝕂-weaklyLinear
+  𝕂IsOrderedCommRing .IsOrderedCommRing.<-≤-weaken = λ a b a<b → lift (<𝕂→≤𝕂 {a = a} {b = b} a<b)
+  𝕂IsOrderedCommRing .IsOrderedCommRing.≤≃¬> = ≤𝕂≃¬>𝕂
+  𝕂IsOrderedCommRing .IsOrderedCommRing.+MonoR≤ = λ a b c a≤b → lift (+𝕂-rPres≤ a b c (lower a≤b))
+  𝕂IsOrderedCommRing .IsOrderedCommRing.+MonoR< = +𝕂-rPres<
+  𝕂IsOrderedCommRing .IsOrderedCommRing.posSum→pos∨pos = +𝕂-posSum
+  𝕂IsOrderedCommRing .IsOrderedCommRing.<-≤-trans = <𝕂≤𝕂-trans
+  𝕂IsOrderedCommRing .IsOrderedCommRing.≤-<-trans = ≤𝕂<𝕂-trans
+  𝕂IsOrderedCommRing .IsOrderedCommRing.·MonoR≤ = ·𝕂-rMono≤
+  𝕂IsOrderedCommRing .IsOrderedCommRing.·MonoR< = ·𝕂-rMono<
+  𝕂IsOrderedCommRing .IsOrderedCommRing.0<1 = 1>𝕂0
+
+  𝕂OrderedCommRing : OrderedCommRing (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  𝕂OrderedCommRing .fst = 𝕂
+  𝕂OrderedCommRing .snd =
+    orderedcommringstr 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂ᶜ_ 𝕂IsOrderedCommRing
+
+  trichotomy𝕂ᶜ : (a b : 𝕂) → StrictBase.Trichotomy 𝕂OrderedCommRing a b
+  trichotomy𝕂ᶜ a b with trichotomy𝕂 a b
+  ... | lt a<b = StrictBase.lt a<b
+  ... | eq a≡b = StrictBase.eq a≡b
+  ... | gt a>b = StrictBase.gt a>b
+
+  𝕂StrictlyOrderedCommRing : StrictlyOrderedCommRing (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  𝕂StrictlyOrderedCommRing = 𝕂OrderedCommRing , strictorderstr trichotomy𝕂ᶜ
 
 
   -- The ordering given by general theory of oredered ring is same as the one used here before
 
-  open OrderedRingStr 𝕂OrderedRing using ()
+  open StrictlyOrderedCommRingStr 𝕂StrictlyOrderedCommRing using ()
     renaming (_<_ to _<𝕂'_ ; _>_ to _>𝕂'_ ; _≤_ to _≤𝕂'_ ; _≥_ to _≥𝕂'_)
 
   <𝕂→<𝕂' : (a b : 𝕂) → a <𝕂 b → a <𝕂' b
@@ -449,4 +630,4 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   IsField𝕂 = isfield (CommRingStr.isCommRing (𝕂CommRing .snd)) ·𝕂InvR 𝟘≢𝟙
 
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂OrderedField = 𝕂OrderedRing , IsField𝕂
+  𝕂OrderedField = 𝕂StrictlyOrderedCommRing , IsField𝕂

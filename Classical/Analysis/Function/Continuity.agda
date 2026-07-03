@@ -24,7 +24,9 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.OrderedRing.AbsoluteValue
+open import Classical.Algebra.StrictlyOrderedCommRing
+  using (StrictlyOrderedCommRing→CommRing)
+open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
@@ -146,7 +148,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   findZero f f0<0 f1>0 = x₀ , x₀∈𝐈 , fx₀≡0
     where
 
-    open Helpers  (ℝCompleteOrderedField .fst .fst .fst)
+    open Helpers  (StrictlyOrderedCommRing→CommRing (ℝCompleteOrderedField .fst .fst))
 
     open Extremum (ℝCompleteOrderedField .fst)
     open Supremum
