@@ -2,19 +2,42 @@
 > From program halts in the tale,
 > towards program only *Übermensch* is able to run.
 
-The aim of `cubical-classics` library is to formalize classical mathematics using cubical type theory.
-Though still a baby project at present, I hope someday it will have some important ideas of modern mathematics eventually.
+The `cubical-classics` is an experimental Agda library for formalizing classical mathematics in cubical type theory.
+I hope someday it will have some important ideas of modern mathematics eventually.
 
-We are open to advices and contributions!
+We are open to advice and contributions!
 
-### Dependency
-- [The Cubical Agda standard library](https://github.com/agda/cubical), keeping up with the newest (maybe not publicly released yet) version.
+## Dependencies
 
-## Content
-A glimpse of things that have been formalized:
-- Results concerning classical axioms, especially Diaconescu's theorem;
-- Classical impredicative powerset, setting up a structural set theory;
-- Topological spaces, compactness, Hausdorff axiom and metric spaces;
-- Construction of classical Dedekind real, and it is a complete Archimedean ordered field;
-- Basic theorems of real number including monotone convergence theorem, Heine-Borel theorem, Bolzano-Weierstrass theorem and the convergence of Cauchy sequences;
-- Intermediate value theorem of continuous real functions.
+This project tracks the current development version of
+[the Cubical Agda library](https://github.com/agda/cubical), not the latest
+tagged release.
+
+Known working setup:
+
+- Agda 2.8.0
+- Cubical Agda library `master`, tested at commit `9216603`
+
+Older Cubical releases, including the `v0.9` checkout, are not expected to
+work. In particular, this repository uses the newer `Cubical.Data.Int`,
+`Cubical.Data.Rationals`, and `Lift` APIs.
+
+## Contents
+
+The library currently includes:
+
+- classical principles such as excluded middle, Diaconescu's theorem, choice principles,
+  and propositional resizing;
+- basic material on logic, natural numbers, decidability, propositional
+  truncation, integers, and rationals;
+- ordered rings and ordered fields, including ordered morphisms,
+  Archimedean structures, and the canonical embeddings of `ℤ` and `ℚ`;
+- impredicative powersets, with membership, Boolean operations, finiteness,
+  and finite big operations;
+- topological spaces, neighbourhoods, Hausdorff spaces, compactness, and
+  metric spaces;
+- Dedekind cuts and the construction of the real numbers as a complete
+  Archimedean ordered field;
+- elementary real analysis, including sequences, Cauchy convergence,
+  monotone convergence, Bolzano-Weierstrass, Heine-Borel, and the
+  intermediate value theorem.

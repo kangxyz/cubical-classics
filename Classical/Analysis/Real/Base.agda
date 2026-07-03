@@ -12,7 +12,7 @@ open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Algebra.Ring
 
 open import Classical.Axioms
-open import Classical.Algebra.OrderedField.Instances.QuoQ
+open import Classical.Algebra.OrderedField.Instances.Rationals
 open import Classical.Algebra.OrderedRing
 open import Classical.Algebra.OrderedRing.Morphism
 open import Classical.Algebra.OrderedField

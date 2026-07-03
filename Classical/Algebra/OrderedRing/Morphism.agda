@@ -28,7 +28,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
 open import Cubical.Algebra.CommRing.Instances.Int
-open import Classical.Algebra.OrderedRing.Instances.QuoInt
+open import Classical.Algebra.OrderedRing.Instances.Int
   using    (ℤOrderedRing)
   renaming (_>0 to _>ℤ0)
 open import Classical.Algebra.OrderedRing

@@ -1,4 +1,4 @@
 name: classics-0.1
 include: .
 depend: cubical
-flags: --cubical --no-import-sorts
+flags: --safe --cubical --no-import-sorts --guardedness -WnoUnsupportedIndexedMatch

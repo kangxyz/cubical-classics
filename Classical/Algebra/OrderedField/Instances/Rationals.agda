@@ -4,15 +4,15 @@ Rational Numbers
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedField.Instances.QuoQ where
+module Classical.Algebra.OrderedField.Instances.Rationals where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ)
 open import Cubical.Data.Rationals using (ℚ)
 
-open import Classical.Preliminary.QuoQ.Field using (isFieldℚ)
-open import Classical.Preliminary.QuoQ.Order using (ℚOrderedRing)
-open import Classical.Preliminary.QuoQ.Archimedes using (isArchimedeanℚ) public
+open import Classical.Preliminary.Rationals.Field using (isFieldℚ)
+open import Classical.Preliminary.Rationals.Order using (ℚOrderedRing)
+open import Classical.Preliminary.Rationals.Archimedes using (isArchimedeanℚ) public
 open import Classical.Algebra.OrderedRing.Archimedes
 open import Classical.Algebra.OrderedField
 

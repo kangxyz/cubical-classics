@@ -4,7 +4,7 @@ Ordering of Rational Numbers
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Preliminary.QuoQ.Order where
+module Classical.Preliminary.Rationals.Order where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
@@ -37,7 +37,7 @@ open import Cubical.Algebra.CommRing.Instances.Rationals
   using    (ℚCommRing)
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.OrderedRing.Instances.QuoInt
+open import Classical.Algebra.OrderedRing.Instances.Int
   using    (ℤOrderedRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
 open import Classical.Algebra.OrderedRing
 

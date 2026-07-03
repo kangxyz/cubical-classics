@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Preliminary.QuoQ.Field where
+module Classical.Preliminary.Rationals.Field where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing

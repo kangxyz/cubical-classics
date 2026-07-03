@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Preliminary.QuoQ.Archimedes where
+module Classical.Preliminary.Rationals.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
@@ -42,10 +42,10 @@ open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.OrderedRing.Instances.QuoInt
+open import Classical.Algebra.OrderedRing.Instances.Int
   using    (ℤOrderedRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
   renaming (archimedes' to archimedesℤ)
-open import Classical.Preliminary.QuoQ.Order
+open import Classical.Preliminary.Rationals.Order
   using    (ℚOrderedRing ; _>0)
 open import Classical.Preliminary.Nat
 open import Classical.Algebra.OrderedRing

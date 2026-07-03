@@ -4,7 +4,7 @@ Facts about Integers
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedRing.Instances.QuoInt where
+module Classical.Algebra.OrderedRing.Instances.Int where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing

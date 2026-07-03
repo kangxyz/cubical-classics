@@ -341,12 +341,12 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
     using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
     renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_)
 
-  open import Classical.Algebra.OrderedRing.Instances.QuoInt
+  open import Classical.Algebra.OrderedRing.Instances.Int
     using    (ℤOrderedRing)
   open import Classical.Algebra.OrderedRing.Morphism
 
   open import Cubical.Algebra.CommRing.Instances.Rationals
-  open import Classical.Algebra.OrderedField.Instances.QuoQ
+  open import Classical.Algebra.OrderedField.Instances.Rationals
 
 
   open OrderStrOnCommRing
