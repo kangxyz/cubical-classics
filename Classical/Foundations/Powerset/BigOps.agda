@@ -94,24 +94,33 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 
   union∪-left⊆ : {S T : ℙ (ℙ X)} → union S ⊆ union (S ∪ T)
-  union∪-left⊆ {S = S} {T = T} = subst (union S ⊆_) (sym union∪) (∪-left⊆ (union S) (union T))
+  union∪-left⊆ {S = S} {T = T} x∈∪S = ∃→∈union do
+    (A , x∈A , A∈S) ← ∈union→∃ x∈∪S
+    return (A , x∈A , ∪-left∈ S T A∈S)
 
   union∪-right⊆ : {S T : ℙ (ℙ X)} → union T ⊆ union (S ∪ T)
-  union∪-right⊆ {S = S} {T = T} = subst (union T ⊆_) (sym union∪) (∪-right⊆ (union S) (union T))
+  union∪-right⊆ {S = S} {T = T} x∈∪T = ∃→∈union do
+    (A , x∈A , A∈T) ← ∈union→∃ x∈∪T
+    return (A , x∈A , ∪-right∈ S T A∈T)
 
+
+  union[A]⊆A : {A : ℙ X} → union [ A ] ⊆ A
+  union[A]⊆A {A = A} {x = x} x∈∪[A] =
+    proof _ , isProp∈ A by do
+    (B , x∈B , B∈[A]) ← ∈union→∃ x∈∪[A]
+    A≡B ← y∈[x]→∥x≡y∥ B∈[A]
+    return (subst (x ∈_) (sym A≡B) x∈B)
+
+  A⊆union[A] : {A : ℙ X} → A ⊆ union [ A ]
+  A⊆union[A] {A = A} x∈A = ∃→∈union ∣ A , x∈A , x∈[x] ∣₁
 
   union[A] : {A : ℙ X} → union [ A ] ≡ A
-  union[A] {A = A} = bi⊆→≡ ∪[A]⊆A A⊆∪[A]
-    where
-    ∪[A]⊆A : union [ A ] ⊆ A
-    ∪[A]⊆A {x = x} x∈∪[A] =
-      proof _ , isProp∈ A by do
-      (B , x∈B , B∈[A]) ← ∈union→∃ x∈∪[A]
-      A≡B ← y∈[x]→∥x≡y∥ B∈[A]
-      return (subst (x ∈_) (sym A≡B) x∈B)
+  union[A] = bi⊆→≡ union[A]⊆A A⊆union[A]
 
-    A⊆∪[A] : A ⊆ union [ A ]
-    A⊆∪[A] x∈A = ∃→∈union ∣ A , x∈A , x∈[x] ∣₁
+  ∈union∪[A] : {S : ℙ (ℙ X)}{A : ℙ X}{x : X}
+    → (x ∈ union S) ⊎ (x ∈ A) → x ∈ union (S ∪ [ A ])
+  ∈union∪[A] (inl x∈∪S) = union∪-left⊆ x∈∪S
+  ∈union∪[A] (inr x∈A) = union∪-right⊆ (A⊆union[A] x∈A)
 
   union∪[A] : {S : ℙ (ℙ X)}{A : ℙ X} → union (S ∪ [ A ]) ≡ (union S) ∪ A
   union∪[A] {S = S} {A = A} = union∪ ∙ (λ i → (union S) ∪ union[A] {A = A} i)

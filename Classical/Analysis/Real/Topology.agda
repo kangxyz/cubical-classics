@@ -166,7 +166,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
               (λ {x} x∈[a,a] →
                 let a≡x : a ≡ x
                     a≡x = x∈[a,b] refl x∈[a,a]
-                in  subst (x ∈_) (sym union[A]) (subst (_∈ U) a≡x a∈U)) ,
+                in  A⊆union[A] (subst (_∈ U) a≡x a∈U)) ,
               A∈S→[A]⊆S (𝒰cov𝐈 .snd U∈𝒰))
 
         x₀ = cov-sup .sup
@@ -202,19 +202,15 @@ module _ ⦃ 🤖 : Oracle ⦄ where
             fin𝒰₀+U : isFinSub 𝒰₀+U
             fin𝒰₀+U = isfinsuc fin𝒰₀ U
 
-            ∪-helper : {x : ℝ} → (x ∈ union 𝒰₀) ⊎ (x ∈ U) → x ∈ union 𝒰₀+U
-            ∪-helper (inl x∈∪𝒰₀) = union∪-left⊆ x∈∪𝒰₀
-            ∪-helper {x = x} (inr x∈[U]) = union∪-right⊆ (subst (x ∈_) (sym union[A]) x∈[U])
-
             covSup : 𝒰₀+U covers [ a , x₀ ]
             covSup .fst {x = x} x∈[a,x₀] = case-split (<≤-total y x)
               where
               case-split : _ → _
-              case-split (inl x>y) = ∪-helper (inr (ℬx₀r⊆U x∈ℬx₀r))
+              case-split (inl x>y) = ∈union∪[A] (inr (ℬx₀r⊆U x∈ℬx₀r))
                 where
                 x∈ℬx₀r : x ∈ ℬ x₀ r
                 x∈ℬx₀r = Inhab→∈ℬ (absInBetween<≤ r>0 (<-trans x₀-r<y x>y) (∈→Inhab𝐈-R x∈[a,x₀]))
-              case-split (inr x≤y) = ∪-helper (inl (cov .fst x∈[a,y]))
+              case-split (inr x≤y) = ∈union∪[A] (inl (cov .fst x∈[a,y]))
                 where
                 x∈[a,y] : x ∈ [ a , y ]
                 x∈[a,y] = Inhab→∈𝐈 (∈→Inhab𝐈-L x∈[a,x₀]) x≤y
@@ -243,12 +239,12 @@ module _ ⦃ 🤖 : Oracle ⦄ where
               covMore .fst {x = x} x∈[a,x₀+ε] = case-split (<≤-total y x)
                 where
                 case-split : _ → _
-                case-split (inl x>y) = ∪-helper (inr (ℬx₀r⊆U x∈ℬx₀r))
+                case-split (inl x>y) = ∈union∪[A] (inr (ℬx₀r⊆U x∈ℬx₀r))
                   where
                   x∈ℬx₀r : x ∈ ℬ x₀ r
                   x∈ℬx₀r = Inhab→∈ℬ (absInOpenInterval r>0 (<-trans x₀-r<y x>y)
                     (≤<-trans (∈→Inhab𝐈-R x∈[a,x₀+ε]) (+-lPres< ε<r)))
-                case-split (inr x≤y) = ∪-helper (inl (cov .fst x∈[a,y]))
+                case-split (inr x≤y) = ∈union∪[A] (inl (cov .fst x∈[a,y]))
                   where
                   x∈[a,y] : x ∈ [ a , y ]
                   x∈[a,y] = Inhab→∈𝐈 (∈→Inhab𝐈-L x∈[a,x₀+ε]) x≤y

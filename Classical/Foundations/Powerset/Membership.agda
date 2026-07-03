@@ -20,6 +20,8 @@ open import Cubical.Relation.Nullary
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset.Base
+open import Solvers.Bool
+  using (v0; v1; ⊥ᵖ; _≡ᵖ_; _≡ᵖtrue; _≡ᵖfalse; _→ᵖ_; solveᵖ₁; solveᵖ₂)
 
 private
   variable
@@ -69,14 +71,12 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     ∉→¬∈ x∉A x∈A = explode∈ {A = A} x∈A x∉A
 
     ¬∈→∉ : ¬ x ∈ A → x ∉ A
-    ¬∈→∉ ¬x∈A with dichotomy∈ x A
-    ... | yeah x∈A = Empty.rec (¬x∈A x∈A)
-    ... | nope x∉A = x∉A
+    ¬∈→∉ =
+      solveᵖ₁ (((v0 ≡ᵖtrue) →ᵖ ⊥ᵖ) →ᵖ (v0 ≡ᵖfalse)) (A x)
 
     ¬∉→∈ : ¬ x ∉ A → x ∈ A
-    ¬∉→∈ ¬x∉A with dichotomy∈ x A
-    ... | yeah x∈A = x∈A
-    ... | nope x∉A = Empty.rec (¬x∉A x∉A)
+    ¬∉→∈ =
+      solveᵖ₁ (((v0 ≡ᵖfalse) →ᵖ ⊥ᵖ) →ᵖ (v0 ≡ᵖtrue)) (A x)
 
     ¬¬∈→∈ : ¬ ¬ x ∈ A → x ∈ A
     ¬¬∈→∈ p = ¬∉→∈ (¬map ∉→¬∈ p)
@@ -104,11 +104,12 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   ⊆-refl p = p
 
   bi⊆→≡ : {A B : ℙ X} → A ⊆ B → B ⊆ A → A ≡ B
-  bi⊆→≡ {A = A} {B = B} A⊆B B⊆A i x with dichotomy∈ x A
-  ... | yeah p = (p ∙ sym (A⊆B p)) i
-  ... | nope p with dichotomy∈ x B
-  ...   | yeah q = Empty.rec {A = A ≡ B} (true≢false (sym (B⊆A q) ∙ p)) i x
-  ...   | nope q = (p ∙ sym q) i
+  bi⊆→≡ {A = A} {B = B} A⊆B B⊆A i x =
+    solveᵖ₂
+      (((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue)) →ᵖ
+       ((v1 ≡ᵖtrue) →ᵖ (v0 ≡ᵖtrue)) →ᵖ
+       (v0 ≡ᵖ v1))
+      (A x) (B x) A⊆B B⊆A i
 
 
   ∀∈+¬∈→⊆ : {A B : ℙ X} → ((x : X) → ∥ (x ∈ B) ⊎ (¬ x ∈ A) ∥₁) → A ⊆ B

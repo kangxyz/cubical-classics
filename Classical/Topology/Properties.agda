@@ -108,16 +108,12 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       𝒰+∁A : ℙ ℙ X
       𝒰+∁A = 𝒰 ∪ [ ∁ A ]
 
-      ∪-helper : {x : X} → (x ∈ union 𝒰) ⊎ (x ∈ ∁ A) → x ∈ union 𝒰+∁A
-      ∪-helper (inl x∈∪𝒰) = union∪-left⊆ x∈∪𝒰
-      ∪-helper {x = x} (inr x∈[∁A]) = union∪-right⊆ (subst (x ∈_) (sym union[A]) x∈[∁A])
-
       𝒰+∁A-covK : 𝒰+∁A covers K
       𝒰+∁A-covK .fst {x = x} x∈K = case-split (∈A+∈∁A A)
         where
         case-split : (x ∈ A) ⊎ (x ∈ ∁ A) → _
-        case-split (inl x∈A) = ∪-helper (inl (𝒰covA .fst x∈A))
-        case-split (inr x∈∁A) = ∪-helper (inr x∈∁A)
+        case-split (inl x∈A) = ∈union∪[A] (inl (𝒰covA .fst x∈A))
+        case-split (inr x∈∁A) = ∈union∪[A] (inr x∈∁A)
       𝒰+∁A-covK .snd = ⊆→⊆∪ {C = Open} (𝒰covA .snd) (A∈S→[A]⊆S {S = Open} ∁A∈Open)
 
       a∈U+U∈𝒰+∁A→U∈𝒰 : {x : X}{U : ℙ X} → x ∈ A → x ∈ U → U ∈ 𝒰+∁A → U ∈ 𝒰

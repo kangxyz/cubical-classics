@@ -48,13 +48,15 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   x∈total = refl
 
   ∅⊆A : {A : ℙ X} → ∅ ⊆ A
-  ∅⊆A x∈∅ = Empty.rec (false≢true x∈∅)
+  ∅⊆A {A = A} {x = x} =
+    solveᵖ₁ ((falseᵇ ≡ᵖtrue) →ᵖ (v0 ≡ᵖtrue)) (A x)
 
   A⊆total : {A : ℙ X} → A ⊆ total
   A⊆total _ = refl
 
   A⊆∅ : {A : ℙ X} → ((x : X) → x ∉ A) → A ⊆ ∅
-  A⊆∅ p x∈A = Empty.rec (true≢false (sym x∈A ∙ p _))
+  A⊆∅ {A = A} p {x = x} =
+    solveᵖ₁ ((v0 ≡ᵖfalse) →ᵖ (v0 ≡ᵖtrue) →ᵖ (falseᵇ ≡ᵖtrue)) (A x) (p x)
 
   total⊆A : {A : ℙ X} → ((x : X) → x ∈ A) → total ⊆ A
   total⊆A p _ = p _

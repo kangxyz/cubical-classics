@@ -115,11 +115,13 @@ solve₄ : (e f : Expr 4)
 solve₄ e f {witness} w x y z = solve {n = 4} e f {witness} (w ∷ x ∷ y ∷ z ∷ [])
 
 data Claim (n : ℕ) : Type where
+  ⊥ᵖ : Claim n
   _≡ᵖ_ : Expr n → Expr n → Claim n
   _≡ᵖtrue _≡ᵖfalse : Expr n → Claim n
   _∧ᵖ_ _∨ᵖ_ _→ᵖ_ : Claim n → Claim n → Claim n
 
 interp : FinVec Bool n → Claim n → Type
+interp Γ ⊥ᵖ = ⊥
 interp Γ (e ≡ᵖ f) = eval Γ e ≡ eval Γ f
 interp Γ (e ≡ᵖtrue) = eval Γ e ≡ true
 interp Γ (e ≡ᵖfalse) = eval Γ e ≡ false
@@ -128,6 +130,7 @@ interp Γ (P ∨ᵖ Q) = interp Γ P ⊎ interp Γ Q
 interp Γ (P →ᵖ Q) = interp Γ P → interp Γ Q
 
 truth : FinVec Bool n → Claim n → Bool
+truth Γ ⊥ᵖ = false
 truth Γ (e ≡ᵖ f) = eval Γ e ≟ᵇ eval Γ f
 truth Γ (e ≡ᵖtrue) = eval Γ e
 truth Γ (e ≡ᵖfalse) = not (eval Γ e)
@@ -143,6 +146,7 @@ abstract
     → interp Γ P
     → Bool→Type (truth Γ P)
 
+  Sound Γ ⊥ᵖ ()
   Sound Γ (e ≡ᵖ f) t = ≟ᵇ→≡ (eval Γ e) (eval Γ f) t
   Sound Γ (e ≡ᵖtrue) t = Bool→Type→≡true (eval Γ e) t
   Sound Γ (e ≡ᵖfalse) t = Bool→Type→≡false (eval Γ e) t
@@ -158,6 +162,7 @@ abstract
   ... | true  | false | pᶜ | qˢ = Empty.rec t
   ... | true  | true  | pᶜ | qˢ = qˢ tt
 
+  Complete Γ ⊥ᵖ p = p
   Complete Γ (e ≡ᵖ f) p = ≡→≟ᵇ (eval Γ e) (eval Γ f) p
   Complete Γ (e ≡ᵖtrue) p = ≡true→Bool→Type (eval Γ e) p
   Complete Γ (e ≡ᵖfalse) p = ≡false→Bool→Type (eval Γ e) p

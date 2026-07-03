@@ -158,7 +158,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     Sep→∈∘∁ : {x : X} {A : ℙ X} → Sep x A → x ∈∘ (∁ A)
     Sep→∈∘∁ {A = A} h = do
       (U , U∈ℕx , A∩U≡∅) ← h
-      return (U , U∈ℕx , A∩B=∅→A⊆∁B {A = U} (∩-Comm U A ∙ A∩U≡∅))
+      return (U , U∈ℕx , A∩B=∅→B⊆∁A {A = A} {B = U} A∩U≡∅)
 
 
     -- It reads as "there merely exists neighbourhood of x and A respectively that don't intersect with each other",
