@@ -18,99 +18,18 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Classical.Axioms
 open import Classical.Foundations.Powerset.Base
 open import Classical.Foundations.Powerset.Membership
+open import Solvers.Bool
+  using (v0; v1; v2; v3; trueᵇ; falseᵇ; ¬ᵇ_; _∧ᵇ_; _∨ᵇ_;
+         _≡ᵖ_; _≡ᵖtrue; _≡ᵖfalse; _∨ᵖ_; _→ᵖ_;
+         solveᵖ₁; solveᵖ₂; solveᵖ₃; solveᵖ₄)
+open import Solvers.Powerset
+  using (p0; p1; p2; p3; ∅ᵖ; totalᵖ; ∁ᵖ_; _∪ᵖ_; _∩ᵖ_;
+         solveℙ₁; solveℙ₂; solveℙ₃; solveℙ₄)
 
 private
   variable
     ℓ ℓ' : Level
     X : Type ℓ
-
-  or-and-absorp : ∀ x y → x or (x and y) ≡ x
-  or-and-absorp true  true  = refl
-  or-and-absorp true  false = refl
-  or-and-absorp false true  = refl
-  or-and-absorp false false = refl
-
-  and-or-absorp : ∀ x y → x and (x or y) ≡ x
-  and-or-absorp true  true  = refl
-  and-or-absorp true  false = refl
-  and-or-absorp false true  = refl
-  and-or-absorp false false = refl
-
-  or-and-dist : ∀ x y z → x or (y and z) ≡ (x or y) and (x or z)
-  or-and-dist true  true  true  = refl
-  or-and-dist true  true  false = refl
-  or-and-dist true  false true  = refl
-  or-and-dist true  false false = refl
-  or-and-dist false true  true  = refl
-  or-and-dist false true  false = refl
-  or-and-dist false false true  = refl
-  or-and-dist false false false = refl
-
-  and-or-dist : ∀ x y z → x and (y or z) ≡ (x and y) or (x and z)
-  and-or-dist true  true  true  = refl
-  and-or-dist true  true  false = refl
-  and-or-dist true  false true  = refl
-  and-or-dist true  false false = refl
-  and-or-dist false true  true  = refl
-  and-or-dist false true  false = refl
-  and-or-dist false false true  = refl
-  and-or-dist false false false = refl
-
-  or-compt : ∀ x → x or (not x) ≡ true
-  or-compt true  = refl
-  or-compt false = refl
-
-  and-compt : ∀ x → x and (not x) ≡ false
-  and-compt true  = refl
-  and-compt false = refl
-
-  or-and-deMorgan : ∀ x y → (not x) or (not y) ≡ not (x and y)
-  or-and-deMorgan true  true  = refl
-  or-and-deMorgan true  false = refl
-  or-and-deMorgan false true  = refl
-  or-and-deMorgan false false = refl
-
-  and-or-deMorgan : ∀ x y → (not x) and (not y) ≡ not (x or y)
-  and-or-deMorgan true  true  = refl
-  and-or-deMorgan true  false = refl
-  and-or-deMorgan false true  = refl
-  and-or-deMorgan false false = refl
-
-  and-cancelˡ : ∀ x y → x and y ≡ true → x ≡ true
-  and-cancelˡ true  true  _ = refl
-  and-cancelˡ true  false _ = refl
-  and-cancelˡ false true  p = Empty.rec (false≢true p)
-  and-cancelˡ false false p = Empty.rec (false≢true p)
-
-  and-cancelʳ : ∀ x y → x and y ≡ true → y ≡ true
-  and-cancelʳ true  true  _ = refl
-  and-cancelʳ true  false p = Empty.rec (false≢true p)
-  and-cancelʳ false true  _ = refl
-  and-cancelʳ false false p = Empty.rec (false≢true p)
-
-  and-forceˡ : ∀ x y → x and y ≡ false → x ≡ true → y ≡ false
-  and-forceˡ true  true  p _ = Empty.rec (true≢false p)
-  and-forceˡ true  false _ _ = refl
-  and-forceˡ false true  _ q = Empty.rec (false≢true q)
-  and-forceˡ false false _ _ = refl
-
-  and-absorpˡ : ∀ x y → x ≡ false → x and y ≡ false
-  and-absorpˡ true  true  p = Empty.rec (true≢false p)
-  and-absorpˡ true  false _ = refl
-  and-absorpˡ false true  _ = refl
-  and-absorpˡ false false _ = refl
-
-  or-dichotomy : ∀ x y → x or y ≡ true → (x ≡ true) ⊎ (y ≡ true)
-  or-dichotomy true _ _ = inl refl
-  or-dichotomy false true _ = inr refl
-  or-dichotomy false false p = Empty.rec (false≢true p)
-
-  or≡true : ∀ x y → (x ≡ true) ⊎ (y ≡ true) → x or y ≡ true
-  or≡true true  true  _ = refl
-  or≡true true  false _ = refl
-  or≡true false true  _ = refl
-  or≡true false false (inl p) = Empty.rec (false≢true p)
-  or≡true false false (inr p) = Empty.rec (false≢true p)
 
 
 module _ ⦃ 🤖 : Oracle ⦄ where
@@ -160,13 +79,19 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   -}
 
   ∁-Unip : (A : ℙ X) → ∁ ∁ A ≡ A
-  ∁-Unip A i x = notnot (A x) i
+  ∁-Unip = solveℙ₁ (∁ᵖ (∁ᵖ p0)) p0
 
   ∉→∈∁ : {x : X}{A : ℙ X} → x ∉ A → x ∈ (∁ A)
-  ∉→∈∁ x∉A i = not (x∉A i)
+  ∉→∈∁ {x = x} {A = A} =
+    solveᵖ₁ ((v0 ≡ᵖfalse) →ᵖ ((¬ᵇ v0) ≡ᵖtrue)) (A x)
 
   ∈∁→∉ : {x : X}{A : ℙ X} → x ∈ (∁ A) → x ∉ A
-  ∈∁→∉ x∈∁A = sym (notnot _) ∙ cong not x∈∁A
+  ∈∁→∉ {x = x} {A = A} =
+    solveᵖ₁ (((¬ᵇ v0) ≡ᵖtrue) →ᵖ (v0 ≡ᵖfalse)) (A x)
+
+  ∈A+∈∁A : {x : X}(A : ℙ X) → (x ∈ A) ⊎ (x ∈ ∁ A)
+  ∈A+∈∁A {x = x} A =
+    solveᵖ₁ ((v0 ≡ᵖtrue) ∨ᵖ ((¬ᵇ v0) ≡ᵖtrue)) (A x)
 
 
   {-
@@ -176,31 +101,33 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   -}
 
   ∪-lZero : (A : ℙ X) → total ∪ A ≡ total
-  ∪-lZero A i x = or-zeroˡ (A x) i
+  ∪-lZero = solveℙ₁ (totalᵖ ∪ᵖ p0) totalᵖ
 
   ∪-rZero : (A : ℙ X) → A ∪ total ≡ total
-  ∪-rZero A i x = or-zeroʳ (A x) i
+  ∪-rZero = solveℙ₁ (p0 ∪ᵖ totalᵖ) totalᵖ
 
   ∪-lUnit : (A : ℙ X) → ∅ ∪ A ≡ A
-  ∪-lUnit A i x = or-identityˡ (A x) i
+  ∪-lUnit = solveℙ₁ (∅ᵖ ∪ᵖ p0) p0
 
   ∪-rUnit : (A : ℙ X) → A ∪ ∅ ≡ A
-  ∪-rUnit A i x = or-identityʳ (A x) i
+  ∪-rUnit = solveℙ₁ (p0 ∪ᵖ ∅ᵖ) p0
 
   ∪-Comm : (A B : ℙ X) → A ∪ B ≡ B ∪ A
-  ∪-Comm A B i x = or-comm (A x) (B x) i
+  ∪-Comm = solveℙ₂ (p0 ∪ᵖ p1) (p1 ∪ᵖ p0)
 
   ∪-Assoc : (A B C : ℙ X) → A ∪ (B ∪ C) ≡ (A ∪ B) ∪ C
-  ∪-Assoc A B C i x = or-assoc (A x) (B x) (C x) i
+  ∪-Assoc = solveℙ₃ (p0 ∪ᵖ (p1 ∪ᵖ p2)) ((p0 ∪ᵖ p1) ∪ᵖ p2)
 
   ∪-Idem : (A : ℙ X) → A ∪ A ≡ A
-  ∪-Idem A i x = or-idem (A x) i
+  ∪-Idem = solveℙ₁ (p0 ∪ᵖ p0) p0
 
   ∪-left∈ : {x : X}(A B : ℙ X) → x ∈ A → x ∈ (A ∪ B)
-  ∪-left∈ {x = x} _ B x∈A = (λ i → x∈A i or B x) ∙ or-zeroˡ true
+  ∪-left∈ {x = x} A B =
+    solveᵖ₂ ((v0 ≡ᵖtrue) →ᵖ ((v0 ∨ᵇ v1) ≡ᵖtrue)) (A x) (B x)
 
   ∪-right∈ : {x : X}(A B : ℙ X) → x ∈ B → x ∈ (A ∪ B)
-  ∪-right∈ {x = x} A _ x∈B = (λ i → A x or x∈B i) ∙ or-zeroʳ _
+  ∪-right∈ {x = x} A B =
+    solveᵖ₂ ((v1 ≡ᵖtrue) →ᵖ ((v0 ∨ᵇ v1) ≡ᵖtrue)) (A x) (B x)
 
   ∪-left⊆ : (A B : ℙ X) → A ⊆ (A ∪ B)
   ∪-left⊆ A B = ∪-left∈ A B
@@ -209,15 +136,21 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   ∪-right⊆ A B = ∪-right∈ A B
 
   ∈A∪B→∈A+∈B : {x : X}(A B : ℙ X) → x ∈ (A ∪ B) → (x ∈ A) ⊎ (x ∈ B)
-  ∈A∪B→∈A+∈B {x = x} A B x∈A∪B = or-dichotomy (A x) (B x) x∈A∪B
+  ∈A∪B→∈A+∈B {x = x} A B =
+    solveᵖ₂ (((v0 ∨ᵇ v1) ≡ᵖtrue) →ᵖ ((v0 ≡ᵖtrue) ∨ᵖ (v1 ≡ᵖtrue))) (A x) (B x)
 
   ∈A+∈B→∈A∪B : {x : X}(A B : ℙ X) → ∥ (x ∈ A) ⊎ (x ∈ B) ∥₁ → x ∈ (A ∪ B)
-  ∈A+∈B→∈A∪B {x = x} A B = Prop.rec (isProp∈ (A ∪ B)) (λ ∈A+∈B → or≡true (A x) (B x) ∈A+∈B)
+  ∈A+∈B→∈A∪B {x = x} A B =
+    Prop.rec (isProp∈ (A ∪ B))
+      (solveᵖ₂ (((v0 ≡ᵖtrue) ∨ᵖ (v1 ≡ᵖtrue)) →ᵖ ((v0 ∨ᵇ v1) ≡ᵖtrue)) (A x) (B x))
 
   ⊆→⊆∪ : {A B C : ℙ X} → A ⊆ C → B ⊆ C → A ∪ B ⊆ C
-  ⊆→⊆∪ {A = A} {B = B} A⊆C B⊆C x∈A∪B with ∈A∪B→∈A+∈B A B x∈A∪B
-  ... | inl x∈A = A⊆C x∈A
-  ... | inr x∈B = B⊆C x∈B
+  ⊆→⊆∪ {A = A} {B = B} {C = C} A⊆C B⊆C {x = x} =
+    solveᵖ₃
+      (((v0 ≡ᵖtrue) →ᵖ (v2 ≡ᵖtrue)) →ᵖ
+       ((v1 ≡ᵖtrue) →ᵖ (v2 ≡ᵖtrue)) →ᵖ
+       (((v0 ∨ᵇ v1) ≡ᵖtrue) →ᵖ (v2 ≡ᵖtrue)))
+      (A x) (B x) (C x) A⊆C B⊆C
 
 
   {-
@@ -227,49 +160,66 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   -}
 
   ∩-lZero : (A : ℙ X) → ∅ ∩ A ≡ ∅
-  ∩-lZero A i x = and-zeroˡ (A x) i
+  ∩-lZero = solveℙ₁ (∅ᵖ ∩ᵖ p0) ∅ᵖ
 
   ∩-rZero : (A : ℙ X) → A ∩ ∅ ≡ ∅
-  ∩-rZero A i x = and-zeroʳ (A x) i
+  ∩-rZero = solveℙ₁ (p0 ∩ᵖ ∅ᵖ) ∅ᵖ
 
   ∩-lUnit : (A : ℙ X) → total ∩ A ≡ A
-  ∩-lUnit A i x = and-identityˡ (A x) i
+  ∩-lUnit = solveℙ₁ (totalᵖ ∩ᵖ p0) p0
 
   ∩-rUnit : (A : ℙ X) → A ∩ total ≡ A
-  ∩-rUnit A i x = and-identityʳ (A x) i
+  ∩-rUnit = solveℙ₁ (p0 ∩ᵖ totalᵖ) p0
 
   ∩-Comm : (A B : ℙ X) → A ∩ B ≡ B ∩ A
-  ∩-Comm A B i x = and-comm (A x) (B x) i
+  ∩-Comm = solveℙ₂ (p0 ∩ᵖ p1) (p1 ∩ᵖ p0)
 
   ∩-Assoc : (A B C : ℙ X) → A ∩ (B ∩ C) ≡ (A ∩ B) ∩ C
-  ∩-Assoc A B C i x = and-assoc (A x) (B x) (C x) i
+  ∩-Assoc = solveℙ₃ (p0 ∩ᵖ (p1 ∩ᵖ p2)) ((p0 ∩ᵖ p1) ∩ᵖ p2)
 
   ∩-Idem : (A : ℙ X) → A ∩ A ≡ A
-  ∩-Idem A i x = and-idem (A x) i
+  ∩-Idem = solveℙ₁ (p0 ∩ᵖ p0) p0
 
   ∈→∈∩ : {x : X}(A B : ℙ X) → x ∈ A → x ∈ B → x ∈ (A ∩ B)
-  ∈→∈∩ A B x∈A x∈B i = x∈A i and x∈B i
+  ∈→∈∩ {x = x} A B =
+    solveᵖ₂ ((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue) →ᵖ ((v0 ∧ᵇ v1) ≡ᵖtrue)) (A x) (B x)
 
   ⊆→⊆∩ : {C : ℙ X}(A B : ℙ X) → C ⊆ A → C ⊆ B → C ⊆ (A ∩ B)
-  ⊆→⊆∩ A B C⊆A C⊆B x∈C = ∈→∈∩ A B (C⊆A x∈C) (C⊆B x∈C)
+  ⊆→⊆∩ {C = C} A B C⊆A C⊆B {x = x} =
+    solveᵖ₃
+      (((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue)) →ᵖ
+       ((v0 ≡ᵖtrue) →ᵖ (v2 ≡ᵖtrue)) →ᵖ
+       ((v0 ≡ᵖtrue) →ᵖ ((v1 ∧ᵇ v2) ≡ᵖtrue)))
+      (C x) (A x) (B x) C⊆A C⊆B
 
   left∈-∩ : {x : X}(A B : ℙ X) → x ∈ (A ∩ B) → x ∈ A
-  left∈-∩ {x = x} A B x∈A∩B = and-cancelˡ (A x) (B x) x∈A∩B
+  left∈-∩ {x = x} A B =
+    solveᵖ₂ (((v0 ∧ᵇ v1) ≡ᵖtrue) →ᵖ (v0 ≡ᵖtrue)) (A x) (B x)
 
   right∈-∩ : {x : X}(A B : ℙ X) → x ∈ (A ∩ B) → x ∈ B
-  right∈-∩ {x = x} A B x∈A∩B = and-cancelʳ (A x) (B x) x∈A∩B
+  right∈-∩ {x = x} A B =
+    solveᵖ₂ (((v0 ∧ᵇ v1) ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue)) (A x) (B x)
 
   ⊆→∩⊆ : (A B C : ℙ X) → A ⊆ B → (A ∩ C) ⊆ (B ∩ C)
-  ⊆→∩⊆ A B C A⊆B x∈A∩C = ∈→∈∩ B C (A⊆B (left∈-∩ A C x∈A∩C)) (right∈-∩ A C x∈A∩C)
+  ⊆→∩⊆ A B C A⊆B {x = x} =
+    solveᵖ₃
+      (((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue)) →ᵖ
+       (((v0 ∧ᵇ v2) ≡ᵖtrue) →ᵖ ((v1 ∧ᵇ v2) ≡ᵖtrue)))
+      (A x) (B x) (C x) A⊆B
 
   A⊆B+B∩C≡∅→A∩C≡∅ : {A B C : ℙ X} → A ⊆ B → B ∩ C ≡ ∅ → A ∩ C ≡ ∅
-  A⊆B+B∩C≡∅→A∩C≡∅ {A = A} {B = B} {C = C} A⊆B B∩V≡∅ = A⊆∅→A≡∅ (subst ((A ∩ C) ⊆_) B∩V≡∅ (⊆→∩⊆ A B C A⊆B))
+  A⊆B+B∩C≡∅→A∩C≡∅ {A = A} {B = B} {C = C} A⊆B B∩C≡∅ i x =
+    solveᵖ₃
+      (((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue)) →ᵖ
+       ((v1 ∧ᵇ v2) ≡ᵖfalse) →ᵖ
+       ((v0 ∧ᵇ v2) ≡ᵖfalse))
+      (A x) (B x) (C x) A⊆B (λ j → B∩C≡∅ j x) i
 
   A⊆B→A∩B≡A : {A B : ℙ X} → A ⊆ B → A ∩ B ≡ A
-  A⊆B→A∩B≡A {A = A} {B = B} A⊆B = bi⊆→≡ (left∈-∩ A B) A⊆A∩B
-    where
-    A⊆A∩B : A ⊆ A ∩ B
-    A⊆A∩B x∈A = ∈→∈∩ A B x∈A (A⊆B x∈A)
+  A⊆B→A∩B≡A {A = A} {B = B} A⊆B i x =
+    solveᵖ₂
+      (((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖtrue)) →ᵖ ((v0 ∧ᵇ v1) ≡ᵖ v0))
+      (A x) (B x) A⊆B i
 
 
   {-
@@ -281,45 +231,43 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   -- Absorption laws
 
   ∪-∩-Absorp : (A B : ℙ X) → A ∪ (A ∩ B) ≡ A
-  ∪-∩-Absorp A B i x = or-and-absorp (A x) (B x) i
+  ∪-∩-Absorp = solveℙ₂ (p0 ∪ᵖ (p0 ∩ᵖ p1)) p0
 
   ∩-∪-Absorp : (A B : ℙ X) → A ∩ (A ∪ B) ≡ A
-  ∩-∪-Absorp A B i x = and-or-absorp (A x) (B x) i
+  ∩-∪-Absorp = solveℙ₂ (p0 ∩ᵖ (p0 ∪ᵖ p1)) p0
 
 
   -- Distribution laws
 
   ∪-∩-rDist : (A B C : ℙ X) → A ∪ (B ∩ C) ≡ (A ∪ B) ∩ (A ∪ C)
-  ∪-∩-rDist A B C i x = or-and-dist (A x) (B x) (C x) i
+  ∪-∩-rDist = solveℙ₃ (p0 ∪ᵖ (p1 ∩ᵖ p2)) ((p0 ∪ᵖ p1) ∩ᵖ (p0 ∪ᵖ p2))
 
   ∩-∪-rDist : (A B C : ℙ X) → A ∩ (B ∪ C) ≡ (A ∩ B) ∪ (A ∩ C)
-  ∩-∪-rDist A B C i x = and-or-dist (A x) (B x) (C x) i
+  ∩-∪-rDist = solveℙ₃ (p0 ∩ᵖ (p1 ∪ᵖ p2)) ((p0 ∩ᵖ p1) ∪ᵖ (p0 ∩ᵖ p2))
 
   ∪-∩-lDist : (A B C : ℙ X) → (A ∩ B) ∪ C ≡ (A ∪ C) ∩ (B ∪ C)
-  ∪-∩-lDist A B C = ∪-Comm (A ∩ B) C
-    ∙ ∪-∩-rDist C A B ∙ (λ i → ∪-Comm C A i ∩ ∪-Comm C B i)
+  ∪-∩-lDist = solveℙ₃ ((p0 ∩ᵖ p1) ∪ᵖ p2) ((p0 ∪ᵖ p2) ∩ᵖ (p1 ∪ᵖ p2))
 
   ∩-∪-lDist : (A B C : ℙ X) → (A ∪ B) ∩ C ≡ (A ∩ C) ∪ (B ∩ C)
-  ∩-∪-lDist A B C = ∩-Comm (A ∪ B) C
-    ∙ ∩-∪-rDist C A B ∙ (λ i → ∩-Comm C A i ∪ ∩-Comm C B i)
+  ∩-∪-lDist = solveℙ₃ ((p0 ∪ᵖ p1) ∩ᵖ p2) ((p0 ∩ᵖ p2) ∪ᵖ (p1 ∩ᵖ p2))
 
 
   -- Complementation laws
 
   ∪-Compt : (A : ℙ X) → A ∪ (∁ A) ≡ total
-  ∪-Compt A i x = or-compt (A x) i
+  ∪-Compt = solveℙ₁ (p0 ∪ᵖ ∁ᵖ p0) totalᵖ
 
   ∩-Compt : (A : ℙ X) → A ∩ (∁ A) ≡ ∅
-  ∩-Compt A i x = and-compt (A x) i
+  ∩-Compt = solveℙ₁ (p0 ∩ᵖ ∁ᵖ p0) ∅ᵖ
 
 
   -- de Morgan laws
 
   ∪-∩-deMorgan : (A B : ℙ X) → (∁ A) ∪ (∁ B) ≡ ∁ (A ∩ B)
-  ∪-∩-deMorgan A B i x = or-and-deMorgan (A x) (B x) i
+  ∪-∩-deMorgan = solveℙ₂ ((∁ᵖ p0) ∪ᵖ (∁ᵖ p1)) (∁ᵖ (p0 ∩ᵖ p1))
 
   ∩-∪-deMorgan : (A B : ℙ X) → (∁ A) ∩ (∁ B) ≡ ∁ (A ∪ B)
-  ∩-∪-deMorgan A B i x = and-or-deMorgan (A x) (B x) i
+  ∩-∪-deMorgan = solveℙ₂ ((∁ᵖ p0) ∩ᵖ (∁ᵖ p1)) (∁ᵖ (p0 ∪ᵖ p1))
 
 
   {-
@@ -329,28 +277,45 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   -}
 
   →∩∅ : {A B : ℙ X} → ((x : X) → x ∈ A → x ∉ B) → A ∩ B ≡ ∅
-  →∩∅ {A = A} {B = B} p i x with dichotomy∈ x A
-  ... | yeah x∈A = x∈A i and p x x∈A i
-  ... | nope x∉A = and-absorpˡ (A x) (B x) x∉A i
+  →∩∅ {A = A} {B = B} p i x =
+    solveᵖ₂ (((v0 ≡ᵖtrue) →ᵖ (v1 ≡ᵖfalse)) →ᵖ ((v0 ∧ᵇ v1) ≡ᵖfalse))
+      (A x) (B x) (p x) i
 
   →∩∅' : {A B : ℙ X} → ((x : X) → x ∈ A → x ∈ B → ⊥) → A ∩ B ≡ ∅
   →∩∅' {B = B} p = →∩∅ (λ x x∈A → ¬∈→∉ {A = B} (p x x∈A))
 
   A∩B=∅→A⊆∁B : {A B : ℙ X} → A ∩ B ≡ ∅ → A ⊆ (∁ B)
   A∩B=∅→A⊆∁B {A = A} {B = B} A∩B≡∅ {x = x} x∈A =
-    ∉→∈∁ {A = B} (and-forceˡ (A x) (B x) (λ i → A∩B≡∅ i x) x∈A)
+    solveᵖ₂
+      (((v0 ∧ᵇ v1) ≡ᵖfalse) →ᵖ (v0 ≡ᵖtrue) →ᵖ ((¬ᵇ v1) ≡ᵖtrue))
+      (A x) (B x) (λ i → A∩B≡∅ i x) x∈A
 
   A∩B=∅→B⊆∁A : {A B : ℙ X} → A ∩ B ≡ ∅ → B ⊆ (∁ A)
-  A∩B=∅→B⊆∁A {A = A} {B} A∩B≡∅ = A∩B=∅→A⊆∁B {A = B} (∩-Comm B A ∙ A∩B≡∅)
+  A∩B=∅→B⊆∁A {A = A} {B = B} A∩B≡∅ {x = x} x∈B =
+    solveᵖ₂
+      (((v0 ∧ᵇ v1) ≡ᵖfalse) →ᵖ (v1 ≡ᵖtrue) →ᵖ ((¬ᵇ v0) ≡ᵖtrue))
+      (A x) (B x) (λ i → A∩B≡∅ i x) x∈B
 
   A⊆∁B→A∩B=∅ : {A B : ℙ X} → A ⊆ (∁ B) → A ∩ B ≡ ∅
-  A⊆∁B→A∩B=∅ {X = X} {A = A} {B = B} A⊆∁B = →∩∅ helper
-    where
-    helper : (x : X) → x ∈ A → x ∉ B
-    helper x x∈A = ∈∁→∉ {A = B} (A⊆∁B x∈A)
+  A⊆∁B→A∩B=∅ {A = A} {B = B} A⊆∁B i x =
+    solveᵖ₂
+      (((v0 ≡ᵖtrue) →ᵖ ((¬ᵇ v1) ≡ᵖtrue)) →ᵖ ((v0 ∧ᵇ v1) ≡ᵖfalse))
+      (A x) (B x) A⊆∁B i
 
   B⊆∁A→A∩B=∅ : {A B : ℙ X} → B ⊆ (∁ A) → A ∩ B ≡ ∅
-  B⊆∁A→A∩B=∅ {A = A} {B} B⊆∁A = ∩-Comm A B ∙ A⊆∁B→A∩B=∅ B⊆∁A
+  B⊆∁A→A∩B=∅ {A = A} {B = B} B⊆∁A i x =
+    solveᵖ₂
+      (((v1 ≡ᵖtrue) →ᵖ ((¬ᵇ v0) ≡ᵖtrue)) →ᵖ ((v0 ∧ᵇ v1) ≡ᵖfalse))
+      (A x) (B x) B⊆∁A i
+
+  ∪∩-disjoint : {A B C D : ℙ X} → A ∩ C ≡ ∅ → B ∩ D ≡ ∅ → (A ∪ B) ∩ (C ∩ D) ≡ ∅
+  ∪∩-disjoint {A = A} {B = B} {C = C} {D = D} A∩C≡∅ B∩D≡∅ i x =
+    solveᵖ₄
+      (((v0 ∧ᵇ v2) ≡ᵖfalse) →ᵖ
+       ((v1 ∧ᵇ v3) ≡ᵖfalse) →ᵖ
+       (((v0 ∨ᵇ v1) ∧ᵇ (v2 ∧ᵇ v3)) ≡ᵖfalse))
+      (A x) (B x) (C x) (D x)
+      (λ j → A∩C≡∅ j x) (λ j → B∩D≡∅ j x) i
 
 
   {-

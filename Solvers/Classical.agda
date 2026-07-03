@@ -1,7 +1,7 @@
 open import Classical.Axioms
 open import Classical.Axioms.Resizing
-module Solver.Classical (decide : LEM) where
-open import Solver.Formula
+module Solvers.Classical (decide : LEM) where
+open import Solvers.Formula
 open Models
 
 open import Cubical.Foundations.Prelude

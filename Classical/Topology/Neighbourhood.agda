@@ -208,19 +208,9 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       𝕌₀∈Open : 𝕌₀ ∈ Open
       𝕌₀∈Open = union∈Open 𝒰₀⊆Open
 
-      -- TODO : Make a solver to deal with these problems.
-      ∪∅-helper : {A B C D : ℙ X} → A ∩ C ≡ ∅ → B ∩ D ≡ ∅ → (A ∪ B) ∩ (C ∩ D) ≡ ∅
-      ∪∅-helper {A = A} {B = B} {C = C} {D = D} A∩C≡∅ B∩D≡∅ =
-          ∩-∪-lDist A _ _
-        ∙ (λ i → ∩-Assoc A C D i ∪ (B ∩ ∩-Comm C D i))
-        ∙ (λ i → ((A ∩ C) ∩ D) ∪ ∩-Assoc B D C i)
-        ∙ (λ i → (A∩C≡∅ i ∩ D) ∪ (B∩D≡∅ i ∩ C))
-        ∙ (λ i → ∩-lZero D i ∪ ∩-lZero C i)
-        ∙ ∪-Idem _
-
       ind-Sep-helper : (A B : ℙ X) → A ∈ Open → B ∈ Open → ΣSep x A → ΣSep x B → ΣSep x (A ∪ B)
-      ind-Sep-helper A _ _ _ (VA , VA∈Nx , VA∅) (VB , VB∈Nx , VB∅) =
-        VA ∩ VB , ℕbh∩ VA∈Nx VB∈Nx , ∪∅-helper {A = A} VA∅ VB∅
+      ind-Sep-helper A B _ _ (VA , VA∈Nx , VA∅) (VB , VB∈Nx , VB∅) =
+        VA ∩ VB , ℕbh∩ VA∈Nx VB∈Nx , ∪∩-disjoint {A = A} {B = B} {C = VA} {D = VB} VA∅ VB∅
 
       ind-Sep : (A B : ℙ X) → A ∈ Open → B ∈ Open → _
       ind-Sep A B p q = Prop.map2 (ind-Sep-helper A B p q)

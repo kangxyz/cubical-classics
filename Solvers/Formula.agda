@@ -1,5 +1,5 @@
 {-# OPTIONS --safe --lossy-unification #-}
-module Solver.Formula where
+module Solvers.Formula where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels using (isProp×; isPropΠ)

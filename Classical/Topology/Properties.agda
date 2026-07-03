@@ -113,11 +113,11 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       ∪-helper {x = x} (inr x∈[∁A]) = union∪-right⊆ (subst (x ∈_) (sym union[A]) x∈[∁A])
 
       𝒰+∁A-covK : 𝒰+∁A covers K
-      𝒰+∁A-covK .fst {x = x} x∈K = case-split (dichotomy∈ x A)
+      𝒰+∁A-covK .fst {x = x} x∈K = case-split (∈A+∈∁A A)
         where
-        case-split : Dichotomy∈ x A → _
-        case-split (yeah x∈A) = ∪-helper (inl (𝒰covA .fst x∈A))
-        case-split (nope x∉A) = ∪-helper (inr (∉→∈∁ {A = A} x∉A))
+        case-split : (x ∈ A) ⊎ (x ∈ ∁ A) → _
+        case-split (inl x∈A) = ∪-helper (inl (𝒰covA .fst x∈A))
+        case-split (inr x∈∁A) = ∪-helper (inr x∈∁A)
       𝒰+∁A-covK .snd = ⊆→⊆∪ {C = Open} (𝒰covA .snd) (A∈S→[A]⊆S {S = Open} ∁A∈Open)
 
       a∈U+U∈𝒰+∁A→U∈𝒰 : {x : X}{U : ℙ X} → x ∈ A → x ∈ U → U ∈ 𝒰+∁A → U ∈ 𝒰

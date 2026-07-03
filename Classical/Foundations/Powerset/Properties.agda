@@ -47,17 +47,20 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   y∈[x]→∥x≡y∥ {x = x} = ∈→Inhab (λ y → ∥ x ≡ y ∥₁ , squash₁)
 
   A⊆[x]→A≡∅/[x] : {A : ℙ X}{x : X} → A ⊆ [ x ] → (A ≡ ∅) ⊎ (A ≡ [ x ])
-  A⊆[x]→A≡∅/[x] {X = X} {A = A} {x = x} A⊆[x] = case-split (dichotomy∈ x A)
+  A⊆[x]→A≡∅/[x] {X = X} {A = A} {x = x} A⊆[x] = case-split (∈A+∈∁A A)
     where
-    case-split : Dichotomy∈ x A → _
-    case-split (yeah x∈A) = inr (bi⊆→≡ A⊆[x] [x]⊆A)
+    case-split : (x ∈ A) ⊎ (x ∈ ∁ A) → _
+    case-split (inl x∈A) = inr (bi⊆→≡ A⊆[x] [x]⊆A)
       where
       [x]⊆A : [ x ] ⊆ A
       [x]⊆A y∈[x] = proof _ , isProp∈ A by do
         x≡y ← y∈[x]→∥x≡y∥ y∈[x]
         return (subst (_∈ A) x≡y x∈A)
-    case-split (nope x∉A) = inl (A≡∅ (λ y → ¬∈→∉ {A = A} (∀¬x∈A y)))
+    case-split (inr x∈∁A) = inl (A≡∅ (λ y → ¬∈→∉ {A = A} (∀¬x∈A y)))
       where
+      x∉A : x ∉ A
+      x∉A = ∈∁→∉ {A = A} x∈∁A
+
       ∀¬x∈A : (y : X) → ¬ y ∈ A
       ∀¬x∈A y y∈A = proof _ , isProp⊥ by do
         x≡y ← y∈[x]→∥x≡y∥ (A⊆[x] y∈A)
