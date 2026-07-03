@@ -24,7 +24,6 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Logic
 
-open import Classical.Algebra.Field
 open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes

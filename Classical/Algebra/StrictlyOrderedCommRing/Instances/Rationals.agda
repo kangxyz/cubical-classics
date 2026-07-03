@@ -4,7 +4,7 @@ Ordering of rational numbers
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Preliminary.Rationals.Order where
+module Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv

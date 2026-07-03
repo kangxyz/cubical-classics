@@ -10,7 +10,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
 open import Cubical.Data.Sigma
 open import Cubical.Algebra.CommRing
-open import Classical.Algebra.Field
+open import Cubical.Algebra.Field
 open import Classical.Algebra.StrictlyOrderedCommRing
 
 private

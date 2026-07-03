@@ -28,10 +28,11 @@ The library currently includes:
 
 - classical principles such as excluded middle, Diaconescu's theorem, choice principles,
   and propositional resizing;
-- basic material on logic, natural numbers, decidability, propositional
-  truncation, integers, and rationals;
-- ordered rings and ordered fields, including ordered morphisms,
-  Archimedean structures, and the canonical embeddings of `ℤ` and `ℚ`;
+- basic logical and natural-number lemmas used by the later developments;
+- strictly ordered commutative rings built on Cubical's ordered
+  commutative rings, with integer and rational instances;
+- ordered fields, ordered morphisms, Archimedean structures, and the
+  canonical embeddings of `ℤ` and `ℚ`;
 - impredicative powersets, with membership, Boolean operations, finiteness,
   and finite big operations;
 - topological spaces, neighbourhoods, Hausdorff spaces, compactness, and

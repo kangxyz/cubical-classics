@@ -11,18 +11,20 @@ open import Cubical.Data.Nat using (ℕ)
 open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Algebra.Field.Instances.Rationals
   using (ℚField)
+import Cubical.Algebra.Field as CubicalField
 
-open import Classical.Preliminary.Rationals.Order using (ℚStrictlyOrderedCommRing)
-open import Classical.Preliminary.Rationals.Archimedes using (isArchimedeanℚ) public
+open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals
+  using (ℚStrictlyOrderedCommRing)
+open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes
+  using (isArchimedeanℚ) public
 open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Classical.Algebra.OrderedField
-open import Classical.Algebra.Field using (CubicalFieldStr)
 
 
 -- ℚ is totally ordered field
 
 ℚOrderedField : OrderedField ℓ-zero ℓ-zero
-ℚOrderedField = ℚStrictlyOrderedCommRing , CubicalFieldStr.isField (ℚField .snd)
+ℚOrderedField = ℚStrictlyOrderedCommRing , CubicalField.FieldStr.isField (ℚField .snd)
 
 
 -- Inclusion from Natural Numbers

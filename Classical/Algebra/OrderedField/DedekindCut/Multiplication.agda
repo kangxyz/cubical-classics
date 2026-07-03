@@ -16,6 +16,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.HITs.PropositionalTruncation.Monad
 open import Cubical.Relation.Nullary
 open import Cubical.Algebra.CommRing
+open import Cubical.Algebra.Field using (IsField ; isfield)
 open import Cubical.Algebra.OrderedCommRing
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Binary.Order.Poset
@@ -26,7 +27,6 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.Field
 open import Classical.Algebra.StrictlyOrderedCommRing
 import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
 open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes

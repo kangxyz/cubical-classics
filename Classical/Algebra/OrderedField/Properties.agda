@@ -7,6 +7,7 @@ Properties of Ordered Field
 module Classical.Algebra.OrderedField.Properties where
 
 open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.HLevels
 
 open import Cubical.Data.Sum
 open import Cubical.Data.Sigma
@@ -16,10 +17,12 @@ open import Cubical.Data.NatPlusOne
 open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.HITs.PropositionalTruncation.Monad
 open import Cubical.Relation.Nullary
+open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
+open import Cubical.Algebra.Field as CubicalField
+  using (Field→CommRing)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Classical.Algebra.Field
 open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.OrderedField.Base
 
@@ -50,10 +53,18 @@ private
     helper6 : (x : 𝓡 .fst) → x + x ≡ (1r + 1r) · x
     helper6 _ = solve! 𝓡
 
+    field-helper1 : (x y z w : 𝓡 .fst) → (x · y) · (z · w) ≡ (x · z) · (y · w)
+    field-helper1 _ _ _ _ = solve! 𝓡
+
 
 module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
 
-  open FieldStr       (OrderedField→Field 𝒦) public
+  private
+    𝒦ᶠ = OrderedField→Field 𝒦
+
+  open CubicalField.FieldStr (𝒦ᶠ .snd) public
+  open RingTheory  (CommRing→Ring (Field→CommRing 𝒦ᶠ)) public
+  open Units       (Field→CommRing 𝒦ᶠ) public
   open StrictlyOrderedCommRingStr (𝒦 .fst) public
 
   private
@@ -63,6 +74,51 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
       p q x y z : K
 
   open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+
+  inv : ¬ x ≡ 0r → K
+  inv {x = x} x≢0 = x [ x≢0 ]⁻¹
+
+  ·-rInv : (x≢0 : ¬ x ≡ 0r) → x · inv x≢0 ≡ 1r
+  ·-rInv {x = x} x≢0 = ·⁻¹≡1 x x≢0
+
+  ·-lInv : (x≢0 : ¬ x ≡ 0r) → inv x≢0 · x ≡ 1r
+  ·-lInv x≢0 = ·Comm _ _ ∙ ·-rInv x≢0
+
+  inv-≢0 : (x≢0 : ¬ x ≡ 0r) → ¬ inv x≢0 ≡ 0r
+  inv-≢0 {x = x} x≢0 x⁻¹≡0 = x≢0 (sym (·IdR _) ∙ (λ i → x · 1≡0 i) ∙ 0RightAnnihilates _)
+    where
+    1≡0 : 1r ≡ 0r
+    1≡0 = sym (·-rInv _) ∙ (λ i → x · x⁻¹≡0 i) ∙ 0RightAnnihilates _
+
+  invIdem : (x≢0 : ¬ x ≡ 0r) → inv (inv-≢0 x≢0) ≡ x
+  invIdem {x = x} x≢0 = sym (·IdL _)
+    ∙ (λ i → ·-rInv x≢0 (~ i) · inv (inv-≢0 x≢0))
+    ∙ sym (·Assoc _ _ _) ∙ (λ i →  x · ·-rInv (inv-≢0 x≢0) i) ∙ ·IdR _
+
+  invUniq : {x≢0 : ¬ x ≡ 0r}{y≢0 : ¬ y ≡ 0r} → x ≡ y → inv x≢0 ≡ inv y≢0
+  invUniq {x≢0 = x≢0} {y≢0 = y≢0} x≡y i = inv (x≢0≡y≢0 i)
+    where
+    x≢0≡y≢0 : PathP (λ i → ¬ (x≡y i) ≡ 0r) x≢0 y≢0
+    x≢0≡y≢0 = isProp→PathP (λ i → isPropΠ (λ _ → isProp⊥)) x≢0 y≢0
+
+  ·-≢0 : (x≢0 : ¬ x ≡ 0r)(y≢0 : ¬ y ≡ 0r) → ¬ x · y ≡ 0r
+  ·-≢0 {y = y} x≢0 y≢0 xy≡0 = y≢0 y≡0
+    where
+    y≡0 : y ≡ 0r
+    y≡0 = sym (·IdL _)
+      ∙ (λ i → ·-lInv x≢0 (~ i) · y)
+      ∙ sym (·Assoc _ _ _)
+      ∙ (λ i → inv x≢0 · xy≡0 i)
+      ∙ 0RightAnnihilates _
+
+  ·-Inv : (x≢0 : ¬ x ≡ 0r)(y≢0 : ¬ y ≡ 0r) → inv x≢0 · inv y≢0 ≡ inv (·-≢0 x≢0 y≢0)
+  ·-Inv {x = x} {y = y} x≢0 y≢0 = sym (·IdR _)
+    ∙ (λ i → (inv x≢0 · inv y≢0) · ·-rInv (·-≢0 x≢0 y≢0) (~ i))
+    ∙ ·Assoc _ _ _ ∙ (λ i → x⁻¹y⁻¹xy≡1 i · inv (·-≢0 x≢0 y≢0)) ∙ ·IdL _
+    where
+    x⁻¹y⁻¹xy≡1 : (inv x≢0 · inv y≢0) · (x · y) ≡ 1r
+    x⁻¹y⁻¹xy≡1 = field-helper1 (inv x≢0) (inv y≢0) x y
+      ∙ (λ i → ·-lInv x≢0 i · ·-lInv y≢0 i) ∙ ·IdL _
 
 
   {-

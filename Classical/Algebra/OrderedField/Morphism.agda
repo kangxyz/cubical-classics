@@ -25,7 +25,6 @@ open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing.Univalence
 open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.Field
 open import Classical.Algebra.OrderedField
 
 private

@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Preliminary.Rationals.Archimedes where
+module Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
@@ -45,7 +45,7 @@ open import Cubical.Relation.Nullary
 open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
   using    (ℤStrictlyOrderedCommRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
   renaming (archimedes' to archimedesℤ)
-open import Classical.Preliminary.Rationals.Order
+open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals
   using    (ℚStrictlyOrderedCommRing)
 open import Classical.Preliminary.Nat
 open import Classical.Algebra.StrictlyOrderedCommRing
