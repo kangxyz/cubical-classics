@@ -100,7 +100,7 @@ module _ ⦃ 🤖 : Oracle ⦄
         let n = sucmax n₀ n₁
         return (≤<-trans (dist-Δ _ _ _) (transport
           (λ i → dist (p .lim) (seq n) + dist-symm (q .lim) (seq n) i < x/2+x/2≡x ε i)
-          (+-Pres< (abs<₀ _ sucmax>left) (abs<₁ _ sucmax>right))))
+          (+-Pres< (abs<₀ _ (sucmax>left {m = n₀} {n = n₁})) (abs<₁ _ (sucmax>right {m = n₀} {n = n₁})))))
 
 
   {-

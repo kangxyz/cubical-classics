@@ -29,7 +29,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 
 open import Cubical.Relation.Nullary
 open import Cubical.Algebra.CommRing
-open import Cubical.Tactics.CommRingSolver.Reflection hiding (K')
+open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
@@ -51,7 +51,7 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (b ε : 𝓡 .fst) → (b - ε) + ε ≡ b
-    helper1 = solve 𝓡
+    helper1 _ _ = solve! 𝓡
 
 
 module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where

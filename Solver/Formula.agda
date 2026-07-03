@@ -1,4 +1,4 @@
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --lossy-unification #-}
 module Solver.Formula where
 
 open import Cubical.Foundations.Prelude
@@ -6,6 +6,8 @@ open import Cubical.Foundations.HLevels using (isProp×; isPropΠ)
 open import Cubical.Foundations.Univalence using (ua)
 open import Cubical.Foundations.Function using (_∘_; const)
 open import Cubical.Data.Bool
+open import Cubical.Data.Bool.Properties
+  using (Bool→Type×)
 open import Cubical.Data.Unit
 open import Cubical.Data.Empty
   using (⊥*; isProp⊥*; uninhabEquiv)
@@ -182,20 +184,20 @@ open import Cubical.Data.Fin.Base
 FinVec : Type ℓ → ℕ → Type ℓ
 FinVec A n = Fin n → A
 module _ {A : Type ℓ} where -- Should also be in agda-cubical
-  [] : FinVec A 0
+  [] : FinVec A zero
   [] = rec⊥ ∘ ¬Fin0
 
   infixr 10 _∷_
-  _∷_ : {n : ℕ} → A → FinVec A n → FinVec A (1 + n)
+  _∷_ : {n : ℕ} → A → FinVec A n → FinVec A (suc n)
   (a ∷ v) i with fsplit i
   ... | inl _ = a
   ... | inr (j , _) = v j
 
-  FinVecNil : (v : FinVec A 0) → [] ≡ v
+  FinVecNil : (v : FinVec A zero) → [] ≡ v
   FinVecNil v i r with ¬Fin0 r
   ... | ()
 
-  FinVecCon : ∀ {n} → (v : FinVec A (1 + n))
+  FinVecCon : ∀ {n} → (v : FinVec A (suc n))
     → v fzero ∷ (v ∘ fsuc) ≡ v
   FinVecCon {n} v = funExt helper
     where
@@ -205,52 +207,59 @@ module _ {A : Type ℓ} where -- Should also be in agda-cubical
       ... | inr (j , fsucj≡i) = cong v fsucj≡i
 
   elimFinVec : (P : ∀ {n} → FinVec A n → Type ℓ')
-    → P [] → (∀ {k} a (v : FinVec A k) → P v → P (a ∷ v))
-    → ∀ {n} (v : FinVec A n) → P v
-  elimFinVec P nil con {zero} v = subst P (FinVecNil v) nil
-  elimFinVec P nil con {suc n} v = subst P (FinVecCon v)
-    (con (v fzero) (v ∘ fsuc) (elimFinVec P nil con (v ∘ fsuc)))
+    → P {n = zero} [] → (∀ {k} a (v : FinVec A k) → P {n = k} v → P {n = suc k} (a ∷ v))
+    → ∀ {n} (v : FinVec A n) → P {n = n} v
+  elimFinVec P nil con {zero} v = subst (P {n = zero}) (FinVecNil v) nil
+  elimFinVec P nil con {suc n} v = subst (P {n = suc n}) (FinVecCon v)
+    (con {k = n} (v (fzero {k = n})) tail ih)
+    where
+    tail : FinVec A n
+    tail = v ∘ fsuc {k = n}
+
+    ih : P {n = n} tail
+    ih = elimFinVec P nil con {n = n} tail
 
 module NbE where
   private variable
     n : ℕ
-  binFoldBool : (FinVec Bool n → Bool) → Bool
+  binFoldBool : {n : ℕ} → (FinVec Bool n → Bool) → Bool
   binFoldBool {zero} α = α []
   binFoldBool {suc n} α
-    = binFoldBool (λ τ → α (false ∷ τ))
-    and binFoldBool (λ τ → α (true ∷ τ))
+    = binFoldBool {n = n} (λ τ → α (false ∷ τ))
+    and binFoldBool {n = n} (λ τ → α (true ∷ τ))
 
   abstract
     binFoldCorrect :
-        (Γ : FinVec Bool n)
+        {n : ℕ}
+      → (Γ : FinVec Bool n)
       → (α : FinVec Bool n → Bool)
-      → Bool→Type (binFoldBool α)
+      → Bool→Type (binFoldBool {n = n} α)
       → Bool→Type (α Γ)
-    binFoldCorrect
-      = elimFinVec (λ Γ → ∀ α → (Bool→Type (binFoldBool α)) → Bool→Type (α Γ))
-        (λ α z → z) auxCon
+    binFoldCorrect {zero} Γ α H = subst (λ Γ → Bool→Type (α Γ)) (FinVecNil Γ) H
+    binFoldCorrect {suc n} Γ α H = subst (λ Γ → Bool→Type (α Γ)) (FinVecCon Γ) (headProof (Γ fzero) refl)
       where
-        auxCon : {k : ℕ} (a : Bool) (v : FinVec Bool k)
-          → (∀ α → Bool→Type (binFoldBool α) → Bool→Type (α v))
-          → ∀ α → Bool→Type (binFoldBool α) → Bool→Type (α (a ∷ v))
-        auxCon a v IH α H with a | -- Make a sneaky use of our lemma
-          Sound (λ b → binFoldBool (λ τ → α (b ∷ τ))) (false ᶠ ∧ᶠ true ᶠ) H
-        ... | true  | (pfalse , ptrue) = IH _ ptrue
-        ... | false | (pfalse , ptrue) = IH _ pfalse
+      tail : FinVec Bool n
+      tail = Γ ∘ fsuc
 
-    computeBool : (F : Formula (Fin n))
-      → {Bool→Type (binFoldBool (_⊨ F))}
+      headProof : (b : Bool) → Γ fzero ≡ b → Bool→Type (α (Γ fzero ∷ tail))
+      headProof false eq = subst (λ b → Bool→Type (α (b ∷ tail))) (sym eq)
+        (binFoldCorrect {n = n} tail (λ τ → α (false ∷ τ)) (fst (Bool→Type× _ _ H)))
+      headProof true eq = subst (λ b → Bool→Type (α (b ∷ tail))) (sym eq)
+        (binFoldCorrect {n = n} tail (λ τ → α (true ∷ τ)) (snd (Bool→Type× _ _ H)))
+
+    computeBool : {n : ℕ} (F : Formula (Fin n))
+      → {Bool→Type (binFoldBool {n = n} (λ section → section ⊨ F))}
       → (P : FinVec Bool n)
       → (Bool→Type ∘ P) ⊢ F
-    computeBool F {witness} P = Sound P F (binFoldCorrect P (_⊨ F) witness)
+    computeBool {n = n} F {witness} P = Sound P F (binFoldCorrect {n = n} P (λ section → section ⊨ F) witness)
 
-    computeDec : (F : Formula (Fin n))
-      → {Bool→Type (binFoldBool (_⊨ F))}
+    computeDec : {n : ℕ} (F : Formula (Fin n))
+      → {Bool→Type (binFoldBool {n = n} (λ section → section ⊨ F))}
       → (P : FinVec (DecProp ℓ-zero) n)
       → (fst ∘ fst ∘ P) ⊢ F
-    computeDec F {witness} P =
+    computeDec {n = n} F {witness} P =
       transport (λ i → (λ x → eq (P x) i) ⊢ F)
-        (computeBool F {witness} (DecProp→Bool ∘ P))
+        (computeBool {n = n} F {witness} (DecProp→Bool ∘ P))
       where
         eq : (H : DecProp ℓ-zero)
           → Bool→Type (DecProp→Bool H) ≡ H .fst .fst

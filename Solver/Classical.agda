@@ -10,17 +10,18 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
 open import Cubical.Foundations.Function using (_∘_; const)
 open import Cubical.Data.Nat.Base
-open import Cubical.Data.Fin.Base
+open import Cubical.Data.Fin.Base using (Fin; fzero; fsuc)
 open import Cubical.Data.Bool
 
 private variable
   n : ℕ
 
-computeProp : (F : Formula (Fin n))
-  → {Bool→Type (binFoldBool (_⊨ F))}
+computeProp : {n : ℕ} (F : Formula (Fin n))
+  → {Bool→Type (binFoldBool {n = n} (λ section → section ⊨ F))}
   → (P : FinVec (hProp ℓ-zero) n)
   → (fst ∘ P) ⊢ F
-computeProp F {witness} P = computeDec F {witness} (hProp→DecProp decide ∘ P)
+computeProp {n = n} F {witness} P =
+  computeDec {n = n} F {witness} (hProp→DecProp decide ∘ P)
 
 -- Evil syntax
 infixr -1 _⅋_
@@ -48,6 +49,16 @@ private module test (P Q R : Type) (pP : isProp P) (pQ : isProp Q) (pR : isProp 
   _∥⊎∥_ : Type → Type → Type
   P ∥⊎∥ Q = ∥ P ⊎ Q ∥₁
 
+  F0 F1 F2 : Formula (Fin 3)
+  F0 = fzero ᶠ
+  F1 = fsuc fzero ᶠ
+  F2 = fsuc (fsuc fzero) ᶠ
+
+  testFormula : Formula (Fin 3)
+  testFormula = (F0 ∧ᶠ F1 →ᶠ F2) ↔ᶠ (F0 →ᶠ ¬ᶠ F1 ∨ᶠ F2)
+
+  testContext : FinVec (hProp ℓ-zero) 3
+  testContext = (P , pP) ∷ (Q , pQ) ∷ (R , pR) ∷ []
+
   test : (P × Q → R) ↔ (P → ¬ Q ∥⊎∥ R)
-  test = Solve (0 ∧ᶠ 1 →ᶠ 2) ↔ᶠ (0 →ᶠ ¬ᶠ 1 ∨ᶠ 2)
-    ⟦ P , pP ⅋ Q , pQ ⅋ R , pR ⟧
+  test = computeProp {n = 3} testFormula testContext

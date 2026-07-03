@@ -33,22 +33,22 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (p q : 𝓡 .fst) → ((p + q) + (1r + 1r) · (- p)) ≡ q - p
-    helper1 = solve 𝓡
+    helper1 _ _ = solve! 𝓡
 
     helper2 : (p p⁻¹ q⁻¹ : 𝓡 .fst) → p · (p⁻¹ · q⁻¹) ≡ (p · p⁻¹) · q⁻¹
-    helper2 = solve 𝓡
+    helper2 _ _ _ = solve! 𝓡
 
     helper3 : (q p⁻¹ q⁻¹ : 𝓡 .fst) → q · (p⁻¹ · q⁻¹) ≡ (q · q⁻¹) · p⁻¹
-    helper3 = solve 𝓡
+    helper3 _ _ _ = solve! 𝓡
 
     helper4 : (y z : 𝓡 .fst) → y + (z - y) ≡ z
-    helper4 = solve 𝓡
+    helper4 _ _ = solve! 𝓡
 
     helper5 : (x y z : 𝓡 .fst) → x · (y · z) ≡ (y · x) · z
-    helper5 = solve 𝓡
+    helper5 _ _ _ = solve! 𝓡
 
     helper6 : (x : 𝓡 .fst) → x + x ≡ (1r + 1r) · x
-    helper6 = solve 𝓡
+    helper6 _ = solve! 𝓡
 
 
 module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where

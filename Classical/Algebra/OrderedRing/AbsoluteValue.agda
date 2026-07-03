@@ -27,31 +27,31 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (x : 𝓡 .fst) → x ≡ (x - 0r)
-    helper1 = solve 𝓡
+    helper1 _ = solve! 𝓡
 
     helper2 : (x y d : 𝓡 .fst) → ((x - d) + d) - y ≡ x - y
-    helper2 = solve 𝓡
+    helper2 _ _ _ = solve! 𝓡
 
     helper3 : (x y d : 𝓡 .fst) → (y + d) - y ≡ d
-    helper3 = solve 𝓡
+    helper3 _ _ _ = solve! 𝓡
 
     helper4 : (x y d : 𝓡 .fst) → (y + d) - y ≡ d
-    helper4 = solve 𝓡
+    helper4 _ _ _ = solve! 𝓡
 
     helper5 : (x y : 𝓡 .fst) → - x - y ≡ - (x + y)
-    helper5 = solve 𝓡
+    helper5 _ _ = solve! 𝓡
 
     helper6 : (x y z : 𝓡 .fst) → (x - y) + (y - z) ≡ x - z
-    helper6 = solve 𝓡
+    helper6 _ _ _ = solve! 𝓡
 
     helper7 : (x d : 𝓡 .fst) → x ≡ (x + d) - d
-    helper7 = solve 𝓡
+    helper7 _ _ = solve! 𝓡
 
     helper8 : (x y : 𝓡 .fst) → y - x ≡ - (x - y)
-    helper8 = solve 𝓡
+    helper8 _ _ = solve! 𝓡
 
     helper9 : (x d : 𝓡 .fst) → (x + d) - x ≡ d
-    helper9 = solve 𝓡
+    helper9 _ _ = solve! 𝓡
 
 
 module AbsoluteValue (𝓡 : OrderedRing ℓ ℓ') where

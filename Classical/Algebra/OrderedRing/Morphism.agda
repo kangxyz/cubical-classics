@@ -41,22 +41,22 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : 1r ≡ 1r - 0r
-    helper1 = solve 𝓡
+    helper1 = solve! 𝓡
 
     helper2 : (x : 𝓡 .fst) → - x ≡ 1r - (1r + x)
-    helper2 = solve 𝓡
+    helper2 _ = solve! 𝓡
 
     helper3 : (x : 𝓡 .fst) → - (1r - x) ≡ - 1r + x
-    helper3 = solve 𝓡
+    helper3 _ = solve! 𝓡
 
     helper4 : (x : 𝓡 .fst) → x ≡ - 0r + x
-    helper4 = solve 𝓡
+    helper4 _ = solve! 𝓡
 
     helper5 : (x y : 𝓡 .fst) → - (x · y) ≡ (- x) · y
-    helper5 = solve 𝓡
+    helper5 _ _ = solve! 𝓡
 
     helper6 : (x y : 𝓡 .fst) → y + (x · y) ≡ (1r + x) · y
-    helper6 = solve 𝓡
+    helper6 _ _ = solve! 𝓡
 
 
 -- The homomorphism between ordered rings is just ring homomorphism that preserves positive element
@@ -98,7 +98,7 @@ module OrderedRingHomStr (f : OrderedRingHom 𝓡 𝓡') where
   open CommRingStr (𝓡  .fst .snd)
   open CommRingStr (𝓡' .fst .snd) using ()
     renaming (0r to 0r' ; _+_ to _+'_ ; _-_ to _-'_ ; -_ to -'_)
-  open IsRingHom   (ring-hom .snd)
+  open IsCommRingHom (ring-hom .snd)
 
 
   private
@@ -256,7 +256,7 @@ module InclusionFromℤ (𝓡 : OrderedRing ℓ ℓ') where
   isRingHomℤ→R = makeIsRingHom ℤ→R-Pres-1 ℤ→R-Pres-+ ℤ→R-Pres-·
 
   ℤ→RCommRingHom : CommRingHom ℤCommRing (𝓡 .fst)
-  ℤ→RCommRingHom = _ , isRingHomℤ→R
+  ℤ→RCommRingHom = _ , IsRingHom→IsCommRingHom ℤCommRing (𝓡 .fst) ℤ→R isRingHomℤ→R
 
   open OrderedRingHom
 

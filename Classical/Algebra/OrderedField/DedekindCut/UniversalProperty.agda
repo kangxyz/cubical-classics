@@ -18,7 +18,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Cubical.Relation.Nullary
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
-open import Cubical.Tactics.CommRingSolver.Reflection hiding (K')
+open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
@@ -46,10 +46,10 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (x y : 𝓡 .fst) → (x · (- y)) ≡ - (x · y)
-    helper1 = solve 𝓡
+    helper1 _ _ = solve! 𝓡
 
     helper2 : (x y : 𝓡 .fst) → ((- x) · y) ≡ - (x · y)
-    helper2 = solve 𝓡
+    helper2 _ _ = solve! 𝓡
 
 
 module UniversalProperty ⦃ 🤖 : Oracle ⦄
@@ -101,7 +101,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     open OrderedRingHom    f
     open OrderedRingHomStr f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
-    open IsRingHom (ring-hom .snd)
+    open IsCommRingHom (ring-hom .snd)
 
     private
       K  = 𝒦  .fst .fst .fst
@@ -398,7 +398,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     -}
 
     extendedRingHom : CommRingHom 𝕂CommRing (𝒦' .fst .fst .fst)
-    extendedRingHom = map-helper , makeIsRingHom map-pres1 map-pres+ map-pres·
+    extendedRingHom = map-helper , makeIsCommRingHom map-pres1 map-pres+ map-pres·
 
     open OrderedRingHom
 

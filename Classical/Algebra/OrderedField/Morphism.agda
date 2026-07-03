@@ -19,7 +19,7 @@ open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.Relation.Nullary
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
-open import Cubical.Tactics.CommRingSolver.Reflection hiding (K')
+open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Algebra.OrderedRing
 open import Classical.Algebra.OrderedRing.Morphism
@@ -40,31 +40,31 @@ private
 
     helper1 : (a b c d b⁻¹ d⁻¹ : 𝓡 .fst)
       → (a · d + c · b) · (b⁻¹ · d⁻¹) ≡ (a · b⁻¹) · (d · d⁻¹) + (c · d⁻¹) · (b · b⁻¹)
-    helper1 = solve 𝓡
+    helper1 _ _ _ _ _ _ = solve! 𝓡
 
     helper2 : (a c b⁻¹ d⁻¹ : 𝓡 .fst) → (a · b⁻¹) · 1r + (c · d⁻¹) · 1r ≡ a · b⁻¹ + c · d⁻¹
-    helper2 = solve 𝓡
+    helper2 _ _ _ _ = solve! 𝓡
 
     helper3 : (a c b⁻¹ d⁻¹ : 𝓡 .fst) → (a · c) · (b⁻¹ · d⁻¹) ≡ (a · b⁻¹) · (c · d⁻¹)
-    helper3 = solve 𝓡
+    helper3 _ _ _ _ = solve! 𝓡
 
     helper4 : (a d b⁻¹ d⁻¹ : 𝓡 .fst) → (a · b⁻¹) · (d · d⁻¹) ≡ ((a · d) · b⁻¹) · d⁻¹
-    helper4 = solve 𝓡
+    helper4 _ _ _ _ = solve! 𝓡
 
     helper5 : (c b b⁻¹ d⁻¹ : 𝓡 .fst) → ((c · b) · b⁻¹) · d⁻¹ ≡ (c · d⁻¹) · (b · b⁻¹)
-    helper5 = solve 𝓡
+    helper5 _ _ _ _ = solve! 𝓡
 
     helper6 : (p q : 𝓡 .fst) → p + (q - p) ≡ q
-    helper6 = solve 𝓡
+    helper6 _ _ = solve! 𝓡
 
     helper7 : (p ε x : 𝓡 .fst) → (p + (x + ε)) - (p + x) ≡ ε
-    helper7 = solve 𝓡
+    helper7 _ _ _ = solve! 𝓡
 
     helper8 : (x y a : 𝓡 .fst) → ((x - y) + a) - x ≡ a - y
-    helper8 = solve 𝓡
+    helper8 _ _ _ = solve! 𝓡
 
     helper9 : (x a b : 𝓡 .fst) → ((b - a) + a) - x ≡ b - x
-    helper9 = solve 𝓡
+    helper9 _ _ _ = solve! 𝓡
 
 
 -- The homomorphism between ordered fields is just the homomorphism between their underlying ordered rings
@@ -113,7 +113,7 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
              ; p>0→p⁻¹>0 to p>'0→p⁻¹>'0)
   open OrderedRingHom    f
   open OrderedRingHomStr f
-  open IsRingHom (ring-hom .snd)
+  open IsCommRingHom (ring-hom .snd)
 
   private
     K  = 𝒦  .fst .fst .fst
@@ -337,7 +337,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   open import Cubical.Data.Int.MoreInts.QuoInt
     using    (ℤ)
     renaming (_+_ to _+ℤ_ ; _·_ to _·ℤ_)
-  open import Cubical.Data.Rationals
+  open import Cubical.Data.Rationals.MoreRationals.QuoQ
     using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
     renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_)
 
@@ -345,7 +345,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
     using    (ℤOrderedRing)
   open import Classical.Algebra.OrderedRing.Morphism
 
-  open import Cubical.Algebra.CommRing.Instances.Rationals
+  open import Cubical.Algebra.CommRing.Instances.QuoQRationals
   open import Classical.Algebra.OrderedField.Instances.QuoQ
 
 
@@ -459,7 +459,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   isRingHomℚ→K = makeIsRingHom ℚ→K-Pres-1 ℚ→K-Pres-+ ℚ→K-Pres-·
 
   ℚ→KCommRingHom : CommRingHom ℚCommRing (𝒦 .fst .fst)
-  ℚ→KCommRingHom = _ , isRingHomℚ→K
+  ℚ→KCommRingHom = _ , IsRingHom→IsCommRingHom ℚCommRing (𝒦 .fst .fst) ℚ→K isRingHomℚ→K
 
   open OrderedRingHom
 

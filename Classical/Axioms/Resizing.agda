@@ -33,7 +33,7 @@ pathIsProp p p0 p1 = isProp→PathP (λ i → isPropIsProp {A = p i}) p0 p1
 
 -- Lifting h-propositions to higher universe level
 liftProp : (ℓ' : Level) → hProp ℓ → hProp (ℓ-max ℓ ℓ')
-liftProp ℓ' P .fst = Lift {j = ℓ'} (P .fst)
+liftProp ℓ' P .fst = Lift ℓ' (P .fst)
 liftProp ℓ' P .snd = isOfHLevelLift 1 (P .snd)
 
 Resizing : Typeω

@@ -17,13 +17,13 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (n c b : 𝓡 .fst) → n · (c · b) ≡ (n · c) · (1r · b)
-    helper1 = solve 𝓡
+    helper1 _ _ _ = solve! 𝓡
 
     helper2 : (n : 𝓡 .fst) → (1r + n) · (1r · 1r) ≡ (1r · 1r + n · 1r) · (1r · 1r)
-    helper2 = solve 𝓡
+    helper2 _ = solve! 𝓡
 
     helper3 : (n q : 𝓡 .fst) → (1r + n) · q ≡ (n · q) + q
-    helper3 = solve 𝓡
+    helper3 _ _ = solve! 𝓡
 
 
 open import Cubical.Foundations.HLevels
@@ -35,7 +35,7 @@ open import Cubical.Data.NatPlusOne
 open import Cubical.Data.Int.MoreInts.QuoInt
   using    (ℤ ; pos)
   renaming (_·_ to _·ℤ_ ; _+_ to _+ℤ_ ; -_ to -ℤ_)
-open import Cubical.Data.Rationals
+open import Cubical.Data.Rationals.MoreRationals.QuoQ
   using    (ℚ ; ℕ₊₁→ℤ ; ·-zeroˡ ; ·-identityˡ)
 open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.HITs.PropositionalTruncation as Prop

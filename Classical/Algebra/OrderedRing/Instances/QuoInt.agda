@@ -17,13 +17,13 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (x y : 𝓡 .fst) → (- x) · y ≡ - (x · y)
-    helper1 = solve 𝓡
+    helper1 _ _ = solve! 𝓡
 
     helper2 : (a b : 𝓡 .fst) → a - b ≡ (a - 1r) + 1r - b
-    helper2 = solve 𝓡
+    helper2 _ _ = solve! 𝓡
 
     helper3 : (b : 𝓡 .fst) → b + 1r - b ≡ 1r
-    helper3 = solve 𝓡
+    helper3 _ = solve! 𝓡
 
 
 open import Cubical.Data.Nat
@@ -34,7 +34,7 @@ open import Cubical.Data.Nat.Order using ()
 open import Cubical.Data.NatPlusOne
 open import Cubical.Data.Int.MoreInts.QuoInt
   hiding   (_+_ ; _·_ ; -_)
-open import Cubical.Data.Rationals using (ℕ₊₁→ℤ)
+open import Cubical.Data.Rationals.MoreRationals.QuoQ using (ℕ₊₁→ℤ)
 open import Cubical.Algebra.CommRing.Instances.QuoInt
 
 open import Cubical.Data.Unit

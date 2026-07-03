@@ -218,8 +218,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       let x₀-ε<seqn : x₀ - ε < seq n
           x₀-ε<seqn = <≤-trans x₀-ε<x x≤seqn
           seqn<x₀+ε : seq n < x₀ + ε
-          seqn<x₀+ε = fin>x₀ n (<-weaken (<≤ℕ-trans sucmax>right n≥m))
-      return (n , <≤ℕ-trans sucmax>left n≥m ,
+          seqn<x₀+ε = fin>x₀ n (<-weaken (<≤ℕ-trans (sucmax>right {m = n₀} {n = m₀}) n≥m))
+      return (n , <≤ℕ-trans (sucmax>left {m = n₀} {n = m₀}) n≥m ,
         absInOpenInterval ε>0 x₀-ε<seqn seqn<x₀+ε)
 
 

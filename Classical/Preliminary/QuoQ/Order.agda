@@ -17,7 +17,7 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : 1r · 1r + (- 0r) · 1r ≡ 1r
-    helper1 = solve 𝓡
+    helper1 = solve! 𝓡
 
 
 open import Cubical.Foundations.HLevels
@@ -29,11 +29,11 @@ open import Cubical.Data.NatPlusOne
 open import Cubical.Data.Int.MoreInts.QuoInt
   using    (ℤ ; pos ; neg)
   renaming (_·_ to _·ℤ_ ; -_ to -ℤ_)
-open import Cubical.Data.Rationals
+open import Cubical.Data.Rationals.MoreRationals.QuoQ
 open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
-open import Cubical.Algebra.CommRing.Instances.Rationals
+open import Cubical.Algebra.CommRing.Instances.QuoQRationals
   using    (ℚCommRing)
 open import Cubical.Relation.Nullary
 

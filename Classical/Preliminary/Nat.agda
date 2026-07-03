@@ -207,7 +207,7 @@ sucmax : (m n : ℕ) → ℕ
 sucmax m n = suc (max m n)
 
 sucmax>left : {m n : ℕ} → sucmax m n > m
-sucmax>left = ≤<-trans left-≤-max ≤-refl
+sucmax>left {m} {n} = ≤<-trans (left-≤-max {m} {n}) ≤-refl
 
 sucmax>right : {m n : ℕ} → sucmax m n > n
-sucmax>right = ≤<-trans right-≤-max ≤-refl
+sucmax>right {m} {n} = ≤<-trans (right-≤-max {n} {m}) ≤-refl

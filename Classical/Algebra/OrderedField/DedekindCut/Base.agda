@@ -31,13 +31,13 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (a b c d : 𝓡 .fst) → c + ((a + b) - d) ≡ a + (b + (c - d))
-    helper1 = solve 𝓡
+    helper1 _ _ _ _ = solve! 𝓡
 
     helper2 : (c d : 𝓡 .fst) → c ≡ c + (d - d)
-    helper2 = solve 𝓡
+    helper2 _ _ = solve! 𝓡
 
     helper1' : (a b c d : 𝓡 .fst) → c · ((a · b) · d) ≡ a · (b · (c · d))
-    helper1' = solve 𝓡
+    helper1' _ _ _ _ = solve! 𝓡
 
 
 module Basics ⦃ 🤖 : Oracle ⦄

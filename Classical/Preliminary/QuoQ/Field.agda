@@ -17,10 +17,10 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (x y : 𝓡 .fst) → (x · y) · 1r ≡ 1r · (y · x)
-    helper1 = solve 𝓡
+    helper1 _ _ = solve! 𝓡
 
     helper2 : (x y : 𝓡 .fst) → ((- x) · (- y)) · 1r ≡ 1r · (y · x)
-    helper2 = solve 𝓡
+    helper2 _ _ = solve! 𝓡
 
 
 open import Cubical.Foundations.HLevels
@@ -38,10 +38,10 @@ open import Cubical.Data.Int.MoreInts.QuoInt
            ; ·-comm to ·ℤ-comm
            ; ·-assoc to ·ℤ-assoc)
 open import Cubical.HITs.SetQuotients as SetQuot hiding (_/_)
-open import Cubical.Data.Rationals
+open import Cubical.Data.Rationals.MoreRationals.QuoQ
   using    (ℚ ; ℕ₊₁→ℤ ; isEquivRel∼)
 open import Cubical.Algebra.CommRing.Instances.QuoInt
-open import Cubical.Algebra.CommRing.Instances.Rationals
+open import Cubical.Algebra.CommRing.Instances.QuoQRationals
 
 
 open import Cubical.Relation.Nullary

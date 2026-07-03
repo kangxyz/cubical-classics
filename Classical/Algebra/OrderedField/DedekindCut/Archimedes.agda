@@ -32,16 +32,16 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (p q : 𝓡 .fst) → p + (q - p) ≡ q
-    helper1 = solve 𝓡
+    helper1 _ _ = solve! 𝓡
 
     helper2 : (r u ε : 𝓡 .fst) → (r + ε) - u ≡ (r - u) + ε
-    helper2 = solve 𝓡
+    helper2 _ _ _ = solve! 𝓡
 
     helper3 : (a b c : 𝓡 .fst) → (a - b) + (b - c) ≡ a - c
-    helper3 = solve 𝓡
+    helper3 _ _ _ = solve! 𝓡
 
     helper4 : (b c : 𝓡 .fst) → c + (b - c) ≡ b
-    helper4 = solve 𝓡
+    helper4 _ _ = solve! 𝓡
 
 
 module Archimedes ⦃ 🤖 : Oracle ⦄

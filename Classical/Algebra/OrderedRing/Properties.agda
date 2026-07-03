@@ -31,64 +31,64 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (x : 𝓡 .fst) → x ≡ (x - 0r)
-    helper1 = solve 𝓡
+    helper1 _ = solve! 𝓡
 
     helper2 : (x y : 𝓡 .fst) → x - y ≡ - (y - x)
-    helper2 = solve 𝓡
+    helper2 _ _ = solve! 𝓡
 
     helper3 : (x y z : 𝓡 .fst) → (z - y) + (y - x) ≡ z - x
-    helper3 = solve 𝓡
+    helper3 _ _ _ = solve! 𝓡
 
     helper4 : (x y : 𝓡 .fst) → (y - x) + x ≡ y
-    helper4 = solve 𝓡
+    helper4 _ _ = solve! 𝓡
 
     helper5 : (x y z w : 𝓡 .fst) → (y - x) + (w - z) ≡ (y + w) - (x + z)
-    helper5 = solve 𝓡
+    helper5 _ _ _ _ = solve! 𝓡
 
     helper6 : (x y : 𝓡 .fst) → y - x ≡ ((- x) - (- y))
-    helper6 = solve 𝓡
+    helper6 _ _ = solve! 𝓡
 
     helper7 : (x y : 𝓡 .fst) → x · (- y) ≡ - (x · y)
-    helper7 = solve 𝓡
+    helper7 _ _ = solve! 𝓡
 
     helper8 : (x y : 𝓡 .fst) → (- x) · (- y) ≡ x · y
-    helper8 = solve 𝓡
+    helper8 _ _ = solve! 𝓡
 
     helper9 : (x y z : 𝓡 .fst) → (x - 0r) · (z - y) ≡ (x · z) - (x · y)
-    helper9 = solve 𝓡
+    helper9 _ _ _ = solve! 𝓡
 
     helper10 : (x y z : 𝓡 .fst) → (z - y) · (x - 0r) ≡ (z · x) - (y · x)
-    helper10 = solve 𝓡
+    helper10 _ _ _ = solve! 𝓡
 
     helper11 : (x y : 𝓡 .fst) → - ((- x) · y) ≡ x · y
-    helper11 = solve 𝓡
+    helper11 _ _ = solve! 𝓡
 
     helper12 : (x y z : 𝓡 .fst) → y - x ≡ (y + z) - (x + z)
-    helper12 = solve 𝓡
+    helper12 _ _ _ = solve! 𝓡
 
     helper13 : (x y z : 𝓡 .fst) → y - x ≡ (z + y) - (z + x)
-    helper13 = solve 𝓡
+    helper13 _ _ _ = solve! 𝓡
 
     helper14 : (x y : 𝓡 .fst) → x ≡ (y + x) - y
-    helper14 = solve 𝓡
+    helper14 _ _ = solve! 𝓡
 
     helper15 : (x y : 𝓡 .fst) → (x - 0r) · (y - 1r) ≡ (x · y) - x
-    helper15 = solve 𝓡
+    helper15 _ _ = solve! 𝓡
 
     helper16 : 1r - 0r ≡ 1r
-    helper16 = solve 𝓡
+    helper16 = solve! 𝓡
 
     helper17 : (n q : 𝓡 .fst) → (1r + n) · q ≡ (n · q) + q
-    helper17 = solve 𝓡
+    helper17 _ _ = solve! 𝓡
 
     helper18 : (x : 𝓡 .fst) → - (1r + x) ≡ - 1r - x
-    helper18 = solve 𝓡
+    helper18 _ = solve! 𝓡
 
     helper19 : (x y : 𝓡 .fst) → (x - y) + y ≡ x
-    helper19 = solve 𝓡
+    helper19 _ _ = solve! 𝓡
 
     helper20 : (x y : 𝓡 .fst) → (x + y) - y ≡ x
-    helper20 = solve 𝓡
+    helper20 _ _ = solve! 𝓡
 
 
 module OrderedRingStr (𝓡 : OrderedRing ℓ ℓ') where

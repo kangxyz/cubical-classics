@@ -16,6 +16,7 @@ open import Cubical.Foundations.Univalence
 open import Cubical.Data.Empty as Empty
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
+open import Cubical.Algebra.CommRing.Univalence
 
 open import Classical.Algebra.OrderedRing
 open import Classical.Algebra.OrderedRing.Morphism

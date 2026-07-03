@@ -20,7 +20,7 @@ private
     open CommRingStr (𝓡 .snd)
 
     helper1 : (x y z w : 𝓡 .fst) → (x · y) · (z · w) ≡ (x · z) · (y · w)
-    helper1 = solve 𝓡
+    helper1 _ _ _ _ = solve! 𝓡
 
 
 module FieldStr (𝒦 : Field ℓ) where
