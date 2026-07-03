@@ -121,7 +121,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         where
         case-split : (U ∈ 𝒰) ⊎ (U ∈ [ ∁ A ]) → U ∈ 𝒰
         case-split (inl U∈𝒰) = U∈𝒰
-        case-split (inr U∈[∁A]) = Empty.rec (∉→¬∈ {A = A} (∈∁→∉ {A = A} x∈∁A) x∈A)
+        case-split (inr U∈[∁A]) = Empty.rec (∈∁→¬∈ {A = A} x∈∁A x∈A)
           where
           x∈∁A : x ∈ ∁ A
           x∈∁A = proof _ , isProp∈ (∁ A) by do

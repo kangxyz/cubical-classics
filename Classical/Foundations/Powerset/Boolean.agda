@@ -20,7 +20,7 @@ open import Classical.Foundations.Powerset.Base
 open import Classical.Foundations.Powerset.Membership
 open import Solvers.Bool
   using (v0; v1; v2; v3; trueᵇ; falseᵇ; ¬ᵇ_; _∧ᵇ_; _∨ᵇ_;
-         _≡ᵖ_; _≡ᵖtrue; _≡ᵖfalse; _∨ᵖ_; _→ᵖ_;
+         ⊥ᵖ; _≡ᵖ_; _≡ᵖtrue; _≡ᵖfalse; _∨ᵖ_; _→ᵖ_;
          solveᵖ₁; solveᵖ₂; solveᵖ₃; solveᵖ₄)
 open import Solvers.Powerset
   using (p0; p1; p2; p3; ∅ᵖ; totalᵖ; ∁ᵖ_; _∪ᵖ_; _∩ᵖ_;
@@ -90,6 +90,10 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   ∈∁→∉ : {x : X}{A : ℙ X} → x ∈ (∁ A) → x ∉ A
   ∈∁→∉ {x = x} {A = A} =
     solveᵖ₁ (((¬ᵇ v0) ≡ᵖtrue) →ᵖ (v0 ≡ᵖfalse)) (A x)
+
+  ∈∁→¬∈ : {x : X}{A : ℙ X} → x ∈ (∁ A) → x ∈ A → ⊥
+  ∈∁→¬∈ {x = x} {A = A} =
+    solveᵖ₁ (((¬ᵇ v0) ≡ᵖtrue) →ᵖ (v0 ≡ᵖtrue) →ᵖ ⊥ᵖ) (A x)
 
   ∈A+∈∁A : {x : X}(A : ℙ X) → (x ∈ A) ⊎ (x ∈ ∁ A)
   ∈A+∈∁A {x = x} A =

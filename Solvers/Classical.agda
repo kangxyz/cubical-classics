@@ -12,11 +12,12 @@ open import Cubical.Data.Fin.Base using (Fin; fzero; fsuc)
 open import Cubical.Data.Bool
 
 private variable
+  ℓ : Level
   n : ℕ
 
-computeProp : {n : ℕ} (F : Formula (Fin n))
+computeProp : {ℓ : Level}{n : ℕ} (F : Formula (Fin n))
   → {Bool→Type (binFoldBool {n = n} (λ section → section ⊨ F))}
-  → (P : FinVec (hProp ℓ-zero) n)
+  → (P : FinVec (hProp ℓ) n)
   → (fst ∘ P) ⊢ F
 computeProp {n = n} F {witness} P =
   computeDec {n = n} F {witness} (hProp→DecProp decide ∘ P)
@@ -60,3 +61,20 @@ private module test (P Q R : Type) (pP : isProp P) (pQ : isProp Q) (pR : isProp 
 
   test : (P × Q → R) ↔ (P → ¬ Q ∥⊎∥ R)
   test = computeProp {n = 3} testFormula testContext
+
+private module testLevel {ℓ : Level} (P Q : Type ℓ) (pP : isProp P) (pQ : isProp Q) where
+  open import Cubical.Data.Sigma
+    using (_×_)
+
+  F0 F1 : Formula (Fin 2)
+  F0 = fzero ᶠ
+  F1 = fsuc fzero ᶠ
+
+  testFormula : Formula (Fin 2)
+  testFormula = F0 ∧ᶠ F1 →ᶠ F0
+
+  testContext : FinVec (hProp ℓ) 2
+  testContext = (P , pP) ∷ (Q , pQ) ∷ []
+
+  test : P × Q → P
+  test = computeProp {n = 2} testFormula testContext

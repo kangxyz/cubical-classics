@@ -98,9 +98,9 @@ module _ ⦃ 🤖 : Oracle ⦄
         (n₀ , abs<₀) ← p .conv ε/2 ε/2>0
         (n₁ , abs<₁) ← q .conv ε/2 ε/2>0
         let n = sucmax n₀ n₁
-        return (≤<-trans (dist-Δ _ _ _) (transport
-          (λ i → dist (p .lim) (seq n) + dist-symm (q .lim) (seq n) i < x/2+x/2≡x ε i)
-          (+-Pres< (abs<₀ _ (sucmax>left {m = n₀} {n = n₁})) (abs<₁ _ (sucmax>right {m = n₀} {n = n₁})))))
+        return (dist-triangle<ε ε>0
+          (abs<₀ _ (sucmax>left {m = n₀} {n = n₁}))
+          (subst (_< ε/2) (dist-symm (q .lim) (seq n)) (abs<₁ _ (sucmax>right {m = n₀} {n = n₁}))))
 
 
   {-

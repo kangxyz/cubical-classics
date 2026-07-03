@@ -295,5 +295,5 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         (n₀ , ∀abs<) ← cauchy ε/2 ε/2>0
         (n₁ , n₁>n₀ , abs<) ← cluster .accum n₀ ε/2 ε/2>0
         return (
-          n₁ , λ n n>n₁ → subst (abs (cluster .point - seq n) <_) (x/2+x/2≡x ε)
-            (≤<-trans (dist-Δ _ _ _) (+-Pres< abs< (∀abs< n₁ n n₁>n₀ (<ℕ-trans n₁>n₀ n>n₁)))))
+          n₁ , λ n n>n₁ →
+            dist-triangle<ε ε>0 abs< (∀abs< n₁ n n₁>n₀ (<ℕ-trans n₁>n₀ n>n₁)))

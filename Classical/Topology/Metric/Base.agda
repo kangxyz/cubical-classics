@@ -111,6 +111,15 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     infinitelyClose→≡ : {x y : X} → ((ε : ℝ) → (ε > 0) → dist x y < ε) → x ≡ y
     infinitelyClose→≡ ∀ε>∣x-y∣ = dist-id (infinitesimal dist≥0 ∀ε>∣x-y∣)
 
+    dist-triangle<ε : {x y z : X}{ε : ℝ} → ε > 0
+      → dist x y < middle 0 ε
+      → dist y z < middle 0 ε
+      → dist x z < ε
+    dist-triangle<ε {x = x} {y = y} {z = z} {ε = ε} ε>0 dxy<ε/2 dyz<ε/2 =
+      ≤<-trans (dist-Δ x y z)
+        (transport (λ i → dist x y + dist y z < x/2+x/2≡x ε i)
+          (+-Pres< dxy<ε/2 dyz<ε/2))
+
 
     {-
 

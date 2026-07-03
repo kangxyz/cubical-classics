@@ -2,8 +2,9 @@
 module Solvers.Formula where
 
 open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Equiv
+  using (_≃_; equivFun; invEquiv)
 open import Cubical.Foundations.HLevels using (isProp×; isPropΠ)
-open import Cubical.Foundations.Univalence using (ua)
 open import Cubical.Foundations.Function using (_∘_; const)
 open import Cubical.Data.Bool
 open import Cubical.Data.Bool.Properties
@@ -11,7 +12,7 @@ open import Cubical.Data.Bool.Properties
 open import Cubical.Data.Unit
 open import Cubical.Data.Empty
   using (⊥*; isProp⊥*)
-  renaming (rec to rec⊥)
+  renaming (rec to rec⊥; rec* to rec⊥*)
 open import Cubical.Data.Sigma
   using (_×_)
 open import Cubical.Data.Sum
@@ -88,6 +89,23 @@ module Models {a : Type} where
   isProp⊢ Γ (F →ᶠ G) = isPropΠ λ _ → isProp⊢ Γ G
   isProp⊢ Γ (F ↔ᶠ G) =
     isProp× (isPropΠ λ _ → isProp⊢ Γ G) (isPropΠ λ _ → isProp⊢ Γ F)
+
+  mapEquiv⊢ : {Γ : a → Type ℓ} {Δ : a → Type ℓ'}
+    → ((ϕ : a) → Γ ϕ ≃ Δ ϕ)
+    → (F : Formula a)
+    → Γ ⊢ F → Δ ⊢ F
+  mapEquiv⊢ e (ϕ ᶠ) p = equivFun (e ϕ) p
+  mapEquiv⊢ e ⊤ᶠ p = tt*
+  mapEquiv⊢ e ⊥ᶠ p = rec⊥* p
+  mapEquiv⊢ e (¬ᶠ F) p q = p (mapEquiv⊢ (λ ϕ → invEquiv (e ϕ)) F q)
+  mapEquiv⊢ e (F ∧ᶠ G) (p , q) = mapEquiv⊢ e F p , mapEquiv⊢ e G q
+  mapEquiv⊢ e (F ∨ᶠ G) =
+    map∥∥ (map⊎ (mapEquiv⊢ e F) (mapEquiv⊢ e G))
+  mapEquiv⊢ e (F →ᶠ G) p q =
+    mapEquiv⊢ e G (p (mapEquiv⊢ (λ ϕ → invEquiv (e ϕ)) F q))
+  mapEquiv⊢ e (F ↔ᶠ G) (p , q) =
+    (λ r → mapEquiv⊢ e G (p (mapEquiv⊢ (λ ϕ → invEquiv (e ϕ)) F r))) ,
+    (λ r → mapEquiv⊢ e F (q (mapEquiv⊢ (λ ϕ → invEquiv (e ϕ)) G r)))
 
   Dec⊢ : {Γ : a → Type ℓ}
     → (∀ a → Dec (Γ a))
@@ -240,15 +258,11 @@ module NbE where
 
     computeDec : {n : ℕ} (F : Formula (Fin n))
       → {Bool→Type (binFoldBool {n = n} (λ section → section ⊨ F))}
-      → (P : FinVec (DecProp ℓ-zero) n)
+      → (P : FinVec (DecProp ℓ) n)
       → (fst ∘ fst ∘ P) ⊢ F
     computeDec {n = n} F {witness} P =
-      transport (λ i → (λ x → eq (P x) i) ⊢ F)
+      mapEquiv⊢ (λ x → invEquiv (Dec≃DecBool (P x .fst .snd) (P x .snd))) F
         (computeBool {n = n} F {witness} (λ x → Dec→Bool (P x .snd)))
-      where
-        eq : (H : DecProp ℓ-zero)
-          → Bool→Type (Dec→Bool (H .snd)) ≡ H .fst .fst
-        eq H = sym (ua (Dec≃DecBool (H .fst .snd) (H .snd)))
 open NbE public
 
 module Literals {n : ℕ} where
