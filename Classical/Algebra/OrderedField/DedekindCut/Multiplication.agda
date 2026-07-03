@@ -442,8 +442,11 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  isField𝕂 : isField 𝕂CommRing
-  isField𝕂 = ·𝕂InvR
+  𝟘≢𝟙 : ¬ 𝟘 ≡ 𝟙
+  𝟘≢𝟙 = <𝕂-arefl 1>𝕂0
+
+  IsField𝕂 : IsField 𝟘 𝟙 _+𝕂_ _·𝕂_ (-𝕂_)
+  IsField𝕂 = isfield (CommRingStr.isCommRing (𝕂CommRing .snd)) ·𝕂InvR 𝟘≢𝟙
 
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂OrderedField = 𝕂OrderedRing , isField𝕂
+  𝕂OrderedField = 𝕂OrderedRing , IsField𝕂

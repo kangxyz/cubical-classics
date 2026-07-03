@@ -53,7 +53,7 @@ private
 
 module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
 
-  open FieldStr       (𝒦 .fst .fst , 𝒦 .snd) public
+  open FieldStr       (OrderedField→Field 𝒦) public
   open OrderedRingStr (𝒦 .fst) public
 
   private
@@ -136,7 +136,7 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
   inv₊ q>0 = inv (>-arefl q>0)
 
   ·-rInv₊ : (q>0 : q > 0r) → q · inv₊ q>0 ≡ 1r
-  ·-rInv₊ q>0 = 𝒦 .snd _ (>-arefl q>0) .snd
+  ·-rInv₊ q>0 = ·-rInv (>-arefl q>0)
 
   ·-lInv₊ : (q>0 : q > 0r) → inv₊ q>0 · q ≡ 1r
   ·-lInv₊ q>0 = ·Comm _ _ ∙ ·-rInv₊ q>0

@@ -26,25 +26,24 @@ private
 module FieldStr (𝒦 : Field ℓ) where
 
   private
-    K = 𝒦 .fst .fst
-    isFieldK = 𝒦 .snd
+    K = 𝒦 .fst
 
   private
     variable
       x y : K
 
-  open RingTheory  (CommRing→Ring (𝒦 .fst)) public
-  open CommRingStr (𝒦 .fst .snd) public
-  open Units       (𝒦 .fst)      public
+  open CubicalFieldStr (𝒦 .snd) public
+  open RingTheory  (CommRing→Ring (Field→CommRing 𝒦)) public
+  open Units       (Field→CommRing 𝒦)      public
 
-  open Helpers     (𝒦 .fst)
+  open Helpers     (Field→CommRing 𝒦)
 
 
   inv : ¬ x ≡ 0r → K
-  inv x≢0 = isFieldK _ x≢0 .fst
+  inv {x = x} x≢0 = x [ x≢0 ]⁻¹
 
   ·-rInv : (x≢0 : ¬ x ≡ 0r) → x · inv x≢0 ≡ 1r
-  ·-rInv x≢0 = isFieldK _ x≢0 .snd
+  ·-rInv {x = x} x≢0 = ·⁻¹≡1 x x≢0
 
   ·-lInv : (x≢0 : ¬ x ≡ 0r) → inv x≢0 · x ≡ 1r
   ·-lInv x≢0 = ·Comm _ _ ∙ ·-rInv x≢0

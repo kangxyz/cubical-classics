@@ -90,7 +90,7 @@ uaOrderedField : {𝒦 𝒦' : OrderedField ℓ ℓ'}
 uaOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f} is-equiv i .fst =
   uaOrderedRing {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} {f = f} is-equiv i
 uaOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} is-equiv i .snd =
-  liftPathIsField (λ i → uaOrderedField is-equiv i .fst .fst) (𝒦 .snd) (𝒦' .snd) i
+  liftPathIsFieldOnOrderedRing (λ i → uaOrderedField is-equiv i .fst) (𝒦 .snd) (𝒦' .snd) i
 
 
 {-

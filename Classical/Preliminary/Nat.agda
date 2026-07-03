@@ -189,12 +189,7 @@ module LimitedOmniscience ⦃ 🤖 : Oracle ⦄  where
   case-split (inr m≡sn) = inr m≡sn
 
 <≤-split : (m n : ℕ) → (m < n) ⊎ (m ≥ n)
-<≤-split m n = case-split (m ≟ n)
-  where
-  case-split : Trichotomy m n → _
-  case-split (lt m<n) = inl m<n
-  case-split (eq m≡n) = inr (_ , sym m≡n)
-  case-split (gt m>n) = inr (<-weaken m>n)
+<≤-split = splitℕ-<
 
 
 {-

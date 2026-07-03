@@ -9,18 +9,20 @@ module Classical.Algebra.OrderedField.Instances.Rationals where
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ)
 open import Cubical.Data.Rationals using (ℚ)
+open import Cubical.Algebra.Field.Instances.Rationals
+  using (ℚField)
 
-open import Classical.Preliminary.Rationals.Field using (isFieldℚ)
 open import Classical.Preliminary.Rationals.Order using (ℚOrderedRing)
 open import Classical.Preliminary.Rationals.Archimedes using (isArchimedeanℚ) public
 open import Classical.Algebra.OrderedRing.Archimedes
 open import Classical.Algebra.OrderedField
+open import Classical.Algebra.Field using (CubicalFieldStr)
 
 
 -- ℚ is totally ordered field
 
 ℚOrderedField : OrderedField ℓ-zero ℓ-zero
-ℚOrderedField = ℚOrderedRing , isFieldℚ
+ℚOrderedField = ℚOrderedRing , CubicalFieldStr.isField (ℚField .snd)
 
 
 -- Inclusion from Natural Numbers

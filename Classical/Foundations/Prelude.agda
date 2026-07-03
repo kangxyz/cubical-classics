@@ -15,9 +15,10 @@ open import Cubical.Foundations.Equiv
 open import Cubical.Foundations.Isomorphism
 
 open import Cubical.Data.Bool
+open import Cubical.Data.Bool.Properties
+  using (isPropBool→Type*)
 open import Cubical.Relation.Nullary
 
-open import Classical.Preliminary.DecidablePropositions
 open import Classical.Axioms.ExcludedMiddle
 open import Classical.Axioms.Resizing
 
@@ -39,7 +40,7 @@ type : Prop → Type ℓ
 type = Bool→Type*
 
 prop : Prop → hProp ℓ
-prop P = Bool→DecProp P .fst
+prop P = Bool→Type* P , isPropBool→Type*
 
 bool : Dec X → Prop
 bool = Dec→Bool

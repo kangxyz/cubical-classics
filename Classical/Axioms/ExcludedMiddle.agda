@@ -11,13 +11,16 @@ open import Cubical.Foundations.HLevels
 open import Cubical.Foundations.Equiv
 open import Cubical.Foundations.Isomorphism
 open import Cubical.Foundations.Function
+open import Cubical.Foundations.Univalence
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Bool
+open import Cubical.Data.Bool.Properties
+  using (isPropBool→Type; isPropBool→Type*; Dec≃DecBool; Dec≃DecBool*)
+open import Cubical.Data.Unit
 open import Cubical.Relation.Nullary
 open import Cubical.Relation.Nullary.DecidablePropositions
-  hiding (isPropIsDecProp)
+  using (DecProp)
 
-open import Classical.Preliminary.DecidablePropositions
 open import Classical.Axioms.Resizing
 
 private
@@ -105,7 +108,7 @@ module _ (decide : LEM) where
   DecProp→hProp→DecProp : (P : DecProp ℓ) → hProp→DecProp (DecProp→hProp P) ≡ P
   DecProp→hProp→DecProp P i .fst = P .fst
   DecProp→hProp→DecProp P i .snd =
-    isProp→PathP (λ i → isPropIsDecProp (P .fst)) (decide (P .fst .snd)) (P .snd) i
+    isProp→PathP (λ i → isPropDec (P .fst .snd)) (decide (P .fst .snd)) (P .snd) i
 
   hProp→DecProp→hProp : (P : hProp ℓ) → DecProp→hProp (hProp→DecProp P) ≡ P
   hProp→DecProp→hProp P = refl
@@ -119,8 +122,28 @@ module _ (decide : LEM) where
 
   -- The type Prop is a subobject classifier
 
+  Bool→hProp : Bool → hProp ℓ
+  Bool→hProp b = Bool→Type* b , isPropBool→Type*
+
+  hProp→Bool : hProp ℓ → Bool
+  hProp→Bool P = Dec→Bool (decide (P .snd))
+
+  hProp→Bool→hProp : (P : hProp ℓ) → Bool→hProp (hProp→Bool P) ≡ P
+  hProp→Bool→hProp (P , h) i .fst = ua (invEquiv (Dec≃DecBool* h (decide h))) i
+  hProp→Bool→hProp (P , h) i .snd =
+    isProp→PathP (λ i → isPropIsProp {A = hProp→Bool→hProp (P , h) i .fst})
+      isPropBool→Type* h i
+
+  Bool→hProp→Bool : ∀ {ℓ} (b : Bool) → hProp→Bool (Bool→hProp {ℓ = ℓ} b) ≡ b
+  Bool→hProp→Bool {ℓ = ℓ} true with decide (isPropBool→Type* {ℓ = ℓ} {a = true})
+  ... | yes _ = refl
+  ... | no ¬p = Empty.rec (¬p tt*)
+  Bool→hProp→Bool {ℓ = ℓ} false with decide (isPropBool→Type* {ℓ = ℓ} {a = false})
+  ... | yes p = Empty.rec* p
+  ... | no _ = refl
+
   Iso-Bool-hProp : Iso Bool (hProp ℓ)
-  Iso-Bool-hProp = compIso Iso-Bool-DecProp (invIso Iso-hProp-DecProp)
+  Iso-Bool-hProp = iso Bool→hProp hProp→Bool hProp→Bool→hProp Bool→hProp→Bool
 
   Bool≃hProp : Bool ≃ hProp ℓ
   Bool≃hProp = isoToEquiv Iso-Bool-hProp
@@ -134,8 +157,8 @@ module _ (decide : LEM) where
 open DropProp
 
 LEM→Drop : LEM → Drop
-LEM→Drop decide P .lower = Iso-Bool-hProp decide .fun (Iso-Bool-hProp decide .inv P)
-LEM→Drop decide (P , h) .dropEquiv = invEquiv ([DecProp→Bool→Type*-P]≃P P h _)
+LEM→Drop decide (P , h) .lower = Bool→Type (Dec→Bool (decide h)) , isPropBool→Type
+LEM→Drop decide (P , h) .dropEquiv = Dec≃DecBool h (decide h)
 
 LEM→Resizing : LEM → Resizing
 LEM→Resizing decide = Drop→Resizing (LEM→Drop decide)

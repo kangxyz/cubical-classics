@@ -2,34 +2,13 @@
 module Classical.Algebra.Field.Base where
 
 open import Cubical.Foundations.Prelude
-open import Cubical.Foundations.HLevels
-open import Cubical.Data.Sigma
 open import Cubical.Algebra.CommRing
-open import Cubical.Relation.Nullary
+import Cubical.Algebra.Field as CubicalField
 
-private
-  variable
-    ℓ  : Level
-
-
-module _ (𝓡 : CommRing ℓ) where
-
-  open CommRingStr (𝓡 .snd)
-  open Units        𝓡
-
-  private
-    R = 𝓡 .fst
-
-  isField : Type ℓ
-  isField = (x : R) → ¬ x ≡ 0r → Σ[ y ∈ R ] x · y  ≡ 1r
-
-  isPropIsField : isProp isField
-  isPropIsField = isPropΠ2 (λ x _ → inverseUniqueness x)
-
-
-Field : (ℓ : Level) → Type (ℓ-suc ℓ)
-Field ℓ = Σ[ 𝓡 ∈ CommRing ℓ ] isField 𝓡
-
-
-liftPathIsField : {𝓡 𝓡' : CommRing ℓ}(p : 𝓡 ≡ 𝓡')(h : isField 𝓡)(h' : isField 𝓡') → PathP (λ i → isField (p i)) h h'
-liftPathIsField p = isProp→PathP (λ i → isPropIsField (p i))
+open CubicalField public
+  using ( Field ; IsField ; isfield ; fieldstr
+        ; makeIsField ; makeField ; makeFieldFromCommRing
+        ; Field→CommRing ; FieldHom ; FieldEquiv ; FieldPath ; uaField
+        ; isPropIsField
+        ; FieldEquiv→FieldHom ; _$f_ )
+  renaming (FieldStr to CubicalFieldStr)

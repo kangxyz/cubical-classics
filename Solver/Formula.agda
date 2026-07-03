@@ -7,10 +7,10 @@ open import Cubical.Foundations.Univalence using (ua)
 open import Cubical.Foundations.Function using (_∘_; const)
 open import Cubical.Data.Bool
 open import Cubical.Data.Bool.Properties
-  using (Bool→Type×)
+  using (Bool→Type×; Dec≃DecBool)
 open import Cubical.Data.Unit
 open import Cubical.Data.Empty
-  using (⊥*; isProp⊥*; uninhabEquiv)
+  using (⊥*; isProp⊥*)
   renaming (rec to rec⊥)
 open import Cubical.Data.Sigma
   using (_×_)
@@ -21,31 +21,16 @@ open import Cubical.HITs.PropositionalTruncation
   using (∥_∥₁; ∣_∣₁; squash₁; isPropPropTrunc)
   renaming (map to map∥∥)
 open import Cubical.Relation.Nullary.Base
-  using (Dec; yes; no; ¬_)
+  using (Dec; yes; no; ¬_; Dec¬)
 open import Cubical.Relation.Nullary.Properties
-  using (isProp¬; Dec∥∥)
+  using (isProp¬; Dec∥∥; Dec×)
 open import Cubical.Relation.Nullary.DecidablePropositions
   using (DecProp)
-open import Classical.Preliminary.DecidablePropositions
-  using (DecProp→Bool)
-
-open import Classical.Preliminary.Bool
 
 private variable
   ℓ ℓ' : Level
 
 module _ where -- Stuff that should be in other modules
-  Dec¬ : {P : Type ℓ}
-    → Dec P → Dec (¬ P)
-  Dec¬ (yes p) = no (λ z → z p)
-  Dec¬ (no ¬p) = yes ¬p
-
-  Dec× : {P : Type ℓ} {Q : Type ℓ'}
-    → Dec P → Dec Q → Dec (P × Q)
-  Dec× (yes p) (yes q) = yes (p , q)
-  Dec× (yes p) (no ¬q) = no λ z → ¬q (snd z)
-  Dec× (no ¬p) _       = no λ z → ¬p (fst z)
-
   Dec⊎ : {P : Type ℓ} {Q : Type ℓ'}
     → Dec P → Dec Q → Dec (P ⊎ Q)
   Dec⊎ (yes p) _       = yes (inl p)
@@ -259,12 +244,11 @@ module NbE where
       → (fst ∘ fst ∘ P) ⊢ F
     computeDec {n = n} F {witness} P =
       transport (λ i → (λ x → eq (P x) i) ⊢ F)
-        (computeBool {n = n} F {witness} (DecProp→Bool ∘ P))
+        (computeBool {n = n} F {witness} (λ x → Dec→Bool (P x .snd)))
       where
         eq : (H : DecProp ℓ-zero)
-          → Bool→Type (DecProp→Bool H) ≡ H .fst .fst
-        eq ((H , pH) , yes p) = sym (isContr→≡Unit (p , pH p))
-        eq ((H , pH) , no ¬p) = ua (uninhabEquiv (λ z → z) ¬p)
+          → Bool→Type (Dec→Bool (H .snd)) ≡ H .fst .fst
+        eq H = sym (ua (Dec≃DecBool (H .fst .snd) (H .snd)))
 open NbE public
 
 module Literals {n : ℕ} where
