@@ -4,7 +4,7 @@ The Dedekind Cut
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedField.DedekindCut.Base where
+module Classical.DedekindCut.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels

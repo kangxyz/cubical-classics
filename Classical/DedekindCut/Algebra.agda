@@ -4,7 +4,7 @@ Algebraic Operations on Dedekind Cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedField.DedekindCut.Algebra where
+module Classical.DedekindCut.Algebra where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Function
@@ -22,8 +22,8 @@ open import Classical.Foundations.Powerset
 open import Constructive.Algebra.StrictlyOrderedCommRing
 open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.OrderedField
-open import Classical.Algebra.OrderedField.DedekindCut.Base
-open import Classical.Algebra.OrderedField.DedekindCut.Archimedes
+open import Classical.DedekindCut.Base
+open import Classical.DedekindCut.Archimedes
 
 private
   variable

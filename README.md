@@ -41,7 +41,9 @@ agda --build-library
   `Oracle`: preliminary lemmas, ordered rings and fields, morphisms, and the
   `ℤ` and `ℚ` instances.
 - `Classical/` is for the axiom interface and the parts that use it:
-  powersets, topology, Dedekind cuts, the real numbers, and real analysis.
+  powersets, topology, the real numbers, and real analysis.
+- `Classical/DedekindCut/` contains the Dedekind-cut construction as its own
+  topic.
 - `Solvers/` contains small Boolean, propositional, and powerset solvers used
   by the powerset development.
 

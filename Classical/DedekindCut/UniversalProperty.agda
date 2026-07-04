@@ -4,7 +4,7 @@ The Universal Property of Dedekind Cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedField.DedekindCut.UniversalProperty where
+module Classical.DedekindCut.UniversalProperty where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels hiding (extend)
@@ -33,10 +33,10 @@ open import Constructive.Algebra.OrderedField
 open import Constructive.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
-open import Classical.Algebra.OrderedField.DedekindCut.Base
-open import Classical.Algebra.OrderedField.DedekindCut.Algebra
-open import Classical.Algebra.OrderedField.DedekindCut.Order
-open import Classical.Algebra.OrderedField.DedekindCut.Multiplication
+open import Classical.DedekindCut.Base
+open import Classical.DedekindCut.Algebra
+open import Classical.DedekindCut.Order
+open import Classical.DedekindCut.Multiplication
 
 private
   variable

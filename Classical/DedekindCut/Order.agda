@@ -4,7 +4,7 @@ Order Structure on Dedekind Cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedField.DedekindCut.Order where
+module Classical.DedekindCut.Order where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Function
@@ -21,9 +21,9 @@ open import Classical.Foundations.Powerset
 
 open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.OrderedField
-open import Classical.Algebra.OrderedField.DedekindCut.Base
-open import Classical.Algebra.OrderedField.DedekindCut.Algebra
-open import Classical.Algebra.OrderedField.DedekindCut.Signature
+open import Classical.DedekindCut.Base
+open import Classical.DedekindCut.Algebra
+open import Classical.DedekindCut.Signature
 
 private
   variable

@@ -4,7 +4,7 @@ Datatype to describe the sign of an element in a strictly ordered commutative ri
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedField.DedekindCut.Signature where
+module Classical.DedekindCut.Signature where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Unit

@@ -4,7 +4,7 @@ A Technical Lemma about the Archimedean Property
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedField.DedekindCut.Archimedes where
+module Classical.DedekindCut.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Sigma
@@ -22,7 +22,7 @@ open import Classical.Foundations.Powerset
 open import Constructive.Algebra.StrictlyOrderedCommRing
 open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.OrderedField
-open import Classical.Algebra.OrderedField.DedekindCut.Base
+open import Classical.DedekindCut.Base
 
 private
   variable

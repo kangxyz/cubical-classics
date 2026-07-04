@@ -4,7 +4,7 @@ Dedekind Completion is Complete
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedField.DedekindCut.Completeness where
+module Classical.DedekindCut.Completeness where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -19,9 +19,9 @@ open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
-open import Classical.Algebra.OrderedField.DedekindCut.Base
-open import Classical.Algebra.OrderedField.DedekindCut.Order
-open import Classical.Algebra.OrderedField.DedekindCut.Multiplication
+open import Classical.DedekindCut.Base
+open import Classical.DedekindCut.Order
+open import Classical.DedekindCut.Multiplication
 
 private
   variable

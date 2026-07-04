@@ -18,8 +18,8 @@ open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.OrderedField.Base
 open import Constructive.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
-open import Classical.Algebra.OrderedField.DedekindCut.Completeness
-open import Classical.Algebra.OrderedField.DedekindCut.UniversalProperty
+open import Classical.DedekindCut.Completeness
+open import Classical.DedekindCut.UniversalProperty
 
 private
   variable
