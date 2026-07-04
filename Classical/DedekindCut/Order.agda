@@ -20,7 +20,7 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
 open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedField
 open import Classical.DedekindCut.Base
 open import Classical.DedekindCut.Algebra
 open import Classical.DedekindCut.Signature

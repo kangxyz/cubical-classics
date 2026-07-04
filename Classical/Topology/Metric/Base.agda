@@ -31,7 +31,7 @@ open import Classical.Topology.Hausdorff
 
 open import Constructive.Algebra.StrictlyOrderedCommRing
   using (lt ; eq ; gt)
-open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedField
 open import Classical.Analysis.Real
 
 private

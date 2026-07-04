@@ -17,8 +17,8 @@ module Classical.Algebra.OrderedField.Completion where
 open import Cubical.Foundations.Prelude
 open import Classical.Axioms
 open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.OrderedField.Base
-open import Constructive.Algebra.OrderedField.Morphism
+open import Constructive.Algebra.StrictlyOrderedField.Base
+open import Constructive.Algebra.StrictlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.DedekindCut.Completeness
 open import Classical.DedekindCut.UniversalProperty

@@ -27,7 +27,7 @@ open import Classical.Foundations.Powerset
 open import Constructive.Algebra.StrictlyOrderedCommRing
   using (StrictlyOrderedCommRing→CommRing ; Trichotomy ; lt ; eq ; gt)
 open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Analysis.Real.Base

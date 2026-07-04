@@ -13,11 +13,11 @@ open import Cubical.Algebra.Ring
 
 open import Classical.Axioms
 open import Constructive.Algebra.OrderedCommRing.Morphism
-open import Constructive.Algebra.OrderedField.Instances.Rationals
+open import Constructive.Algebra.StrictlyOrderedField.Instances.Rationals
 open import Constructive.Algebra.StrictlyOrderedCommRing
 open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
-open import Constructive.Algebra.OrderedField
-open import Constructive.Algebra.OrderedField.Morphism
+open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.StrictlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Algebra.OrderedField.Completion
 

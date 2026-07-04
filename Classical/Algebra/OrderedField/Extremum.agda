@@ -20,7 +20,7 @@ open import Cubical.Relation.Nullary
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
-open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedField
 open import Constructive.Algebra.StrictlyOrderedCommRing
   using (Trichotomy ; lt ; eq ; gt)
 

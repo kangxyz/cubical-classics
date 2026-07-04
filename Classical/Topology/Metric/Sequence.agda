@@ -27,7 +27,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Nat
-open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedField
 open import Classical.Topology.Metric
 open import Classical.Analysis.Real.Base
 
