@@ -8,7 +8,7 @@ incrementally.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic where
+module Constructive.DedekindCut.Arithmetic.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -23,8 +23,8 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-open import Cubical.DedekindCut
-import Cubical.Rationals as ℚExtra
+open import Constructive.DedekindCut
+import Constructive.Rationals as ℚExtra
 
 
 module Addition {ℓ : Level} where
@@ -1740,33 +1740,6 @@ module NonNegativeMultiplication {ℓ : Level} where
     nnMul-congL x x' y x≡x' 0≤x 0≤x' 0≤y 0≤y ∙
     nnMul-congR x' y y' y≡y' 0≤x' 0≤x' 0≤y 0≤y'
 
-  nnMulLocated-comm :
-    (x y : DedekindCut ℓ) →
-    nnMulLocated x y →
-    nnMulLocated y x
-  nnMulLocated-comm x y located p q p<q =
-    Prop.rec squash₁
-      (λ where
-        (Sum.inl p∈Lxy) →
-          ∣ Sum.inl (nnMulLower-comm x y p p∈Lxy) ∣₁
-        (Sum.inr q∈Uxy) →
-          ∣ Sum.inr (nnMulUpper-comm x y q q∈Uxy) ∣₁)
-      (located p q p<q)
-
-  nnMulCut-comm :
-    (x y : DedekindCut ℓ) →
-    (located : nnMulLocated x y) →
-    nnMulCut x y located ≡ nnMulCut y x (nnMulLocated-comm x y located)
-  nnMulCut-comm x y located =
-    cutExt
-      (nnMulCut x y located)
-      (nnMulCut y x (nnMulLocated-comm x y located))
-      (nnMulLower-comm x y)
-      (nnMulLower-comm y x)
-      (nnMulUpper-comm x y)
-      (nnMulUpper-comm y x)
-
-
 module Multiplication {ℓ : Level} where
   open Order {ℓ}
   open Algebra {ℓ}
@@ -1810,18 +1783,16 @@ module Multiplication {ℓ : Level} where
     x ≥0 →
     posPart x ≡ x
   ≥0→posPart≡id x 0≤x =
-    ≤-antisym (posPart x) x
-      (⊔≤ x 0𝔻 x (≤-refl x) 0≤x)
-      (left≤⊔ x 0𝔻)
+    DedekindPseudolatticeTheory.≥→∨≡Left
+      {a = x} {b = 0𝔻} 0≤x
 
   ≥0→negPart≡0 :
     (x : DedekindCut ℓ) →
     x ≥0 →
     negPart x ≡ 0𝔻
   ≥0→negPart≡0 x 0≤x =
-    ≤-antisym (negPart x) 0𝔻
-      (⊔≤ (- x) 0𝔻 0𝔻 -x≤0 (≤-refl 0𝔻))
-      (right≤⊔ (- x) 0𝔻)
+    DedekindPseudolatticeTheory.≤→∨≡Right
+      {a = - x} -x≤0
     where
     -x≤-0 : (- x) ≤ (- 0𝔻)
     -x≤-0 =

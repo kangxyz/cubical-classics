@@ -4,17 +4,17 @@ Full signed associativity for constructive Dedekind-cut multiplication.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.Associativity where
+module Constructive.DedekindCut.Arithmetic.Associativity where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
-open import Cubical.DedekindCut.Arithmetic.Difference
-open import Cubical.DedekindCut.Arithmetic.Distributivity
-open import Cubical.DedekindCut.Arithmetic.Negation
-open import Cubical.DedekindCut.Arithmetic.NonNegative
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindCut.Arithmetic.Difference
+open import Constructive.DedekindCut.Arithmetic.Distributivity
+open import Constructive.DedekindCut.Arithmetic.Negation
+open import Constructive.DedekindCut.Arithmetic.NonNegative
 
 
 module MultiplicationAssociativity {ℓ : Level} where
@@ -42,8 +42,7 @@ module MultiplicationAssociativity {ℓ : Level} where
       0≤n ∙
     cong₂ _+_
       left-assoc
-      (cong (_* n) refl ∙
-       *-negL (nnMul (negPart x) a (negPart≥0 x) 0≤a) n ∙
+      (*-negL (nnMul (negPart x) a (negPart≥0 x) 0≤a) n ∙
        cong -_ right-assoc) ∙
     sym (*-r≥0-form x (nnMul a n 0≤a 0≤n) 0≤an)
     where

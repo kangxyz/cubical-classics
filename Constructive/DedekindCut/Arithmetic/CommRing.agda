@@ -4,16 +4,16 @@ Commutative ring packaging for constructive Dedekind cuts.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.CommRing where
+module Constructive.DedekindCut.Arithmetic.CommRing where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.Associativity
-open import Cubical.DedekindCut.Arithmetic.Distributivity
-open import Cubical.DedekindCut.Arithmetic.Unit
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.Associativity
+open import Constructive.DedekindCut.Arithmetic.Distributivity
+open import Constructive.DedekindCut.Arithmetic.Unit
 
 
 module CommRingStructure {ℓ : Level} where

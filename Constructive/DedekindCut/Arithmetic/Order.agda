@@ -8,7 +8,7 @@ structure and propositional truncation, but no trichotomy for reals.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.Order where
+module Constructive.DedekindCut.Arithmetic.Order where
 
 open import Cubical.Foundations.Prelude
 
@@ -23,12 +23,12 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 import Cubical.Functions.Logic as L
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
-open import Cubical.DedekindCut.Arithmetic.Distributivity
-open import Cubical.DedekindCut.Arithmetic.Negation
-import Cubical.Rationals as ℚExtra
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindCut.Arithmetic.Distributivity
+open import Constructive.DedekindCut.Arithmetic.Negation
+import Constructive.Rationals as ℚExtra
 
 
 module OrderProperties {ℓ : Level} where

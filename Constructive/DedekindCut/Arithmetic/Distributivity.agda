@@ -8,14 +8,14 @@ additive-group algebra.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.Distributivity where
+module Constructive.DedekindCut.Arithmetic.Distributivity where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
-open import Cubical.DedekindCut.Arithmetic.Difference
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindCut.Arithmetic.Difference
 
 
 module MultiplicationDistributivity {ℓ : Level} where

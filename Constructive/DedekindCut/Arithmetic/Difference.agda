@@ -6,15 +6,15 @@ semiring laws to signed multiplication laws.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.Difference where
+module Constructive.DedekindCut.Arithmetic.Difference where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
-open import Cubical.DedekindCut.Arithmetic.NonNegative
-open import Cubical.DedekindCut.Arithmetic.Unit
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindCut.Arithmetic.NonNegative
+open import Constructive.DedekindCut.Arithmetic.Unit
 
 
 module DifferenceProperties {ℓ : Level} where

@@ -49,7 +49,7 @@ There are three separate goals.
 
 ## Milestones
 
-### M0. Core Cut Infrastructure
+### M0. Basic Cut Infrastructure
 
 Status: done.
 
@@ -81,7 +81,7 @@ This is used by algebra and can also support completeness estimates.
 
 Status: done, same-universe version.
 
-Defined in `Cubical.DedekindCut.Completeness`.
+Defined in `Constructive.DedekindCut.Completeness`.
 
 Define a real-valued located cut as predicates on `DedekindCut ell`:
 
@@ -121,13 +121,14 @@ The current checked theorem is universe-internal: predicates on
 for the first constructive representation theorem.  A later lifted/mixed-level
 variant can be added if a bridge theorem needs it.
 
-### M3. Ordered Field Structure
+### Ordered-Field Arithmetic Structure
 
 Status: done for the constructive target. Required for the final theorem.
 
 - Addition and additive group.
   - Done: addition as a Dedekind cut in
-    `Cubical.DedekindCut.Arithmetic`.
+    `Constructive.DedekindCut.Arithmetic.Base`, re-exported by
+    `Constructive.DedekindCut.Arithmetic`.
   - Done: addition commutativity.
   - Done: addition associativity.
   - Done: additive zero laws.
@@ -186,51 +187,51 @@ Status: done for the constructive target. Required for the final theorem.
     nonnegative products, positive-inverse cancellation, and the order facts
     `q < a -> q/a < 1` and `r < q -> 1 < q/r`.
   - Done: nonnegative multiplication unit laws in
-    `Cubical.DedekindCut.Arithmetic.Unit`.
+    `Constructive.DedekindCut.Arithmetic.Unit`.
   - Done: signed multiplication unit laws `*-idR` and `*-idL`, via the
     constructive decomposition `x = x+ - x-`.
   - Done: reusable additive-group normalization lemmas in
-    `Cubical.DedekindCut.Arithmetic.AdditiveGroup`, including cancellation,
+    `Constructive.DedekindCut.Arithmetic.AdditiveGroup`, including cancellation,
     uniqueness of inverses, `-(a+b) = -a + -b`, and
     `-(a-b) = b-a`.
   - Done: signed multiplication commutes with negation in
-    `Cubical.DedekindCut.Arithmetic.Negation`:
+    `Constructive.DedekindCut.Arithmetic.Negation`:
     `(- x) * y = - (x * y)`, `x * (- y) = - (x * y)`, and
     `(- x) * (- y) = x * y`.
   - Done: nonnegative multiplication associativity in
-    `Cubical.DedekindCut.Arithmetic.NonNegative`.  The proof uses
+    `Constructive.DedekindCut.Arithmetic.NonNegative`.  The proof uses
     `<=` antisymmetry and only lower inclusions, avoiding new upper-endpoint
     epsilon estimates.
   - Done: nonnegative multiplication distributes over addition on both sides
-    in `Cubical.DedekindCut.Arithmetic.NonNegative`.  The proof handles
+    in `Constructive.DedekindCut.Arithmetic.NonNegative`.  The proof handles
     the constructive lower-cut sign split for rational addends directly and
     does not use LEM.
   - Done: full signed distributivity in
-    `Cubical.DedekindCut.Arithmetic.Distributivity`.
+    `Constructive.DedekindCut.Arithmetic.Distributivity`.
   - Done: full signed associativity in
-    `Cubical.DedekindCut.Arithmetic.Associativity`.
+    `Constructive.DedekindCut.Arithmetic.Associativity`.
   - Done: `CommRing` packaging in
-    `Cubical.DedekindCut.Arithmetic.CommRing`.
+    `Constructive.DedekindCut.Arithmetic.CommRing`.
   - Done: strict positive-factor monotonicity, positive-product preservation,
     and positive-sum splitting in
-    `Cubical.DedekindCut.Arithmetic.Order`.
+    `Constructive.DedekindCut.Arithmetic.Order`.
   - Done: `OrderedCommRing` packaging in
-    `Cubical.DedekindCut.Arithmetic.OrderedCommRing`.
+    `Constructive.DedekindCut.Arithmetic.OrderedCommRing`.
   - Done: positive reciprocal cuts and the proof
     `x * inv₊ x = 1` for `0 < x` in
-    `Cubical.DedekindCut.Arithmetic.Inverse`.
+    `Constructive.DedekindCut.Arithmetic.Inverse`.
   - Done: apartness-based inverses for all `x # 0`, with both right and left
     inverse forms exported by
-    `Cubical.DedekindCut.Arithmetic.OrderedField`.
+    `Constructive.DedekindCut.Arithmetic.OrderedField`.
   - Done: formal `Constructive.Algebra.OrderedField` instance
     `DedekindOrderedField`.
-  - Done: checked M3 aggregate entry point
-    `Cubical.DedekindCut.Arithmetic.M3`.
+  - Done: checked arithmetic structure aggregate entry point
+    `Constructive.DedekindCut.Arithmetic`.
   - Engineering note: the unit-law proof is intentionally split into
     `Arithmetic.Unit` with abstract rational scaling witnesses; keeping it
     inline in `Arithmetic` made typechecking too slow.
 - Archimedean statement for the constructive apartness-field structure is
-  still available separately from `Cubical.DedekindCut.Archimedean` and should
+  still available separately from `Constructive.DedekindCut.Archimedean` and should
   be packaged with the final bridge if a single record is introduced.
 
 Note: the old `Constructive.Algebra.OrderedField` record factored through
@@ -242,7 +243,8 @@ uses inverses from apartness `x # 0`.
 
 ### M4. LEM Bridge to MacNeille Completeness
 
-Status: pending.  M2 and M3 are now available constructively.
+Status: pending.  Dedekind completeness and the ordered-field arithmetic
+structure are now available constructively.
 
 In a separate LEM-dependent module:
 
@@ -252,10 +254,11 @@ In a separate LEM-dependent module:
    upper side: `x` is an upper bound of `A`, rounded upward.
 3. Apply M2 to obtain the representing cut.
 4. Prove it is the supremum of `A`.
-5. Package this with M3 as `MacNeilleCompleteOrderedField`.
+5. Package this with the ordered-field arithmetic structure as
+   `MacNeilleCompleteOrderedField`.
 
 ## Current Work Item
 
-M3 is complete for the LEM-free target.  The next step is the LEM bridge from
-constructive Dedekind completeness to the existing MacNeille completeness
-interface.
+The ordered-field arithmetic structure is complete for the LEM-free target.
+The next step is the LEM bridge from constructive Dedekind completeness to the
+existing MacNeille completeness interface.

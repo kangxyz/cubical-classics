@@ -6,7 +6,7 @@ These are prerequisites for the Dedekind-cut embedding and algebra.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.Rationals where
+module Constructive.Rationals where
 
 open import Cubical.Foundations.Prelude
 

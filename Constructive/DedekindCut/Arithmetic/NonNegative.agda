@@ -8,7 +8,7 @@ of cuts.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.NonNegative where
+module Constructive.DedekindCut.Arithmetic.NonNegative where
 
 open import Cubical.Foundations.Prelude
 
@@ -21,9 +21,9 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∣_∣₁ ; squash₁)
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-import Cubical.Rationals as ℚExtra
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+import Constructive.Rationals as ℚExtra
 
 
 module NonNegativeProperties {ℓ : Level} where

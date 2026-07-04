@@ -2,13 +2,13 @@
 
 Unit laws for constructive Dedekind-cut multiplication.
 
-This module is kept separate from Cubical.DedekindCut.Arithmetic so the main
+This module is kept separate from Constructive.DedekindCut.Arithmetic so the main
 arithmetic development remains quick to typecheck while the unit-law estimates
 are developed in smaller pieces.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.Unit where
+module Constructive.DedekindCut.Arithmetic.Unit where
 
 open import Cubical.Foundations.Prelude
 
@@ -20,9 +20,10 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-import Cubical.Rationals as ℚExtra
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+import Constructive.Rationals as ℚExtra
 
 
 module UnitProperties {ℓ : Level} where
@@ -30,6 +31,7 @@ module UnitProperties {ℓ : Level} where
   open Algebra {ℓ}
   open Lattice {ℓ}
   open Addition {ℓ}
+  open AdditiveGroup {ℓ}
   open NonNegativeMultiplication {ℓ}
   open Multiplication {ℓ}
 
@@ -168,14 +170,6 @@ module UnitProperties {ℓ : Level} where
       (cong -_ (nnMul-idR (negPart x) (negPart≥0 x)))
 
   abstract
-    plus-minus-cancelR :
-      (x n : DedekindCut ℓ) →
-      (x + n) + (- n) ≡ x
-    plus-minus-cancelR x n =
-      sym (+-assoc x n (- n)) ∙
-      cong (x +_) (+-invR n) ∙
-      +-idR x
-
     posPart≤x+negPart :
       (x : DedekindCut ℓ) →
       posPart x ≤ x + negPart x
@@ -267,47 +261,14 @@ module UnitProperties {ℓ : Level} where
       (x : DedekindCut ℓ) →
       posPart x + (- negPart x) ≡ x
     positive-negative-decomposition x =
-      ≤-antisym (posPart x + (- n)) x lhs≤x x≤lhs
+      cong (_+ (- n))
+        (≤-antisym (posPart x) (x + n)
+          (posPart≤x+negPart x)
+          (x+negPart≤posPart x)) ∙
+      plus-minus-cancelR x n
       where
       n : DedekindCut ℓ
       n = negPart x
-
-      cancel : (x + n) + (- n) ≡ x
-      cancel = plus-minus-cancelR x n
-
-      lhs≤cancelled :
-        posPart x + (- n) ≤ (x + n) + (- n)
-      lhs≤cancelled =
-        +-monoR-≤ (posPart x) (x + n) (- n)
-          (posPart≤x+negPart x)
-
-      lhs≤x : posPart x + (- n) ≤ x
-      lhs≤x =
-        ≤-trans
-          (posPart x + (- n))
-          ((x + n) + (- n))
-          x
-          lhs≤cancelled
-          (≡→≤ cancel)
-
-      cancelled≤lhs :
-        (x + n) + (- n) ≤ posPart x + (- n)
-      cancelled≤lhs =
-        +-monoR-≤ (x + n) (posPart x) (- n)
-          (x+negPart≤posPart x)
-
-      x≤cancelled : x ≤ (x + n) + (- n)
-      x≤cancelled =
-        ≡→≤ (sym cancel)
-
-      x≤lhs : x ≤ posPart x + (- n)
-      x≤lhs =
-        ≤-trans
-          x
-          ((x + n) + (- n))
-          (posPart x + (- n))
-          x≤cancelled
-          cancelled≤lhs
 
   *-idR :
     (x : DedekindCut ℓ) →

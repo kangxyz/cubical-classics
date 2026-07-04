@@ -8,79 +8,68 @@ calculations.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.AdditiveGroup where
+module Constructive.DedekindCut.Arithmetic.AdditiveGroup where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
+open import Cubical.Algebra.AbGroup
+open import Cubical.Algebra.Group
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
 
 
 module AdditiveGroup {ℓ : Level} where
   open Algebra {ℓ}
   open Addition {ℓ}
 
+  DedekindAbGroup : AbGroup (ℓ-suc ℓ)
+  DedekindAbGroup =
+    makeAbGroup 0𝔻 _+_ (-_) isSetDedekindCut
+      +-assoc +-idR +-invR +-comm
+
+  module DedekindAbGroupTheory = AbGroupTheory DedekindAbGroup
+  module DedekindGroupTheory = GroupTheory (AbGroup→Group DedekindAbGroup)
+
   +-interchange :
     (a b c d : DedekindCut ℓ) →
     (a + b) + (c + d) ≡ (a + c) + (b + d)
-  +-interchange a b c d =
-    +-assoc (a + b) c d ∙
-    cong (_+ d)
-      (sym (+-assoc a b c) ∙
-       cong (a +_) (+-comm b c) ∙
-       +-assoc a c b) ∙
-    sym (+-assoc (a + c) b d)
+  +-interchange =
+    DedekindAbGroupTheory.comm-4
 
   +-cancelR :
     (x y z : DedekindCut ℓ) →
     x + z ≡ y + z →
     x ≡ y
-  +-cancelR x y z x+z≡y+z =
-    sym (+-idR x) ∙
-    cong (x +_) (sym (+-invR z)) ∙
-    +-assoc x z (- z) ∙
-    cong (_+ (- z)) x+z≡y+z ∙
-    sym (+-assoc y z (- z)) ∙
-    cong (y +_) (+-invR z) ∙
-    +-idR y
+  +-cancelR x y z =
+    DedekindGroupTheory.·CancelR z
 
   +-cancelL :
     (x y z : DedekindCut ℓ) →
     z + x ≡ z + y →
     x ≡ y
-  +-cancelL x y z z+x≡z+y =
-    +-cancelR x y z
-      (+-comm x z ∙ z+x≡z+y ∙ +-comm z y)
+  +-cancelL x y z =
+    DedekindGroupTheory.·CancelL z
 
   inverse-uniqueR :
     (x y : DedekindCut ℓ) →
     x + y ≡ 0𝔻 →
     - x ≡ y
   inverse-uniqueR x y x+y≡0 =
-    sym (+-idR (- x)) ∙
-    cong ((- x) +_) (sym x+y≡0) ∙
-    +-assoc (- x) x y ∙
-    cong (_+ y) (+-invL x) ∙
-    +-idL y
+    sym (DedekindGroupTheory.invUniqueR x+y≡0)
 
   inverse-uniqueL :
     (x y : DedekindCut ℓ) →
     y + x ≡ 0𝔻 →
     - x ≡ y
   inverse-uniqueL x y y+x≡0 =
-    inverse-uniqueR x y (+-comm x y ∙ y+x≡0)
+    sym (DedekindGroupTheory.invUniqueL y+x≡0)
 
   neg-add :
     (a b : DedekindCut ℓ) →
     - (a + b) ≡ (- a) + (- b)
   neg-add a b =
-    inverse-uniqueR (a + b) ((- a) + (- b)) sum-zero
-    where
-    sum-zero : (a + b) + ((- a) + (- b)) ≡ 0𝔻
-    sum-zero =
-      +-interchange a b (- a) (- b) ∙
-      cong₂ _+_ (+-invR a) (+-invR b) ∙
-      +-idR 0𝔻
+    DedekindGroupTheory.invDistr a b ∙
+    +-comm (- b) (- a)
 
   neg-difference-swap :
     (a b : DedekindCut ℓ) →
@@ -95,6 +84,22 @@ module AdditiveGroup {ℓ : Level} where
     a + (- b) ≡ - (b + (- a))
   difference-neg-swap a b =
     sym (neg-difference-swap b a)
+
+  plus-minus-cancelR :
+    (x n : DedekindCut ℓ) →
+    (x + n) + (- n) ≡ x
+  plus-minus-cancelR x n =
+    sym (+-assoc x n (- n)) ∙
+    cong (x +_) (+-invR n) ∙
+    +-idR x
+
+  minus-plus-cancelR :
+    (x n : DedekindCut ℓ) →
+    (x + (- n)) + n ≡ x
+  minus-plus-cancelR x n =
+    sym (+-assoc x (- n) n) ∙
+    cong (x +_) (+-invL n) ∙
+    +-idR x
 
   sum-differences :
     (a b c d : DedekindCut ℓ) →
@@ -116,10 +121,7 @@ module AdditiveGroup {ℓ : Level} where
       (a + (- b)) + (b + d) ≡ a + d
     left-normal =
       +-assoc (a + (- b)) b d ∙
-      cong (_+ d)
-        (sym (+-assoc a (- b) b) ∙
-         cong (a +_) (+-invL b) ∙
-         +-idR a)
+      cong (_+ d) (minus-plus-cancelR a b)
 
     right-normal :
       (c + (- d)) + (b + d) ≡ c + b
@@ -148,23 +150,4 @@ module AdditiveGroup {ℓ : Level} where
       (c + b) + ((- b) + (- d)) ≡ c + (- d)
     right-normal =
       +-assoc (c + b) (- b) (- d) ∙
-      cong (_+ (- d))
-        (sym (+-assoc c b (- b)) ∙
-         cong (c +_) (+-invR b) ∙
-         +-idR c)
-
-  plus-minus-cancelR :
-    (x n : DedekindCut ℓ) →
-    (x + n) + (- n) ≡ x
-  plus-minus-cancelR x n =
-    sym (+-assoc x n (- n)) ∙
-    cong (x +_) (+-invR n) ∙
-    +-idR x
-
-  minus-plus-cancelR :
-    (x n : DedekindCut ℓ) →
-    (x + (- n)) + n ≡ x
-  minus-plus-cancelR x n =
-    sym (+-assoc x (- n) n) ∙
-    cong (x +_) (+-invL n) ∙
-    +-idR x
+      cong (_+ (- d)) (plus-minus-cancelR c b)

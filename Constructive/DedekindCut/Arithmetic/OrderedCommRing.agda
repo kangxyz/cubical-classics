@@ -8,21 +8,20 @@ valid without LEM.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.OrderedCommRing where
+module Constructive.DedekindCut.Arithmetic.OrderedCommRing where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv
 
 open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.OrderedCommRing
-open import Cubical.Relation.Binary.Order.Poset
 open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Cubical.Relation.Nullary
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.CommRing
-open import Cubical.DedekindCut.Arithmetic.Order
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.CommRing
+open import Constructive.DedekindCut.Arithmetic.Order
 
 
 module OrderedCommRingStructure {ℓ : Level} where
@@ -34,21 +33,6 @@ module OrderedCommRingStructure {ℓ : Level} where
   open Multiplication {ℓ}
   open CommRingStructure {ℓ}
   open OrderProperties {ℓ}
-
-  Dedekind≤Poset : Poset (ℓ-suc ℓ) ℓ
-  Dedekind≤Poset =
-    poset (DedekindCut ℓ) _≤_
-      (isposet isSetDedekindCut isProp≤ ≤-refl ≤-trans ≤-antisym)
-
-  Dedekind≤Pseudolattice : Pseudolattice (ℓ-suc ℓ) ℓ
-  Dedekind≤Pseudolattice =
-    makePseudolatticeFromPoset Dedekind≤Poset _⊓_ _⊔_
-      (λ {a} {b} → ⊓≤left a b)
-      (λ {a} {b} → ⊓≤right a b)
-      (λ {a} {b} {x} → ≤⊓ x a b)
-      (λ {a} {b} → left≤⊔ a b)
-      (λ {a} {b} → right≤⊔ a b)
-      (λ {a} {b} {x} → ⊔≤ a b x)
 
   DedekindIsOrderedCommRing :
     IsOrderedCommRing 0𝔻 1𝔻 _+_ _*_ (-_) _<_ _≤_

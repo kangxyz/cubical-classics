@@ -13,7 +13,7 @@ the input proof `0𝔻 < x`.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.Inverse where
+module Constructive.DedekindCut.Arithmetic.Inverse where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -28,11 +28,11 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 open import Cubical.Relation.Nullary using (¬_)
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.Negation
-open import Cubical.DedekindCut.Arithmetic.Order
-import Cubical.Rationals as ℚExtra
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.Negation
+open import Constructive.DedekindCut.Arithmetic.Order
+import Constructive.Rationals as ℚExtra
 
 
 module Inverse {ℓ : Level} where

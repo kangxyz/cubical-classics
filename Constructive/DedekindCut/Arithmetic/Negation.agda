@@ -2,19 +2,19 @@
 
 Compatibility of constructive Dedekind-cut multiplication with negation.
 
-The signed multiplication in Cubical.DedekindCut.Arithmetic is defined through
+The signed multiplication in Constructive.DedekindCut.Arithmetic is defined through
 positive and negative parts.  These lemmas make the expected sign laws
 available without any trichotomy.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.Negation where
+module Constructive.DedekindCut.Arithmetic.Negation where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
 
 
 module NegationProperties {ℓ : Level} where

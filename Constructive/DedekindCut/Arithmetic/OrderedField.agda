@@ -5,11 +5,11 @@ Constructive apartness-field packaging for Dedekind cuts.
 Cubical's `Field` record asks for inverses from mere inequality `x != 0`.
 Constructively, Dedekind reals provide inverses from apartness `x # 0`
 instead.  This module packages exactly that LEM-free field content together
-with the ordered commutative ring from M3.
+with the ordered commutative ring structure.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.OrderedField where
+module Constructive.DedekindCut.Arithmetic.OrderedField where
 
 open import Cubical.Foundations.Prelude
 
@@ -18,10 +18,10 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.Algebra.OrderedCommRing
 
 open import Constructive.Algebra.OrderedField
-open import Cubical.DedekindCut
-open import Cubical.DedekindCut.Arithmetic
-open import Cubical.DedekindCut.Arithmetic.OrderedCommRing
-open import Cubical.DedekindCut.Arithmetic.Inverse
+open import Constructive.DedekindCut
+open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindCut.Arithmetic.OrderedCommRing
+open import Constructive.DedekindCut.Arithmetic.Inverse
 
 module OrderedFieldStructure {ℓ : Level} where
   open Order {ℓ}

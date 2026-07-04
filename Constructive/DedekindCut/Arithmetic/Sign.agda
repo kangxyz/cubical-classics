@@ -1,14 +1,14 @@
 {-
 
-Constructive signs used by the Dedekind-cut algebra.
+Constructive signs used by the Dedekind-cut arithmetic.
 
-This is the non-classical part of the old
-Classical.Algebra.OrderedField.DedekindCut.Signature module, moved under the
-Cubical namespace.  It has no dependency on LEM, Oracle, or powersets.
+This is the non-classical sign algebra from the old classical Dedekind-cut
+development, moved under the Constructive arithmetic namespace.  It has no
+dependency on LEM, Oracle, or powersets.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Signature where
+module Constructive.DedekindCut.Arithmetic.Sign where
 
 open import Cubical.Foundations.Prelude
 
