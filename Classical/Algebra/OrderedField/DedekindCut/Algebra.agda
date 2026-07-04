@@ -69,7 +69,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
   -}
 
   +𝕂Comm : (a b : 𝕂) → a +𝕂 b ≡ b +𝕂 a
-  +𝕂Comm a b = ≤𝕂-asym (upper⊆ b a) (upper⊆ a b)
+  +𝕂Comm a b = ≤𝕂-asym (lift (upper⊆ b a)) (lift (upper⊆ a b))
     where
     upper⊆ : (a b : 𝕂){q : K} → q ∈ (a +𝕂 b) .upper → q ∈ (b +𝕂 a) .upper
     upper⊆ a b {q = q} q∈upper = Inhab→∈ (+upper b a) do
@@ -77,7 +77,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
       return (t , s , t∈upper , s∈upper , q≡s+t ∙ +Comm s t)
 
   +𝕂Assoc : (a b c : 𝕂) → a +𝕂 (b +𝕂 c) ≡ (a +𝕂 b) +𝕂 c
-  +𝕂Assoc a b c = ≤𝕂-asym upper⊇ upper⊆
+  +𝕂Assoc a b c = ≤𝕂-asym (lift upper⊇) (lift upper⊆)
     where
     upper⊆ : {q : K} → q ∈ (a +𝕂 (b +𝕂 c)) .upper → q ∈ ((a +𝕂 b) +𝕂 c) .upper
     upper⊆ {q = q} q∈upper = Inhab→∈ (+upper (a +𝕂 b) c) do
@@ -97,7 +97,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
 
   +𝕂IdR : (a : 𝕂) → a +𝕂 𝟘 ≡ a
-  +𝕂IdR a = ≤𝕂-asym upper⊇ upper⊆
+  +𝕂IdR a = ≤𝕂-asym (lift upper⊇) (lift upper⊆)
     where
     upper⊆ : {q : K} → q ∈ (a +𝕂 𝟘) .upper → q ∈ a .upper
     upper⊆ {q = q} q∈upper =
@@ -116,7 +116,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
 
   +𝕂InvR : (a : 𝕂) → a +𝕂 (-𝕂 a) ≡ 𝟘
-  +𝕂InvR a = ≤𝕂-asym upper⊇ upper⊆
+  +𝕂InvR a = ≤𝕂-asym (lift upper⊇) (lift upper⊆)
     where
     upper⊆ : {q : K} → q ∈ (a +𝕂 (-𝕂 a)) .upper → q ∈ 𝟘 .upper
     upper⊆ {q = q} q∈upper =
@@ -168,7 +168,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
   -}
 
   ·𝕂₊Comm : (a b : 𝕂₊) → a ·𝕂₊ b ≡ b ·𝕂₊ a
-  ·𝕂₊Comm a b = path-𝕂₊ _ _ (≤𝕂-asym (upper⊆ b a) (upper⊆ a b))
+  ·𝕂₊Comm a b = path-𝕂₊ _ _ (≤𝕂-asym (lift (upper⊆ b a)) (lift (upper⊆ a b)))
     where
     upper⊆ : (a b : 𝕂₊){q : K} → q ∈ (a ·𝕂₊ b) .fst .upper → q ∈ (b ·𝕂₊ a) .fst .upper
     upper⊆ (a , a≥0) (b , b≥0) {q = q} q∈upper = Inhab→∈ (·upper b a) do
@@ -177,7 +177,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
 
   ·𝕂₊Assoc : (a b c : 𝕂₊) → a ·𝕂₊ (b ·𝕂₊ c) ≡ (a ·𝕂₊ b) ·𝕂₊ c
-  ·𝕂₊Assoc a b c = path-𝕂₊ _ _ (≤𝕂-asym upper⊇ upper⊆)
+  ·𝕂₊Assoc a b c = path-𝕂₊ _ _ (≤𝕂-asym (lift upper⊇) (lift upper⊆))
     where
     upper⊆ : {q : K} → q ∈ (a ·𝕂₊ (b ·𝕂₊ c)) .fst .upper → q ∈ ((a ·𝕂₊ b) ·𝕂₊ c) .fst .upper
     upper⊆ {q = q} q∈upper = Inhab→∈ (·upper₊ (a ·𝕂₊ b) c) do
@@ -203,10 +203,10 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
 
   ·𝕂₊ZeroR : (a : 𝕂₊) → a ·𝕂₊ 𝟘₊ ≡ 𝟘₊
-  ·𝕂₊ZeroR a = path-𝕂₊ _ _ (≤𝕂-asym upper⊇ upper⊆)
+  ·𝕂₊ZeroR a = path-𝕂₊ _ _ (≤𝕂-asym (lift upper⊇) (lift upper⊆))
     where
     upper⊆ : {q : K} → q ∈ (a ·𝕂₊ 𝟘₊) .fst .upper → q ∈ 𝟘 .upper
-    upper⊆ = (a ·𝕂₊ 𝟘₊) .snd
+    upper⊆ = lower ((a ·𝕂₊ 𝟘₊) .snd)
 
     upper⊇ : {q : K} → q ∈ 𝟘 .upper → q ∈ (a ·𝕂₊ 𝟘₊) .fst .upper
     upper⊇ {q = q} q∈upper =
@@ -222,7 +222,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
 
   ·𝕂₊IdR : (a : 𝕂₊) → a ·𝕂₊ 𝟙₊ ≡ a
-  ·𝕂₊IdR a = path-𝕂₊ _ _ (≤𝕂-asym upper⊇ upper⊆)
+  ·𝕂₊IdR a = path-𝕂₊ _ _ (≤𝕂-asym (lift upper⊇) (lift upper⊆))
     where
     upper⊆ : {q : K} → q ∈ (a ·𝕂₊ 𝟙₊) .fst .upper → q ∈ a .fst .upper
     upper⊆ {q = q} q∈upper =
@@ -264,7 +264,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
 
   ·𝕂₊DistR : (a b c : 𝕂₊) → (a ·𝕂₊ b) +𝕂₊ (a ·𝕂₊ c) ≡ a ·𝕂₊ (b +𝕂₊ c)
-  ·𝕂₊DistR a b c = path-𝕂₊ _ _ (≤𝕂-asym upper⊇ upper⊆)
+  ·𝕂₊DistR a b c = path-𝕂₊ _ _ (≤𝕂-asym (lift upper⊇) (lift upper⊆))
     where
     upper⊆ : {q : K} → q ∈ ((a ·𝕂₊ b) +𝕂₊ (a ·𝕂₊ c)) .fst .upper → q ∈ (a ·𝕂₊ (b +𝕂₊ c)) .fst .upper
     upper⊆ {q = q} q∈upper =
@@ -318,7 +318,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
               r+·<r+· = +-lPres< (·-rPosPres< q-1>0 r>q')
 
     ·𝕂₊InvR' : a·a⁻¹ ≡ 𝟙
-    ·𝕂₊InvR' = ≤𝕂-asym upper⊇ upper⊆
+    ·𝕂₊InvR' = ≤𝕂-asym (lift upper⊇) (lift upper⊆)
       where
       upper⊆ : {q : K} → q ∈ a·a⁻¹ .upper → q ∈ 𝟙 .upper
       upper⊆ {q = q} q∈upper =

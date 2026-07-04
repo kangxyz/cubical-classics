@@ -72,7 +72,7 @@ module Order ⦃ 🤖 : Oracle ⦄
   -- Strictness
 
   <𝕂→≤𝕂 : {a b : 𝕂} → a <𝕂 b → a ≤𝕂 b
-  <𝕂→≤𝕂 {a = a} a<b x∈upper =
+  <𝕂→≤𝕂 {a = a} a<b = lift λ x∈upper →
     proof _ , isProp∈ (a .upper) by do
     (q , q<r∈upper , q∈upper) ← a<b
     return (a .upper-close _ _ q∈upper (q<r∈upper _ x∈upper))
@@ -98,11 +98,12 @@ module Order ⦃ 🤖 : Oracle ⦄
 
   ¬a≤b→a>b : (a b : 𝕂) → ¬ (a ≤𝕂 b) → a >𝕂 b
   ¬a≤b→a>b a b ¬a≤b = do
-    (x , ¬x∈upper , x∈upper) ← ⊈→∃ ¬a≤b
+    (x , ¬x∈upper , x∈upper) ← ⊈→∃ (λ a≤b → ¬a≤b (lift a≤b))
     return (x , ¬∈upper→<upper a x ¬x∈upper , x∈upper)
 
   ¬a>b→a≤b : (a b : 𝕂) → ¬ (a >𝕂 b) → a ≤𝕂 b
-  ¬a>b→a≤b a b ¬a>b = ¬¬elim (isProp≤𝕂 {a = a} {b = b}) (¬map (¬a≤b→a>b a b) ¬a>b)
+  ¬a>b→a≤b a b ¬a>b =
+    lift (¬¬elim isProp⊆ (λ ¬a≤b → ¬a>b (¬a≤b→a>b a b (λ h → ¬a≤b (lower h)))))
 
   a≤b→a<b+a≡b : (a b : 𝕂) → a ≤𝕂 b → (a <𝕂 b) ⊎ (a ≡ b)
   a≤b→a<b+a≡b a b a≤b with decide (isProp<𝕂 {a = a} {b = b})
@@ -156,10 +157,10 @@ module Order ⦃ 🤖 : Oracle ⦄
 
 
   +𝕂-Pres≤ : (a b c d : 𝕂) → a ≤𝕂 b → c ≤𝕂 d → (a +𝕂 c) ≤𝕂 (b +𝕂 d)
-  +𝕂-Pres≤ a b c d a≤b c≤d x∈b+d =
+  +𝕂-Pres≤ a b c d a≤b c≤d = lift λ x∈b+d →
     proof _ , isProp∈ ((a +𝕂 c) .upper) by do
     (s , t , s∈b , t∈d , x≡s+t) ← ∈→Inhab (+upper b d) x∈b+d
-    return (Inhab→∈ (+upper a c) ∣ s , t , a≤b s∈b , c≤d t∈d , x≡s+t ∣₁)
+    return (Inhab→∈ (+upper a c) ∣ s , t , lower a≤b s∈b , lower c≤d t∈d , x≡s+t ∣₁)
 
   +𝕂-rPres≤ : (a b c : 𝕂) → a ≤𝕂 b → (a +𝕂 c) ≤𝕂 (b +𝕂 c)
   +𝕂-rPres≤ a b c a≤b = +𝕂-Pres≤ a b c c a≤b (≤𝕂-refl {a = c} refl)

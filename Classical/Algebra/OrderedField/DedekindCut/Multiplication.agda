@@ -332,21 +332,15 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   private
     open BinaryRelation
 
-    _≤𝕂ᶜ_ : 𝕂 → 𝕂 → Type (ℓ-max ℓ ℓ')
-    a ≤𝕂ᶜ b = Lift ℓ' (a ≤𝕂 b)
-
-    isProp≤𝕂ᶜ : {a b : 𝕂} → isProp (a ≤𝕂ᶜ b)
-    isProp≤𝕂ᶜ = isOfHLevelLift 1 isProp≤𝕂
-
-    ≤𝕂ᶜ-trans : (a b c : 𝕂) → a ≤𝕂ᶜ b → b ≤𝕂ᶜ c → a ≤𝕂ᶜ c
-    ≤𝕂ᶜ-trans a b c a≤b b≤c = lift (λ x∈c → lower a≤b (lower b≤c x∈c))
+    ≤𝕂-trans : (a b c : 𝕂) → a ≤𝕂 b → b ≤𝕂 c → a ≤𝕂 c
+    ≤𝕂-trans a b c a≤b b≤c = lift (λ x∈c → lower a≤b (lower b≤c x∈c))
 
     𝕂≤Poset : Poset (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-    𝕂≤Poset = poset 𝕂 _≤𝕂ᶜ_
-      (isposet isSet𝕂 (λ a b → isProp≤𝕂ᶜ {a = a} {b = b})
-        (λ a → lift (≤𝕂-refl {a = a} refl))
-        ≤𝕂ᶜ-trans
-        (λ a b a≤b b≤a → ≤𝕂-asym (lower a≤b) (lower b≤a)))
+    𝕂≤Poset = poset 𝕂 _≤𝕂_
+      (isposet isSet𝕂 (λ a b → isProp≤𝕂 {a = a} {b = b})
+        (λ a → ≤𝕂-refl {a = a} refl)
+        ≤𝕂-trans
+        (λ a b a≤b b≤a → ≤𝕂-asym a≤b b≤a))
 
     min𝕂 : 𝕂 → 𝕂 → 𝕂
     min𝕂 a b with dichotomy𝕂 a b
@@ -358,32 +352,32 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
     ... | lt a<b = b
     ... | ge a≥b = a
 
-    min𝕂≤left : {a b : 𝕂} → min𝕂 a b ≤𝕂ᶜ a
+    min𝕂≤left : {a b : 𝕂} → min𝕂 a b ≤𝕂 a
     min𝕂≤left {a = a} {b = b} with dichotomy𝕂 a b
-    ... | lt a<b = lift (≤𝕂-refl {a = a} refl)
-    ... | ge a≥b = lift a≥b
+    ... | lt a<b = ≤𝕂-refl {a = a} refl
+    ... | ge a≥b = a≥b
 
-    min𝕂≤right : {a b : 𝕂} → min𝕂 a b ≤𝕂ᶜ b
+    min𝕂≤right : {a b : 𝕂} → min𝕂 a b ≤𝕂 b
     min𝕂≤right {a = a} {b = b} with dichotomy𝕂 a b
-    ... | lt a<b = lift (<𝕂→≤𝕂 {a = a} {b = b} a<b)
-    ... | ge a≥b = lift (≤𝕂-refl {a = b} refl)
+    ... | lt a<b = <𝕂→≤𝕂 {a = a} {b = b} a<b
+    ... | ge a≥b = ≤𝕂-refl {a = b} refl
 
-    ≤min𝕂 : {a b x : 𝕂} → x ≤𝕂ᶜ a → x ≤𝕂ᶜ b → x ≤𝕂ᶜ min𝕂 a b
+    ≤min𝕂 : {a b x : 𝕂} → x ≤𝕂 a → x ≤𝕂 b → x ≤𝕂 min𝕂 a b
     ≤min𝕂 {a = a} {b = b} x≤a x≤b with dichotomy𝕂 a b
     ... | lt a<b = x≤a
     ... | ge a≥b = x≤b
 
-    left≤max𝕂 : {a b : 𝕂} → a ≤𝕂ᶜ max𝕂 a b
+    left≤max𝕂 : {a b : 𝕂} → a ≤𝕂 max𝕂 a b
     left≤max𝕂 {a = a} {b = b} with dichotomy𝕂 a b
-    ... | lt a<b = lift (<𝕂→≤𝕂 {a = a} {b = b} a<b)
-    ... | ge a≥b = lift (≤𝕂-refl {a = a} refl)
+    ... | lt a<b = <𝕂→≤𝕂 {a = a} {b = b} a<b
+    ... | ge a≥b = ≤𝕂-refl {a = a} refl
 
-    right≤max𝕂 : {a b : 𝕂} → b ≤𝕂ᶜ max𝕂 a b
+    right≤max𝕂 : {a b : 𝕂} → b ≤𝕂 max𝕂 a b
     right≤max𝕂 {a = a} {b = b} with dichotomy𝕂 a b
-    ... | lt a<b = lift (≤𝕂-refl {a = b} refl)
-    ... | ge a≥b = lift a≥b
+    ... | lt a<b = ≤𝕂-refl {a = b} refl
+    ... | ge a≥b = a≥b
 
-    max𝕂≤ : {a b x : 𝕂} → a ≤𝕂ᶜ x → b ≤𝕂ᶜ x → max𝕂 a b ≤𝕂ᶜ x
+    max𝕂≤ : {a b x : 𝕂} → a ≤𝕂 x → b ≤𝕂 x → max𝕂 a b ≤𝕂 x
     max𝕂≤ {a = a} {b = b} a≤x b≤x with dichotomy𝕂 a b
     ... | lt a<b = b≤x
     ... | ge a≥b = a≤x
@@ -397,7 +391,7 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
     <𝕂-trans : (a b c : 𝕂) → a <𝕂 b → b <𝕂 c → a <𝕂 c
     <𝕂-trans a b c a<b b<c = do
       (q , q<r∈c , q∈b) ← b<c
-      return (q , q<r∈c , <𝕂→≤𝕂 {a = a} {b = b} a<b q∈b)
+      return (q , q<r∈c , lower (<𝕂→≤𝕂 {a = a} {b = b} a<b) q∈b)
 
     <𝕂-weaklyLinear : (a b c : 𝕂) → a <𝕂 b → (a <𝕂 c) L.⊔′ (c <𝕂 b)
     <𝕂-weaklyLinear a b c a<b with trichotomy𝕂 c b
@@ -405,21 +399,21 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
     ... | eq c≡b = ∣ inl (subst (a <𝕂_) (sym c≡b) a<b) ∣₁
     ... | gt c>b = ∣ inl (<𝕂-trans a b c a<b c>b) ∣₁
 
-    <𝕂≤𝕂-trans : (a b c : 𝕂) → a <𝕂 b → b ≤𝕂ᶜ c → a <𝕂 c
-    <𝕂≤𝕂-trans a b c a<b b≤c with split≤𝕂 b c (lower b≤c)
+    <𝕂≤𝕂-trans : (a b c : 𝕂) → a <𝕂 b → b ≤𝕂 c → a <𝕂 c
+    <𝕂≤𝕂-trans a b c a<b b≤c with split≤𝕂 b c b≤c
     ... | lt b<c = <𝕂-trans a b c a<b b<c
     ... | eq b≡c = subst (a <𝕂_) b≡c a<b
 
-    ≤𝕂<𝕂-trans : (a b c : 𝕂) → a ≤𝕂ᶜ b → b <𝕂 c → a <𝕂 c
-    ≤𝕂<𝕂-trans a b c a≤b b<c with split≤𝕂 a b (lower a≤b)
+    ≤𝕂<𝕂-trans : (a b c : 𝕂) → a ≤𝕂 b → b <𝕂 c → a <𝕂 c
+    ≤𝕂<𝕂-trans a b c a≤b b<c with split≤𝕂 a b a≤b
     ... | lt a<b = <𝕂-trans a b c a<b b<c
     ... | eq a≡b = subst (_<𝕂 c) (sym a≡b) b<c
 
-    ≤𝕂≃¬>𝕂 : (a b : 𝕂) → (a ≤𝕂ᶜ b) ≃ (¬ (b <𝕂 a))
+    ≤𝕂≃¬>𝕂 : (a b : 𝕂) → (a ≤𝕂 b) ≃ (¬ (b <𝕂 a))
     ≤𝕂≃¬>𝕂 a b =
-      propBiimpl→Equiv (isProp≤𝕂ᶜ {a = a} {b = b}) (isProp¬ (b <𝕂 a))
-        (λ a≤b b<a → <≤𝕂-asym b a b<a (lower a≤b))
-        (λ ¬b<a → lift (¬a>b→a≤b a b ¬b<a))
+      propBiimpl→Equiv (isProp≤𝕂 {a = a} {b = b}) (isProp¬ (b <𝕂 a))
+        (λ a≤b b<a → <≤𝕂-asym b a b<a a≤b)
+        (λ ¬b<a → ¬a>b→a≤b a b ¬b<a)
 
     +𝕂-posSum : (x y : 𝕂) → 𝟘 <𝕂 (x +𝕂 y) → (𝟘 <𝕂 x) L.⊔′ (𝟘 <𝕂 y)
     +𝕂-posSum x y 0<x+y with trichotomy𝕂 x 𝟘
@@ -468,11 +462,11 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
         (subst (_>𝕂 𝟘) (·𝕂-diffR x y z)
           (·𝕂'-Pres>0 (y +𝕂 (-𝕂 x)) z (<𝕂→Diff>0 x y x<y) 0<z))
 
-    ·𝕂-rMono≤ : (x y z : 𝕂) → 𝟘 ≤𝕂ᶜ z → x ≤𝕂ᶜ y → (x ·𝕂 z) ≤𝕂ᶜ (y ·𝕂 z)
-    ·𝕂-rMono≤ x y z 0≤z x≤y with split≤𝕂 𝟘 z (lower 0≤z) | split≤𝕂 x y (lower x≤y)
-    ... | lt 0<z | lt x<y = lift (<𝕂→≤𝕂 {a = x ·𝕂 z} {b = y ·𝕂 z} (·𝕂-rMono< x y z 0<z x<y))
-    ... | lt 0<z | eq x≡y = lift (≤𝕂-refl {a = x ·𝕂 z} (λ i → x≡y i ·𝕂 z))
-    ... | eq 0≡z | _ = lift (≤𝕂-refl {a = x ·𝕂 z} xz≡yz)
+    ·𝕂-rMono≤ : (x y z : 𝕂) → 𝟘 ≤𝕂 z → x ≤𝕂 y → (x ·𝕂 z) ≤𝕂 (y ·𝕂 z)
+    ·𝕂-rMono≤ x y z 0≤z x≤y with split≤𝕂 𝟘 z 0≤z | split≤𝕂 x y x≤y
+    ... | lt 0<z | lt x<y = <𝕂→≤𝕂 {a = x ·𝕂 z} {b = y ·𝕂 z} (·𝕂-rMono< x y z 0<z x<y)
+    ... | lt 0<z | eq x≡y = ≤𝕂-refl {a = x ·𝕂 z} (λ i → x≡y i ·𝕂 z)
+    ... | eq 0≡z | _ = ≤𝕂-refl {a = x ·𝕂 z} xz≡yz
       where
       xz≡yz : x ·𝕂 z ≡ y ·𝕂 z
       xz≡yz =
@@ -481,7 +475,7 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
         ∙ sym (·𝕂ZeroR y)
         ∙ (λ i → y ·𝕂 0≡z i)
 
-  𝕂IsOrderedCommRing : IsOrderedCommRing 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂ᶜ_
+  𝕂IsOrderedCommRing : IsOrderedCommRing 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂_
   𝕂IsOrderedCommRing .IsOrderedCommRing.isCommRing = 𝕂CommRing .snd .CommRingStr.isCommRing
   𝕂IsOrderedCommRing .IsOrderedCommRing.isPseudolattice = 𝕂≤Pseudolattice .snd .PseudolatticeStr.is-pseudolattice
   𝕂IsOrderedCommRing .IsOrderedCommRing.isStrictOrder =
@@ -491,9 +485,9 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
       <𝕂-trans
       <𝕂-asym
       <𝕂-weaklyLinear
-  𝕂IsOrderedCommRing .IsOrderedCommRing.<-≤-weaken = λ a b a<b → lift (<𝕂→≤𝕂 {a = a} {b = b} a<b)
+  𝕂IsOrderedCommRing .IsOrderedCommRing.<-≤-weaken = λ a b a<b → <𝕂→≤𝕂 {a = a} {b = b} a<b
   𝕂IsOrderedCommRing .IsOrderedCommRing.≤≃¬> = ≤𝕂≃¬>𝕂
-  𝕂IsOrderedCommRing .IsOrderedCommRing.+MonoR≤ = λ a b c a≤b → lift (+𝕂-rPres≤ a b c (lower a≤b))
+  𝕂IsOrderedCommRing .IsOrderedCommRing.+MonoR≤ = +𝕂-rPres≤
   𝕂IsOrderedCommRing .IsOrderedCommRing.+MonoR< = +𝕂-rPres<
   𝕂IsOrderedCommRing .IsOrderedCommRing.posSum→pos∨pos = +𝕂-posSum
   𝕂IsOrderedCommRing .IsOrderedCommRing.<-≤-trans = <𝕂≤𝕂-trans
@@ -505,7 +499,7 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   𝕂OrderedCommRing : OrderedCommRing (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   𝕂OrderedCommRing .fst = 𝕂
   𝕂OrderedCommRing .snd =
-    orderedcommringstr 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂ᶜ_ 𝕂IsOrderedCommRing
+    orderedcommringstr 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂_ 𝕂IsOrderedCommRing
 
   trichotomy𝕂ᶜ : (a b : 𝕂) → StrictBase.Trichotomy 𝕂OrderedCommRing a b
   trichotomy𝕂ᶜ a b with trichotomy𝕂 a b
@@ -608,9 +602,3 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
 
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   𝕂OrderedField = 𝕂StrictlyOrderedCommRing , IsField𝕂
-
-  ≤𝕂→≤𝕂ᶜ : (a b : 𝕂) → a ≤𝕂 b → OrderedFieldStr._≤_ 𝕂OrderedField a b
-  ≤𝕂→≤𝕂ᶜ a b a≤b = lift a≤b
-
-  ≤𝕂ᶜ→≤𝕂 : (a b : 𝕂) → OrderedFieldStr._≤_ 𝕂OrderedField a b → a ≤𝕂 b
-  ≤𝕂ᶜ→≤𝕂 a b a≤b = lower a≤b

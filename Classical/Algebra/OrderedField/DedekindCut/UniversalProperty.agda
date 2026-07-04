@@ -9,6 +9,7 @@ module Classical.Algebra.OrderedField.DedekindCut.UniversalProperty where
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels hiding (extend)
 open import Cubical.Foundations.Function
+open import Cubical.Foundations.Equiv
 
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Sum
@@ -80,13 +81,17 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; 0RightAnnihilates to 0RightAnnihilates'
                ; _<_ to _<'_ ; _≤_ to _≤'_
                ; _>_ to _>'_ ; _≥_ to _≥'_
+               ; _>0 to _>0'_
                ; isProp< to isProp<'
                ; isProp≤ to isProp≤'
                ; Trichotomy to Trichotomy'
                ; trichotomy to trichotomy'
                ; <-asym   to <'-asym
+               ; <-arefl  to <'-arefl
                ; ≤-refl   to ≤-refl'
+               ; ≤≃¬> to ≤'≃¬>
                ; <-≤-weaken to <-≤-weaken'
+               ; Diff>0→< to Diff>0→<'
                ; <≤-total to <≤-total'
                ; <≤-trans to <≤-trans'
                ; ≤<-trans to ≤<-trans'
@@ -101,6 +106,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     open StrictlyOrderedCommRingHomStr f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
     open IsCommRingHom (ring-hom .snd)
+    module 𝕂SO = StrictlyOrderedCommRingStr 𝕂StrictlyOrderedCommRing
 
     private
       K  = 𝒦  .fst .fst .fst
@@ -213,7 +219,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
       map-sub-⊆ : a ≥𝕂 b → map-sub b ⊆ map-sub a
       map-sub-⊆ a≥b {x = x} x∈subb =
-        Inhab→∈ (map-prop a) (λ r r∈a → ∈→Inhab (map-prop b) x∈subb _ (a≥b r∈a))
+        Inhab→∈ (map-prop a) (λ r r∈a → ∈→Inhab (map-prop b) x∈subb _ (lower a≥b r∈a))
 
       map-helper-pres≥ : a ≥𝕂 b → map-helper a ≥' map-helper b
       map-helper-pres≥ a≥b = ⊆→sup≤ (map-sub-⊆ a≥b) (map-sup b) (map-sup a)
@@ -398,13 +404,29 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
     open StrictlyOrderedCommRingHom
 
-    module extendedOrder =
-      PositivePreservation 𝕂StrictlyOrderedCommRing (𝒦' .fst .fst) extendedRingHom map-pres>0
+    map-pres-- : (a b : 𝕂) → map-helper ((𝕂SO.Ord._-_) b a) ≡ map-helper b -' map-helper a
+    map-pres-- a b =
+      map-pres+ b (-𝕂 a)
+      ∙ (λ i → map-helper b +' map-pres- a i)
+
+    map-pres< : (a b : 𝕂) → 𝕂SO._<_ a b → map-helper a <' map-helper b
+    map-pres< a b a<b =
+      Diff>0→<' (subst (_>0'_) (map-pres-- a b)
+        (map-pres>0 ((𝕂SO.Ord._-_) b a) (𝕂SO.<→Diff>0 a<b)))
+
+    map-pres≤ : (a b : 𝕂) → 𝕂SO._≤_ a b → map-helper a ≤' map-helper b
+    map-pres≤ a b a≤b =
+      invEq (≤'≃¬> (map-helper a) (map-helper b)) (notGreater (𝕂SO.trichotomy a b))
+      where
+      notGreater : 𝕂SO.Trichotomy a b → ¬ map-helper b <' map-helper a
+      notGreater (𝕂SO.lt a<b) fb<fa = <'-asym (map-pres< a b a<b) fb<fa
+      notGreater (𝕂SO.eq a≡b) fb<fa = <'-arefl fb<fa (cong map-helper (sym a≡b))
+      notGreater (𝕂SO.gt b<a) _ = equivFun (𝕂SO.≤≃¬> a b) a≤b b<a
 
     extendedStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom 𝕂StrictlyOrderedCommRing (𝒦' .fst .fst)
     extendedStrictlyOrderedCommRingHom .ring-hom = extendedRingHom
-    extendedStrictlyOrderedCommRingHom .pres<    = extendedOrder.pres<
-    extendedStrictlyOrderedCommRingHom .pres≤    = extendedOrder.pres≤
+    extendedStrictlyOrderedCommRingHom .pres<    = map-pres<
+    extendedStrictlyOrderedCommRingHom .pres≤    = map-pres≤
 
     extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
     extendedOrderedFieldHom = extendedStrictlyOrderedCommRingHom

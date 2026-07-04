@@ -158,20 +158,23 @@ module Basics ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  _≤𝕂_ : 𝕂 → 𝕂 → Type ℓ
-  a ≤𝕂 b = b .upper ⊆ a .upper
+  _⊆𝕂_ : 𝕂 → 𝕂 → Type ℓ
+  a ⊆𝕂 b = b .upper ⊆ a .upper
 
-  _≥𝕂_ : 𝕂 → 𝕂 → Type ℓ
+  _≤𝕂_ : 𝕂 → 𝕂 → Type (ℓ-max ℓ ℓ')
+  a ≤𝕂 b = Lift ℓ' (a ⊆𝕂 b)
+
+  _≥𝕂_ : 𝕂 → 𝕂 → Type (ℓ-max ℓ ℓ')
   a ≥𝕂 b = b ≤𝕂 a
 
   isProp≤𝕂 : {a b : 𝕂} → isProp (a ≤𝕂 b)
-  isProp≤𝕂 = isProp⊆
+  isProp≤𝕂 = isOfHLevelLift 1 isProp⊆
 
   ≤𝕂-refl : {a b : 𝕂} → a ≡ b → a ≤𝕂 b
-  ≤𝕂-refl a≡b {x = q} q∈upper = subst (λ p → q ∈ p .upper) (sym a≡b) q∈upper
+  ≤𝕂-refl a≡b = lift (λ {x = q} q∈upper → subst (λ p → q ∈ p .upper) (sym a≡b) q∈upper)
 
   ≤𝕂-asym : {a b : 𝕂} → a ≤𝕂 b → b ≤𝕂 a → a ≡ b
-  ≤𝕂-asym a≤b b≤a = path-𝕂 _ _ (bi⊆→≡ b≤a a≤b)
+  ≤𝕂-asym a≤b b≤a = path-𝕂 _ _ (bi⊆→≡ (lower b≤a) (lower a≤b))
 
 
   {-
@@ -297,16 +300,16 @@ module Basics ⦃ 🤖 : Oracle ⦄
   path-𝕂₊ a b p i .snd = isProp→PathP (λ i → isProp≤𝕂 {a = 𝟘} {b = p i}) (a .snd) (b .snd) i
 
   q∈𝕂₊→q>0 : (a : 𝕂₊)(q : K) → q ∈ a .fst .upper → q > 0r
-  q∈𝕂₊→q>0 a q q∈upper = ∈→Inhab (0r <P_) (a .snd q∈upper)
+  q∈𝕂₊→q>0 a q q∈upper = ∈→Inhab (0r <P_) (lower (a .snd) q∈upper)
 
 
   -- Zero and Unit
 
   𝟘₊ : 𝕂₊
-  𝟘₊ = 𝟘 , ≡→⊆ {A = 𝟘 .upper} refl
+  𝟘₊ = 𝟘 , lift (≡→⊆ {A = 𝟘 .upper} refl)
 
   𝟙₊ : 𝕂₊
-  𝟙₊ = 𝟙 , λ q∈upper → Inhab→∈ (0r <P_) (<-trans 1>0 (∈→Inhab (1r <P_) q∈upper))
+  𝟙₊ = 𝟙 , lift (λ q∈upper → Inhab→∈ (0r <P_) (<-trans 1>0 (∈→Inhab (1r <P_) q∈upper)))
 
 
   -- Addition
@@ -316,11 +319,11 @@ module Basics ⦃ 🤖 : Oracle ⦄
 
   _+𝕂₊_ : (a b : 𝕂₊) → 𝕂₊
   ((a , a≥0) +𝕂₊ (b , b≥0)) .fst = a +𝕂 b
-  ((a , a≥0) +𝕂₊ (b , b≥0)) .snd q∈upper =
+  ((a , a≥0) +𝕂₊ (b , b≥0)) .snd = lift λ q∈upper →
     proof _ , isProp∈ (𝟘 .upper) by do
     (s , t , s∈upper , t∈upper , q≡s+t) ← ∈→Inhab (+upper a b) q∈upper
-    let s>0 = ∈→Inhab (0r <P_) (a≥0 s∈upper)
-        t>0 = ∈→Inhab (0r <P_) (b≥0 t∈upper)
+    let s>0 = ∈→Inhab (0r <P_) (lower a≥0 s∈upper)
+        t>0 = ∈→Inhab (0r <P_) (lower b≥0 t∈upper)
     return
       (Inhab→∈ (0r <P_) (subst (_> 0r) (sym q≡s+t) (+-Pres>0 s>0 t>0)))
 
@@ -335,7 +338,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
 
 
   ≥𝕂0+q∈upper→q>0 : (a : 𝕂){q : K} → a ≥𝕂 𝟘 → q ∈ a .upper → q > 0r
-  ≥𝕂0+q∈upper→q>0 a {q = q} a≥0 q∈upper = ∈→Inhab (0r <P_) (a≥0 q∈upper)
+  ≥𝕂0+q∈upper→q>0 a {q = q} a≥0 q∈upper = ∈→Inhab (0r <P_) (lower a≥0 q∈upper)
 
   q∈·upper→q>0 : (a b : 𝕂) → a ≥𝕂 𝟘 → b ≥𝕂 𝟘 → (q : K) → q ∈ specify (·upper a b) → q > 0r
   q∈·upper→q>0 a b a≥0 b≥0 q q∈upper =
@@ -387,11 +390,11 @@ module Basics ⦃ 🤖 : Oracle ⦄
   ((a , a≥0) ·𝕂₊ (b , b≥0)) .fst .lower-inhab =
     ∣ - 1r , (λ r r∈upper → <-trans -1<0 (q∈·upper→q>0 a b a≥0 b≥0 r r∈upper)) ∣₁
 
-  ((a , a≥0) ·𝕂₊ (b , b≥0)) .snd q∈upper =
+  ((a , a≥0) ·𝕂₊ (b , b≥0)) .snd = lift λ q∈upper →
     proof _ , isProp∈ (𝟘 .upper) by do
     (s , t , s∈upper , t∈upper , q≡s·t) ← ∈→Inhab (·upper a b) q∈upper
-    let s>0 = ∈→Inhab (0r <P_) (a≥0 s∈upper)
-        t>0 = ∈→Inhab (0r <P_) (b≥0 t∈upper)
+    let s>0 = ∈→Inhab (0r <P_) (lower a≥0 s∈upper)
+        t>0 = ∈→Inhab (0r <P_) (lower b≥0 t∈upper)
     return
       (Inhab→∈ (0r <P_) (subst (_> 0r) (sym q≡s·t) (·-Pres>0 s>0 t>0)))
 
@@ -427,7 +430,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
       (p , p>0 , p<s∈upper , r>p⁻¹) ← ∈→Inhab (inv-upper a) r∈upper
       return (<-trans (inv-Reverse< _ _ (p<s∈upper q q∈upper)) r>p⁻¹))
 
-  inv𝕂₊ a _ _ _ .snd q∈upper =
+  inv𝕂₊ a _ _ _ .snd = lift λ q∈upper →
     proof _ , isProp∈ (𝟘 .upper) by do
     (p , p>0 , p<r∈upper , q>p⁻¹) ← ∈→Inhab (inv-upper a) q∈upper
     return

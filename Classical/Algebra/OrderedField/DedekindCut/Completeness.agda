@@ -45,9 +45,6 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
   open Extremum 𝕂OrderedField
   open Supremum
 
-  open OrderedFieldStr 𝕂OrderedField using ()
-    renaming (_≤_ to _≤𝕂ᶜ_ ; _≥_ to _≥𝕂ᶜ_)
-
 
   module _
     (A : ℙ 𝕂)(a₀ : 𝕂)(a₀∈A : a₀ ∈ A)
@@ -78,31 +75,25 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
         return (<-trans (p<r∈upper r (r∈x∈A a₀ a₀∈A)) r<q))
 
     boundSup𝕂 : (x : 𝕂) → x ∈ A → x ≤𝕂 sup𝕂
-    boundSup𝕂 x x∈A {x = q} q∈sup =
+    boundSup𝕂 x x∈A = lift λ {x = q} q∈sup →
       proof _ , isProp∈ (x .upper) by do
       (p , p∈x∈A , p<q) ← ∈→Inhab sup-upper q∈sup
       return (x .upper-close q p (p∈x∈A x x∈A) p<q)
 
     leastSup𝕂 : (y : 𝕂) → ((x : 𝕂) → x ∈ A → x ≤𝕂 y) → y ≥𝕂 sup𝕂
-    leastSup𝕂 y x∈A→x≤y {x = q} q∈y =
+    leastSup𝕂 y x∈A→x≤y = lift λ {x = q} q∈y →
       proof _ , isProp∈ (sup𝕂 .upper) by do
       (r , r<q , r∈y) ← y .upper-round q q∈y
-      return (Inhab→∈ sup-upper ∣ r , (λ x x∈A → x∈A→x≤y x x∈A r∈y) , r<q ∣₁)
-
-    boundSup𝕂ᶜ : (x : 𝕂) → x ∈ A → x ≤𝕂ᶜ sup𝕂
-    boundSup𝕂ᶜ x h = ≤𝕂→≤𝕂ᶜ _ _ (boundSup𝕂 x h)
-
-    leastSup𝕂ᶜ : (y : 𝕂) → ((x : 𝕂) → x ∈ A → x ≤𝕂ᶜ y) → y ≥𝕂ᶜ sup𝕂
-    leastSup𝕂ᶜ y h = ≤𝕂→≤𝕂ᶜ _ _ (leastSup𝕂 y (λ x k → ≤𝕂ᶜ→≤𝕂 _ _ (h x k)))
+      return (Inhab→∈ sup-upper ∣ r , (λ x x∈A → lower (x∈A→x≤y x x∈A) r∈y) , r<q ∣₁)
 
 
   private
     findBound : (A : ℙ 𝕂)
-      → (b : 𝕂)(bound : (x : 𝕂) → x ∈ A → x ≤𝕂ᶜ b)
+      → (b : 𝕂)(bound : (x : 𝕂) → x ∈ A → x ≤𝕂 b)
       → ∥ Σ[ s ∈ K ] ((x : 𝕂) → x ∈ A → s ∈ x .upper) ∥₁
     findBound A b bound = do
       (s , s∈b) ← b .upper-inhab
-      return (s , λ x x∈A → ≤𝕂ᶜ→≤𝕂 _ _ (bound x x∈A) s∈b)
+      return (s , λ x x∈A → lower (bound x x∈A) s∈b)
 
 
   {-
@@ -119,8 +110,8 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
       (s , s∈x∈A) ← findBound A b bound
       return record
         { sup = sup𝕂 A a₀ a₀∈A s s∈x∈A
-        ; bound = boundSup𝕂ᶜ A a₀ a₀∈A s s∈x∈A
-        ; least = leastSup𝕂ᶜ A a₀ a₀∈A s s∈x∈A })
+        ; bound = boundSup𝕂 A a₀ a₀∈A s s∈x∈A
+        ; least = leastSup𝕂 A a₀ a₀∈A s s∈x∈A })
 
   𝕂CompleteOrderedField : CompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   𝕂CompleteOrderedField = 𝕂OrderedField , isComplete𝕂

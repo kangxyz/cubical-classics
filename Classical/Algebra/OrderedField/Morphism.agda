@@ -8,6 +8,7 @@ module Classical.Algebra.OrderedField.Morphism where
 
 open import Cubical.Foundations.Prelude hiding (lower)
 open import Cubical.Foundations.HLevels
+open import Cubical.Foundations.Equiv
 
 open import Cubical.Data.Sum
 open import Cubical.Data.Sigma
@@ -462,14 +463,26 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   ℚ→KCommRingHom : CommRingHom ℚCommRing (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
   ℚ→KCommRingHom = _ , IsRingHom→IsCommRingHom ℚCommRing (StrictlyOrderedCommRing→CommRing (𝒦 .fst)) ℚ→K isRingHomℚ→K
 
-  module ℚ→KOrder =
-    PositivePreservation (ℚOrderedField .fst) (𝒦 .fst) ℚ→KCommRingHom ℚ→K-Pres>0
+  module ℚ→KHom = IsCommRingHom (ℚ→KCommRingHom .snd)
+
+  ℚ→K-Pres-- : (p q : ℚ) → ℚ→K ((ℚSO.Ord._-_) q p) ≡ ℚ→K q - ℚ→K p
+  ℚ→K-Pres-- p q =
+    ℚ→KHom.pres+ q ((ℚSO.Ord.-_) p)
+    ∙ (λ i → ℚ→K q + ℚ→KHom.pres- p i)
 
   ℚ→K-Pres< : (p q : ℚ) → ℚSO._<_ p q → ℚ→K p < ℚ→K q
-  ℚ→K-Pres< = ℚ→KOrder.pres<
+  ℚ→K-Pres< p q p<q =
+    Diff>0→< (subst (_>0) (ℚ→K-Pres-- p q)
+      (ℚ→K-Pres>0 ((ℚSO.Ord._-_) q p) (ℚSO.<→Diff>0 p<q)))
 
   ℚ→K-Pres≤ : (p q : ℚ) → ℚSO._≤_ p q → ℚ→K p ≤ ℚ→K q
-  ℚ→K-Pres≤ = ℚ→KOrder.pres≤
+  ℚ→K-Pres≤ p q p≤q =
+    invEq (≤≃¬> (ℚ→K p) (ℚ→K q)) (notGreater (ℚSO.trichotomy p q))
+    where
+    notGreater : ℚSO.Trichotomy p q → ¬ ℚ→K q < ℚ→K p
+    notGreater (ℚSO.lt p<q) fq<fp = <-asym (ℚ→K-Pres< p q p<q) fq<fp
+    notGreater (ℚSO.eq p≡q) fq<fp = <-arefl fq<fp (cong ℚ→K (sym p≡q))
+    notGreater (ℚSO.gt q<p) _ = equivFun (ℚSO.≤≃¬> p q) p≤q q<p
 
   open StrictlyOrderedCommRingHom
 

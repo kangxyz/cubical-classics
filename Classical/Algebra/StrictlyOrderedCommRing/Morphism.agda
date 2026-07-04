@@ -79,47 +79,6 @@ record StrictlyOrderedCommRingHom (𝓡 : StrictlyOrderedCommRing ℓ ℓ')(𝓡
                StrictlyOrderedCommRingStr._≤_ 𝓡' (ring-hom .fst x) (ring-hom .fst y)
 
 
-module PositivePreservation
-  (𝓡 : StrictlyOrderedCommRing ℓ ℓ')
-  (𝓡' : StrictlyOrderedCommRing ℓ'' ℓ''')
-  (ring-hom : CommRingHom (StrictlyOrderedCommRing→CommRing 𝓡) (StrictlyOrderedCommRing→CommRing 𝓡'))
-  (pres>0 : (x : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._>0 𝓡 x →
-             StrictlyOrderedCommRingStr._>0 𝓡' (ring-hom .fst x))
-  where
-
-  private
-    R = 𝓡 .fst .fst
-
-  open StrictlyOrderedCommRingStr 𝓡
-  open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
-  open StrictlyOrderedCommRingStr 𝓡' using ()
-    renaming ( _<_ to _<'_ ; _≤_ to _≤'_
-             ; _>0 to _>0'_
-             ; Diff>0→< to Diff>0→<'
-             ; <-asym to <'-asym
-             ; <-arefl to <'-arefl
-             ; ≤≃¬> to ≤'≃¬>
-             ; trichotomy to trichotomy')
-  open IsCommRingHom (ring-hom .snd)
-  open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡') .snd) using ()
-    renaming (_+_ to _+'_ ; -_ to -'_)
-
-  private
-    hom-helper : (x y : R) → ring-hom .fst (y - x) ≡ ring-hom .fst y +' (-' ring-hom .fst x)
-    hom-helper x y = pres+ y (- x) ∙ (λ i → ring-hom .fst y +' pres- x i)
-
-  pres< : (x y : R) → x < y → ring-hom .fst x <' ring-hom .fst y
-  pres< x y x<y = Diff>0→<' (subst (_>0'_) (hom-helper x y) (pres>0 (y - x) (<→Diff>0 x<y)))
-
-  pres≤ : (x y : R) → x ≤ y → ring-hom .fst x ≤' ring-hom .fst y
-  pres≤ x y x≤y = invEq (≤'≃¬> (ring-hom .fst x) (ring-hom .fst y)) (notGreater (trichotomy x y))
-    where
-    notGreater : Trichotomy x y → ¬ ring-hom .fst y <' ring-hom .fst x
-    notGreater (lt x<y) fy<fx = <'-asym (pres< x y x<y) fy<fx
-    notGreater (eq x≡y) fy<fx = <'-arefl fy<fx (cong (ring-hom .fst) (sym x≡y))
-    notGreater (gt y<x) _ = equivFun (≤≃¬> x y) x≤y y<x
-
-
 {-
 
   Properties of strictly ordered commutative ring homomorphisms
