@@ -3,7 +3,7 @@
 Neighbourhood
 
 This file contains:
-- Basic properties of neighbourhood;
+- Basic properties of neighbourhoods;
 - Basic criterion for open/closed subset;
 - Lemmas about separation by open subsets.
 
@@ -71,7 +71,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     -}
 
 
-    -- Inside interior of some someset
+    -- Inside the interior of a subset
 
     _Σ∈∘_ : (x : X) → (U : ℙ X) → Type _
     x Σ∈∘ U = Σ[ N ∈ ℙ X ] (N ∈ ℕbh x) × N ⊆ U
@@ -88,7 +88,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 
     -- A subset U is open,
-    -- if every point x ∈ U merely has a neighberhood contained in U,
+    -- if every point x ∈ U merely has a neighbourhood contained in U.
 
     ℕbhCriterionOfOpenness : {U : ℙ X} → ((x : X) → x ∈ U → x ∈∘ U) → U ∈ Open
     ℕbhCriterionOfOpenness {U = U} p = U∈Open
@@ -147,7 +147,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     ΣSep⊆ {A = A} {B = B} A⊆B (U , U∈ℕx , B∩U≡∅) = U , U∈ℕx , A⊆B+B∩C≡∅→A∩C≡∅ A⊆B B∩U≡∅
 
 
-    -- It reads as "there merely exists a neighbourhood of x that is separated from A".
+    -- It reads as "there merely exists a neighbourhood of x separated from A."
 
     Sep : (x : X) → ℙ X → Type _
     Sep x A = ∥ ΣSep x A ∥₁
@@ -161,8 +161,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       return (U , U∈ℕx , A∩B=∅→B⊆∁A {A = A} {B = U} A∩U≡∅)
 
 
-    -- It reads as "there merely exists neighbourhood of x and A respectively that don't intersect with each other",
-    -- or "point x and subset A are separating by open sets"
+    -- It reads as "there merely exists an open set containing A and a neighbourhood of x that do not intersect",
+    -- or "the point x and the subset A are separated by open sets".
 
     SepOpen : (x : X) → ℙ X → Type _
     SepOpen x A = ∥ Σ[ U ∈ ℙ X ] Σ[ V ∈ ℙ X ] (U ∈ Open) × A ⊆ U × (V ∈ ℕbh x) × (A ∩ V ≡ ∅) ∥₁
@@ -175,7 +175,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     SepOpen→Sep h = do (_ , V , _ , _ , V∈ℕx , A∩V≡∅) ← h ; return (V , V∈ℕx , A∩V≡∅)
 
 
-    -- A subset K ⊆ X is closed if for any x ∉ K, there merely exists neigubourhood of x separating from K.
+    -- A subset K ⊆ X is closed if every x ∉ K merely has a neighbourhood separated from K.
 
     SepCriterionOfClosedness : {K : ℙ X} → ((x : X) → x ∉ K → Sep x K) → K ∈ Closed
     SepCriterionOfClosedness {K = K} sep = ℕbhCriterionOfOpenness x∉K→x∈∘∁K
@@ -184,9 +184,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       x∉K→x∈∘∁K x x∈∁K = Sep→∈∘∁ (sep x (∈∁→∉ {A = K} x∈∁K))
 
 
-    -- Given a finite covering 𝒰 such that,
-    -- for any open U ∈ 𝒰, there merely exists a neighbourhood of x outside U,
-    -- then there merely exists a neighbourhood of x that does not intersect with the union of opens in 𝒰.
+    -- Given a finite cover 𝒰, if every open U ∈ 𝒰 is separated from x
+    -- by some neighbourhood of x, then x is separated from the union of 𝒰.
 
     unionSep : (x : X)
       (𝒰 : ℙ ℙ X)(𝒰⊆Open : 𝒰 ⊆ Open)

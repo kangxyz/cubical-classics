@@ -27,7 +27,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Nat
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.OrderedField
 open import Classical.Topology.Metric
 open import Classical.Analysis.Real.Base
 
@@ -51,8 +51,8 @@ module _ ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  -- A sequence seq converges to a point x,
-  -- if for any ε > 0, there merely exists n₀ : ℕ,
+  -- A sequence seq converges to a point x
+  -- if for any ε > 0 there merely exists n₀ : ℕ
   -- such that whenever n > n₀,
   -- the distance between x and seq n is smaller than ε.
 
@@ -70,7 +70,7 @@ module _ ⦃ 🤖 : Oracle ⦄
   open Limit
 
 
-  -- A stronger version with more-than-mere-existence,
+  -- A stronger version with explicit existence,
   -- but they turn out to be (logically) equivalent.
 
   isConvergentToΣ : (ℕ → X) → X → Type
@@ -109,8 +109,8 @@ module _ ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  -- A point x is a cluster point of a sequence seq,
-  -- if for any n : ℕ and ε > 0, there merely exists n₀ : ℕ,
+  -- A point x is a cluster point of a sequence seq
+  -- if for any n : ℕ and ε > 0 there merely exists n₀ : ℕ
   -- such that the distance between x and seq n₀ is smaller than ε.
 
   isClusteringAt : (ℕ → X) → X → Type
@@ -127,7 +127,7 @@ module _ ⦃ 🤖 : Oracle ⦄
   open ClusterPoint
 
 
-  -- A stronger version with more-than-mere-existence,
+  -- A stronger version with explicit existence,
   -- but they turn out to be (logically) equivalent.
 
   isClusteringAtΣ : (ℕ → X) → X → Type
@@ -143,17 +143,17 @@ module _ ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  -- A sequence seq is a Cauchy sequence,
-  -- if for any ε > 0, there merely exists N : ℕ
+  -- A sequence seq is a Cauchy sequence
+  -- if for any ε > 0 there merely exists N : ℕ
   -- such that whenever m n > N,
-  -- the distance between the seq m and seq n is smaller than ε.
-  -- In other words, the terms are crowding together when n approaching infinity.
+  -- the distance between seq m and seq n is smaller than ε.
+  -- In other words, the terms crowd together as n approaches infinity.
 
   isCauchy : (ℕ → X) → Type
   isCauchy seq = (ε : ℝ) → ε > 0 → ∥ Σ[ N ∈ ℕ ] ((m n : ℕ) → m >ℕ N → n >ℕ N → dist (seq m) (seq n) < ε) ∥₁
 
 
-  -- A stronger version with more-than-mere-existence,
+  -- A stronger version with explicit existence,
   -- but they turn out to be (logically) equivalent.
 
   isCauchyΣ : (ℕ → X) → Type

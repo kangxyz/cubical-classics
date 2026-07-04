@@ -1,6 +1,6 @@
 {-
 
-The Membership and Inclusion Relation
+Membership and Inclusion
 
 -}
 {-# OPTIONS --safe #-}
@@ -40,7 +40,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  -- Data type to make pattern matching more clearer, :P
+  -- Data type to make pattern matching clearer, :P
 
   data Dichotomy∈ {X : Type ℓ}(x : X)(A : ℙ X) : Type ℓ where
     yeah : x ∈ A → Dichotomy∈ x A
@@ -120,7 +120,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     return x∈B
 
 
-  -- There always merely exists element outside a non-subset against another subset
+  -- If A is not contained in B, there merely exists x ∈ A outside B.
 
   module _ {A B : ℙ X}(¬A⊆B : ¬ A ⊆ B) where
 
@@ -142,7 +142,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  -- Inhabitedness, namely, not being empty
+  -- Inhabitedness, namely not being empty.
 
   isInhabited : {X : Type ℓ} → ℙ X → Type ℓ
   isInhabited {X = X} A = ∥ Σ[ x ∈ X ] x ∈ A ∥₁

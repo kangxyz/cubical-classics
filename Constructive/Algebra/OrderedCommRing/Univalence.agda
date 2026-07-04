@@ -4,7 +4,7 @@ SIP for ordered commutative rings
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedCommRing.Univalence where
+module Constructive.Algebra.OrderedCommRing.Univalence where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels

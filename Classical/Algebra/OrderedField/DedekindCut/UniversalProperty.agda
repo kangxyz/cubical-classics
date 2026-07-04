@@ -25,12 +25,12 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Logic
 
-open import Classical.Algebra.OrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
-open import Classical.Algebra.OrderedField.Morphism
+open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Algebra.OrderedField.DedekindCut.Base

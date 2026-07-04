@@ -3,16 +3,16 @@
 Classical Impredicative Powerset
 
 This file introduces a "powerset", thanks to Excluded Middle,
-behaving very similar to that in classical set theory.
-However, I think except for a few `Boolean facts`,
-most of the following results only relies on the concept of impredicativity,
-and one way to formulate that is the existence of subobject classifier
-(LEM or even Propostional Resizing is enough to guarantee its existence).
+behaving very much like the one in classical set theory.
+Except for a few `Boolean facts`,
+most of the following results only rely on impredicativity;
+one way to formulate it is the existence of a subobject classifier
+(LEM, or even Propositional Resizing, is enough to guarantee one).
 
-Stuffs about powerset are separated into several files in this fold.
+The powerset material is split across several files in this folder.
 
 This one is classical and impredicative.
-One can find a constructive and predicative version in the standard library of Cubical Agda,
+One can find a constructive and predicative version in the Cubical Agda library;
 see "https://github.com/agda/cubical/blob/master/Cubical/Foundations/Powerset.agda".
 
 -}
@@ -38,7 +38,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 
   -- The powerset construction, namely the type of all possible "subsets",
-  -- well-behaved only when one has some kind of impredicativity.
+  -- is well-behaved only with some kind of impredicativity.
 
   ℙ_ : Type ℓ → Type ℓ
   ℙ X = X → Prop
@@ -47,15 +47,15 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   isSetℙ = isSetΠ λ _ → isSetProp
 
 
-  -- The specification operator `specify`,
-  -- transforming a predicate into the subset of elements that satisfying it,
-  -- in certain sense realizes the axiom of specification/separation in classical set theory.
+  -- The specification operator `specify`
+  -- turns a predicate into the subset of elements satisfying it.
+  -- It realizes specification/separation in the classical-set-theoretic sense.
 
   specify : {ℓ : Level} → (X → hProp ℓ) → ℙ X
   specify P x = bool (decide (P x .snd))
 
 
-  -- The Mmpty Subset
+  -- The Empty Subset
 
   ∅ : ℙ X
   ∅ x = false

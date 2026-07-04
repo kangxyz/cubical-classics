@@ -19,8 +19,8 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.OrderedField
 
 private
   variable
@@ -106,7 +106,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
     isProp→PathP (λ i → squash₁ {A = Σ[ q ∈ K ] ((r : K) → r ∈ upper-path i → q < r)})
     (a .lower-inhab) (b .lower-inhab) i
 
-  -- 𝕂 is hSet
+  -- 𝕂 is an h-set.
 
   isSet𝕂 : isSet 𝕂
   isSet𝕂 a b p q i j =
@@ -128,7 +128,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  -- Rational number is real number
+  -- Rational numbers as real numbers.
 
   _<P_ : K → K → hProp ℓ'
   _<P_ p q = (p < q) , isProp<

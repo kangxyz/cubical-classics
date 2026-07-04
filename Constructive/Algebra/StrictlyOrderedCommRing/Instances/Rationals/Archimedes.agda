@@ -1,17 +1,17 @@
 {-
 
-  Archimedean-ness of ℚ
+  The Archimedean Property of ℚ
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes where
+module Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
--- It seems there are bugs when applying ring solver to explicit ring.
--- The following is a work-around.
+-- The ring solver has trouble with explicit rings here.
+-- The following is a workaround.
 private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
     open CommRingStr (𝓡 .snd)
@@ -42,14 +42,14 @@ open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
+open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int
   using    (ℤStrictlyOrderedCommRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
   renaming (archimedes' to archimedesℤ)
-open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals
+open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals
   using    (ℚStrictlyOrderedCommRing)
-open import Classical.Preliminary.Nat
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Preliminary.Nat
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 
 
 open CommRingStr    ((StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing) .snd)
@@ -103,7 +103,7 @@ neg-repr a b =
           path n = eq/ _ _ (path-helper n)
 
 
--- Archimedean-ness of ℚ, using the alternative product
+-- The Archimedean property of ℚ, using the alternative product
 
 private
   archimedes-helper : (x y : ℤ × ℕ₊₁) → [ y ] > 0 → Σ[ n ∈ ℕ ] n ⋆ [ y ] > [ x ]
@@ -139,7 +139,7 @@ archimedes q ε ε>0 = case-split (dec< q (zero ⋆ ε))
   case-split (no ¬p) = find (λ n → dec< q (n ⋆ ε)) (∥archimedes∥ q ε ε>0)
 
 
--- Archimedean-ness of ℚ
+-- The Archimedean property of ℚ
 
 isArchimedeanℚ : isArchimedean ℚStrictlyOrderedCommRing
 isArchimedeanℚ = transport (λ i → (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] ⋆≡⋆' n ε i > q) archimedes

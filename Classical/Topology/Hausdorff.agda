@@ -4,8 +4,8 @@ Hausdorff Space
 
 This file contains:
 - Definition of Hausdorff space;
-- Point and compact subset can be separated by open set in Hausdorff space;
-- Compact subset in Hausdorff space is closed.
+- Points and compact subsets can be separated by open sets in Hausdorff spaces;
+- Compact subsets of Hausdorff spaces are closed.
 
 -}
 {-# OPTIONS --safe #-}
@@ -35,8 +35,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open Topology
 
 
-  -- As is usually formulated, a topological space X is Hausdorff,
-  -- if any two different points x y of X merely have neighbourhoods that do not intersect.
+  -- As usually formulated, a topological space X is Hausdorff
+  -- if any two distinct points x y merely have disjoint neighbourhoods.
 
   record isHausdorff {X : Type ℓ} ⦃ 𝒯 : Topology X ⦄ : Type ℓ where
     field
@@ -54,7 +54,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       -}
 
       -- In a Hausdorff space X,
-      -- point x ∈ X and subset K ⊆ X are separating by open sets
+      -- the point x ∈ X and the subset K ⊆ X are separated by open sets
       -- if x ∉ K and K is compact.
 
       sepOpenCompact : {x : X}{K : ℙ X} → isCompactSub K → x ∉ K → SepOpen x K
@@ -104,7 +104,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
           SepOpen⊆ (union∈Open 𝒰₀⊆Open) (𝒰₀covK .fst) (unionSep _ _ 𝒰₀⊆Open sep fin⊆𝒰₀)
 
 
-      -- Compact subset of Hausdorff space is closed.
+      -- A compact subset of a Hausdorff space is closed.
 
       isCompactSub→isClosedSub : {K : ℙ X} → isCompactSub K → isClosedSub K
       isCompactSub→isClosedSub takefin =

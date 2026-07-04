@@ -4,7 +4,7 @@ Strictly ordered commutative ring
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Base where
+module Constructive.Algebra.StrictlyOrderedCommRing.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Empty as Empty

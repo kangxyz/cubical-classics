@@ -28,7 +28,7 @@ private
     X : Type ℓ
 
 
--- Renaming to emphasize Prop is a subobject classifier in classical world
+-- Renaming to emphasize that Prop is a subobject classifier in the classical world.
 
 Prop : Type ℓ-zero
 Prop = Bool

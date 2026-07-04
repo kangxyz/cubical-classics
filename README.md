@@ -1,9 +1,13 @@
-# Cubical Classics
+# ¬¬||🧊|| : Cubical Classics
 
-`cubical-classics` is an experimental Agda library for formalizing classical
-mathematics in Cubical Agda. It develops classical principles, impredicative
-powersets, ordered algebra, Dedekind cuts, and elementary real analysis on top
-of the Cubical Agda library.
+> From program halts in the tale,
+> towards program only *Übermensch* is able to run.
+
+`cubical-classics` is an experimental Agda library for doing classical
+mathematics in Cubical Agda. It contains classical principles, ordered algebra, Dedekind cuts, real
+numbers, and some basic real analysis.
+
+We are open to advice and contributions!
 
 ## Dependencies
 
@@ -17,7 +21,7 @@ Known working setup:
 - Cubical Agda library `master`, tested at commit `9216603`
 
 Older Cubical releases, including the `v0.9` checkout, are not expected to
-work. In particular, this repository uses APIs from:
+work. The code uses APIs from:
 
 - `Cubical.Axiom.Choice`, `Cubical.Axiom.ExcludedMiddle`, and
   `Cubical.Axiom.Omniscience`;
@@ -31,20 +35,25 @@ To type-check the library:
 agda --build-library
 ```
 
+## Layout
+
+- `Constructive/` is for code that does not use the library's classical
+  `Oracle`: preliminary lemmas, ordered rings and fields, morphisms, and the
+  `ℤ` and `ℚ` instances.
+- `Classical/` is for the axiom interface and the parts that use it:
+  powersets, topology, Dedekind cuts, the real numbers, and real analysis.
+
 ## Contents
 
-The library currently includes:
+At the moment the library has:
 
-- a classical interface over Cubical's excluded middle, choice,
-  Diaconescu's theorem, and omniscience principles, plus local
-  propositional resizing;
-- basic logical and natural-number lemmas, with minimum search and LPO
-  wrappers built on Cubical's natural-number minimality and omniscience
-  machinery;
-- strictly ordered commutative rings built on Cubical's ordered
-  commutative rings, with integer and rational instances;
-- ordered fields, ordered morphisms, Archimedean structures, and the
-  canonical embeddings of `ℤ` and `ℚ`;
+- excluded middle, choice, Diaconescu's theorem, omniscience principles, and
+  local propositional resizing;
+- constructive lemmas for logic and natural numbers, plus classical wrappers
+  for LPO and oracle-based search;
+- ordered commutative rings, strictly ordered commutative rings, ordered
+  fields, ordered morphisms, Archimedean structures, and the canonical
+  embeddings of `ℤ` and `ℚ`;
 - impredicative powersets, with membership, Boolean operations, finiteness,
   and finite big operations;
 - topological spaces, neighbourhoods, Hausdorff spaces, compactness, and

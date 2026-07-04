@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Properties where
+module Constructive.Algebra.StrictlyOrderedCommRing.Properties where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv
@@ -22,8 +22,8 @@ open import Cubical.Algebra.OrderedCommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.StrictlyOrderedCommRing.Base hiding (Trichotomy ; isPropTrichotomy ; lt ; eq ; gt)
-import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
+open import Constructive.Algebra.StrictlyOrderedCommRing.Base hiding (Trichotomy ; isPropTrichotomy ; lt ; eq ; gt)
+import Constructive.Algebra.StrictlyOrderedCommRing.Base as StrictBase
 
 private
   variable
@@ -535,7 +535,7 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
   {-
 
-    Inclusion from Natural Numbers
+    Inclusions from Natural Numbers
 
   -}
 

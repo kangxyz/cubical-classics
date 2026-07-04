@@ -24,10 +24,10 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing
   using (StrictlyOrderedCommRing→CommRing ; Trichotomy ; lt ; eq ; gt)
-open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Analysis.Real.Base
@@ -55,7 +55,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open CompleteOrderedField (ℝCompleteOrderedField .fst)
 
 
-  -- The continuous (partial) funtion defined on a subset of ℝ,
+  -- A continuous partial function defined on a subset of ℝ,
   -- using classical ε-δ language.
 
   record ContinuousFunction (domain : ℙ ℝ) : Type where
@@ -89,7 +89,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         cont-<-close : (δ' δ : ℝ) → δ' > 0 → δ' < δ → cont-prop δ → cont-prop δ'
         cont-<-close δ' δ _ δ'<δ ε-δ y ∣x-y∣<δ' = ε-δ y (<-trans ∣x-y∣<δ' δ'<δ)
 
-      -- The ε-δ formulation can be lifted from only mere existence to existence of δ.
+      -- The ε-δ formulation can be lifted from mere existence to an explicit δ.
 
       contΣ : Σ[ δ ∈ ℝ ] (δ > 0) × ((y : ℝ) ⦃ _ : y ∈ 𝔻 ⦄ → abs (x - y) < δ → abs (f .fun x - f .fun y) < ε)
       contΣ = findExplicit
@@ -98,8 +98,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         isPropCont (λ _ → decide (isPropCont _)) cont-<-close (f .cont x ε ε>0)
 
 
-    -- If a continuous function has positive/nagetive value at some point x,
-    -- it has positive/nagetive values all over a small neigbourhood of x.
+    -- If a continuous function has positive/negative value at some point x,
+    -- it has positive/negative values all over a small neighbourhood of x.
 
     keepSign+ : (x : ℝ) ⦃ _ : x ∈ 𝔻 ⦄ → f .fun x > 0
       → Σ[ δ ∈ ℝ ] (δ > 0) × ((y : ℝ) ⦃ _ : y ∈ 𝔻 ⦄ → abs (x - y) < δ → f .fun y > 0)

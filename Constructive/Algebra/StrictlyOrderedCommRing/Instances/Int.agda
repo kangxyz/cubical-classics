@@ -4,14 +4,14 @@ Facts about Integers
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Instances.Int where
+module Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
--- It seems there are bugs when applying ring solver to explicit ring.
--- The following is a work-around.
+-- The ring solver has trouble with explicit rings here.
+-- The following is a workaround.
 private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
     open CommRingStr (𝓡 .snd)
@@ -47,8 +47,8 @@ open import Cubical.Data.Unit
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Sum
 
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Base
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Base
   using (Trichotomy ; lt ; eq ; gt)
 
 private
@@ -107,7 +107,7 @@ n>0→posm≡n n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc n>0)
 
 {-
 
-  "Archimedean-ness" of ℤ
+  The Archimedean Property of ℤ
 
 -}
 

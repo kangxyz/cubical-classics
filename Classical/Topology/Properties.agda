@@ -83,9 +83,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     -}
 
-    -- A subset K is compact,
-    -- if for any open covering 𝒰 of K,
-    -- there always merely exists a finite subcover of 𝒰.
+    -- A subset K is compact
+    -- if every open cover 𝒰 of K merely has a finite subcover.
 
     isCompactSub : ℙ X → Type _
     isCompactSub K =
@@ -98,7 +97,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     isPropIsCompactSub = isPropImplicitΠ (λ _ → isPropΠ (λ _ → squash₁))
 
 
-    -- A closed subset that is contained in certain compact subset is itself compact.
+    -- A closed subset contained in a compact subset is itself compact.
 
     isClosedInCompact→isCompact :
       {A K : ℙ X} → A ⊆ K → isClosedSub A → isCompactSub K → isCompactSub A

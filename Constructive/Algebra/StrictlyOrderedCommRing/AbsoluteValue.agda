@@ -4,7 +4,7 @@ Absolute Value
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue where
+module Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Empty as Empty
@@ -15,7 +15,7 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing
 
 private
   variable

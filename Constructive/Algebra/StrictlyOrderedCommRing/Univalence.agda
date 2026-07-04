@@ -4,7 +4,7 @@ SIP for strictly ordered commutative rings
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Univalence where
+module Constructive.Algebra.StrictlyOrderedCommRing.Univalence where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -12,11 +12,11 @@ open import Cubical.Foundations.Equiv
 
 open import Cubical.Algebra.CommRing
 
-open import Classical.Algebra.OrderedCommRing.Morphism
-open import Classical.Algebra.OrderedCommRing.Univalence
-open import Classical.Algebra.StrictlyOrderedCommRing
-import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
-open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
+open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.OrderedCommRing.Univalence
+open import Constructive.Algebra.StrictlyOrderedCommRing
+import Constructive.Algebra.StrictlyOrderedCommRing.Base as StrictBase
+open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
 
 private
   variable

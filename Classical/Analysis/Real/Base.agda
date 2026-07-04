@@ -1,6 +1,6 @@
 {-
 
-The Real Number ℝ
+The Real Numbers ℝ
 
 -}
 {-# OPTIONS --safe #-}
@@ -12,12 +12,12 @@ open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Algebra.Ring
 
 open import Classical.Axioms
-open import Classical.Algebra.OrderedCommRing.Morphism
-open import Classical.Algebra.OrderedField.Instances.Rationals
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
-open import Classical.Algebra.OrderedField
-open import Classical.Algebra.OrderedField.Morphism
+open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.OrderedField.Instances.Rationals
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
+open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Algebra.OrderedField.Completion
 
@@ -27,7 +27,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 {-
 
-  The Axioms of Real Number
+  The Axioms of Real Numbers
 
 -}
 
@@ -35,7 +35,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     open CompleteOrderedField
 
-    -- Real Number is a complete ordered field as is usually defined in classical mathematics.
+    -- The real numbers form a complete ordered field, as usual in classical mathematics.
 
     Reals : Type (ℓ-suc ℓ-zero)
     Reals = CompleteOrderedField ℓ-zero ℓ-zero
@@ -43,7 +43,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     open InclusionFromℚ
     open Completion ℚOrderedField isArchimedeanℚ
 
-    -- The Existence and Uniqueness of Real Number
+    -- Existence and uniqueness of the real numbers
 
     isContrReals : isContr Reals
     isContrReals .fst = complete
@@ -52,7 +52,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 {-
 
-  Basics of Real Number
+  Basics of Real Numbers
 
 -}
 

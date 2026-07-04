@@ -5,7 +5,7 @@
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Morphism where
+module Constructive.Algebra.StrictlyOrderedCommRing.Morphism where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -30,10 +30,10 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
 open import Cubical.Algebra.CommRing.Instances.Int
-open import Classical.Algebra.OrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
+open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int
   using    (ℤStrictlyOrderedCommRing)
-open import Classical.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing
 
 private
   variable

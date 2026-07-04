@@ -19,9 +19,9 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 open import Classical.Algebra.OrderedField.DedekindCut.Archimedes
 

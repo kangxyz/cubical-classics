@@ -19,8 +19,8 @@ open import Classical.Preliminary.Logic
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 open import Classical.Algebra.OrderedField.DedekindCut.Algebra
 open import Classical.Algebra.OrderedField.DedekindCut.Signature

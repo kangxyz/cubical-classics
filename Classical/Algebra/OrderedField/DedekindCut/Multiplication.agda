@@ -27,10 +27,10 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.StrictlyOrderedCommRing
-import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing
+import Constructive.Algebra.StrictlyOrderedCommRing.Base as StrictBase
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 open import Classical.Algebra.OrderedField.DedekindCut.Algebra
 open import Classical.Algebra.OrderedField.DedekindCut.Signature

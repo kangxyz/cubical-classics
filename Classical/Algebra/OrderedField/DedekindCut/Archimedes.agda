@@ -1,6 +1,6 @@
 {-
 
-A Technical Lemma about Archimedean-ness
+A Technical Lemma about the Archimedean Property
 
 -}
 {-# OPTIONS --safe #-}
@@ -16,12 +16,12 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
-open import Classical.Preliminary.Nat
+open import Constructive.Preliminary.Nat
 open import Classical.Foundations.Powerset
 
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.DedekindCut.Base
 
 private

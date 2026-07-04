@@ -4,7 +4,7 @@ Rational Numbers
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedField.Instances.Rationals where
+module Constructive.Algebra.OrderedField.Instances.Rationals where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ)
@@ -13,21 +13,21 @@ open import Cubical.Algebra.Field.Instances.Rationals
   using (ℚField)
 import Cubical.Algebra.Field as CubicalField
 
-open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals
+open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals
   using (ℚStrictlyOrderedCommRing)
-open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes
+open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes
   using (isArchimedeanℚ) public
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
 
 
--- ℚ is totally ordered field
+-- ℚ is a totally ordered field.
 
 ℚOrderedField : OrderedField ℓ-zero ℓ-zero
 ℚOrderedField = ℚStrictlyOrderedCommRing , CubicalField.FieldStr.isField (ℚField .snd)
 
 
--- Inclusion from Natural Numbers
+-- Inclusions from natural numbers.
 
 open OrderedFieldStr ℚOrderedField using (ℕ→R-Pos ; ℕ→R-Neg)
 

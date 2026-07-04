@@ -27,7 +27,7 @@ Resizing : Typeω
 Resizing = {ℓ ℓ' : Level} → isEquiv (liftProp {ℓ = ℓ} ℓ')
 
 
--- A simplified version that only lifting from level zero is required
+-- A simplified version where only lifting from level zero is required.
 
 Resizing₀ : Typeω
 Resizing₀ = {ℓ : Level} → isEquiv (liftProp {ℓ = ℓ-zero} ℓ)
@@ -50,7 +50,7 @@ Resizing₀→Resizing resizing₀ {ℓ = ℓ} {ℓ' = ℓ'} =
     (liftProp ℓ' (liftProp ℓ P) .snd) (liftProp (ℓ-max ℓ ℓ') P .snd) i
 
 
--- Another formulation of Resizing by providing explicit inverse of universe lifting
+-- Another formulation of Resizing, providing an explicit inverse to universe lifting.
 
 record DropProp (P : hProp ℓ) : Type (ℓ-suc ℓ) where
   field
@@ -111,8 +111,8 @@ getSubobjectClassifier :
 getSubobjectClassifier Prop≃hProp = equiv→ (idEquiv _) Prop≃hProp
 
 
--- Propositional Resizing implies the Existence of Subobject Classifier
--- In particular, it is the type hProp of base level.
+-- Propositional Resizing implies the existence of a subobject classifier.
+-- In particular, it is the type hProp at the base level.
 
 Resizing→∃SubobjectClassifier : Resizing → isSubobjectClassifier (hProp ℓ-zero)
 Resizing→∃SubobjectClassifier resizing = getSubobjectClassifier (_ , resizing)

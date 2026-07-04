@@ -6,7 +6,7 @@ This file contains:
 - The definition of metric space;
 - Basics of open balls;
 - The topology induced from metric structure;
-- Metric space is always Hausdorff.
+- A metric space is always Hausdorff.
 
 -}
 {-# OPTIONS --safe #-}
@@ -29,9 +29,9 @@ open import Classical.Topology.Properties
 open import Classical.Topology.Neighbourhood
 open import Classical.Topology.Hausdorff
 
-open import Classical.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing
   using (lt ; eq ; gt)
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.OrderedField
 open import Classical.Analysis.Real
 
 private
@@ -129,8 +129,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     -}
 
-    -- Open ball is just the collection of points
-    -- of which distance to a fixed point is small than a given number.
+    -- An open ball is the collection of points
+    -- whose distance to a fixed point is smaller than a given number.
 
     module _ (x : X)(r : ℝ) ⦃ r>0 : r > 0 ⦄ where
 
@@ -200,7 +200,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 
     -- A subset U in a metric space is open
-    -- if and only if any point x ∈ U has a open ball (with center x) contained in U.
+    -- if and only if any point x ∈ U has an open ball centered at x and contained in U.
 
     module _ {U : ℙ X} where
 

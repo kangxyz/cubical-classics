@@ -24,8 +24,8 @@ open import Cubical.Relation.Nullary
 open import Classical.Axioms
 open import Classical.Foundations.Powerset renaming ([_] to [[_]])
 
-open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Analysis.Real.Base
@@ -54,7 +54,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  -- ℝ is a metric space
+  -- ℝ is a metric space.
 
   instance
 
@@ -69,7 +69,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     ℝTopology = Metric→Topology
 
 
-  -- ℝ is Hausdorff space
+  -- ℝ is a Hausdorff space.
 
   instance
 
@@ -302,7 +302,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   -}
 
 
-  -- Two usual formulations of boundedness, and they are equivalent.
+  -- Two usual formulations of boundedness, and their equivalence.
 
   isBoundedSub : ℙ ℝ → Type
   isBoundedSub A = ∥ Σ[ a ∈ ℝ ] Σ[ b ∈ ℝ ] (a ≤ b) × ((x : ℝ) → x ∈ A → (a ≤ x) × (x ≤ b)) ∥₁

@@ -35,7 +35,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  -- Subset with one-element
+  -- Singleton subset
 
   [_] : X → ℙ X
   [_] x = specify λ y → ∥ x ≡ y ∥₁ , squash₁

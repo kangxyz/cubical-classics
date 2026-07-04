@@ -1,10 +1,10 @@
 {-
 
-Morphism between Ordered Field
+Morphisms between Ordered Fields
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedField.Morphism where
+module Constructive.Algebra.OrderedField.Morphism where
 
 open import Cubical.Foundations.Prelude hiding (lower)
 open import Cubical.Foundations.HLevels
@@ -22,12 +22,12 @@ open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Classical.Algebra.OrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing.Univalence
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing.Univalence
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
 
 private
   variable
@@ -98,7 +98,7 @@ uaOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} is-equiv i .snd =
 
 {-
 
-  Properties of ordered field homomorphism
+  Properties of ordered field homomorphisms
 
 -}
 
@@ -174,7 +174,7 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
   isArchimedean→isUnbounded archimedes x = ∣ isArchimedean→isUnboundedΣ archimedes x ∣₁
 
 
-  -- Unbounded in the other direction but is equivalent by using additive inverse
+  -- Unboundedness in the other direction, equivalent by using additive inverses.
 
   isLowerUnbounded : Type _
   isLowerUnbounded = (x : K) → ∥ Σ[ r ∈ K' ] f-map r < x ∥₁
@@ -201,7 +201,7 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
     -' r , transport (λ i → pres- r (~ i) < -Idempotent x i) (-Reverse< fr>-x)
 
 
-  -- Another version but using smallness
+  -- Another version using smallness.
 
   isArbitrarilySmall : Type _
   isArbitrarilySmall = (x : K) → x > 0r → ∥ Σ[ r ∈ K' ] (0r < f-map r) × (f-map r < x) ∥₁
@@ -245,7 +245,7 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
       (fε>0 : f-map ε > 0r)(fε<δ : f-map ε < b - a)
       (lower : K')(lower<a : f-map lower < a) where
 
-      open import Classical.Preliminary.Nat
+      open import Constructive.Preliminary.Nat
 
       step : ℕ → K
       step n = f-map lower + n ⋆ f-map ε
@@ -347,12 +347,12 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
     using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
     renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_ ; -_ to -ℚ_)
 
-  open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
+  open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int
     using    (ℤStrictlyOrderedCommRing)
-  open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
+  open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
 
   open import Cubical.Algebra.CommRing.Instances.Rationals
-  open import Classical.Algebra.OrderedField.Instances.Rationals
+  open import Constructive.Algebra.OrderedField.Instances.Rationals
 
   open OrderedFieldStr 𝒦
   open InclusionFromℤ (𝒦 .fst)

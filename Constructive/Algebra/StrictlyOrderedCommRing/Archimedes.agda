@@ -1,10 +1,10 @@
 {-
 
-  Archimedean-ness of strictly ordered commutative rings
+  The Archimedean Property of Strictly Ordered Commutative Rings
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.StrictlyOrderedCommRing.Archimedes where
+module Constructive.Algebra.StrictlyOrderedCommRing.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
@@ -12,8 +12,8 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Algebra.CommRing
 open import Cubical.Relation.Nullary
 
-open import Classical.Preliminary.Nat
-open import Classical.Algebra.StrictlyOrderedCommRing
+open import Constructive.Preliminary.Nat
+open import Constructive.Algebra.StrictlyOrderedCommRing
 
 private
   variable
@@ -29,8 +29,8 @@ module _ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
   open StrictlyOrderedCommRingStr 𝓡
 
 
-  -- We have two versions of Archimedean-ness.
-  -- The un-truncated version is seemingly much stronger than the truncated version,
+  -- We have two versions of the Archimedean property.
+  -- The untruncated version seems much stronger than the truncated version,
   -- but they turn out to be equivalent.
 
   isArchimedean : Type (ℓ-max ℓ ℓ')
@@ -40,7 +40,7 @@ module _ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
   isArchimedean∥∥ = (q ε : R) → ε > 0r → ∥ Σ[ n ∈ ℕ ] n ⋆ ε > q ∥₁
 
 
-  -- The equivalence, and one-side is rather trivial.
+  -- The equivalence; one side is trivial.
 
   isArchimedean→isArchimedean∥∥ : isArchimedean → isArchimedean∥∥
   isArchimedean→isArchimedean∥∥ archimedes q ε ε>0 = ∣ archimedes q ε ε>0 ∣₁

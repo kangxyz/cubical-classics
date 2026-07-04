@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedCommRing.Morphism where
+module Constructive.Algebra.OrderedCommRing.Morphism where
 
 open import Cubical.Foundations.Prelude
 

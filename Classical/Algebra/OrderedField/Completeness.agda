@@ -34,12 +34,12 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
-open import Classical.Algebra.OrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Classical.Algebra.OrderedField
-open import Classical.Algebra.OrderedField.Morphism
+open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField
+open import Constructive.Algebra.OrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
 
 private
@@ -75,7 +75,7 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
 
   {-
 
-    The Supremum Principle/Dedekind Completeness of Real Numbers
+    The Supremum Principle / Dedekind Completeness
 
   -}
 
@@ -103,7 +103,7 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
 
   {-
 
-    Completeness implies Archimedean-ness
+    Completeness Implies the Archimedean Property
 
   -}
 
@@ -164,7 +164,7 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
         return (no-way' _ p>q-ε p∈A)
 
 
-  -- Complete ordered field is Archimedean
+  -- A complete ordered field is Archimedean.
 
   isComplete→isArchimedean∥∥ : isComplete → isArchimedean∥∥ (𝒦 .fst)
   isComplete→isArchimedean∥∥ getSup q ε ε>0 = ¬∀¬→∃ (no-way getSup q ε ε>0)
@@ -275,7 +275,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     isSurjection-f : isSurjection f-map
     isSurjection-f y = ∣ _ , fiber-path y ∣₁
 
-    -- Homomorphism between complete ordered fields is always an isomorphism.
+    -- A homomorphism between complete ordered fields is always an isomorphism.
 
     isEquiv-f : isEquiv f-map
     isEquiv-f = isEmbedding×isSurjection→isEquiv (isEmbedding-f , isSurjection-f)

@@ -4,7 +4,7 @@ Properties of Ordered Field
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Classical.Algebra.OrderedField.Properties where
+module Constructive.Algebra.OrderedField.Properties where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -23,8 +23,8 @@ open import Cubical.Algebra.Field as CubicalField
   using (Field→CommRing)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Classical.Algebra.StrictlyOrderedCommRing
-open import Classical.Algebra.OrderedField.Base
+open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.OrderedField.Base
 
 private
   variable
@@ -307,12 +307,12 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
 
 {-
 
-  Archimedean-ness of Ordered Field
+  The Archimedean Property of Ordered Fields
 
 -}
 
-open import Classical.Preliminary.Nat
-open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Preliminary.Nat
+open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 
 module _ (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 
@@ -321,7 +321,7 @@ module _ (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) 
   private
     K = 𝒦 .fst .fst .fst
 
-  -- An inverse version of Archimedean-ness,
+  -- An inverse version of the Archimedean property,
   -- which says you can make a non-zero element arbitrarily small by dividing a natural number.
 
   isArchimedeanInv : Type (ℓ-max ℓ ℓ')
@@ -337,7 +337,7 @@ module _ (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) 
       ∙ ·-/-lInv x (1+ n)) (·-rPosPres< (1/n>0 (1+ n)) nx>ε)
 
 
-  -- A useful lemma to lift mere existence to existence
+  -- A useful lemma to lift mere existence to explicit existence.
 
   module _
     {P : (x : K) → Type ℓ''}

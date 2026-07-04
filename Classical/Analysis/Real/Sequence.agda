@@ -37,8 +37,8 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Nat
 open import Classical.Preliminary.Logic
-open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Classical.Algebra.OrderedField
+open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
+open import Constructive.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Topology.Metric
@@ -81,7 +81,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   isUpperBoundedSequence seq = ∥ Σ[ b ∈ ℝ ] ((n : ℕ) → seq n ≤ b) ∥₁
 
 
-  -- A weaker formulation of incresing, and their equivalence
+  -- A weaker formulation of increasing, and its equivalence.
 
   isIncreasing' : (ℕ → ℝ) → Type
   isIncreasing' seq = (n : ℕ) → seq (suc n) ≥ seq n
@@ -96,7 +96,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         (≤-trans (≥-helper _ (suc k) refl) (incr _))
 
 
-  -- Monotone increasing and upper-bounded sequence has a limit.
+  -- A monotone increasing and upper-bounded sequence has a limit.
 
   isMonoBounded→Limit : {seq : ℕ → ℝ} → isIncreasing seq → isUpperBoundedSequence seq → Limit seq
   isMonoBounded→Limit {seq = seq} incr boundSeq =
@@ -163,7 +163,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   isBoundedSequence seq = ∥ Σ[ a ∈ ℝ ] Σ[ b ∈ ℝ ] ((n : ℕ) → (a ≤ seq n) × (seq n ≤ b)) ∥₁
 
 
-  -- Sequence of real numbers admits cluster point when it is bounded.
+  -- A bounded sequence of real numbers admits a cluster point.
 
   isBounded→ClusterPoint : {seq : ℕ → ℝ} → isBoundedSequence seq → ClusterPoint seq
   isBounded→ClusterPoint {seq = seq} bSeq = record { point = x₀ ; accum = ∃cluster }
@@ -229,7 +229,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  -- Cauchy sequence is bounded
+  -- A Cauchy sequence is bounded.
 
   isCauchy→isBoundedSequence : {seq : ℕ → ℝ} → isCauchy seq → isBoundedSequence seq
   isCauchy→isBoundedSequence {seq = seq} cauchy = bSeq
@@ -277,7 +277,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         abs<' (suc n₀) n ≤ℕ-refl (<ℕ-trans ≤ℕ-refl n>sn₀)))
 
 
-  -- Real Number is Cauchy Complete
+  -- The real numbers are Cauchy complete.
 
   isCauchy→Limit : isCauchyComplete
   isCauchy→Limit {seq = seq} cauchy = record { lim = cluster .point ; conv = converge }

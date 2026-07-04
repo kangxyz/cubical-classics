@@ -4,14 +4,14 @@ Totally Ordered Field
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.Algebra.OrderedField.Base where
+module Constructive.Algebra.OrderedField.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
 open import Cubical.Data.Sigma
 open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.Field
-open import Classical.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.StrictlyOrderedCommRing
 
 private
   variable
