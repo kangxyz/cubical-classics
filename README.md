@@ -4,8 +4,8 @@
 > towards program only *Übermensch* is able to run.
 
 `cubical-classics` is an experimental Agda library for doing classical
-mathematics in Cubical Agda. It contains classical principles, ordered algebra, Dedekind cuts, real
-numbers, and some basic real analysis.
+mathematics in Cubical Agda. It develops classical principles, ordered algebra,
+Dedekind cuts, real numbers, and some basic real analysis.
 
 We are open to advice and contributions!
 
@@ -42,20 +42,23 @@ agda --build-library
   `ℤ` and `ℚ` instances.
 - `Classical/` is for the axiom interface and the parts that use it:
   powersets, topology, Dedekind cuts, the real numbers, and real analysis.
+- `Solvers/` contains small Boolean, propositional, and powerset solvers used
+  by the powerset development.
 
 ## Contents
 
 At the moment the library has:
 
-- excluded middle, choice, Diaconescu's theorem, omniscience principles, and
-  local propositional resizing;
+- excluded middle, choice, Cubical's Diaconescu bridge from choice to excluded
+  middle, omniscience principles, and local propositional resizing;
 - constructive lemmas for logic and natural numbers, plus classical wrappers
   for LPO and oracle-based search;
-- ordered commutative rings, strictly ordered commutative rings, ordered
-  fields, ordered morphisms, Archimedean structures, and the canonical
+- constructive ordered commutative rings, strictly ordered commutative rings,
+  ordered fields, ordered morphisms, Archimedean structures, and the canonical
   embeddings of `ℤ` and `ℚ`;
 - impredicative powersets, with membership, Boolean operations, finiteness,
   and finite big operations;
+- small Boolean/propositional and powerset solvers;
 - topological spaces, neighbourhoods, Hausdorff spaces, compactness, and
   metric spaces;
 - Dedekind cuts and the construction of the real numbers as a complete
