@@ -17,135 +17,135 @@ open import Cubical.DedekindCut.Arithmetic
 open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
 
 
-module MultiplicationNegation {ℓ : Level} where
+module NegationProperties {ℓ : Level} where
   open Algebra {ℓ}
   open Lattice {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
-  open SignedMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
+  open Multiplication {ℓ}
   open AdditiveGroup {ℓ}
 
-  positivePart-neg :
+  posPart-neg :
     (x : DedekindCut ℓ) →
-    positivePart (- x) ≡ negativePart x
-  positivePart-neg x = refl
+    posPart (- x) ≡ negPart x
+  posPart-neg x = refl
 
-  negativePart-neg :
+  negPart-neg :
     (x : DedekindCut ℓ) →
-    negativePart (- x) ≡ positivePart x
-  negativePart-neg x =
-    cong (λ z → z ⊔ 0D) (neg-involutive x)
+    negPart (- x) ≡ posPart x
+  negPart-neg x =
+    cong (λ z → z ⊔ 0𝔻) (neg-involutive x)
 
-  positiveProducts-negL :
+  posProducts-negL :
     (x y : DedekindCut ℓ) →
-    positiveProducts (- x) y ≡ negativeProducts x y
-  positiveProducts-negL x y =
+    posProducts (- x) y ≡ negProducts x y
+  posProducts-negL x y =
     cong₂ _+_ first second ∙
     +-comm
-      (nnMul (negativePart x) (positivePart y)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y))
-      (nnMul (positivePart x) (negativePart y)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y))
+      (nnMul (negPart x) (posPart y)
+        (negPart≥0 x)
+        (posPart≥0 y))
+      (nnMul (posPart x) (negPart y)
+        (posPart≥0 x)
+        (negPart≥0 y))
     where
     first :
-      nnMul (positivePart (- x)) (positivePart y)
-        (positivePart-nonnegative (- x))
-        (positivePart-nonnegative y)
+      nnMul (posPart (- x)) (posPart y)
+        (posPart≥0 (- x))
+        (posPart≥0 y)
       ≡
-      nnMul (negativePart x) (positivePart y)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y)
+      nnMul (negPart x) (posPart y)
+        (negPart≥0 x)
+        (posPart≥0 y)
     first =
       nnMul-congL
-        (positivePart (- x))
-        (negativePart x)
-        (positivePart y)
-        (positivePart-neg x)
-        (positivePart-nonnegative (- x))
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y)
-        (positivePart-nonnegative y)
+        (posPart (- x))
+        (negPart x)
+        (posPart y)
+        (posPart-neg x)
+        (posPart≥0 (- x))
+        (negPart≥0 x)
+        (posPart≥0 y)
+        (posPart≥0 y)
 
     second :
-      nnMul (negativePart (- x)) (negativePart y)
-        (negativePart-nonnegative (- x))
-        (negativePart-nonnegative y)
+      nnMul (negPart (- x)) (negPart y)
+        (negPart≥0 (- x))
+        (negPart≥0 y)
       ≡
-      nnMul (positivePart x) (negativePart y)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y)
+      nnMul (posPart x) (negPart y)
+        (posPart≥0 x)
+        (negPart≥0 y)
     second =
       nnMul-congL
-        (negativePart (- x))
-        (positivePart x)
-        (negativePart y)
-        (negativePart-neg x)
-        (negativePart-nonnegative (- x))
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y)
-        (negativePart-nonnegative y)
+        (negPart (- x))
+        (posPart x)
+        (negPart y)
+        (negPart-neg x)
+        (negPart≥0 (- x))
+        (posPart≥0 x)
+        (negPart≥0 y)
+        (negPart≥0 y)
 
-  negativeProducts-negL :
+  negProducts-negL :
     (x y : DedekindCut ℓ) →
-    negativeProducts (- x) y ≡ positiveProducts x y
-  negativeProducts-negL x y =
+    negProducts (- x) y ≡ posProducts x y
+  negProducts-negL x y =
     cong₂ _+_ first second ∙
     +-comm
-      (nnMul (negativePart x) (negativePart y)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y))
-      (nnMul (positivePart x) (positivePart y)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y))
+      (nnMul (negPart x) (negPart y)
+        (negPart≥0 x)
+        (negPart≥0 y))
+      (nnMul (posPart x) (posPart y)
+        (posPart≥0 x)
+        (posPart≥0 y))
     where
     first :
-      nnMul (positivePart (- x)) (negativePart y)
-        (positivePart-nonnegative (- x))
-        (negativePart-nonnegative y)
+      nnMul (posPart (- x)) (negPart y)
+        (posPart≥0 (- x))
+        (negPart≥0 y)
       ≡
-      nnMul (negativePart x) (negativePart y)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y)
+      nnMul (negPart x) (negPart y)
+        (negPart≥0 x)
+        (negPart≥0 y)
     first =
       nnMul-congL
-        (positivePart (- x))
-        (negativePart x)
-        (negativePart y)
-        (positivePart-neg x)
-        (positivePart-nonnegative (- x))
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y)
-        (negativePart-nonnegative y)
+        (posPart (- x))
+        (negPart x)
+        (negPart y)
+        (posPart-neg x)
+        (posPart≥0 (- x))
+        (negPart≥0 x)
+        (negPart≥0 y)
+        (negPart≥0 y)
 
     second :
-      nnMul (negativePart (- x)) (positivePart y)
-        (negativePart-nonnegative (- x))
-        (positivePart-nonnegative y)
+      nnMul (negPart (- x)) (posPart y)
+        (negPart≥0 (- x))
+        (posPart≥0 y)
       ≡
-      nnMul (positivePart x) (positivePart y)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y)
+      nnMul (posPart x) (posPart y)
+        (posPart≥0 x)
+        (posPart≥0 y)
     second =
       nnMul-congL
-        (negativePart (- x))
-        (positivePart x)
-        (positivePart y)
-        (negativePart-neg x)
-        (negativePart-nonnegative (- x))
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y)
-        (positivePart-nonnegative y)
+        (negPart (- x))
+        (posPart x)
+        (posPart y)
+        (negPart-neg x)
+        (negPart≥0 (- x))
+        (posPart≥0 x)
+        (posPart≥0 y)
+        (posPart≥0 y)
 
   *-negL :
     (x y : DedekindCut ℓ) →
     (- x) * y ≡ - (x * y)
   *-negL x y =
     cong₂ _+_
-      (positiveProducts-negL x y)
-      (cong -_ (negativeProducts-negL x y)) ∙
-    sym (neg-difference-swap (positiveProducts x y) (negativeProducts x y))
+      (posProducts-negL x y)
+      (cong -_ (negProducts-negL x y)) ∙
+    sym (neg-difference-swap (posProducts x y) (negProducts x y))
 
   *-negR :
     (x y : DedekindCut ℓ) →

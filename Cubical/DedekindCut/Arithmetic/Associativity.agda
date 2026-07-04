@@ -14,117 +14,117 @@ open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
 open import Cubical.DedekindCut.Arithmetic.Difference
 open import Cubical.DedekindCut.Arithmetic.Distributivity
 open import Cubical.DedekindCut.Arithmetic.Negation
-open import Cubical.DedekindCut.Arithmetic.NonnegativeLaws
+open import Cubical.DedekindCut.Arithmetic.NonNegative
 
 
-module SignedAssociativity {ℓ : Level} where
+module MultiplicationAssociativity {ℓ : Level} where
   open Algebra {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
-  open SignedMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
+  open Multiplication {ℓ}
   open AdditiveGroup {ℓ}
-  open DifferenceMultiplication {ℓ}
-  open SignedDistributivity {ℓ}
-  open MultiplicationNegation {ℓ}
-  open NonnegativeLaws {ℓ}
+  open DifferenceProperties {ℓ}
+  open MultiplicationDistributivity {ℓ}
+  open NegationProperties {ℓ}
+  open NonNegativeProperties {ℓ}
 
-  *-assoc-two-right-nonnegative :
+  *-assoc-two-r≥0 :
     (x a n : DedekindCut ℓ) →
-    (0≤a : Nonnegative a) →
-    (0≤n : Nonnegative n) →
+    (0≤a : a ≥0) →
+    (0≤n : n ≥0) →
     (x * a) * n ≡ x * (nnMul a n 0≤a 0≤n)
-  *-assoc-two-right-nonnegative x a n 0≤a 0≤n =
-    cong (_* n) (*-right-nonnegative-form x a 0≤a) ∙
-    *-distribR-nonnegative
-      (nnMul (positivePart x) a (positivePart-nonnegative x) 0≤a)
-      (- nnMul (negativePart x) a (negativePart-nonnegative x) 0≤a)
+  *-assoc-two-r≥0 x a n 0≤a 0≤n =
+    cong (_* n) (*-r≥0-form x a 0≤a) ∙
+    *-distribR-≥0
+      (nnMul (posPart x) a (posPart≥0 x) 0≤a)
+      (- nnMul (negPart x) a (negPart≥0 x) 0≤a)
       n
       0≤n ∙
     cong₂ _+_
       left-assoc
       (cong (_* n) refl ∙
-       *-negL (nnMul (negativePart x) a (negativePart-nonnegative x) 0≤a) n ∙
+       *-negL (nnMul (negPart x) a (negPart≥0 x) 0≤a) n ∙
        cong -_ right-assoc) ∙
-    sym (*-right-nonnegative-form x (nnMul a n 0≤a 0≤n) 0≤an)
+    sym (*-r≥0-form x (nnMul a n 0≤a 0≤n) 0≤an)
     where
-    0≤an : Nonnegative (nnMul a n 0≤a 0≤n)
-    0≤an = nnMul-nonnegative a n 0≤a 0≤n
+    0≤an : (nnMul a n 0≤a 0≤n) ≥0
+    0≤an = nnMul-Pres≥0 a n 0≤a 0≤n
 
     left-assoc :
-      nnMul (positivePart x) a (positivePart-nonnegative x) 0≤a * n
+      nnMul (posPart x) a (posPart≥0 x) 0≤a * n
       ≡
-      nnMul (positivePart x) (nnMul a n 0≤a 0≤n)
-        (positivePart-nonnegative x)
+      nnMul (posPart x) (nnMul a n 0≤a 0≤n)
+        (posPart≥0 x)
         0≤an
     left-assoc =
-      *-of-nonnegative
-        (nnMul (positivePart x) a (positivePart-nonnegative x) 0≤a)
+      *-of-≥0
+        (nnMul (posPart x) a (posPart≥0 x) 0≤a)
         n
-        (nnMul-nonnegative (positivePart x) a (positivePart-nonnegative x) 0≤a)
+        (nnMul-Pres≥0 (posPart x) a (posPart≥0 x) 0≤a)
         0≤n ∙
       sym
         (nnMul-assoc
-          (positivePart x)
+          (posPart x)
           a
           n
-          (positivePart-nonnegative x)
+          (posPart≥0 x)
           0≤a
           0≤n)
 
     right-assoc :
-      nnMul (negativePart x) a (negativePart-nonnegative x) 0≤a * n
+      nnMul (negPart x) a (negPart≥0 x) 0≤a * n
       ≡
-      nnMul (negativePart x) (nnMul a n 0≤a 0≤n)
-        (negativePart-nonnegative x)
+      nnMul (negPart x) (nnMul a n 0≤a 0≤n)
+        (negPart≥0 x)
         0≤an
     right-assoc =
-      *-of-nonnegative
-        (nnMul (negativePart x) a (negativePart-nonnegative x) 0≤a)
+      *-of-≥0
+        (nnMul (negPart x) a (negPart≥0 x) 0≤a)
         n
-        (nnMul-nonnegative (negativePart x) a (negativePart-nonnegative x) 0≤a)
+        (nnMul-Pres≥0 (negPart x) a (negPart≥0 x) 0≤a)
         0≤n ∙
       sym
         (nnMul-assoc
-          (negativePart x)
+          (negPart x)
           a
           n
-          (negativePart-nonnegative x)
+          (negPart≥0 x)
           0≤a
           0≤n)
 
-  *-assocR-nonnegative :
+  *-assocR-≥0 :
     (x y n : DedekindCut ℓ) →
-    (0≤n : Nonnegative n) →
+    (0≤n : n ≥0) →
     (x * y) * n ≡ x * (y * n)
-  *-assocR-nonnegative x y n 0≤n =
+  *-assocR-≥0 x y n 0≤n =
     cong (_* n) (*-right-decomposition x y) ∙
-    *-distribR-nonnegative
-      (x * positivePart y)
-      (- (x * negativePart y))
+    *-distribR-≥0
+      (x * posPart y)
+      (- (x * negPart y))
       n
       0≤n ∙
     cong₂ _+_
-      (*-assoc-two-right-nonnegative x (positivePart y) n
-        (positivePart-nonnegative y)
+      (*-assoc-two-r≥0 x (posPart y) n
+        (posPart≥0 y)
         0≤n)
-      (*-negL (x * negativePart y) n ∙
+      (*-negL (x * negPart y) n ∙
        cong -_
-        (*-assoc-two-right-nonnegative x (negativePart y) n
-          (negativePart-nonnegative y)
+        (*-assoc-two-r≥0 x (negPart y) n
+          (negPart≥0 y)
           0≤n)) ∙
     distrib-back ∙
-    cong (x *_) (sym (*-right-nonnegative-form y n 0≤n))
+    cong (x *_) (sym (*-r≥0-form y n 0≤n))
     where
     yn+ : DedekindCut ℓ
     yn+ =
-      nnMul (positivePart y) n
-        (positivePart-nonnegative y)
+      nnMul (posPart y) n
+        (posPart≥0 y)
         0≤n
 
     yn- : DedekindCut ℓ
     yn- =
-      nnMul (negativePart y) n
-        (negativePart-nonnegative y)
+      nnMul (negPart y) n
+        (negPart≥0 y)
         0≤n
 
     distrib-back :
@@ -140,17 +140,17 @@ module SignedAssociativity {ℓ : Level} where
   *-assoc x y z =
     *-right-decomposition (x * y) z ∙
     cong₂ _+_
-      (*-assocR-nonnegative x y (positivePart z) (positivePart-nonnegative z))
+      (*-assocR-≥0 x y (posPart z) (posPart≥0 z))
       (cong -_
-        (*-assocR-nonnegative x y (negativePart z) (negativePart-nonnegative z))) ∙
+        (*-assocR-≥0 x y (negPart z) (negPart≥0 z))) ∙
     distrib-back ∙
     cong (x *_) (sym (*-right-decomposition y z))
     where
     yz+ : DedekindCut ℓ
-    yz+ = y * positivePart z
+    yz+ = y * posPart z
 
     yz- : DedekindCut ℓ
-    yz- = y * negativePart z
+    yz- = y * negPart z
 
     distrib-back :
       x * yz+ + (- (x * yz-)) ≡ x * (yz+ + (- yz-))

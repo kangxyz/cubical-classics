@@ -25,19 +25,19 @@ open import Cubical.DedekindCut.Arithmetic
 import Cubical.Rationals as ℚExtra
 
 
-module NonnegativeUnit {ℓ : Level} where
+module UnitProperties {ℓ : Level} where
   open Order {ℓ}
   open Algebra {ℓ}
   open Lattice {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
-  open SignedMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
+  open Multiplication {ℓ}
 
   abstract
     nnMul-idR-lower⊆ :
       (x : DedekindCut ℓ) →
-      (0≤x : Nonnegative x) →
-      nnMulLower x 1D ⊆ lower x
+      (0≤x : x ≥0) →
+      nnMulLower x 1𝔻 ⊆ lower x
     nnMul-idR-lower⊆ x 0≤x q =
       Prop.rec (isProp∈ (lower x) q)
         (λ where
@@ -49,18 +49,18 @@ module NonnegativeUnit {ℓ : Level} where
                 (ℚExtra.mul-by-<1 {a = a} {b = b} 0<a (Lift.lower b∈L1)))
               a∈Lx)
 
-    nnMul-idR-lower⊇-nonnegative :
+    nnMul-idR-lower⊇-≥0 :
       (x : DedekindCut ℓ) →
       (q : ℚ) →
       ℚExtra.0ℚ ℚOrder.≤ q →
       q ∈ lower x →
-      q ∈ nnMulLower x 1D
-    nnMul-idR-lower⊇-nonnegative x q 0≤q q∈Lx =
+      q ∈ nnMulLower x 1𝔻
+    nnMul-idR-lower⊇-≥0 x q 0≤q q∈Lx =
       Prop.rec squash₁ step (lower-rounded x q q∈Lx)
       where
       step :
         Σ[ a ∈ ℚ ] (q ℚOrder.< a) × (a ∈ lower x) →
-        q ∈ nnMulLower x 1D
+        q ∈ nnMulLower x 1𝔻
       step (a , q<a , a∈Lx) with
         ℚExtra.unit-lower-factor q a 0≤q q<a
           (ℚExtra.nonnegative-right-of-< {p = q} {q = a} 0≤q q<a)
@@ -76,17 +76,17 @@ module NonnegativeUnit {ℓ : Level} where
 
     nnMul-idR-lower⊇ :
       (x : DedekindCut ℓ) →
-      (0≤x : Nonnegative x) →
-      lower x ⊆ nnMulLower x 1D
+      (0≤x : x ≥0) →
+      lower x ⊆ nnMulLower x 1𝔻
     nnMul-idR-lower⊇ x 0≤x q q∈Lx with ℚExtra.negative-or-nonnegative q
     ... | Sum.inl q<0 =
       ∣ Sum.inl q<0 ∣₁
     ... | Sum.inr 0≤q =
-      nnMul-idR-lower⊇-nonnegative x q 0≤q q∈Lx
+      nnMul-idR-lower⊇-≥0 x q 0≤q q∈Lx
 
     nnMul-idR-upper⊆ :
       (x : DedekindCut ℓ) →
-      nnMulUpper x 1D ⊆ upper x
+      nnMulUpper x 1𝔻 ⊆ upper x
     nnMul-idR-upper⊆ x q (0<q , q∈U) =
       Prop.rec (isProp∈ (upper x) q)
         (λ (a , b , a∈Ux , b∈U1 , 0<a , 0<b , ab<q) →
@@ -99,35 +99,35 @@ module NonnegativeUnit {ℓ : Level} where
 
     nnMul-idR-upper⊇ :
       (x : DedekindCut ℓ) →
-      (0≤x : Nonnegative x) →
-      upper x ⊆ nnMulUpper x 1D
+      (0≤x : x ≥0) →
+      upper x ⊆ nnMulUpper x 1𝔻
     nnMul-idR-upper⊇ x 0≤x q q∈Ux =
-      nonnegative-upper-positive x 0≤x q q∈Ux ,
+      ≥0+upper→>0 x 0≤x q q∈Ux ,
       Prop.rec squash₁ step (upper-rounded x q q∈Ux)
       where
       step :
         Σ[ r ∈ ℚ ] (r ℚOrder.< q) × (r ∈ upper x) →
-        ∥ ProductUpperWitness x 1D q ∥₁
+        ∥ ProductUpperWitness x 1𝔻 q ∥₁
       step (r , r<q , r∈Ux) with
         ℚExtra.unit-upper-factor r q
-          (nonnegative-upper-positive x 0≤x r r∈Ux)
+          (≥0+upper→>0 x 0≤x r r∈Ux)
           r<q
       ... | b , 1<b , 0<b , rb<q =
         ∣ r , b
         , r∈Ux
         , lift 1<b
-        , nonnegative-upper-positive x 0≤x r r∈Ux
+        , ≥0+upper→>0 x 0≤x r r∈Ux
         , 0<b
         , rb<q
         ∣₁
 
   nnMul-idR :
     (x : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    nnMul x 1D 0≤x 1D-nonnegative ≡ x
+    (0≤x : x ≥0) →
+    nnMul x 1𝔻 0≤x 1𝔻≥0 ≡ x
   nnMul-idR x 0≤x =
     cutExt
-      (nnMul x 1D 0≤x 1D-nonnegative)
+      (nnMul x 1𝔻 0≤x 1𝔻≥0)
       x
       (nnMul-idR-lower⊆ x 0≤x)
       (nnMul-idR-lower⊇ x 0≤x)
@@ -136,36 +136,36 @@ module NonnegativeUnit {ℓ : Level} where
 
   nnMul-idL :
     (x : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    nnMul 1D x 1D-nonnegative 0≤x ≡ x
+    (0≤x : x ≥0) →
+    nnMul 1𝔻 x 1𝔻≥0 0≤x ≡ x
   nnMul-idL x 0≤x =
-    nnMul-comm 1D x 1D-nonnegative 0≤x ∙
+    nnMul-comm 1𝔻 x 1𝔻≥0 0≤x ∙
     nnMul-idR x 0≤x
 
-  *-idR-nonnegative :
+  *-idR-≥0 :
     (x : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    x * 1D ≡ x
-  *-idR-nonnegative x 0≤x =
-    *-of-nonnegative x 1D 0≤x 1D-nonnegative ∙
+    (0≤x : x ≥0) →
+    x * 1𝔻 ≡ x
+  *-idR-≥0 x 0≤x =
+    *-of-≥0 x 1𝔻 0≤x 1𝔻≥0 ∙
     nnMul-idR x 0≤x
 
-  *-idL-nonnegative :
+  *-idL-≥0 :
     (x : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    1D * x ≡ x
-  *-idL-nonnegative x 0≤x =
-    *-comm 1D x ∙
-    *-idR-nonnegative x 0≤x
+    (0≤x : x ≥0) →
+    1𝔻 * x ≡ x
+  *-idL-≥0 x 0≤x =
+    *-comm 1𝔻 x ∙
+    *-idR-≥0 x 0≤x
 
   *-idR-positive-negative-form :
     (x : DedekindCut ℓ) →
-    x * 1D ≡ positivePart x + (- negativePart x)
+    x * 1𝔻 ≡ posPart x + (- negPart x)
   *-idR-positive-negative-form x =
-    *-right-nonnegative-form x 1D 1D-nonnegative ∙
+    *-r≥0-form x 1𝔻 1𝔻≥0 ∙
     cong₂ _+_
-      (nnMul-idR (positivePart x) (positivePart-nonnegative x))
-      (cong -_ (nnMul-idR (negativePart x) (negativePart-nonnegative x)))
+      (nnMul-idR (posPart x) (posPart≥0 x))
+      (cong -_ (nnMul-idR (negPart x) (negPart≥0 x)))
 
   abstract
     plus-minus-cancelR :
@@ -176,55 +176,55 @@ module NonnegativeUnit {ℓ : Level} where
       cong (x +_) (+-invR n) ∙
       +-idR x
 
-    positivePart≤x+negativePart :
+    posPart≤x+negPart :
       (x : DedekindCut ℓ) →
-      positivePart x ≤ x + negativePart x
-    positivePart≤x+negativePart x =
-      ⊔≤ x 0D (x + negativePart x)
+      posPart x ≤ x + negPart x
+    posPart≤x+negPart x =
+      ⊔≤ x 0𝔻 (x + negPart x)
         x≤x+n
         0≤x+n
       where
       n : DedekindCut ℓ
-      n = negativePart x
+      n = negPart x
 
       x≤x+n : x ≤ x + n
       x≤x+n =
-        ≤-trans x (x + 0D) (x + n)
+        ≤-trans x (x + 0𝔻) (x + n)
           (≡→≤ (sym (+-idR x)))
-          (+-monoL-≤ 0D n x (negativePart-nonnegative x))
+          (+-monoL-≤ 0𝔻 n x (negPart≥0 x))
 
-      0≤x+-x : 0D ≤ x + (- x)
+      0≤x+-x : 0𝔻 ≤ x + (- x)
       0≤x+-x =
         ≡→≤ (sym (+-invR x))
 
       x+-x≤x+n : x + (- x) ≤ x + n
       x+-x≤x+n =
-        +-monoL-≤ (- x) n x (left≤⊔ (- x) 0D)
+        +-monoL-≤ (- x) n x (left≤⊔ (- x) 0𝔻)
 
-      0≤x+n : 0D ≤ x + n
+      0≤x+n : 0𝔻 ≤ x + n
       0≤x+n =
-        ≤-trans 0D (x + (- x)) (x + n)
+        ≤-trans 0𝔻 (x + (- x)) (x + n)
           0≤x+-x
           x+-x≤x+n
 
-    x+negativePart≤positivePart :
+    x+negPart≤posPart :
       (x : DedekindCut ℓ) →
-      x + negativePart x ≤ positivePart x
-    x+negativePart≤positivePart x q =
-      Prop.rec (isProp∈ (lower (positivePart x)) q) step
+      x + negPart x ≤ posPart x
+    x+negPart≤posPart x q =
+      Prop.rec (isProp∈ (lower (posPart x)) q) step
       where
       step :
         Σ[ r ∈ ℚ ] Σ[ s ∈ ℚ ]
           (r ∈ lower x) ×
-          (s ∈ lower (negativePart x)) ×
+          (s ∈ lower (negPart x)) ×
           (q ℚOrder.< r ℚ.+ s) →
-        q ∈ lower (positivePart x)
+        q ∈ lower (posPart x)
       step (r , s , r∈Lx , s∈Lx- , q<r+s) =
         Prop.rec squash₁ split-negative-part s∈Lx-
         where
         split-negative-part :
-          (s ∈ lower (- x)) ⊎ (s ∈ lower 0D) →
-          q ∈ lower (positivePart x)
+          (s ∈ lower (- x)) ⊎ (s ∈ lower 0𝔻) →
+          q ∈ lower (posPart x)
         split-negative-part (Sum.inl s∈L-x) =
           ∣ Sum.inr (lift q<0) ∣₁
           where
@@ -265,60 +265,60 @@ module NonnegativeUnit {ℓ : Level} where
 
     positive-negative-decomposition :
       (x : DedekindCut ℓ) →
-      positivePart x + (- negativePart x) ≡ x
+      posPart x + (- negPart x) ≡ x
     positive-negative-decomposition x =
-      ≤-antisym (positivePart x + (- n)) x lhs≤x x≤lhs
+      ≤-antisym (posPart x + (- n)) x lhs≤x x≤lhs
       where
       n : DedekindCut ℓ
-      n = negativePart x
+      n = negPart x
 
       cancel : (x + n) + (- n) ≡ x
       cancel = plus-minus-cancelR x n
 
       lhs≤cancelled :
-        positivePart x + (- n) ≤ (x + n) + (- n)
+        posPart x + (- n) ≤ (x + n) + (- n)
       lhs≤cancelled =
-        +-monoR-≤ (positivePart x) (x + n) (- n)
-          (positivePart≤x+negativePart x)
+        +-monoR-≤ (posPart x) (x + n) (- n)
+          (posPart≤x+negPart x)
 
-      lhs≤x : positivePart x + (- n) ≤ x
+      lhs≤x : posPart x + (- n) ≤ x
       lhs≤x =
         ≤-trans
-          (positivePart x + (- n))
+          (posPart x + (- n))
           ((x + n) + (- n))
           x
           lhs≤cancelled
           (≡→≤ cancel)
 
       cancelled≤lhs :
-        (x + n) + (- n) ≤ positivePart x + (- n)
+        (x + n) + (- n) ≤ posPart x + (- n)
       cancelled≤lhs =
-        +-monoR-≤ (x + n) (positivePart x) (- n)
-          (x+negativePart≤positivePart x)
+        +-monoR-≤ (x + n) (posPart x) (- n)
+          (x+negPart≤posPart x)
 
       x≤cancelled : x ≤ (x + n) + (- n)
       x≤cancelled =
         ≡→≤ (sym cancel)
 
-      x≤lhs : x ≤ positivePart x + (- n)
+      x≤lhs : x ≤ posPart x + (- n)
       x≤lhs =
         ≤-trans
           x
           ((x + n) + (- n))
-          (positivePart x + (- n))
+          (posPart x + (- n))
           x≤cancelled
           cancelled≤lhs
 
   *-idR :
     (x : DedekindCut ℓ) →
-    x * 1D ≡ x
+    x * 1𝔻 ≡ x
   *-idR x =
     *-idR-positive-negative-form x ∙
     positive-negative-decomposition x
 
   *-idL :
     (x : DedekindCut ℓ) →
-    1D * x ≡ x
+    1𝔻 * x ≡ x
   *-idL x =
-    *-comm 1D x ∙
+    *-comm 1𝔻 x ∙
     *-idR x

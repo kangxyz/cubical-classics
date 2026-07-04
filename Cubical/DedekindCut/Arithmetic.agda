@@ -32,11 +32,11 @@ module Addition {ℓ : Level} where
   open Approximation {ℓ}
   open Algebra {ℓ}
 
-  0D : DedekindCut ℓ
-  0D = ℚ→DedekindCutAt ℓ ℚExtra.0ℚ
+  0𝔻 : DedekindCut ℓ
+  0𝔻 = ℚ→𝔻 ℓ ℚExtra.0ℚ
 
-  1D : DedekindCut ℓ
-  1D = ℚ→DedekindCutAt ℓ ℚExtra.1ℚ
+  1𝔻 : DedekindCut ℓ
+  1𝔻 = ℚ→𝔻 ℓ ℚExtra.1ℚ
 
   addLower : DedekindCut ℓ → DedekindCut ℓ → ℚPred ℓ
   addLower x y q =
@@ -54,10 +54,10 @@ module Addition {ℓ : Level} where
       (r ℚ.+ s ℚOrder.< q) ∥₁ ,
     squash₁
 
-  add-is-cut :
+  isDedekindCut+ :
     (x y : DedekindCut ℓ) →
-    isDedekindCut (addLower x y) (addUpper x y)
-  add-is-cut x y .isDedekindCut.lower-inhabited =
+    IsDedekindCut (addLower x y) (addUpper x y)
+  isDedekindCut+ x y .IsDedekindCut.lower-inhabited =
     Prop.rec2 squash₁
       (λ (p , p∈Lx) (q , q∈Ly) →
         ∣ (p ℚ.+ q) ℚ.- ℚExtra.1ℚ
@@ -65,7 +65,7 @@ module Addition {ℓ : Level} where
         ∣₁)
       (lower-inhabited x)
       (lower-inhabited y)
-  add-is-cut x y .isDedekindCut.upper-inhabited =
+  isDedekindCut+ x y .IsDedekindCut.upper-inhabited =
     Prop.rec2 squash₁
       (λ (p , p∈Ux) (q , q∈Uy) →
         ∣ (p ℚ.+ q) ℚ.+ ℚExtra.1ℚ
@@ -73,21 +73,21 @@ module Addition {ℓ : Level} where
         ∣₁)
       (upper-inhabited x)
       (upper-inhabited y)
-  add-is-cut x y .isDedekindCut.lower-closed =
+  isDedekindCut+ x y .IsDedekindCut.lower-closed =
     λ p q p<q →
       Prop.rec squash₁
         (λ (r , s , r∈Lx , s∈Ly , q<r+s) →
           ∣ r , s , r∈Lx , s∈Ly
           , ℚOrder.isTrans< p q (r ℚ.+ s) p<q q<r+s
           ∣₁)
-  add-is-cut x y .isDedekindCut.upper-closed =
+  isDedekindCut+ x y .IsDedekindCut.upper-closed =
     λ p q p<q →
       Prop.rec squash₁
         (λ (r , s , r∈Ux , s∈Uy , r+s<p) →
           ∣ r , s , r∈Ux , s∈Uy
           , ℚOrder.isTrans< (r ℚ.+ s) p q r+s<p p<q
           ∣₁)
-  add-is-cut x y .isDedekindCut.lower-rounded =
+  isDedekindCut+ x y .IsDedekindCut.lower-rounded =
     λ q →
       Prop.rec squash₁
         (λ (r , s , r∈Lx , s∈Ly , q<r+s) →
@@ -95,7 +95,7 @@ module Addition {ℓ : Level} where
             (λ (m , q<m , m<r+s) →
               ∣ m , q<m , ∣ r , s , r∈Lx , s∈Ly , m<r+s ∣₁ ∣₁)
             (ℚExtra.dense {p = q} {q = r ℚ.+ s} q<r+s))
-  add-is-cut x y .isDedekindCut.upper-rounded =
+  isDedekindCut+ x y .IsDedekindCut.upper-rounded =
     λ q →
       Prop.rec squash₁
         (λ (r , s , r∈Ux , s∈Uy , r+s<q) →
@@ -103,7 +103,7 @@ module Addition {ℓ : Level} where
             (λ (m , r+s<m , m<q) →
               ∣ m , m<q , ∣ r , s , r∈Ux , s∈Uy , r+s<m ∣₁ ∣₁)
             (ℚExtra.dense {p = r ℚ.+ s} {q = q} r+s<q))
-  add-is-cut x y .isDedekindCut.disjoint =
+  isDedekindCut+ x y .IsDedekindCut.disjoint =
     λ q →
       Prop.rec2 Empty.isProp⊥
         (λ (lx , ly , lx∈Lx , ly∈Ly , q<lx+ly)
@@ -126,7 +126,7 @@ module Addition {ℓ : Level} where
                   lx+ly<ux+uy ux+uy<q)
           in
           ℚOrder.isIrrefl< q q<q)
-  add-is-cut x y .isDedekindCut.located =
+  isDedekindCut+ x y .IsDedekindCut.located =
     located-add
     where
     q-p : ℚ → ℚ → ℚ
@@ -201,7 +201,7 @@ module Addition {ℓ : Level} where
   _+_ : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
   (x + y) .lower = addLower x y
   (x + y) .upper = addUpper x y
-  (x + y) .is-cut = add-is-cut x y
+  (x + y) .isDedekindCut = isDedekindCut+ x y
 
   infixl 6 _+_
 
@@ -389,15 +389,15 @@ module Addition {ℓ : Level} where
                 (ℚExtra.dense {p = t ℚ.+ u} {q = q ℚ.- r} tu<q-r))
             a∈Ux+y)
 
-  +-idR : (x : DedekindCut ℓ) → x + 0D ≡ x
+  +-idR : (x : DedekindCut ℓ) → x + 0𝔻 ≡ x
   +-idR x =
-    cutExt (x + 0D) x
+    cutExt (x + 0𝔻) x
       lower⊆
       lower⊇
       upper⊆
       upper⊇
     where
-    lower⊆ : addLower x 0D ⊆ lower x
+    lower⊆ : addLower x 0𝔻 ⊆ lower x
     lower⊆ q =
       Prop.rec (isProp∈ (lower x) q)
         (λ (r , s , r∈Lx , s<0 , q<r+s) →
@@ -416,7 +416,7 @@ module Addition {ℓ : Level} where
           in
           lower-closed x q r q<r r∈Lx)
 
-    lower⊇ : lower x ⊆ addLower x 0D
+    lower⊇ : lower x ⊆ addLower x 0𝔻
     lower⊇ q q∈Lx =
       Prop.rec squash₁
         (λ (r , q<r , r∈Lx) →
@@ -440,7 +440,7 @@ module Addition {ℓ : Level} where
             (ℚExtra.dense {p = q ℚ.- r} {q = ℚExtra.0ℚ} q-r<0))
         (lower-rounded x q q∈Lx)
 
-    upper⊆ : addUpper x 0D ⊆ upper x
+    upper⊆ : addUpper x 0𝔻 ⊆ upper x
     upper⊆ q =
       Prop.rec (isProp∈ (upper x) q)
         (λ (r , s , r∈Ux , 0<s , r+s<q) →
@@ -459,7 +459,7 @@ module Addition {ℓ : Level} where
           in
           upper-closed x r q r<q r∈Ux)
 
-    upper⊇ : upper x ⊆ addUpper x 0D
+    upper⊇ : upper x ⊆ addUpper x 0𝔻
     upper⊇ q q∈Ux =
       Prop.rec squash₁
         (λ (r , r<q , r∈Ux) →
@@ -478,20 +478,20 @@ module Addition {ℓ : Level} where
               (ℚExtra.diff-positive {p = r} {q = q} r<q)))
         (upper-rounded x q q∈Ux)
 
-  +-idL : (x : DedekindCut ℓ) → 0D + x ≡ x
-  +-idL x = +-comm 0D x ∙ +-idR x
+  +-idL : (x : DedekindCut ℓ) → 0𝔻 + x ≡ x
+  +-idL x = +-comm 0𝔻 x ∙ +-idR x
 
-  +-invR : (x : DedekindCut ℓ) → x + (- x) ≡ 0D
+  +-invR : (x : DedekindCut ℓ) → x + (- x) ≡ 0𝔻
   +-invR x =
-    cutExt (x + (- x)) 0D
+    cutExt (x + (- x)) 0𝔻
       lower⊆
       lower⊇
       upper⊆
       upper⊇
     where
-    lower⊆ : addLower x (- x) ⊆ lower 0D
+    lower⊆ : addLower x (- x) ⊆ lower 0𝔻
     lower⊆ q =
-      Prop.rec (isProp∈ (lower 0D) q)
+      Prop.rec (isProp∈ (lower 0𝔻) q)
         (λ (r , s , r∈Lx , -s∈Ux , q<r+s) →
           let
             r<-s : r ℚOrder.< ℚ.- s
@@ -512,7 +512,7 @@ module Addition {ℓ : Level} where
           in
           lift q<0)
 
-    lower⊇ : lower 0D ⊆ addLower x (- x)
+    lower⊇ : lower 0𝔻 ⊆ addLower x (- x)
     lower⊇ q q<0 =
       Prop.rec squash₁
         (λ (p , u , p∈Lx , u∈Ux , _ , u<p-q) →
@@ -523,9 +523,9 @@ module Addition {ℓ : Level} where
           ∣₁)
         (close-bounds x (ℚ.- q) (ℚExtra.neg-positive {q = q} (Lift.lower q<0)))
 
-    upper⊆ : addUpper x (- x) ⊆ upper 0D
+    upper⊆ : addUpper x (- x) ⊆ upper 0𝔻
     upper⊆ q =
-      Prop.rec (isProp∈ (upper 0D) q)
+      Prop.rec (isProp∈ (upper 0𝔻) q)
         (λ (r , s , r∈Ux , -s∈Lx , r+s<q) →
           let
             -s<r : ℚ.- s ℚOrder.< r
@@ -546,7 +546,7 @@ module Addition {ℓ : Level} where
           in
           lift 0<q)
 
-    upper⊇ : upper 0D ⊆ addUpper x (- x)
+    upper⊇ : upper 0𝔻 ⊆ addUpper x (- x)
     upper⊇ q 0<q =
       Prop.rec squash₁
         (λ (p , u , p∈Lx , u∈Ux , _ , u<p+q) →
@@ -567,7 +567,7 @@ module Addition {ℓ : Level} where
           ∣₁)
         (close-bounds x q (Lift.lower 0<q))
 
-  +-invL : (x : DedekindCut ℓ) → (- x) + x ≡ 0D
+  +-invL : (x : DedekindCut ℓ) → (- x) + x ≡ 0𝔻
   +-invL x = +-comm (- x) x ∙ +-invR x
 
   +-monoR-≤ :
@@ -597,15 +597,15 @@ module Addition {ℓ : Level} where
       (+-monoR-≤ x y z x≤y)
       (+-monoL-≤ z w y z≤w)
 
-  +-nonnegative :
+  +-Pres≥0 :
     (x y : DedekindCut ℓ) →
-    0D ≤ x →
-    0D ≤ y →
-    0D ≤ x + y
-  +-nonnegative x y 0≤x 0≤y =
-    ≤-trans 0D (0D + 0D) (x + y)
-      (≡→≤ (sym (+-idR 0D)))
-      (+-mono-≤ 0D x 0D y 0≤x 0≤y)
+    0𝔻 ≤ x →
+    0𝔻 ≤ y →
+    0𝔻 ≤ x + y
+  +-Pres≥0 x y 0≤x 0≤y =
+    ≤-trans 0𝔻 (0𝔻 + 0𝔻) (x + y)
+      (≡→≤ (sym (+-idR 0𝔻)))
+      (+-mono-≤ 0𝔻 x 0𝔻 y 0≤x 0≤y)
 
   +-monoR-< :
     (x y z : DedekindCut ℓ) →
@@ -643,32 +643,34 @@ module Addition {ℓ : Level} where
       (+-monoR-< x y z x<y)
 
 
-module NonnegativeMultiplication {ℓ : Level} where
+module NonNegativeMultiplication {ℓ : Level} where
   open Order {ℓ}
   open Archimedean {ℓ}
   open Approximation {ℓ}
   open Addition {ℓ}
 
-  Nonnegative : DedekindCut ℓ → Type ℓ
-  Nonnegative x = 0D ≤ x
+  _≥0 : DedekindCut ℓ → Type ℓ
+  x ≥0 = 0𝔻 ≤ x
 
-  0D-nonnegative : Nonnegative 0D
-  0D-nonnegative = ≤-refl 0D
+  infix 4 _≥0
 
-  1D-nonnegative : Nonnegative 1D
-  1D-nonnegative q q∈L0 =
+  0𝔻≥0 : 0𝔻 ≥0
+  0𝔻≥0 = ≤-refl 0𝔻
+
+  1𝔻≥0 : 1𝔻 ≥0
+  1𝔻≥0 q q∈L0 =
     lift
       (ℚOrder.isTrans< q ℚExtra.0ℚ ℚExtra.1ℚ
         (Lift.lower q∈L0)
         ℚExtra.0<1)
 
-  nonnegative-upper-positive :
+  ≥0+upper→>0 :
     (x : DedekindCut ℓ) →
-    Nonnegative x →
+    x ≥0 →
     (q : ℚ) →
     q ∈ upper x →
     ℚExtra.0ℚ ℚOrder.< q
-  nonnegative-upper-positive x 0≤x q q∈Ux
+  ≥0+upper→>0 x 0≤x q q∈Ux
     with ℚExtra.0ℚ ℚOrder.≟ q
   ... | ℚOrder.lt 0<q = 0<q
   ... | ℚOrder.eq 0≡q =
@@ -707,8 +709,8 @@ module NonnegativeMultiplication {ℓ : Level} where
       (ℚExtra.0ℚ ℚOrder.< b) ×
       (a ℚ.· b ℚOrder.< q)
 
-  NonnegativeCloseBounds : DedekindCut ℓ → ℚ → Type ℓ
-  NonnegativeCloseBounds x ε =
+  CloseBounds≥0 : DedekindCut ℓ → ℚ → Type ℓ
+  CloseBounds≥0 x ε =
     Σ[ p ∈ ℚ ] Σ[ q ∈ ℚ ]
       (p ∈ lower x) ×
       (q ∈ upper x) ×
@@ -716,8 +718,8 @@ module NonnegativeMultiplication {ℓ : Level} where
       (q ℚOrder.< p ℚ.+ ε) ×
       (ℚExtra.0ℚ ℚOrder.< q)
 
-  NonnegativeBoundedCloseBounds : DedekindCut ℓ → ℚ → ℚ → Type ℓ
-  NonnegativeBoundedCloseBounds x ε u =
+  BoundedCloseBounds≥0 : DedekindCut ℓ → ℚ → ℚ → Type ℓ
+  BoundedCloseBounds≥0 x ε u =
     Σ[ p ∈ ℚ ] Σ[ q ∈ ℚ ]
       (p ∈ lower x) ×
       (q ∈ upper x) ×
@@ -726,13 +728,13 @@ module NonnegativeMultiplication {ℓ : Level} where
       (ℚExtra.0ℚ ℚOrder.< q) ×
       (q ℚOrder.≤ u)
 
-  nonnegative-close-bounds :
+  close-bounds≥0 :
     (x : DedekindCut ℓ) →
-    Nonnegative x →
+    x ≥0 →
     (ε : ℚ) →
     ℚExtra.0ℚ ℚOrder.< ε →
-    ∥ NonnegativeCloseBounds x ε ∥₁
-  nonnegative-close-bounds x 0≤x ε 0<ε =
+    ∥ CloseBounds≥0 x ε ∥₁
+  close-bounds≥0 x 0≤x ε 0<ε =
     Prop.rec squash₁
       (λ (p , q , p∈Lx , q∈Ux , p<q , q<p+ε) →
         ∣ p , q
@@ -740,18 +742,18 @@ module NonnegativeMultiplication {ℓ : Level} where
         , q∈Ux
         , p<q
         , q<p+ε
-        , nonnegative-upper-positive x 0≤x q q∈Ux
+        , ≥0+upper→>0 x 0≤x q q∈Ux
         ∣₁)
       (close-bounds x ε 0<ε)
 
-  nonnegative-bounded-close-bounds :
+  bounded-close-bounds≥0 :
     (x : DedekindCut ℓ) →
-    Nonnegative x →
+    x ≥0 →
     (ε u : ℚ) →
     ℚExtra.0ℚ ℚOrder.< ε →
     u ∈ upper x →
-    ∥ NonnegativeBoundedCloseBounds x ε u ∥₁
-  nonnegative-bounded-close-bounds x 0≤x ε u 0<ε u∈Ux =
+    ∥ BoundedCloseBounds≥0 x ε u ∥₁
+  bounded-close-bounds≥0 x 0≤x ε u 0<ε u∈Ux =
     Prop.rec squash₁
       (λ (p , q , p∈Lx , q∈Ux , p<q , q<p+ε , q≤u) →
         ∣ p , q
@@ -759,7 +761,7 @@ module NonnegativeMultiplication {ℓ : Level} where
         , q∈Ux
         , p<q
         , q<p+ε
-        , nonnegative-upper-positive x 0≤x q q∈Ux
+        , ≥0+upper→>0 x 0≤x q q∈Ux
         , q≤u
         ∣₁)
       (bounded-close-bounds x ε u 0<ε u∈Ux)
@@ -783,8 +785,8 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   multiplication-close-bounds :
     (x y : DedekindCut ℓ) →
-    Nonnegative x →
-    Nonnegative y →
+    x ≥0 →
+    y ≥0 →
     (δ U V : ℚ) →
     ℚExtra.0ℚ ℚOrder.< δ →
     U ∈ upper x →
@@ -808,8 +810,8 @@ module NonnegativeMultiplication {ℓ : Level} where
         , 0<uy
         , uy≤V
         ∣₁)
-      (nonnegative-bounded-close-bounds x 0≤x δ U 0<δ U∈Ux)
-      (nonnegative-bounded-close-bounds y 0≤y δ V 0<δ V∈Uy)
+      (bounded-close-bounds≥0 x 0≤x δ U 0<δ U∈Ux)
+      (bounded-close-bounds≥0 y 0≤y δ V 0<δ V∈Uy)
 
   located-multiplication-scale :
     (p q U V : ℚ) →
@@ -850,10 +852,10 @@ module NonnegativeMultiplication {ℓ : Level} where
     (ℚExtra.0ℚ ℚOrder.< q) × ∥ ProductUpperWitness x y q ∥₁ ,
     isProp× (ℚOrder.isProp< ℚExtra.0ℚ q) squash₁
 
-  positive-upper-bound :
+  ∃upper>0 :
     (x : DedekindCut ℓ) →
     ∥ Σ[ u ∈ ℚ ] (u ∈ upper x) × (ℚExtra.0ℚ ℚOrder.< u) ∥₁
-  positive-upper-bound x =
+  ∃upper>0 x =
     Prop.rec squash₁
       (λ (n , x<n) →
         let
@@ -903,8 +905,8 @@ module NonnegativeMultiplication {ℓ : Level} where
           0<q = ℚOrder.isTrans< ℚExtra.0ℚ ab q 0<ab ab<q
         in
         ∣ q , 0<q , ∣ a , b , a∈Ux , b∈Uy , 0<a , 0<b , ab<q ∣₁ ∣₁)
-      (positive-upper-bound x)
-      (positive-upper-bound y)
+      (∃upper>0 x)
+      (∃upper>0 y)
 
   nnMul-lower-closed :
     (x y : DedekindCut ℓ) (p q : ℚ) →
@@ -1285,8 +1287,8 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   nnMul-located :
     (x y : DedekindCut ℓ) →
-    Nonnegative x →
-    Nonnegative y →
+    x ≥0 →
+    y ≥0 →
     nnMulLocated x y
   nnMul-located x y 0≤x 0≤y p q p<q =
     nnMul-located-by-p-sign x y p q p<q located-nonnegative-p
@@ -1309,8 +1311,8 @@ module NonnegativeMultiplication {ℓ : Level} where
           Prop.rec squash₁
             (located-from-bounds U V 0<U 0<V)
             (multiplication-close-bounds x y 0≤x 0≤y δ U V 0<δ U∈Ux V∈Uy))
-        (positive-upper-bound x)
-        (positive-upper-bound y)
+        (∃upper>0 x)
+        (∃upper>0 y)
       where
       located-from-bounds :
         (U V : ℚ) →
@@ -1415,25 +1417,25 @@ module NonnegativeMultiplication {ℓ : Level} where
               ux<lx+δ
               0<ux 0<uy uy≤V)
 
-  nnMul-is-cut :
+  isDedekindCutNNMul :
     (x y : DedekindCut ℓ) →
     nnMulLocated x y →
-    isDedekindCut (nnMulLower x y) (nnMulUpper x y)
-  nnMul-is-cut x y located .isDedekindCut.lower-inhabited =
+    IsDedekindCut (nnMulLower x y) (nnMulUpper x y)
+  isDedekindCutNNMul x y located .IsDedekindCut.lower-inhabited =
     nnMul-lower-inhabited x y
-  nnMul-is-cut x y located .isDedekindCut.upper-inhabited =
+  isDedekindCutNNMul x y located .IsDedekindCut.upper-inhabited =
     nnMul-upper-inhabited x y
-  nnMul-is-cut x y located .isDedekindCut.lower-closed =
+  isDedekindCutNNMul x y located .IsDedekindCut.lower-closed =
     nnMul-lower-closed x y
-  nnMul-is-cut x y located .isDedekindCut.upper-closed =
+  isDedekindCutNNMul x y located .IsDedekindCut.upper-closed =
     nnMul-upper-closed x y
-  nnMul-is-cut x y located .isDedekindCut.lower-rounded =
+  isDedekindCutNNMul x y located .IsDedekindCut.lower-rounded =
     nnMul-lower-rounded x y
-  nnMul-is-cut x y located .isDedekindCut.upper-rounded =
+  isDedekindCutNNMul x y located .IsDedekindCut.upper-rounded =
     nnMul-upper-rounded x y
-  nnMul-is-cut x y located .isDedekindCut.disjoint =
+  isDedekindCutNNMul x y located .IsDedekindCut.disjoint =
     nnMul-disjoint x y
-  nnMul-is-cut x y located .isDedekindCut.located =
+  isDedekindCutNNMul x y located .IsDedekindCut.located =
     located
 
   nnMulCut :
@@ -1442,20 +1444,20 @@ module NonnegativeMultiplication {ℓ : Level} where
     DedekindCut ℓ
   nnMulCut x y located .lower = nnMulLower x y
   nnMulCut x y located .upper = nnMulUpper x y
-  nnMulCut x y located .is-cut = nnMul-is-cut x y located
+  nnMulCut x y located .isDedekindCut = isDedekindCutNNMul x y located
 
   nnMul :
     (x y : DedekindCut ℓ) →
-    Nonnegative x →
-    Nonnegative y →
+    x ≥0 →
+    y ≥0 →
     DedekindCut ℓ
   nnMul x y 0≤x 0≤y =
     nnMulCut x y (nnMul-located x y 0≤x 0≤y)
 
   nnMul-comm :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul y x 0≤y 0≤x
   nnMul-comm x y 0≤x 0≤y =
     cutExt
@@ -1468,34 +1470,34 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   nnMul-zeroR :
     (x : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    nnMul x 0D 0≤x 0D-nonnegative ≡ 0D
+    (0≤x : x ≥0) →
+    nnMul x 0𝔻 0≤x 0𝔻≥0 ≡ 0𝔻
   nnMul-zeroR x 0≤x =
     cutExt
-      (nnMul x 0D 0≤x 0D-nonnegative)
-      0D
+      (nnMul x 0𝔻 0≤x 0𝔻≥0)
+      0𝔻
       lower⊆
       lower⊇
       upper⊆
       upper⊇
     where
-    lower⊆ : nnMulLower x 0D ⊆ lower 0D
+    lower⊆ : nnMulLower x 0𝔻 ⊆ lower 0𝔻
     lower⊆ q =
-      Prop.rec (isProp∈ (lower 0D) q)
+      Prop.rec (isProp∈ (lower 0𝔻) q)
         (λ where
           (Sum.inl q<0) → lift q<0
           (Sum.inr (a , b , a∈Lx , b∈L0 , 0<a , 0<b , q<ab)) →
             Empty.rec (ℚOrder.isAsym< ℚExtra.0ℚ b 0<b (Lift.lower b∈L0)))
 
-    lower⊇ : lower 0D ⊆ nnMulLower x 0D
+    lower⊇ : lower 0𝔻 ⊆ nnMulLower x 0𝔻
     lower⊇ q q∈L0 =
       ∣ Sum.inl (Lift.lower q∈L0) ∣₁
 
-    upper⊆ : nnMulUpper x 0D ⊆ upper 0D
+    upper⊆ : nnMulUpper x 0𝔻 ⊆ upper 0𝔻
     upper⊆ q (0<q , q∈U) =
       lift 0<q
 
-    upper⊇ : upper 0D ⊆ nnMulUpper x 0D
+    upper⊇ : upper 0𝔻 ⊆ nnMulUpper x 0𝔻
     upper⊇ q q∈U0 =
       0<q ,
       Prop.rec squash₁
@@ -1520,7 +1522,7 @@ module NonnegativeMultiplication {ℓ : Level} where
               subst (λ r → r ℚOrder.< q) (sym ab≡ε) ε<q
           in
           ∣ a , b , a∈Ux , lift 0<b , 0<a , 0<b , ab<q ∣₁)
-        (positive-upper-bound x)
+        (∃upper>0 x)
       where
       0<q : ℚExtra.0ℚ ℚOrder.< q
       0<q = Lift.lower q∈U0
@@ -1536,25 +1538,25 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   nnMul-zeroL :
     (x : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    nnMul 0D x 0D-nonnegative 0≤x ≡ 0D
+    (0≤x : x ≥0) →
+    nnMul 0𝔻 x 0𝔻≥0 0≤x ≡ 0𝔻
   nnMul-zeroL x 0≤x =
-    nnMul-comm 0D x 0D-nonnegative 0≤x ∙
+    nnMul-comm 0𝔻 x 0𝔻≥0 0≤x ∙
     nnMul-zeroR x 0≤x
 
-  nnMul-nonnegative :
+  nnMul-Pres≥0 :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    Nonnegative (nnMul x y 0≤x 0≤y)
-  nnMul-nonnegative x y 0≤x 0≤y q q∈L0 =
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (nnMul x y 0≤x 0≤y) ≥0
+  nnMul-Pres≥0 x y 0≤x 0≤y q q∈L0 =
     ∣ Sum.inl (Lift.lower q∈L0) ∣₁
 
   nnMul-monoL-≤ :
     (x x' y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤x' : Nonnegative x') →
-    (0≤y : Nonnegative y) →
+    (0≤x : x ≥0) →
+    (0≤x' : x' ≥0) →
+    (0≤y : y ≥0) →
     x ≤ x' →
     nnMul x y 0≤x 0≤y ≤ nnMul x' y 0≤x' 0≤y
   nnMul-monoL-≤ x x' y 0≤x 0≤x' 0≤y x≤x' q =
@@ -1573,9 +1575,9 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   nnMul-monoR-≤ :
     (x y y' : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤y' : Nonnegative y') →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤y' : y' ≥0) →
     y ≤ y' →
     nnMul x y 0≤x 0≤y ≤ nnMul x y' 0≤x 0≤y'
   nnMul-monoR-≤ x y y' 0≤x 0≤y 0≤y' y≤y' q =
@@ -1594,10 +1596,10 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   nnMul-mono-≤ :
     (x x' y y' : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤x' : Nonnegative x') →
-    (0≤y : Nonnegative y) →
-    (0≤y' : Nonnegative y') →
+    (0≤x : x ≥0) →
+    (0≤x' : x' ≥0) →
+    (0≤y : y ≥0) →
+    (0≤y' : y' ≥0) →
     x ≤ x' →
     y ≤ y' →
     nnMul x y 0≤x 0≤y ≤ nnMul x' y' 0≤x' 0≤y'
@@ -1611,8 +1613,8 @@ module NonnegativeMultiplication {ℓ : Level} where
 
   nnMul-proof-irrelevant :
     (x y : DedekindCut ℓ) →
-    (0≤x 0≤x' : Nonnegative x) →
-    (0≤y 0≤y' : Nonnegative y) →
+    (0≤x 0≤x' : x ≥0) →
+    (0≤y 0≤y' : y ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x y 0≤x' 0≤y'
   nnMul-proof-irrelevant x y 0≤x 0≤x' 0≤y 0≤y' =
     cutExt
@@ -1626,9 +1628,9 @@ module NonnegativeMultiplication {ℓ : Level} where
   nnMul-congR :
     (x y y' : DedekindCut ℓ) →
     y ≡ y' →
-    (0≤x 0≤x' : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤y' : Nonnegative y') →
+    (0≤x 0≤x' : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤y' : y' ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x y' 0≤x' 0≤y'
   nnMul-congR x y y' y≡y' 0≤x 0≤x' 0≤y 0≤y' =
     cutExt
@@ -1677,9 +1679,9 @@ module NonnegativeMultiplication {ℓ : Level} where
   nnMul-congL :
     (x x' y : DedekindCut ℓ) →
     x ≡ x' →
-    (0≤x : Nonnegative x) →
-    (0≤x' : Nonnegative x') →
-    (0≤y 0≤y' : Nonnegative y) →
+    (0≤x : x ≥0) →
+    (0≤x' : x' ≥0) →
+    (0≤y 0≤y' : y ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x' y 0≤x' 0≤y'
   nnMul-congL x x' y x≡x' 0≤x 0≤x' 0≤y 0≤y' =
     cutExt
@@ -1729,10 +1731,10 @@ module NonnegativeMultiplication {ℓ : Level} where
     (x x' y y' : DedekindCut ℓ) →
     x ≡ x' →
     y ≡ y' →
-    (0≤x : Nonnegative x) →
-    (0≤x' : Nonnegative x') →
-    (0≤y : Nonnegative y) →
-    (0≤y' : Nonnegative y') →
+    (0≤x : x ≥0) →
+    (0≤x' : x' ≥0) →
+    (0≤y : y ≥0) →
+    (0≤y' : y' ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x' y' 0≤x' 0≤y'
   nnMul-cong₂ x x' y y' x≡x' y≡y' 0≤x 0≤x' 0≤y 0≤y' =
     nnMul-congL x x' y x≡x' 0≤x 0≤x' 0≤y 0≤y ∙
@@ -1765,628 +1767,628 @@ module NonnegativeMultiplication {ℓ : Level} where
       (nnMulUpper-comm y x)
 
 
-module SignedMultiplication {ℓ : Level} where
+module Multiplication {ℓ : Level} where
   open Order {ℓ}
   open Algebra {ℓ}
   open Lattice {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
 
-  positivePart : DedekindCut ℓ → DedekindCut ℓ
-  positivePart x = x ⊔ 0D
+  posPart : DedekindCut ℓ → DedekindCut ℓ
+  posPart x = x ⊔ 0𝔻
 
-  negativePart : DedekindCut ℓ → DedekindCut ℓ
-  negativePart x = (- x) ⊔ 0D
+  negPart : DedekindCut ℓ → DedekindCut ℓ
+  negPart x = (- x) ⊔ 0𝔻
 
-  positivePart-nonnegative :
+  posPart≥0 :
     (x : DedekindCut ℓ) →
-    Nonnegative (positivePart x)
-  positivePart-nonnegative x =
-    right≤⊔ x 0D
+    (posPart x) ≥0
+  posPart≥0 x =
+    right≤⊔ x 0𝔻
 
-  negativePart-nonnegative :
+  negPart≥0 :
     (x : DedekindCut ℓ) →
-    Nonnegative (negativePart x)
-  negativePart-nonnegative x =
-    right≤⊔ (- x) 0D
+    (negPart x) ≥0
+  negPart≥0 x =
+    right≤⊔ (- x) 0𝔻
 
-  neg-0D : - 0D ≡ 0D
-  neg-0D =
+  neg-0𝔻 : - 0𝔻 ≡ 0𝔻
+  neg-0𝔻 =
     neg-rational ℚExtra.0ℚ ∙
-    cong (ℚ→DedekindCutAt ℓ) ℚExtra.neg-zero
+    cong (ℚ→𝔻 ℓ) ℚExtra.neg-zero
 
-  positivePart-0D : positivePart 0D ≡ 0D
-  positivePart-0D = ⊔-idem 0D
+  posPart-0𝔻 : posPart 0𝔻 ≡ 0𝔻
+  posPart-0𝔻 = ⊔-idem 0𝔻
 
-  negativePart-0D : negativePart 0D ≡ 0D
-  negativePart-0D =
-    cong (λ z → z ⊔ 0D) neg-0D ∙
-    ⊔-idem 0D
+  negPart-0𝔻 : negPart 0𝔻 ≡ 0𝔻
+  negPart-0𝔻 =
+    cong (λ z → z ⊔ 0𝔻) neg-0𝔻 ∙
+    ⊔-idem 0𝔻
 
-  positivePart-of-nonnegative :
+  ≥0→posPart≡id :
     (x : DedekindCut ℓ) →
-    Nonnegative x →
-    positivePart x ≡ x
-  positivePart-of-nonnegative x 0≤x =
-    ≤-antisym (positivePart x) x
-      (⊔≤ x 0D x (≤-refl x) 0≤x)
-      (left≤⊔ x 0D)
+    x ≥0 →
+    posPart x ≡ x
+  ≥0→posPart≡id x 0≤x =
+    ≤-antisym (posPart x) x
+      (⊔≤ x 0𝔻 x (≤-refl x) 0≤x)
+      (left≤⊔ x 0𝔻)
 
-  negativePart-of-nonnegative :
+  ≥0→negPart≡0 :
     (x : DedekindCut ℓ) →
-    Nonnegative x →
-    negativePart x ≡ 0D
-  negativePart-of-nonnegative x 0≤x =
-    ≤-antisym (negativePart x) 0D
-      (⊔≤ (- x) 0D 0D -x≤0 (≤-refl 0D))
-      (right≤⊔ (- x) 0D)
+    x ≥0 →
+    negPart x ≡ 0𝔻
+  ≥0→negPart≡0 x 0≤x =
+    ≤-antisym (negPart x) 0𝔻
+      (⊔≤ (- x) 0𝔻 0𝔻 -x≤0 (≤-refl 0𝔻))
+      (right≤⊔ (- x) 0𝔻)
     where
-    -x≤-0 : (- x) ≤ (- 0D)
+    -x≤-0 : (- x) ≤ (- 0𝔻)
     -x≤-0 =
-      neg-≤-reverse 0D x 0≤x
+      neg-≤-reverse 0𝔻 x 0≤x
 
-    -0≤0 : (- 0D) ≤ 0D
+    -0≤0 : (- 0𝔻) ≤ 0𝔻
     -0≤0 =
-      ≡→≤ neg-0D
+      ≡→≤ neg-0𝔻
 
-    -x≤0 : (- x) ≤ 0D
+    -x≤0 : (- x) ≤ 0𝔻
     -x≤0 =
-      ≤-trans (- x) (- 0D) 0D -x≤-0 -0≤0
+      ≤-trans (- x) (- 0𝔻) 0𝔻 -x≤-0 -0≤0
 
-  positivePart-mono-≤ :
+  posPart-mono-≤ :
     (x y : DedekindCut ℓ) →
     x ≤ y →
-    positivePart x ≤ positivePart y
-  positivePart-mono-≤ x y x≤y =
-    ⊔≤ x 0D (positivePart y)
-      (≤-trans x y (positivePart y) x≤y (left≤⊔ y 0D))
-      (right≤⊔ y 0D)
+    posPart x ≤ posPart y
+  posPart-mono-≤ x y x≤y =
+    ⊔≤ x 0𝔻 (posPart y)
+      (≤-trans x y (posPart y) x≤y (left≤⊔ y 0𝔻))
+      (right≤⊔ y 0𝔻)
 
-  negativePart-antitone-≤ :
+  negPart-antitone-≤ :
     (x y : DedekindCut ℓ) →
     x ≤ y →
-    negativePart y ≤ negativePart x
-  negativePart-antitone-≤ x y x≤y =
-    ⊔≤ (- y) 0D (negativePart x)
-      (≤-trans (- y) (- x) (negativePart x)
+    negPart y ≤ negPart x
+  negPart-antitone-≤ x y x≤y =
+    ⊔≤ (- y) 0𝔻 (negPart x)
+      (≤-trans (- y) (- x) (negPart x)
         (neg-≤-reverse x y x≤y)
-        (left≤⊔ (- x) 0D))
-      (right≤⊔ (- x) 0D)
+        (left≤⊔ (- x) 0𝔻))
+      (right≤⊔ (- x) 0𝔻)
 
-  positiveProducts : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
-  positiveProducts x y =
-    nnMul (positivePart x) (positivePart y)
-      (positivePart-nonnegative x)
-      (positivePart-nonnegative y)
+  posProducts : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
+  posProducts x y =
+    nnMul (posPart x) (posPart y)
+      (posPart≥0 x)
+      (posPart≥0 y)
     +
-    nnMul (negativePart x) (negativePart y)
-      (negativePart-nonnegative x)
-      (negativePart-nonnegative y)
+    nnMul (negPart x) (negPart y)
+      (negPart≥0 x)
+      (negPart≥0 y)
 
-  negativeProducts : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
-  negativeProducts x y =
-    nnMul (positivePart x) (negativePart y)
-      (positivePart-nonnegative x)
-      (negativePart-nonnegative y)
+  negProducts : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
+  negProducts x y =
+    nnMul (posPart x) (negPart y)
+      (posPart≥0 x)
+      (negPart≥0 y)
     +
-    nnMul (negativePart x) (positivePart y)
-      (negativePart-nonnegative x)
-      (positivePart-nonnegative y)
+    nnMul (negPart x) (posPart y)
+      (negPart≥0 x)
+      (posPart≥0 y)
 
   _*_ : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
-  x * y = positiveProducts x y + (- negativeProducts x y)
+  x * y = posProducts x y + (- negProducts x y)
 
   infixl 7 _*_
 
-  positiveProducts-comm :
+  posProducts-comm :
     (x y : DedekindCut ℓ) →
-    positiveProducts x y ≡ positiveProducts y x
-  positiveProducts-comm x y =
+    posProducts x y ≡ posProducts y x
+  posProducts-comm x y =
     cong₂ _+_
       (nnMul-comm
-        (positivePart x) (positivePart y)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y))
+        (posPart x) (posPart y)
+        (posPart≥0 x)
+        (posPart≥0 y))
       (nnMul-comm
-        (negativePart x) (negativePart y)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y))
+        (negPart x) (negPart y)
+        (negPart≥0 x)
+        (negPart≥0 y))
 
-  negativeProducts-comm :
+  negProducts-comm :
     (x y : DedekindCut ℓ) →
-    negativeProducts x y ≡ negativeProducts y x
-  negativeProducts-comm x y =
+    negProducts x y ≡ negProducts y x
+  negProducts-comm x y =
     cong₂ _+_
       (nnMul-comm
-        (positivePart x) (negativePart y)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y))
+        (posPart x) (negPart y)
+        (posPart≥0 x)
+        (negPart≥0 y))
       (nnMul-comm
-        (negativePart x) (positivePart y)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y))
+        (negPart x) (posPart y)
+        (negPart≥0 x)
+        (posPart≥0 y))
     ∙
     +-comm
-      (nnMul (negativePart y) (positivePart x)
-        (negativePart-nonnegative y)
-        (positivePart-nonnegative x))
-      (nnMul (positivePart y) (negativePart x)
-        (positivePart-nonnegative y)
-        (negativePart-nonnegative x))
+      (nnMul (negPart y) (posPart x)
+        (negPart≥0 y)
+        (posPart≥0 x))
+      (nnMul (posPart y) (negPart x)
+        (posPart≥0 y)
+        (negPart≥0 x))
 
   *-comm :
     (x y : DedekindCut ℓ) →
     x * y ≡ y * x
   *-comm x y =
     cong₂ _+_
-      (positiveProducts-comm x y)
-      (cong -_ (negativeProducts-comm x y))
+      (posProducts-comm x y)
+      (cong -_ (negProducts-comm x y))
 
-  positiveProducts-nonnegative :
+  posProducts≥0 :
     (x y : DedekindCut ℓ) →
-    Nonnegative (positiveProducts x y)
-  positiveProducts-nonnegative x y =
-    +-nonnegative
-      (nnMul (positivePart x) (positivePart y)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y))
-      (nnMul (negativePart x) (negativePart y)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y))
-      (nnMul-nonnegative
-        (positivePart x)
-        (positivePart y)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y))
-      (nnMul-nonnegative
-        (negativePart x)
-        (negativePart y)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y))
+    (posProducts x y) ≥0
+  posProducts≥0 x y =
+    +-Pres≥0
+      (nnMul (posPart x) (posPart y)
+        (posPart≥0 x)
+        (posPart≥0 y))
+      (nnMul (negPart x) (negPart y)
+        (negPart≥0 x)
+        (negPart≥0 y))
+      (nnMul-Pres≥0
+        (posPart x)
+        (posPart y)
+        (posPart≥0 x)
+        (posPart≥0 y))
+      (nnMul-Pres≥0
+        (negPart x)
+        (negPart y)
+        (negPart≥0 x)
+        (negPart≥0 y))
 
-  negativeProducts-nonnegative :
+  negProducts≥0 :
     (x y : DedekindCut ℓ) →
-    Nonnegative (negativeProducts x y)
-  negativeProducts-nonnegative x y =
-    +-nonnegative
-      (nnMul (positivePart x) (negativePart y)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y))
-      (nnMul (negativePart x) (positivePart y)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y))
-      (nnMul-nonnegative
-        (positivePart x)
-        (negativePart y)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y))
-      (nnMul-nonnegative
-        (negativePart x)
-        (positivePart y)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y))
+    (negProducts x y) ≥0
+  negProducts≥0 x y =
+    +-Pres≥0
+      (nnMul (posPart x) (negPart y)
+        (posPart≥0 x)
+        (negPart≥0 y))
+      (nnMul (negPart x) (posPart y)
+        (negPart≥0 x)
+        (posPart≥0 y))
+      (nnMul-Pres≥0
+        (posPart x)
+        (negPart y)
+        (posPart≥0 x)
+        (negPart≥0 y))
+      (nnMul-Pres≥0
+        (negPart x)
+        (posPart y)
+        (negPart≥0 x)
+        (posPart≥0 y))
 
-  positiveProducts-of-nonnegative :
+  posProducts≡nnMul :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    positiveProducts x y ≡ nnMul x y 0≤x 0≤y
-  positiveProducts-of-nonnegative x y 0≤x 0≤y =
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    posProducts x y ≡ nnMul x y 0≤x 0≤y
+  posProducts≡nnMul x y 0≤x 0≤y =
     cong₂ _+_ main-product zero-product ∙
     +-idR (nnMul x y 0≤x 0≤y)
     where
     main-product :
-      nnMul (positivePart x) (positivePart y)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y)
+      nnMul (posPart x) (posPart y)
+        (posPart≥0 x)
+        (posPart≥0 y)
       ≡ nnMul x y 0≤x 0≤y
     main-product =
       nnMul-cong₂
-        (positivePart x)
+        (posPart x)
         x
-        (positivePart y)
+        (posPart y)
         y
-        (positivePart-of-nonnegative x 0≤x)
-        (positivePart-of-nonnegative y 0≤y)
-        (positivePart-nonnegative x)
+        (≥0→posPart≡id x 0≤x)
+        (≥0→posPart≡id y 0≤y)
+        (posPart≥0 x)
         0≤x
-        (positivePart-nonnegative y)
+        (posPart≥0 y)
         0≤y
 
     zero-product :
-      nnMul (negativePart x) (negativePart y)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative y)
-      ≡ 0D
+      nnMul (negPart x) (negPart y)
+        (negPart≥0 x)
+        (negPart≥0 y)
+      ≡ 0𝔻
     zero-product =
       nnMul-cong₂
-        (negativePart x)
-        0D
-        (negativePart y)
-        0D
-        (negativePart-of-nonnegative x 0≤x)
-        (negativePart-of-nonnegative y 0≤y)
-        (negativePart-nonnegative x)
-        0D-nonnegative
-        (negativePart-nonnegative y)
-        0D-nonnegative
-      ∙ nnMul-zeroR 0D 0D-nonnegative
+        (negPart x)
+        0𝔻
+        (negPart y)
+        0𝔻
+        (≥0→negPart≡0 x 0≤x)
+        (≥0→negPart≡0 y 0≤y)
+        (negPart≥0 x)
+        0𝔻≥0
+        (negPart≥0 y)
+        0𝔻≥0
+      ∙ nnMul-zeroR 0𝔻 0𝔻≥0
 
-  negativeProducts-of-nonnegative :
+  negProducts≡0 :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    negativeProducts x y ≡ 0D
-  negativeProducts-of-nonnegative x y 0≤x 0≤y =
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    negProducts x y ≡ 0𝔻
+  negProducts≡0 x y 0≤x 0≤y =
     cong₂ _+_ left-zero right-zero ∙
-    +-idR 0D
+    +-idR 0𝔻
     where
     left-zero :
-      nnMul (positivePart x) (negativePart y)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative y)
-      ≡ 0D
+      nnMul (posPart x) (negPart y)
+        (posPart≥0 x)
+        (negPart≥0 y)
+      ≡ 0𝔻
     left-zero =
       nnMul-cong₂
-        (positivePart x)
+        (posPart x)
         x
-        (negativePart y)
-        0D
-        (positivePart-of-nonnegative x 0≤x)
-        (negativePart-of-nonnegative y 0≤y)
-        (positivePart-nonnegative x)
+        (negPart y)
+        0𝔻
+        (≥0→posPart≡id x 0≤x)
+        (≥0→negPart≡0 y 0≤y)
+        (posPart≥0 x)
         0≤x
-        (negativePart-nonnegative y)
-        0D-nonnegative
+        (negPart≥0 y)
+        0𝔻≥0
       ∙ nnMul-zeroR x 0≤x
 
     right-zero :
-      nnMul (negativePart x) (positivePart y)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative y)
-      ≡ 0D
+      nnMul (negPart x) (posPart y)
+        (negPart≥0 x)
+        (posPart≥0 y)
+      ≡ 0𝔻
     right-zero =
       nnMul-cong₂
-        (negativePart x)
-        0D
-        (positivePart y)
+        (negPart x)
+        0𝔻
+        (posPart y)
         y
-        (negativePart-of-nonnegative x 0≤x)
-        (positivePart-of-nonnegative y 0≤y)
-        (negativePart-nonnegative x)
-        0D-nonnegative
-        (positivePart-nonnegative y)
+        (≥0→negPart≡0 x 0≤x)
+        (≥0→posPart≡id y 0≤y)
+        (negPart≥0 x)
+        0𝔻≥0
+        (posPart≥0 y)
         0≤y
       ∙ nnMul-zeroL y 0≤y
 
-  *-of-nonnegative :
+  *-of-≥0 :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
     x * y ≡ nnMul x y 0≤x 0≤y
-  *-of-nonnegative x y 0≤x 0≤y =
+  *-of-≥0 x y 0≤x 0≤y =
     cong₂ _+_
-      (positiveProducts-of-nonnegative x y 0≤x 0≤y)
-      (cong -_ (negativeProducts-of-nonnegative x y 0≤x 0≤y) ∙ neg-0D)
+      (posProducts≡nnMul x y 0≤x 0≤y)
+      (cong -_ (negProducts≡0 x y 0≤x 0≤y) ∙ neg-0𝔻)
     ∙
     +-idR (nnMul x y 0≤x 0≤y)
 
-  *-nonnegative :
+  *-Pres≥0 :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    Nonnegative (x * y)
-  *-nonnegative x y 0≤x 0≤y =
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (x * y) ≥0
+  *-Pres≥0 x y 0≤x 0≤y =
     ≤-trans
-      0D
+      0𝔻
       (nnMul x y 0≤x 0≤y)
       (x * y)
-      (nnMul-nonnegative x y 0≤x 0≤y)
-      (≡→≤ (sym (*-of-nonnegative x y 0≤x 0≤y)))
+      (nnMul-Pres≥0 x y 0≤x 0≤y)
+      (≡→≤ (sym (*-of-≥0 x y 0≤x 0≤y)))
 
-  rightNonnegativeProduct :
+  rMul≥0 :
     (x z : DedekindCut ℓ) →
-    Nonnegative z →
+    z ≥0 →
     DedekindCut ℓ
-  rightNonnegativeProduct x z 0≤z =
-    nnMul (positivePart x) z
-      (positivePart-nonnegative x)
+  rMul≥0 x z 0≤z =
+    nnMul (posPart x) z
+      (posPart≥0 x)
       0≤z
     +
-    (- nnMul (negativePart x) z
-      (negativePart-nonnegative x)
+    (- nnMul (negPart x) z
+      (negPart≥0 x)
       0≤z)
 
-  positiveProducts-right-nonnegative :
+  posProducts-r≥0 :
     (x z : DedekindCut ℓ) →
-    (0≤z : Nonnegative z) →
-    positiveProducts x z ≡
-      nnMul (positivePart x) z (positivePart-nonnegative x) 0≤z
-  positiveProducts-right-nonnegative x z 0≤z =
+    (0≤z : z ≥0) →
+    posProducts x z ≡
+      nnMul (posPart x) z (posPart≥0 x) 0≤z
+  posProducts-r≥0 x z 0≤z =
     cong₂ _+_ first-product second-zero ∙
-    +-idR (nnMul (positivePart x) z (positivePart-nonnegative x) 0≤z)
+    +-idR (nnMul (posPart x) z (posPart≥0 x) 0≤z)
     where
     first-product :
-      nnMul (positivePart x) (positivePart z)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative z)
-      ≡ nnMul (positivePart x) z (positivePart-nonnegative x) 0≤z
+      nnMul (posPart x) (posPart z)
+        (posPart≥0 x)
+        (posPart≥0 z)
+      ≡ nnMul (posPart x) z (posPart≥0 x) 0≤z
     first-product =
       nnMul-congR
-        (positivePart x)
-        (positivePart z)
+        (posPart x)
+        (posPart z)
         z
-        (positivePart-of-nonnegative z 0≤z)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative z)
+        (≥0→posPart≡id z 0≤z)
+        (posPart≥0 x)
+        (posPart≥0 x)
+        (posPart≥0 z)
         0≤z
 
     second-zero :
-      nnMul (negativePart x) (negativePart z)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative z)
-      ≡ 0D
+      nnMul (negPart x) (negPart z)
+        (negPart≥0 x)
+        (negPart≥0 z)
+      ≡ 0𝔻
     second-zero =
       nnMul-congR
-        (negativePart x)
-        (negativePart z)
-        0D
-        (negativePart-of-nonnegative z 0≤z)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative z)
-        0D-nonnegative
-      ∙ nnMul-zeroR (negativePart x) (negativePart-nonnegative x)
+        (negPart x)
+        (negPart z)
+        0𝔻
+        (≥0→negPart≡0 z 0≤z)
+        (negPart≥0 x)
+        (negPart≥0 x)
+        (negPart≥0 z)
+        0𝔻≥0
+      ∙ nnMul-zeroR (negPart x) (negPart≥0 x)
 
-  negativeProducts-right-nonnegative :
+  negProducts-r≥0 :
     (x z : DedekindCut ℓ) →
-    (0≤z : Nonnegative z) →
-    negativeProducts x z ≡
-      nnMul (negativePart x) z (negativePart-nonnegative x) 0≤z
-  negativeProducts-right-nonnegative x z 0≤z =
+    (0≤z : z ≥0) →
+    negProducts x z ≡
+      nnMul (negPart x) z (negPart≥0 x) 0≤z
+  negProducts-r≥0 x z 0≤z =
     cong₂ _+_ first-zero second-product ∙
-    +-idL (nnMul (negativePart x) z (negativePart-nonnegative x) 0≤z)
+    +-idL (nnMul (negPart x) z (negPart≥0 x) 0≤z)
     where
     first-zero :
-      nnMul (positivePart x) (negativePart z)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative z)
-      ≡ 0D
+      nnMul (posPart x) (negPart z)
+        (posPart≥0 x)
+        (negPart≥0 z)
+      ≡ 0𝔻
     first-zero =
       nnMul-congR
-        (positivePart x)
-        (negativePart z)
-        0D
-        (negativePart-of-nonnegative z 0≤z)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative z)
-        0D-nonnegative
-      ∙ nnMul-zeroR (positivePart x) (positivePart-nonnegative x)
+        (posPart x)
+        (negPart z)
+        0𝔻
+        (≥0→negPart≡0 z 0≤z)
+        (posPart≥0 x)
+        (posPart≥0 x)
+        (negPart≥0 z)
+        0𝔻≥0
+      ∙ nnMul-zeroR (posPart x) (posPart≥0 x)
 
     second-product :
-      nnMul (negativePart x) (positivePart z)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative z)
-      ≡ nnMul (negativePart x) z (negativePart-nonnegative x) 0≤z
+      nnMul (negPart x) (posPart z)
+        (negPart≥0 x)
+        (posPart≥0 z)
+      ≡ nnMul (negPart x) z (negPart≥0 x) 0≤z
     second-product =
       nnMul-congR
-        (negativePart x)
-        (positivePart z)
+        (negPart x)
+        (posPart z)
         z
-        (positivePart-of-nonnegative z 0≤z)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative z)
+        (≥0→posPart≡id z 0≤z)
+        (negPart≥0 x)
+        (negPart≥0 x)
+        (posPart≥0 z)
         0≤z
 
-  *-right-nonnegative-form :
+  *-r≥0-form :
     (x z : DedekindCut ℓ) →
-    (0≤z : Nonnegative z) →
-    x * z ≡ rightNonnegativeProduct x z 0≤z
-  *-right-nonnegative-form x z 0≤z =
+    (0≤z : z ≥0) →
+    x * z ≡ rMul≥0 x z 0≤z
+  *-r≥0-form x z 0≤z =
     cong₂ _+_
-      (positiveProducts-right-nonnegative x z 0≤z)
-      (cong -_ (negativeProducts-right-nonnegative x z 0≤z))
+      (posProducts-r≥0 x z 0≤z)
+      (cong -_ (negProducts-r≥0 x z 0≤z))
 
-  *-monoR-≤-nonnegative :
+  *-rPosPres≤ :
     (x y z : DedekindCut ℓ) →
     x ≤ y →
-    (0≤z : Nonnegative z) →
+    (0≤z : z ≥0) →
     x * z ≤ y * z
-  *-monoR-≤-nonnegative x y z x≤y 0≤z =
+  *-rPosPres≤ x y z x≤y 0≤z =
     ≤-trans (x * z) xz-form (y * z)
-      (≡→≤ (*-right-nonnegative-form x z 0≤z))
+      (≡→≤ (*-r≥0-form x z 0≤z))
       (≤-trans xz-form yz-form (y * z)
         form≤
-        (≡→≤ (sym (*-right-nonnegative-form y z 0≤z))))
+        (≡→≤ (sym (*-r≥0-form y z 0≤z))))
     where
     xz-form : DedekindCut ℓ
-    xz-form = rightNonnegativeProduct x z 0≤z
+    xz-form = rMul≥0 x z 0≤z
 
     yz-form : DedekindCut ℓ
-    yz-form = rightNonnegativeProduct y z 0≤z
+    yz-form = rMul≥0 y z 0≤z
 
     pos≤ :
-      nnMul (positivePart x) z
-        (positivePart-nonnegative x)
+      nnMul (posPart x) z
+        (posPart≥0 x)
         0≤z
       ≤
-      nnMul (positivePart y) z
-        (positivePart-nonnegative y)
+      nnMul (posPart y) z
+        (posPart≥0 y)
         0≤z
     pos≤ =
       nnMul-monoL-≤
-        (positivePart x)
-        (positivePart y)
+        (posPart x)
+        (posPart y)
         z
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative y)
+        (posPart≥0 x)
+        (posPart≥0 y)
         0≤z
-        (positivePart-mono-≤ x y x≤y)
+        (posPart-mono-≤ x y x≤y)
 
     neg-prod≤ :
-      nnMul (negativePart y) z
-        (negativePart-nonnegative y)
+      nnMul (negPart y) z
+        (negPart≥0 y)
         0≤z
       ≤
-      nnMul (negativePart x) z
-        (negativePart-nonnegative x)
+      nnMul (negPart x) z
+        (negPart≥0 x)
         0≤z
     neg-prod≤ =
       nnMul-monoL-≤
-        (negativePart y)
-        (negativePart x)
+        (negPart y)
+        (negPart x)
         z
-        (negativePart-nonnegative y)
-        (negativePart-nonnegative x)
+        (negPart≥0 y)
+        (negPart≥0 x)
         0≤z
-        (negativePart-antitone-≤ x y x≤y)
+        (negPart-antitone-≤ x y x≤y)
 
     neg≤ :
-      (- nnMul (negativePart x) z
-        (negativePart-nonnegative x)
+      (- nnMul (negPart x) z
+        (negPart≥0 x)
         0≤z)
       ≤
-      (- nnMul (negativePart y) z
-        (negativePart-nonnegative y)
+      (- nnMul (negPart y) z
+        (negPart≥0 y)
         0≤z)
     neg≤ =
       neg-≤-reverse
-        (nnMul (negativePart y) z
-          (negativePart-nonnegative y)
+        (nnMul (negPart y) z
+          (negPart≥0 y)
           0≤z)
-        (nnMul (negativePart x) z
-          (negativePart-nonnegative x)
+        (nnMul (negPart x) z
+          (negPart≥0 x)
           0≤z)
         neg-prod≤
 
     form≤ : xz-form ≤ yz-form
     form≤ =
       +-mono-≤
-        (nnMul (positivePart x) z
-          (positivePart-nonnegative x)
+        (nnMul (posPart x) z
+          (posPart≥0 x)
           0≤z)
-        (nnMul (positivePart y) z
-          (positivePart-nonnegative y)
+        (nnMul (posPart y) z
+          (posPart≥0 y)
           0≤z)
-        (- nnMul (negativePart x) z
-          (negativePart-nonnegative x)
+        (- nnMul (negPart x) z
+          (negPart≥0 x)
           0≤z)
-        (- nnMul (negativePart y) z
-          (negativePart-nonnegative y)
+        (- nnMul (negPart y) z
+          (negPart≥0 y)
           0≤z)
         pos≤
         neg≤
 
-  *-monoL-≤-nonnegative :
+  *-lPosPres≤ :
     (x y z : DedekindCut ℓ) →
     x ≤ y →
-    (0≤z : Nonnegative z) →
+    (0≤z : z ≥0) →
     z * x ≤ z * y
-  *-monoL-≤-nonnegative x y z x≤y 0≤z =
+  *-lPosPres≤ x y z x≤y 0≤z =
     ≤-trans (z * x) (x * z) (z * y)
       (≡→≤ (*-comm z x))
       (≤-trans (x * z) (y * z) (z * y)
-        (*-monoR-≤-nonnegative x y z x≤y 0≤z)
+        (*-rPosPres≤ x y z x≤y 0≤z)
         (≡→≤ (sym (*-comm z y))))
 
-  positiveProducts-zeroR :
+  posProducts-zeroR :
     (x : DedekindCut ℓ) →
-    positiveProducts x 0D ≡ 0D
-  positiveProducts-zeroR x =
+    posProducts x 0𝔻 ≡ 0𝔻
+  posProducts-zeroR x =
     cong₂ _+_ first-zero second-zero ∙
-    +-idR 0D
+    +-idR 0𝔻
     where
     first-zero :
-      nnMul (positivePart x) (positivePart 0D)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative 0D)
-      ≡ 0D
+      nnMul (posPart x) (posPart 0𝔻)
+        (posPart≥0 x)
+        (posPart≥0 0𝔻)
+      ≡ 0𝔻
     first-zero =
       nnMul-congR
-        (positivePart x)
-        (positivePart 0D)
-        0D
-        positivePart-0D
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative 0D)
-        0D-nonnegative
-      ∙ nnMul-zeroR (positivePart x) (positivePart-nonnegative x)
+        (posPart x)
+        (posPart 0𝔻)
+        0𝔻
+        posPart-0𝔻
+        (posPart≥0 x)
+        (posPart≥0 x)
+        (posPart≥0 0𝔻)
+        0𝔻≥0
+      ∙ nnMul-zeroR (posPart x) (posPart≥0 x)
 
     second-zero :
-      nnMul (negativePart x) (negativePart 0D)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative 0D)
-      ≡ 0D
+      nnMul (negPart x) (negPart 0𝔻)
+        (negPart≥0 x)
+        (negPart≥0 0𝔻)
+      ≡ 0𝔻
     second-zero =
       nnMul-congR
-        (negativePart x)
-        (negativePart 0D)
-        0D
-        negativePart-0D
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative 0D)
-        0D-nonnegative
-      ∙ nnMul-zeroR (negativePart x) (negativePart-nonnegative x)
+        (negPart x)
+        (negPart 0𝔻)
+        0𝔻
+        negPart-0𝔻
+        (negPart≥0 x)
+        (negPart≥0 x)
+        (negPart≥0 0𝔻)
+        0𝔻≥0
+      ∙ nnMul-zeroR (negPart x) (negPart≥0 x)
 
-  negativeProducts-zeroR :
+  negProducts-zeroR :
     (x : DedekindCut ℓ) →
-    negativeProducts x 0D ≡ 0D
-  negativeProducts-zeroR x =
+    negProducts x 0𝔻 ≡ 0𝔻
+  negProducts-zeroR x =
     cong₂ _+_ first-zero second-zero ∙
-    +-idR 0D
+    +-idR 0𝔻
     where
     first-zero :
-      nnMul (positivePart x) (negativePart 0D)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative 0D)
-      ≡ 0D
+      nnMul (posPart x) (negPart 0𝔻)
+        (posPart≥0 x)
+        (negPart≥0 0𝔻)
+      ≡ 0𝔻
     first-zero =
       nnMul-congR
-        (positivePart x)
-        (negativePart 0D)
-        0D
-        negativePart-0D
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative 0D)
-        0D-nonnegative
-      ∙ nnMul-zeroR (positivePart x) (positivePart-nonnegative x)
+        (posPart x)
+        (negPart 0𝔻)
+        0𝔻
+        negPart-0𝔻
+        (posPart≥0 x)
+        (posPart≥0 x)
+        (negPart≥0 0𝔻)
+        0𝔻≥0
+      ∙ nnMul-zeroR (posPart x) (posPart≥0 x)
 
     second-zero :
-      nnMul (negativePart x) (positivePart 0D)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative 0D)
-      ≡ 0D
+      nnMul (negPart x) (posPart 0𝔻)
+        (negPart≥0 x)
+        (posPart≥0 0𝔻)
+      ≡ 0𝔻
     second-zero =
       nnMul-congR
-        (negativePart x)
-        (positivePart 0D)
-        0D
-        positivePart-0D
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative 0D)
-        0D-nonnegative
-      ∙ nnMul-zeroR (negativePart x) (negativePart-nonnegative x)
+        (negPart x)
+        (posPart 0𝔻)
+        0𝔻
+        posPart-0𝔻
+        (negPart≥0 x)
+        (negPart≥0 x)
+        (posPart≥0 0𝔻)
+        0𝔻≥0
+      ∙ nnMul-zeroR (negPart x) (negPart≥0 x)
 
   *-zeroR :
     (x : DedekindCut ℓ) →
-    x * 0D ≡ 0D
+    x * 0𝔻 ≡ 0𝔻
   *-zeroR x =
     cong₂ _+_
-      (positiveProducts-zeroR x)
-      (cong -_ (negativeProducts-zeroR x) ∙ neg-0D)
+      (posProducts-zeroR x)
+      (cong -_ (negProducts-zeroR x) ∙ neg-0𝔻)
     ∙
-    +-idR 0D
+    +-idR 0𝔻
 
   *-zeroL :
     (x : DedekindCut ℓ) →
-    0D * x ≡ 0D
+    0𝔻 * x ≡ 0𝔻
   *-zeroL x =
-    *-comm 0D x ∙
+    *-comm 0𝔻 x ∙
     *-zeroR x

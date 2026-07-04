@@ -103,8 +103,17 @@ represented-lower :
 represented-upper :
   x is in the upper side iff representing-cut C < x
 
+representsCut :
+  lower and upper representation predicates for a proposed representing cut
+
 representing-cut-unique :
   uniqueness by extensionality / order antisymmetry
+
+isDedekindComplete :
+  every RealValuedCut has a unique representing cut
+
+isDedekindCompleteDedekindCut :
+  isDedekindComplete for DedekindCut
 ```
 
 The current checked theorem is universe-internal: predicates on
@@ -130,9 +139,9 @@ Status: done for the constructive target. Required for the final theorem.
       require the located estimate: inhabitedness, closure, roundedness,
       disjointness.
     - Done: nonnegative upper endpoints are positive, plus a
-      `NonnegativeCloseBounds` wrapper around `close-bounds`.
+      `CloseBounds≥0` wrapper around `close-bounds`.
     - Done: bounded rational approximations
-      `bounded-close-bounds` / `NonnegativeBoundedCloseBounds`, preserving a
+      `bounded-close-bounds` / `BoundedCloseBounds≥0`, preserving a
       chosen upper bound for later multiplication estimates.
     - Done: positive rational inverse and positive scaling helpers for the
       later multiplicative error bound.
@@ -144,7 +153,7 @@ Status: done for the constructive target. Required for the final theorem.
       `ux*uy = lx*ly + (ux-lx)*uy + lx*(uy-ly)`.
     - Done: locatedness for nonnegative multiplication.
     - Done: packaged nonnegative multiplication cut `nnMul` and commutativity.
-- Signed multiplication using positive and negative parts.
+- Multiplication using positive and negative parts.
   - Done: positive and negative parts `x+ = x join 0` and
     `x- = (-x) join 0`, with nonnegativity proofs.
   - Done: signed multiplication definition from the four nonnegative
@@ -156,7 +165,7 @@ Status: done for the constructive target. Required for the final theorem.
     interface with inverses from apartness `x # 0`, while the previous
     trichotomous/`Field`-based API lives under
     `Constructive.Algebra.StrictlyOrderedField`.
-  - Done: rational `1D` cut and nonnegativity of `1D`.
+  - Done: rational `1𝔻` cut and nonnegativity of `1𝔻`.
   - Done: nonnegative multiplication zero laws `nnMul-zeroR` and
     `nnMul-zeroL`.
   - Done: proof irrelevance/congruence for `nnMul` arguments.
@@ -164,7 +173,7 @@ Status: done for the constructive target. Required for the final theorem.
   - Done: `nnMul` preserves nonnegativity.
   - Done: positive/negative part simplifications for nonnegative cuts:
     `x+ = x` and `x- = 0`.
-  - Done: `positiveProducts` / `negativeProducts` are nonnegative.
+  - Done: `posProducts` / `negProducts` are nonnegative.
   - Done: for nonnegative inputs, signed multiplication agrees with
     `nnMul`.
   - Done: signed multiplication zero laws `*-zeroR` and `*-zeroL`.
@@ -189,11 +198,11 @@ Status: done for the constructive target. Required for the final theorem.
     `(- x) * y = - (x * y)`, `x * (- y) = - (x * y)`, and
     `(- x) * (- y) = x * y`.
   - Done: nonnegative multiplication associativity in
-    `Cubical.DedekindCut.Arithmetic.NonnegativeLaws`.  The proof uses
+    `Cubical.DedekindCut.Arithmetic.NonNegative`.  The proof uses
     `<=` antisymmetry and only lower inclusions, avoiding new upper-endpoint
     epsilon estimates.
   - Done: nonnegative multiplication distributes over addition on both sides
-    in `Cubical.DedekindCut.Arithmetic.NonnegativeLaws`.  The proof handles
+    in `Cubical.DedekindCut.Arithmetic.NonNegative`.  The proof handles
     the constructive lower-cut sign split for rational addends directly and
     does not use LEM.
   - Done: full signed distributivity in
@@ -208,13 +217,13 @@ Status: done for the constructive target. Required for the final theorem.
   - Done: `OrderedCommRing` packaging in
     `Cubical.DedekindCut.Arithmetic.OrderedCommRing`.
   - Done: positive reciprocal cuts and the proof
-    `x * posInvCut x = 1` for `0 < x` in
-    `Cubical.DedekindCut.Arithmetic.PositiveInverse`.
+    `x * inv₊ x = 1` for `0 < x` in
+    `Cubical.DedekindCut.Arithmetic.Inverse`.
   - Done: apartness-based inverses for all `x # 0`, with both right and left
     inverse forms exported by
-    `Cubical.DedekindCut.Arithmetic.ApartnessField`.
+    `Cubical.DedekindCut.Arithmetic.OrderedField`.
   - Done: formal `Constructive.Algebra.OrderedField` instance
-    `DedekindCutOrderedField`.
+    `DedekindOrderedField`.
   - Done: checked M3 aggregate entry point
     `Cubical.DedekindCut.Arithmetic.M3`.
   - Engineering note: the unit-law proof is intentionally split into

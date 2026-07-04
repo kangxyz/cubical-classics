@@ -42,7 +42,7 @@ isProp∈ᴿ : (P : RealPred ℓ) → (x : DedekindCut ℓ) → isProp (x ∈ᴿ
 isProp∈ᴿ P x = P x .snd
 
 
-record isRealValuedCut (L U : RealPred ℓ) : Type (ℓ-suc ℓ) where
+record IsRealValuedCut (L U : RealPred ℓ) : Type (ℓ-suc ℓ) where
   no-eta-equality
 
   field
@@ -92,9 +92,9 @@ record RealValuedCut (ℓ : Level) : Type (ℓ-suc ℓ) where
   field
     realLower : RealPred ℓ
     realUpper : RealPred ℓ
-    is-real-cut : isRealValuedCut realLower realUpper
+    isRealValuedCut : IsRealValuedCut realLower realUpper
 
-  open isRealValuedCut is-real-cut public
+  open IsRealValuedCut isRealValuedCut public
 
 
 open RealValuedCut public
@@ -102,21 +102,21 @@ open RealValuedCut public
 
 representingLower : {ℓ : Level} → RealValuedCut ℓ → ℚPred ℓ
 representingLower {ℓ = ℓ} C q =
-  (ℚ→DedekindCutAt ℓ q ∈ᴿ realLower C) ,
-  isProp∈ᴿ (realLower C) (ℚ→DedekindCutAt ℓ q)
+  (ℚ→𝔻 ℓ q ∈ᴿ realLower C) ,
+  isProp∈ᴿ (realLower C) (ℚ→𝔻 ℓ q)
 
 
 representingUpper : {ℓ : Level} → RealValuedCut ℓ → ℚPred ℓ
 representingUpper {ℓ = ℓ} C q =
-  (ℚ→DedekindCutAt ℓ q ∈ᴿ realUpper C) ,
-  isProp∈ᴿ (realUpper C) (ℚ→DedekindCutAt ℓ q)
+  (ℚ→𝔻 ℓ q ∈ᴿ realUpper C) ,
+  isProp∈ᴿ (realUpper C) (ℚ→𝔻 ℓ q)
 
 
-representing-is-cut :
+isDedekindCutRepresenting :
   {ℓ : Level} →
   (C : RealValuedCut ℓ) →
-  isDedekindCut (representingLower C) (representingUpper C)
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.lower-inhabited =
+  IsDedekindCut (representingLower C) (representingUpper C)
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.lower-inhabited =
   Prop.rec squash₁ from-real
     (real-lower-inhabited C)
   where
@@ -131,13 +131,13 @@ representing-is-cut {ℓ = ℓ} C .isDedekindCut.lower-inhabited =
         let q = ℚ.- ℚExtra.natMul n ℚExtra.1ℚ in
         ∣ q
         , real-lower-closed C
-            (ℚ→DedekindCutAt ℓ q)
+            (ℚ→𝔻 ℓ q)
             x
             q<x
             x∈L
         ∣₁)
       (Arch.lower-rational-bound x)
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.upper-inhabited =
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.upper-inhabited =
   Prop.rec squash₁ from-real
     (real-upper-inhabited C)
   where
@@ -153,81 +153,81 @@ representing-is-cut {ℓ = ℓ} C .isDedekindCut.upper-inhabited =
         ∣ q
         , real-upper-closed C
             x
-            (ℚ→DedekindCutAt ℓ q)
+            (ℚ→𝔻 ℓ q)
             x<q
             x∈U
         ∣₁)
       (Arch.upper-rational-bound x)
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.lower-closed =
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.lower-closed =
   λ p q p<q q∈L →
     real-lower-closed C
-      (ℚ→DedekindCutAt ℓ p)
-      (ℚ→DedekindCutAt ℓ q)
-      (RationalEmbeddingAt.ℚ→<-pres {ℓ = ℓ} p q p<q)
+      (ℚ→𝔻 ℓ p)
+      (ℚ→𝔻 ℓ q)
+      (RationalEmbedding.ℚ→<-pres {ℓ = ℓ} p q p<q)
       q∈L
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.upper-closed =
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.upper-closed =
   λ p q p<q p∈U →
     real-upper-closed C
-      (ℚ→DedekindCutAt ℓ p)
-      (ℚ→DedekindCutAt ℓ q)
-      (RationalEmbeddingAt.ℚ→<-pres {ℓ = ℓ} p q p<q)
+      (ℚ→𝔻 ℓ p)
+      (ℚ→𝔻 ℓ q)
+      (RationalEmbedding.ℚ→<-pres {ℓ = ℓ} p q p<q)
       p∈U
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.lower-rounded =
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.lower-rounded =
   λ q q∈L →
     Prop.rec squash₁
       (λ (y , q<y , y∈L) →
         Prop.rec squash₁
           (λ (r , q<r , r<y) →
             ∣ r
-            , RationalEmbeddingAt.ℚ→<-reflect {ℓ = ℓ} q r q<r
+            , RationalEmbedding.ℚ→<-reflect {ℓ = ℓ} q r q<r
             , real-lower-closed C
-                (ℚ→DedekindCutAt ℓ r)
+                (ℚ→𝔻 ℓ r)
                 y
                 r<y
                 y∈L
             ∣₁)
           (Order.rational-between
-            (ℚ→DedekindCutAt ℓ q)
+            (ℚ→𝔻 ℓ q)
             y
             q<y))
-      (real-lower-rounded C (ℚ→DedekindCutAt ℓ q) q∈L)
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.upper-rounded =
+      (real-lower-rounded C (ℚ→𝔻 ℓ q) q∈L)
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.upper-rounded =
   λ q q∈U →
     Prop.rec squash₁
       (λ (y , y<q , y∈U) →
         Prop.rec squash₁
           (λ (r , y<r , r<q) →
             ∣ r
-            , RationalEmbeddingAt.ℚ→<-reflect {ℓ = ℓ} r q r<q
+            , RationalEmbedding.ℚ→<-reflect {ℓ = ℓ} r q r<q
             , real-upper-closed C
                 y
-                (ℚ→DedekindCutAt ℓ r)
+                (ℚ→𝔻 ℓ r)
                 y<r
                 y∈U
             ∣₁)
           (Order.rational-between
             y
-            (ℚ→DedekindCutAt ℓ q)
+            (ℚ→𝔻 ℓ q)
             y<q))
-      (real-upper-rounded C (ℚ→DedekindCutAt ℓ q) q∈U)
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.disjoint =
-  λ q → real-disjoint C (ℚ→DedekindCutAt ℓ q)
-representing-is-cut {ℓ = ℓ} C .isDedekindCut.located =
+      (real-upper-rounded C (ℚ→𝔻 ℓ q) q∈U)
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.disjoint =
+  λ q → real-disjoint C (ℚ→𝔻 ℓ q)
+isDedekindCutRepresenting {ℓ = ℓ} C .IsDedekindCut.located =
   λ p q p<q →
     Prop.rec squash₁
       (λ where
         (Sum.inl p∈L) → ∣ Sum.inl p∈L ∣₁
         (Sum.inr q∈U) → ∣ Sum.inr q∈U ∣₁)
       (real-located C
-        (ℚ→DedekindCutAt ℓ p)
-        (ℚ→DedekindCutAt ℓ q)
-        (RationalEmbeddingAt.ℚ→<-pres {ℓ = ℓ} p q p<q))
+        (ℚ→𝔻 ℓ p)
+        (ℚ→𝔻 ℓ q)
+        (RationalEmbedding.ℚ→<-pres {ℓ = ℓ} p q p<q))
 
 
 representing-cut : {ℓ : Level} → RealValuedCut ℓ → DedekindCut ℓ
 representing-cut C .lower = representingLower C
 representing-cut C .upper = representingUpper C
-representing-cut C .is-cut = representing-is-cut C
+representing-cut C .isDedekindCut = isDedekindCutRepresenting C
 
 
 represented-lower :
@@ -251,7 +251,7 @@ represented-lower {ℓ = ℓ} C x = to , from
             ∣ q
             , O.<ℚ→upper x q x<q
             , real-lower-closed C
-                (ℚ→DedekindCutAt ℓ q)
+                (ℚ→𝔻 ℓ q)
                 y
                 q<y
                 y∈L
@@ -267,7 +267,7 @@ represented-lower {ℓ = ℓ} C x = to , from
       (λ (q , q∈Ux , q∈L) →
         real-lower-closed C
           x
-          (ℚ→DedekindCutAt ℓ q)
+          (ℚ→𝔻 ℓ q)
           (O.upper→<ℚ x q q∈Ux)
           q∈L)
 
@@ -293,7 +293,7 @@ represented-upper {ℓ = ℓ} C x = to , from
             ∣ q
             , real-upper-closed C
                 y
-                (ℚ→DedekindCutAt ℓ q)
+                (ℚ→𝔻 ℓ q)
                 y<q
                 y∈U
             , O.ℚ<→lower x q q<x
@@ -308,7 +308,7 @@ represented-upper {ℓ = ℓ} C x = to , from
     Prop.rec (isProp∈ᴿ (realUpper C) x)
       (λ (q , q∈U , q∈Lx) →
         real-upper-closed C
-          (ℚ→DedekindCutAt ℓ q)
+          (ℚ→𝔻 ℓ q)
           x
           (O.lower→ℚ< x q q∈Lx)
           q∈U)
@@ -319,11 +319,39 @@ representsLower :
   RealValuedCut ℓ →
   DedekindCut ℓ →
   Type (ℓ-suc ℓ)
-representsLower C z =
-  (x : DedekindCut _) →
+representsLower {ℓ = ℓ} C z =
+  (x : DedekindCut ℓ) →
     (x ∈ᴿ realLower C → Order._<_ x z)
     ×
     (Order._<_ x z → x ∈ᴿ realLower C)
+
+
+representsCut :
+  {ℓ : Level} →
+  RealValuedCut ℓ →
+  DedekindCut ℓ →
+  Type (ℓ-suc ℓ)
+representsCut {ℓ = ℓ} C z =
+  representsLower C z
+  ×
+  ((x : DedekindCut ℓ) →
+    (x ∈ᴿ realUpper C → Order._<_ z x)
+    ×
+    (Order._<_ z x → x ∈ᴿ realUpper C))
+
+
+-- Dedekind completeness, in this same-universe constructive form, says that
+-- every located Dedekind cut whose elements are Dedekind reals is represented
+-- by a unique Dedekind real.  A representative `z` means exactly that the
+-- lower side of the real-valued cut is the predicate `x < z`, and the upper
+-- side is the predicate `z < x`.
+isDedekindComplete : {ℓ : Level} → Type (ℓ-suc ℓ)
+isDedekindComplete {ℓ = ℓ} =
+  (C : RealValuedCut ℓ) →
+  Σ[ z ∈ DedekindCut ℓ ]
+    representsCut C z
+    ×
+    ((z' : DedekindCut ℓ) → representsCut C z' → z' ≡ z)
 
 
 representing-cut-unique :
@@ -338,13 +366,13 @@ representing-cut-unique {ℓ = ℓ} C z z-rep =
 
   z≤rep : O._≤_ z (representing-cut C)
   z≤rep q q∈Lz =
-    z-rep (ℚ→DedekindCutAt ℓ q) .snd
+    z-rep (ℚ→𝔻 ℓ q) .snd
       (O.lower→ℚ< z q q∈Lz)
 
   rep≤z : O._≤_ (representing-cut C) z
   rep≤z q q∈Lrep =
     O.ℚ<→lower z q
-      (z-rep (ℚ→DedekindCutAt ℓ q) .fst q∈Lrep)
+      (z-rep (ℚ→𝔻 ℓ q) .fst q∈Lrep)
 
 
 representing-cut-representsLower :
@@ -352,3 +380,19 @@ representing-cut-representsLower :
   (C : RealValuedCut ℓ) →
   representsLower C (representing-cut C)
 representing-cut-representsLower C x = represented-lower C x
+
+
+representing-cut-representsCut :
+  {ℓ : Level} →
+  (C : RealValuedCut ℓ) →
+  representsCut C (representing-cut C)
+representing-cut-representsCut C =
+  representing-cut-representsLower C ,
+  represented-upper C
+
+
+isDedekindCompleteDedekindCut : {ℓ : Level} → isDedekindComplete {ℓ = ℓ}
+isDedekindCompleteDedekindCut C =
+  representing-cut C ,
+  representing-cut-representsCut C ,
+  λ z z-rep → representing-cut-unique C z (z-rep .fst)

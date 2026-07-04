@@ -31,43 +31,45 @@ open import Cubical.DedekindCut.Arithmetic.Negation
 import Cubical.Rationals as ℚExtra
 
 
-module SignedOrder {ℓ : Level} where
+module OrderProperties {ℓ : Level} where
   open Order {ℓ}
-  open RationalEmbeddingAt {ℓ}
+  open RationalEmbedding {ℓ}
   open Algebra {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
-  open SignedMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
+  open Multiplication {ℓ}
   open AdditiveGroup {ℓ}
-  open MultiplicationNegation {ℓ}
-  open SignedDistributivity {ℓ}
+  open NegationProperties {ℓ}
+  open MultiplicationDistributivity {ℓ}
 
-  Positive : DedekindCut ℓ → Type ℓ
-  Positive x = 0D < x
+  _>0 : DedekindCut ℓ → Type ℓ
+  x >0 = 0𝔻 < x
 
-  positive→nonnegative :
+  infix 4 _>0
+
+  >0→≥0 :
     (x : DedekindCut ℓ) →
-    Positive x →
-    Nonnegative x
-  positive→nonnegative x = <→≤ 0D x
+    x >0 →
+    x ≥0
+  >0→≥0 x = <→≤ 0𝔻 x
 
-  positive-rational-lower :
+  ∃lower>0 :
     (x : DedekindCut ℓ) →
-    Positive x →
+    x >0 →
     ∥ Σ[ q ∈ ℚ ] (ℚExtra.0ℚ ℚOrder.< q) × (q ∈ lower x) ∥₁
-  positive-rational-lower x =
+  ∃lower>0 x =
     Prop.rec squash₁
       (λ (q , 0<q , q∈Lx) →
         ∣ q , Lift.lower 0<q , q∈Lx ∣₁)
 
-  nnMul-positive :
+  nnMul-Pres>0 :
     (x y : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    Positive x →
-    Positive y →
-    Positive (nnMul x y 0≤x 0≤y)
-  nnMul-positive x y 0≤x 0≤y 0<x 0<y =
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    x >0 →
+    y >0 →
+    (nnMul x y 0≤x 0≤y) >0
+  nnMul-Pres>0 x y 0≤x 0≤y 0<x 0<y =
     Prop.rec2 squash₁
       (λ (a , 0<a , a∈Lx) (b , 0<b , b∈Ly) →
         let
@@ -82,42 +84,42 @@ module SignedOrder {ℓ : Level} where
         , nnMul-lower-from-product x y q
             (a , b , a∈Lx , b∈Ly , 0<a , 0<b , q<ab)
         ∣₁)
-      (positive-rational-lower x 0<x)
-      (positive-rational-lower y 0<y)
+      (∃lower>0 x 0<x)
+      (∃lower>0 y 0<y)
 
-  *-positive :
+  *-Pres>0 :
     (x y : DedekindCut ℓ) →
-    Positive x →
-    Positive y →
-    Positive (x * y)
-  *-positive x y 0<x 0<y =
-    subst Positive (sym (*-of-nonnegative x y 0≤x 0≤y))
-      (nnMul-positive x y 0≤x 0≤y 0<x 0<y)
+    x >0 →
+    y >0 →
+    (x * y) >0
+  *-Pres>0 x y 0<x 0<y =
+    subst _>0 (sym (*-of-≥0 x y 0≤x 0≤y))
+      (nnMul-Pres>0 x y 0≤x 0≤y 0<x 0<y)
     where
-    0≤x : Nonnegative x
-    0≤x = positive→nonnegative x 0<x
+    0≤x : x ≥0
+    0≤x = >0→≥0 x 0<x
 
-    0≤y : Nonnegative y
-    0≤y = positive→nonnegative y 0<y
+    0≤y : y ≥0
+    0≤y = >0→≥0 y 0<y
 
-  difference-positive :
+  Diff>0 :
     (x y : DedekindCut ℓ) →
     x < y →
-    Positive (y + (- x))
-  difference-positive x y x<y =
+    (y + (- x)) >0
+  Diff>0 x y x<y =
     transport
       (λ i → +-invR x i < y + (- x))
       (+-monoR-< x y (- x) x<y)
 
-  positive-difference→< :
+  Diff>0→< :
     (x y : DedekindCut ℓ) →
-    Positive (y + (- x)) →
+    (y + (- x)) >0 →
     x < y
-  positive-difference→< x y 0<y-x =
+  Diff>0→< x y 0<y-x =
     subst2 _<_
       (+-idL x)
       (minus-plus-cancelR y x)
-      (+-monoR-< 0D (y + (- x)) x 0<y-x)
+      (+-monoR-< 0𝔻 (y + (- x)) x 0<y-x)
 
   *-right-difference :
     (x y z : DedekindCut ℓ) →
@@ -126,32 +128,32 @@ module SignedOrder {ℓ : Level} where
     *-distribR y (- x) z ∙
     cong₂ _+_ refl (*-negL x z)
 
-  *-monoR-<-positive :
+  *-rPosPres< :
     (x y z : DedekindCut ℓ) →
-    Positive z →
+    z >0 →
     x < y →
     (x * z) < (y * z)
-  *-monoR-<-positive x y z 0<z x<y =
-    positive-difference→< (x * z) (y * z)
-      (subst Positive (*-right-difference x y z)
-        (*-positive (y + (- x)) z (difference-positive x y x<y) 0<z))
+  *-rPosPres< x y z 0<z x<y =
+    Diff>0→< (x * z) (y * z)
+      (subst _>0 (*-right-difference x y z)
+        (*-Pres>0 (y + (- x)) z (Diff>0 x y x<y) 0<z))
 
-  positive-of-rational-lower :
+  lower>0→>0 :
     (x : DedekindCut ℓ) →
     (q : ℚ) →
     ℚExtra.0ℚ ℚOrder.< q →
     q ∈ lower x →
-    Positive x
-  positive-of-rational-lower x q 0<q q∈Lx =
-    <-trans 0D (ℚ→DedekindCutAt ℓ q) x
+    x >0
+  lower>0→>0 x q 0<q q∈Lx =
+    <-trans 0𝔻 (ℚ→𝔻 ℓ q) x
       (ℚ→<-pres ℚExtra.0ℚ q 0<q)
       (lower→ℚ< x q q∈Lx)
 
-  positive-sum-split :
+  posSum→pos∨pos :
     (x y : DedekindCut ℓ) →
-    Positive (x + y) →
-    Positive x L.⊔′ Positive y
-  positive-sum-split x y =
+    (x + y) >0 →
+    (x >0) L.⊔′ (y >0)
+  posSum→pos∨pos x y =
     Prop.rec squash₁
       (λ (q , 0<q , q∈Lxy) →
         Prop.rec squash₁
@@ -164,7 +166,7 @@ module SignedOrder {ℓ : Level} where
                   q<r+s
             in
             Sum.elim
-              (λ 0<r → ∣ Sum.inl (positive-of-rational-lower x r 0<r r∈Lx) ∣₁)
-              (λ 0<s → ∣ Sum.inr (positive-of-rational-lower y s 0<s s∈Ly) ∣₁)
+              (λ 0<r → ∣ Sum.inl (lower>0→>0 x r 0<r r∈Lx) ∣₁)
+              (λ 0<s → ∣ Sum.inr (lower>0→>0 y s 0<s s∈Ly) ∣₁)
               (ℚOrder.0<+ r s 0<r+s))
           q∈Lxy)

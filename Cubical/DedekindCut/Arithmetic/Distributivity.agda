@@ -18,47 +18,47 @@ open import Cubical.DedekindCut.Arithmetic.AdditiveGroup
 open import Cubical.DedekindCut.Arithmetic.Difference
 
 
-module SignedDistributivity {ℓ : Level} where
+module MultiplicationDistributivity {ℓ : Level} where
   open Algebra {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
-  open SignedMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
+  open Multiplication {ℓ}
   open AdditiveGroup {ℓ}
-  open DifferenceMultiplication {ℓ}
+  open DifferenceProperties {ℓ}
 
   *-right-decomposition-form :
     (x z : DedekindCut ℓ) →
-    (x * positivePart z) + (- (x * negativePart z)) ≡ x * z
+    (x * posPart z) + (- (x * negPart z)) ≡ x * z
   *-right-decomposition-form x z =
     cong₂ _+_
-      (*-right-nonnegative-form x (positivePart z) (positivePart-nonnegative z))
+      (*-r≥0-form x (posPart z) (posPart≥0 z))
       (cong -_
-        (*-right-nonnegative-form x (negativePart z) (negativePart-nonnegative z))) ∙
+        (*-r≥0-form x (negPart z) (negPart≥0 z))) ∙
     algebra-path
     where
     A : DedekindCut ℓ
     A =
-      nnMul (positivePart x) (positivePart z)
-        (positivePart-nonnegative x)
-        (positivePart-nonnegative z)
+      nnMul (posPart x) (posPart z)
+        (posPart≥0 x)
+        (posPart≥0 z)
 
     B : DedekindCut ℓ
     B =
-      nnMul (negativePart x) (negativePart z)
-        (negativePart-nonnegative x)
-        (negativePart-nonnegative z)
+      nnMul (negPart x) (negPart z)
+        (negPart≥0 x)
+        (negPart≥0 z)
 
     C : DedekindCut ℓ
     C =
-      nnMul (positivePart x) (negativePart z)
-        (positivePart-nonnegative x)
-        (negativePart-nonnegative z)
+      nnMul (posPart x) (negPart z)
+        (posPart≥0 x)
+        (negPart≥0 z)
 
     D : DedekindCut ℓ
     D =
-      nnMul (negativePart x) (positivePart z)
-        (negativePart-nonnegative x)
-        (positivePart-nonnegative z)
+      nnMul (negPart x) (posPart z)
+        (negPart≥0 x)
+        (posPart≥0 z)
 
     algebra-path :
       (A + (- D)) + (- (C + (- B))) ≡ (A + B) + (- (C + D))
@@ -69,7 +69,7 @@ module SignedDistributivity {ℓ : Level} where
 
   *-right-decomposition :
     (x z : DedekindCut ℓ) →
-    x * z ≡ (x * positivePart z) + (- (x * negativePart z))
+    x * z ≡ (x * posPart z) + (- (x * negPart z))
   *-right-decomposition x z =
     sym (*-right-decomposition-form x z)
 
@@ -79,15 +79,15 @@ module SignedDistributivity {ℓ : Level} where
   *-distribR x y z =
     *-right-decomposition (x + y) z ∙
     cong₂ _+_
-      (*-distribR-nonnegative x y (positivePart z) (positivePart-nonnegative z))
+      (*-distribR-≥0 x y (posPart z) (posPart≥0 z))
       (cong -_
-        (*-distribR-nonnegative x y (negativePart z) (negativePart-nonnegative z))) ∙
+        (*-distribR-≥0 x y (negPart z) (negPart≥0 z))) ∙
     sym
       (sum-differences
-        (x * positivePart z)
-        (x * negativePart z)
-        (y * positivePart z)
-        (y * negativePart z)) ∙
+        (x * posPart z)
+        (x * negPart z)
+        (y * posPart z)
+        (y * negPart z)) ∙
     cong₂ _+_
       (*-right-decomposition-form x z)
       (*-right-decomposition-form y z)

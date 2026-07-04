@@ -54,7 +54,7 @@ module AdditiveGroup {ℓ : Level} where
 
   inverse-uniqueR :
     (x y : DedekindCut ℓ) →
-    x + y ≡ 0D →
+    x + y ≡ 0𝔻 →
     - x ≡ y
   inverse-uniqueR x y x+y≡0 =
     sym (+-idR (- x)) ∙
@@ -65,7 +65,7 @@ module AdditiveGroup {ℓ : Level} where
 
   inverse-uniqueL :
     (x y : DedekindCut ℓ) →
-    y + x ≡ 0D →
+    y + x ≡ 0𝔻 →
     - x ≡ y
   inverse-uniqueL x y y+x≡0 =
     inverse-uniqueR x y (+-comm x y ∙ y+x≡0)
@@ -76,11 +76,11 @@ module AdditiveGroup {ℓ : Level} where
   neg-add a b =
     inverse-uniqueR (a + b) ((- a) + (- b)) sum-zero
     where
-    sum-zero : (a + b) + ((- a) + (- b)) ≡ 0D
+    sum-zero : (a + b) + ((- a) + (- b)) ≡ 0𝔻
     sum-zero =
       +-interchange a b (- a) (- b) ∙
       cong₂ _+_ (+-invR a) (+-invR b) ∙
-      +-idR 0D
+      +-idR 0𝔻
 
   neg-difference-swap :
     (a b : DedekindCut ℓ) →

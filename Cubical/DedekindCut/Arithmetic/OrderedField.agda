@@ -9,7 +9,7 @@ with the ordered commutative ring from M3.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Cubical.DedekindCut.Arithmetic.ApartnessField where
+module Cubical.DedekindCut.Arithmetic.OrderedField where
 
 open import Cubical.Foundations.Prelude
 
@@ -21,41 +21,41 @@ open import Constructive.Algebra.OrderedField
 open import Cubical.DedekindCut
 open import Cubical.DedekindCut.Arithmetic
 open import Cubical.DedekindCut.Arithmetic.OrderedCommRing
-open import Cubical.DedekindCut.Arithmetic.PositiveInverse
+open import Cubical.DedekindCut.Arithmetic.Inverse
 
-module DedekindApartnessField {ℓ : Level} where
+module OrderedFieldStructure {ℓ : Level} where
   open Order {ℓ}
-  open RationalEmbeddingAt {ℓ}
+  open RationalEmbedding {ℓ}
   open Addition {ℓ}
-  open SignedMultiplication {ℓ}
-  open DedekindOrderedCommRing {ℓ}
-  open PositiveInverse {ℓ}
+  open Multiplication {ℓ}
+  open OrderedCommRingStructure {ℓ}
+  open Inverse {ℓ}
 
   orderedCommRing : OrderedCommRing (ℓ-suc ℓ) ℓ
-  orderedCommRing = DedekindCutOrderedCommRing
+  orderedCommRing = DedekindOrderedCommRing
 
-  inverse#-left' :
+  ·-lInv#' :
     (x : DedekindCut ℓ) →
-    x # 0D →
-    Σ[ y ∈ DedekindCut ℓ ] y * x ≡ 1D
-  inverse#-left' x x#0 =
+    x # 0𝔻 →
+    Σ[ y ∈ DedekindCut ℓ ] y * x ≡ 1𝔻
+  ·-lInv#' x x#0 =
     y , *-comm y x ∙ y-right
     where
     y : DedekindCut ℓ
-    y = inverse# x x#0 .fst
+    y = inv# x x#0 .fst
 
-    y-right : x * y ≡ 1D
-    y-right = inverse# x x#0 .snd
+    y-right : x * y ≡ 1𝔻
+    y-right = inv# x x#0 .snd
 
-  0#1 : 0D # 1D
-  0#1 = Sum.inl 0<1-cut
+  0#1 : 0𝔻 # 1𝔻
+  0#1 = Sum.inl 0𝔻<1𝔻
 
-  DedekindCutIsOrderedField : IsOrderedField DedekindCutOrderedCommRing
-  DedekindCutIsOrderedField .IsOrderedField.inverse# =
-    inverse#
-  DedekindCutIsOrderedField .IsOrderedField.0#1 =
+  DedekindIsOrderedField : IsOrderedField DedekindOrderedCommRing
+  DedekindIsOrderedField .IsOrderedField.inv# =
+    inv#
+  DedekindIsOrderedField .IsOrderedField.0#1 =
     0#1
 
-  DedekindCutOrderedField : OrderedField (ℓ-suc ℓ) ℓ
-  DedekindCutOrderedField =
-    DedekindCutOrderedCommRing , DedekindCutIsOrderedField
+  DedekindOrderedField : OrderedField (ℓ-suc ℓ) ℓ
+  DedekindOrderedField =
+    DedekindOrderedCommRing , DedekindIsOrderedField

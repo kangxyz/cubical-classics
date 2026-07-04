@@ -8,7 +8,7 @@ of cuts.
 
 -}
 {-# OPTIONS --safe #-}
-module Cubical.DedekindCut.Arithmetic.NonnegativeLaws where
+module Cubical.DedekindCut.Arithmetic.NonNegative where
 
 open import Cubical.Foundations.Prelude
 
@@ -26,10 +26,10 @@ open import Cubical.DedekindCut.Arithmetic
 import Cubical.Rationals as ℚExtra
 
 
-module NonnegativeLaws {ℓ : Level} where
+module NonNegativeProperties {ℓ : Level} where
   open Order {ℓ}
   open Addition {ℓ}
-  open NonnegativeMultiplication {ℓ}
+  open NonNegativeMultiplication {ℓ}
 
   nnMul-lower-positive-product :
     (x y : DedekindCut ℓ) →
@@ -57,15 +57,15 @@ module NonnegativeLaws {ℓ : Level} where
 
   nnMul-assoc-≤LR :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     nnMul x (nnMul y z 0≤y 0≤z)
       0≤x
-      (nnMul-nonnegative y z 0≤y 0≤z)
+      (nnMul-Pres≥0 y z 0≤y 0≤z)
     ≤
     nnMul (nnMul x y 0≤x 0≤y) z
-      (nnMul-nonnegative x y 0≤x 0≤y)
+      (nnMul-Pres≥0 x y 0≤x 0≤y)
       0≤z
   nnMul-assoc-≤LR x y z 0≤x 0≤y 0≤z q =
     Prop.rec squash₁ outer
@@ -110,16 +110,16 @@ module NonnegativeLaws {ℓ : Level} where
 
   nnMul-assoc-≤RL :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     nnMul (nnMul x y 0≤x 0≤y) z
-      (nnMul-nonnegative x y 0≤x 0≤y)
+      (nnMul-Pres≥0 x y 0≤x 0≤y)
       0≤z
     ≤
     nnMul x (nnMul y z 0≤y 0≤z)
       0≤x
-      (nnMul-nonnegative y z 0≤y 0≤z)
+      (nnMul-Pres≥0 y z 0≤y 0≤z)
   nnMul-assoc-≤RL x y z 0≤x 0≤y 0≤z q =
     Prop.rec squash₁ outer
     where
@@ -161,35 +161,35 @@ module NonnegativeLaws {ℓ : Level} where
 
   nnMul-assoc :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     nnMul x (nnMul y z 0≤y 0≤z)
       0≤x
-      (nnMul-nonnegative y z 0≤y 0≤z)
+      (nnMul-Pres≥0 y z 0≤y 0≤z)
     ≡
     nnMul (nnMul x y 0≤x 0≤y) z
-      (nnMul-nonnegative x y 0≤x 0≤y)
+      (nnMul-Pres≥0 x y 0≤x 0≤y)
       0≤z
   nnMul-assoc x y z 0≤x 0≤y 0≤z =
     ≤-antisym
       (nnMul x (nnMul y z 0≤y 0≤z)
         0≤x
-        (nnMul-nonnegative y z 0≤y 0≤z))
+        (nnMul-Pres≥0 y z 0≤y 0≤z))
       (nnMul (nnMul x y 0≤x 0≤y) z
-        (nnMul-nonnegative x y 0≤x 0≤y)
+        (nnMul-Pres≥0 x y 0≤x 0≤y)
         0≤z)
       (nnMul-assoc-≤LR x y z 0≤x 0≤y 0≤z)
       (nnMul-assoc-≤RL x y z 0≤x 0≤y 0≤z)
 
   nnMul-distribL-≤LR :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     nnMul x (y + z)
       0≤x
-      (+-nonnegative y z 0≤y 0≤z)
+      (+-Pres≥0 y z 0≤y 0≤z)
     ≤
     (nnMul x y 0≤x 0≤y) + (nnMul x z 0≤x 0≤z)
   nnMul-distribL-≤LR x y z 0≤x 0≤y 0≤z q =
@@ -201,11 +201,11 @@ module NonnegativeLaws {ℓ : Level} where
     xz : DedekindCut ℓ
     xz = nnMul x z 0≤x 0≤z
 
-    0≤xy : Nonnegative xy
-    0≤xy = nnMul-nonnegative x y 0≤x 0≤y
+    0≤xy : xy ≥0
+    0≤xy = nnMul-Pres≥0 x y 0≤x 0≤y
 
-    0≤xz : Nonnegative xz
-    0≤xz = nnMul-nonnegative x z 0≤x 0≤z
+    0≤xz : xz ≥0
+    0≤xz = nnMul-Pres≥0 x z 0≤x 0≤z
 
     target : ℚ → Type ℓ
     target t = t ∈ lower (xy + xz)
@@ -448,7 +448,7 @@ module NonnegativeLaws {ℓ : Level} where
       (q ℚOrder.< ℚExtra.0ℚ) ⊎ ProductLowerWitness x (y + z) q →
       target q
     outer (Sum.inl q<0) =
-      +-nonnegative xy xz 0≤xy 0≤xz q (lift q<0)
+      +-Pres≥0 xy xz 0≤xy 0≤xz q (lift q<0)
     outer (Sum.inr (a , b , a∈Lx , b∈Ly+z , 0<a , 0<b , q<ab)) =
       Prop.rec squash₁
         (λ (c , d , c∈Ly , d∈Lz , b<c+d) →
@@ -457,22 +457,22 @@ module NonnegativeLaws {ℓ : Level} where
 
   nnMul-distribL-≤RL :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     (nnMul x y 0≤x 0≤y) + (nnMul x z 0≤x 0≤z)
     ≤
     nnMul x (y + z)
       0≤x
-      (+-nonnegative y z 0≤y 0≤z)
+      (+-Pres≥0 y z 0≤y 0≤z)
   nnMul-distribL-≤RL x y z 0≤x 0≤y 0≤z q =
     Prop.rec squash₁ outer
     where
     yz : DedekindCut ℓ
     yz = y + z
 
-    0≤yz : Nonnegative yz
-    0≤yz = +-nonnegative y z 0≤y 0≤z
+    0≤yz : yz ≥0
+    0≤yz = +-Pres≥0 y z 0≤y 0≤z
 
     xy : DedekindCut ℓ
     xy = nnMul x y 0≤x 0≤y
@@ -485,15 +485,15 @@ module NonnegativeLaws {ℓ : Level} where
 
     y≤yz : y ≤ yz
     y≤yz =
-      ≤-trans y (y + 0D) yz
+      ≤-trans y (y + 0𝔻) yz
         (≡→≤ (sym (+-idR y)))
-        (+-monoL-≤ 0D z y 0≤z)
+        (+-monoL-≤ 0𝔻 z y 0≤z)
 
     z≤yz : z ≤ yz
     z≤yz =
-      ≤-trans z (0D + z) yz
+      ≤-trans z (0𝔻 + z) yz
         (≡→≤ (sym (+-idL z)))
-        (+-monoR-≤ 0D y z 0≤y)
+        (+-monoR-≤ 0𝔻 y z 0≤y)
 
     xy≤x-yz : xy ≤ x-yz
     xy≤x-yz =
@@ -723,35 +723,35 @@ module NonnegativeLaws {ℓ : Level} where
 
   nnMul-distribL :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     nnMul x (y + z)
       0≤x
-      (+-nonnegative y z 0≤y 0≤z)
+      (+-Pres≥0 y z 0≤y 0≤z)
     ≡
     (nnMul x y 0≤x 0≤y) + (nnMul x z 0≤x 0≤z)
   nnMul-distribL x y z 0≤x 0≤y 0≤z =
     ≤-antisym
       (nnMul x (y + z)
         0≤x
-        (+-nonnegative y z 0≤y 0≤z))
+        (+-Pres≥0 y z 0≤y 0≤z))
       ((nnMul x y 0≤x 0≤y) + (nnMul x z 0≤x 0≤z))
       (nnMul-distribL-≤LR x y z 0≤x 0≤y 0≤z)
       (nnMul-distribL-≤RL x y z 0≤x 0≤y 0≤z)
 
   nnMul-distribR :
     (x y z : DedekindCut ℓ) →
-    (0≤x : Nonnegative x) →
-    (0≤y : Nonnegative y) →
-    (0≤z : Nonnegative z) →
+    (0≤x : x ≥0) →
+    (0≤y : y ≥0) →
+    (0≤z : z ≥0) →
     nnMul (x + y) z
-      (+-nonnegative x y 0≤x 0≤y)
+      (+-Pres≥0 x y 0≤x 0≤y)
       0≤z
     ≡
     (nnMul x z 0≤x 0≤z) + (nnMul y z 0≤y 0≤z)
   nnMul-distribR x y z 0≤x 0≤y 0≤z =
-    nnMul-comm (x + y) z (+-nonnegative x y 0≤x 0≤y) 0≤z ∙
+    nnMul-comm (x + y) z (+-Pres≥0 x y 0≤x 0≤y) 0≤z ∙
     nnMul-distribL z x y 0≤z 0≤x 0≤y ∙
     cong₂ _+_
       (nnMul-comm z x 0≤z 0≤x)

@@ -73,7 +73,7 @@ predExt P Q P⊆Q Q⊆P =
       (hPropExt (isProp∈ P q) (isProp∈ Q q) (P⊆Q q) (Q⊆P q))
 
 
-record isDedekindCut (L U : ℚPred ℓ) : Type ℓ where
+record IsDedekindCut (L U : ℚPred ℓ) : Type ℓ where
   no-eta-equality
 
   field
@@ -114,50 +114,50 @@ record DedekindCut (ℓ : Level) : Type (ℓ-suc ℓ) where
   field
     lower : ℚPred ℓ
     upper : ℚPred ℓ
-    is-cut : isDedekindCut lower upper
+    isDedekindCut : IsDedekindCut lower upper
 
-  open isDedekindCut is-cut public
+  open IsDedekindCut isDedekindCut public
 
 
 open DedekindCut public
 
 
-isPropIsDedekindCut : (L U : ℚPred ℓ) → isProp (isDedekindCut L U)
-isPropIsDedekindCut L U c d i .isDedekindCut.lower-inhabited =
-  squash₁ (c .isDedekindCut.lower-inhabited) (d .isDedekindCut.lower-inhabited) i
-isPropIsDedekindCut L U c d i .isDedekindCut.upper-inhabited =
-  squash₁ (c .isDedekindCut.upper-inhabited) (d .isDedekindCut.upper-inhabited) i
-isPropIsDedekindCut L U c d i .isDedekindCut.lower-closed =
+isPropIsDedekindCut : (L U : ℚPred ℓ) → isProp (IsDedekindCut L U)
+isPropIsDedekindCut L U c d i .IsDedekindCut.lower-inhabited =
+  squash₁ (c .IsDedekindCut.lower-inhabited) (d .IsDedekindCut.lower-inhabited) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.upper-inhabited =
+  squash₁ (c .IsDedekindCut.upper-inhabited) (d .IsDedekindCut.upper-inhabited) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.lower-closed =
   isPropΠ4 (λ p _ _ _ → isProp∈ L p)
-    (c .isDedekindCut.lower-closed) (d .isDedekindCut.lower-closed) i
-isPropIsDedekindCut L U c d i .isDedekindCut.upper-closed =
+    (c .IsDedekindCut.lower-closed) (d .IsDedekindCut.lower-closed) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.upper-closed =
   isPropΠ4 (λ _ q _ _ → isProp∈ U q)
-    (c .isDedekindCut.upper-closed) (d .isDedekindCut.upper-closed) i
-isPropIsDedekindCut L U c d i .isDedekindCut.lower-rounded =
+    (c .IsDedekindCut.upper-closed) (d .IsDedekindCut.upper-closed) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.lower-rounded =
   isPropΠ2 (λ _ _ → squash₁)
-    (c .isDedekindCut.lower-rounded) (d .isDedekindCut.lower-rounded) i
-isPropIsDedekindCut L U c d i .isDedekindCut.upper-rounded =
+    (c .IsDedekindCut.lower-rounded) (d .IsDedekindCut.lower-rounded) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.upper-rounded =
   isPropΠ2 (λ _ _ → squash₁)
-    (c .isDedekindCut.upper-rounded) (d .isDedekindCut.upper-rounded) i
-isPropIsDedekindCut L U c d i .isDedekindCut.disjoint =
+    (c .IsDedekindCut.upper-rounded) (d .IsDedekindCut.upper-rounded) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.disjoint =
   isPropΠ3 (λ _ _ _ → Empty.isProp⊥)
-    (c .isDedekindCut.disjoint) (d .isDedekindCut.disjoint) i
-isPropIsDedekindCut L U c d i .isDedekindCut.located =
+    (c .IsDedekindCut.disjoint) (d .IsDedekindCut.disjoint) i
+isPropIsDedekindCut L U c d i .IsDedekindCut.located =
   isPropΠ3 (λ _ _ _ → squash₁)
-    (c .isDedekindCut.located) (d .isDedekindCut.located) i
+    (c .IsDedekindCut.located) (d .IsDedekindCut.located) i
 
 
-path-DedekindCut :
+DedekindCutPath :
   (x y : DedekindCut ℓ) →
   lower x ≡ lower y →
   upper x ≡ upper y →
   x ≡ y
-path-DedekindCut x y lower-path upper-path i .lower = lower-path i
-path-DedekindCut x y lower-path upper-path i .upper = upper-path i
-path-DedekindCut x y lower-path upper-path i .is-cut =
+DedekindCutPath x y lower-path upper-path i .lower = lower-path i
+DedekindCutPath x y lower-path upper-path i .upper = upper-path i
+DedekindCutPath x y lower-path upper-path i .isDedekindCut =
   isProp→PathP
     (λ i → isPropIsDedekindCut (lower-path i) (upper-path i))
-    (is-cut x) (is-cut y) i
+    (isDedekindCut x) (isDedekindCut y) i
 
 
 cutExt :
@@ -168,23 +168,23 @@ cutExt :
   upper y ⊆ upper x →
   x ≡ y
 cutExt x y Lx⊆Ly Ly⊆Lx Ux⊆Uy Uy⊆Ux =
-  path-DedekindCut x y
+  DedekindCutPath x y
     (predExt (lower x) (lower y) Lx⊆Ly Ly⊆Lx)
     (predExt (upper x) (upper y) Ux⊆Uy Uy⊆Ux)
 
 
 private
   CutΣ : (ℓ : Level) → Type (ℓ-suc ℓ)
-  CutΣ ℓ = Σ[ L ∈ ℚPred ℓ ] Σ[ U ∈ ℚPred ℓ ] isDedekindCut L U
+  CutΣ ℓ = Σ[ L ∈ ℚPred ℓ ] Σ[ U ∈ ℚPred ℓ ] IsDedekindCut L U
 
   cut→Σ : DedekindCut ℓ → CutΣ ℓ
-  cut→Σ x = lower x , upper x , is-cut x
+  cut→Σ x = lower x , upper x , isDedekindCut x
 
   Σ→cut : CutΣ ℓ → DedekindCut ℓ
   Σ→cut (L , U , cut) = record
     { lower = L
     ; upper = U
-    ; is-cut = cut
+    ; isDedekindCut = cut
     }
 
   isSetCutΣ : isSet (CutΣ ℓ)
@@ -197,64 +197,64 @@ private
 isSetDedekindCut : isSet (DedekindCut ℓ)
 isSetDedekindCut =
   isSetRetract cut→Σ Σ→cut
-    (λ x → path-DedekindCut (Σ→cut (cut→Σ x)) x refl refl)
+    (λ x → DedekindCutPath (Σ→cut (cut→Σ x)) x refl refl)
     isSetCutΣ
 
 
 -- The rational cut associated to q.
-ℚ→DedekindCut : ℚ → DedekindCut ℓ-zero
-ℚ→DedekindCut q .lower p = (p ℚOrder.< q) , ℚOrder.isProp< p q
-ℚ→DedekindCut q .upper p = (q ℚOrder.< p) , ℚOrder.isProp< q p
-ℚ→DedekindCut q .is-cut .isDedekindCut.lower-inhabited =
+ℚ→𝔻₀ : ℚ → DedekindCut ℓ-zero
+ℚ→𝔻₀ q .lower p = (p ℚOrder.< q) , ℚOrder.isProp< p q
+ℚ→𝔻₀ q .upper p = (q ℚOrder.< p) , ℚOrder.isProp< q p
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.lower-inhabited =
   ∣ q ℚ.- ℚExtra.1ℚ , ℚExtra.q-1<q q ∣₁
-ℚ→DedekindCut q .is-cut .isDedekindCut.upper-inhabited =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.upper-inhabited =
   ∣ q ℚ.+ ℚExtra.1ℚ , ℚExtra.q<q+1 q ∣₁
-ℚ→DedekindCut q .is-cut .isDedekindCut.lower-closed =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.lower-closed =
   λ p r p<r r<q → ℚOrder.isTrans< p r q p<r r<q
-ℚ→DedekindCut q .is-cut .isDedekindCut.upper-closed =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.upper-closed =
   λ p r p<r q<p → ℚOrder.isTrans< q p r q<p p<r
-ℚ→DedekindCut q .is-cut .isDedekindCut.lower-rounded =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.lower-rounded =
   λ p p<q → ℚExtra.dense {p = p} {q = q} p<q
-ℚ→DedekindCut q .is-cut .isDedekindCut.upper-rounded =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.upper-rounded =
   λ p q<p →
     Prop.rec squash₁
       (λ (r , q<r , r<p) → ∣ r , r<p , q<r ∣₁)
       (ℚExtra.dense {p = q} {q = p} q<p)
-ℚ→DedekindCut q .is-cut .isDedekindCut.disjoint =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.disjoint =
   λ p p<q q<p → ℚOrder.isAsym< p q p<q q<p
-ℚ→DedekindCut q .is-cut .isDedekindCut.located =
+ℚ→𝔻₀ q .isDedekindCut .IsDedekindCut.located =
   λ p r p<r → ℚOrder.isWeaklyLinear< p r q p<r
 
 
 -- The same rational cut, lifted to an arbitrary predicate universe.
-ℚ→DedekindCutAt : (ℓ : Level) → ℚ → DedekindCut ℓ
-ℚ→DedekindCutAt ℓ q .lower p =
+ℚ→𝔻 : (ℓ : Level) → ℚ → DedekindCut ℓ
+ℚ→𝔻 ℓ q .lower p =
   Lift ℓ (p ℚOrder.< q) ,
   isOfHLevelLift 1 (ℚOrder.isProp< p q)
-ℚ→DedekindCutAt ℓ q .upper p =
+ℚ→𝔻 ℓ q .upper p =
   Lift ℓ (q ℚOrder.< p) ,
   isOfHLevelLift 1 (ℚOrder.isProp< q p)
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.lower-inhabited =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.lower-inhabited =
   ∣ q ℚ.- ℚExtra.1ℚ , lift (ℚExtra.q-1<q q) ∣₁
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.upper-inhabited =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.upper-inhabited =
   ∣ q ℚ.+ ℚExtra.1ℚ , lift (ℚExtra.q<q+1 q) ∣₁
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.lower-closed =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.lower-closed =
   λ p r p<r r<q → lift (ℚOrder.isTrans< p r q p<r (Lift.lower r<q))
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.upper-closed =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.upper-closed =
   λ p r p<r q<p → lift (ℚOrder.isTrans< q p r (Lift.lower q<p) p<r)
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.lower-rounded =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.lower-rounded =
   λ p p<q →
     Prop.rec squash₁
       (λ (r , p<r , r<q) → ∣ r , p<r , lift r<q ∣₁)
       (ℚExtra.dense {p = p} {q = q} (Lift.lower p<q))
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.upper-rounded =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.upper-rounded =
   λ p q<p →
     Prop.rec squash₁
       (λ (r , q<r , r<p) → ∣ r , r<p , lift q<r ∣₁)
       (ℚExtra.dense {p = q} {q = p} (Lift.lower q<p))
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.disjoint =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.disjoint =
   λ p p<q q<p → ℚOrder.isAsym< p q (Lift.lower p<q) (Lift.lower q<p)
-ℚ→DedekindCutAt ℓ q .is-cut .isDedekindCut.located =
+ℚ→𝔻 ℓ q .isDedekindCut .IsDedekindCut.located =
   λ p r p<r →
     Prop.rec squash₁
       (λ where
@@ -324,7 +324,7 @@ module Order {ℓ : Level} where
   lower→ℚ< :
     (x : DedekindCut ℓ) (q : ℚ) →
     q ∈ lower x →
-    ℚ→DedekindCutAt ℓ q < x
+    ℚ→𝔻 ℓ q < x
   lower→ℚ< x q q∈Lx =
     Prop.rec squash₁
       (λ (r , q<r , r∈Lx) → ∣ r , lift q<r , r∈Lx ∣₁)
@@ -332,7 +332,7 @@ module Order {ℓ : Level} where
 
   ℚ<→lower :
     (x : DedekindCut ℓ) (q : ℚ) →
-    ℚ→DedekindCutAt ℓ q < x →
+    ℚ→𝔻 ℓ q < x →
     q ∈ lower x
   ℚ<→lower x q =
     Prop.rec (isProp∈ (lower x) q)
@@ -342,7 +342,7 @@ module Order {ℓ : Level} where
   upper→<ℚ :
     (x : DedekindCut ℓ) (q : ℚ) →
     q ∈ upper x →
-    x < ℚ→DedekindCutAt ℓ q
+    x < ℚ→𝔻 ℓ q
   upper→<ℚ x q q∈Ux =
     Prop.rec squash₁
       (λ (r , r<q , r∈Ux) → ∣ r , r∈Ux , lift r<q ∣₁)
@@ -350,7 +350,7 @@ module Order {ℓ : Level} where
 
   <ℚ→upper :
     (x : DedekindCut ℓ) (q : ℚ) →
-    x < ℚ→DedekindCutAt ℓ q →
+    x < ℚ→𝔻 ℓ q →
     q ∈ upper x
   <ℚ→upper x q =
     Prop.rec (isProp∈ (upper x) q)
@@ -359,22 +359,22 @@ module Order {ℓ : Level} where
 
   lower⇔ℚ< :
     (x : DedekindCut ℓ) (q : ℚ) →
-    (q ∈ lower x → ℚ→DedekindCutAt ℓ q < x)
+    (q ∈ lower x → ℚ→𝔻 ℓ q < x)
     ×
-    (ℚ→DedekindCutAt ℓ q < x → q ∈ lower x)
+    (ℚ→𝔻 ℓ q < x → q ∈ lower x)
   lower⇔ℚ< x q = lower→ℚ< x q , ℚ<→lower x q
 
   upper⇔<ℚ :
     (x : DedekindCut ℓ) (q : ℚ) →
-    (q ∈ upper x → x < ℚ→DedekindCutAt ℓ q)
+    (q ∈ upper x → x < ℚ→𝔻 ℓ q)
     ×
-    (x < ℚ→DedekindCutAt ℓ q → q ∈ upper x)
+    (x < ℚ→𝔻 ℓ q → q ∈ upper x)
   upper⇔<ℚ x q = upper→<ℚ x q , <ℚ→upper x q
 
   rational-between :
     (x y : DedekindCut ℓ) →
     x < y →
-    ∥ Σ[ q ∈ ℚ ] (x < ℚ→DedekindCutAt ℓ q) × (ℚ→DedekindCutAt ℓ q < y) ∥₁
+    ∥ Σ[ q ∈ ℚ ] (x < ℚ→𝔻 ℓ q) × (ℚ→𝔻 ℓ q < y) ∥₁
   rational-between x y =
     Prop.rec squash₁
       (λ (q , q∈Ux , q∈Ly) →
@@ -383,7 +383,7 @@ module Order {ℓ : Level} where
   rational-located :
     (x : DedekindCut ℓ) (p q : ℚ) →
     p ℚOrder.< q →
-    ∥ (ℚ→DedekindCutAt ℓ p < x) ⊎ (x < ℚ→DedekindCutAt ℓ q) ∥₁
+    ∥ (ℚ→𝔻 ℓ p < x) ⊎ (x < ℚ→𝔻 ℓ q) ∥₁
   rational-located x p q p<q =
     Prop.rec squash₁
       (λ where
@@ -581,10 +581,10 @@ module Lattice {ℓ : Level} where
     ((q ∈ upper x) × (q ∈ upper y)) ,
     isProp× (isProp∈ (upper x) q) (isProp∈ (upper y) q)
 
-  meet-is-cut :
+  isDedekindCut⊓ :
     (x y : DedekindCut ℓ) →
-    isDedekindCut (meetLower x y) (meetUpper x y)
-  meet-is-cut x y .isDedekindCut.lower-inhabited =
+    IsDedekindCut (meetLower x y) (meetUpper x y)
+  isDedekindCut⊓ x y .IsDedekindCut.lower-inhabited =
     Prop.rec2 squash₁
       (λ (px , px∈Lx) (py , py∈Ly) →
         let
@@ -602,22 +602,22 @@ module Lattice {ℓ : Level} where
         ∣₁)
       (lower-inhabited x)
       (lower-inhabited y)
-  meet-is-cut x y .isDedekindCut.upper-inhabited =
+  isDedekindCut⊓ x y .IsDedekindCut.upper-inhabited =
     Prop.rec squash₁
       (λ (q , q∈Ux) → ∣ q , ∣ Sum.inl q∈Ux ∣₁ ∣₁)
       (upper-inhabited x)
-  meet-is-cut x y .isDedekindCut.lower-closed =
+  isDedekindCut⊓ x y .IsDedekindCut.lower-closed =
     λ p q p<q (q∈Lx , q∈Ly) →
       lower-closed x p q p<q q∈Lx ,
       lower-closed y p q p<q q∈Ly
-  meet-is-cut x y .isDedekindCut.upper-closed =
+  isDedekindCut⊓ x y .IsDedekindCut.upper-closed =
     λ p q p<q p∈Uxy →
       Prop.rec squash₁
         (λ where
           (Sum.inl p∈Ux) → ∣ Sum.inl (upper-closed x p q p<q p∈Ux) ∣₁
           (Sum.inr p∈Uy) → ∣ Sum.inr (upper-closed y p q p<q p∈Uy) ∣₁)
         p∈Uxy
-  meet-is-cut x y .isDedekindCut.lower-rounded =
+  isDedekindCut⊓ x y .IsDedekindCut.lower-rounded =
     λ q (q∈Lx , q∈Ly) →
       Prop.rec2 squash₁
         (λ (rx , q<rx , rx∈Lx) (ry , q<ry , ry∈Ly) →
@@ -629,7 +629,7 @@ module Lattice {ℓ : Level} where
           ∣₁)
         (lower-rounded x q q∈Lx)
         (lower-rounded y q q∈Ly)
-  meet-is-cut x y .isDedekindCut.upper-rounded =
+  isDedekindCut⊓ x y .IsDedekindCut.upper-rounded =
     λ q q∈Uxy →
       Prop.rec squash₁
         (λ where
@@ -644,14 +644,14 @@ module Lattice {ℓ : Level} where
                 ∣ r , r<q , ∣ Sum.inr r∈Uy ∣₁ ∣₁)
               (upper-rounded y q q∈Uy))
         q∈Uxy
-  meet-is-cut x y .isDedekindCut.disjoint =
+  isDedekindCut⊓ x y .IsDedekindCut.disjoint =
     λ q (q∈Lx , q∈Ly) q∈Uxy →
       Prop.rec Empty.isProp⊥
         (λ where
           (Sum.inl q∈Ux) → disjoint x q q∈Lx q∈Ux
           (Sum.inr q∈Uy) → disjoint y q q∈Ly q∈Uy)
         q∈Uxy
-  meet-is-cut x y .isDedekindCut.located =
+  isDedekindCut⊓ x y .IsDedekindCut.located =
     λ p q p<q →
       Prop.rec2 squash₁
         (λ where
@@ -670,17 +670,17 @@ module Lattice {ℓ : Level} where
   x ⊓ y = record
     { lower = meetLower x y
     ; upper = meetUpper x y
-    ; is-cut = meet-is-cut x y
+    ; isDedekindCut = isDedekindCut⊓ x y
     }
 
-  join-is-cut :
+  isDedekindCut⊔ :
     (x y : DedekindCut ℓ) →
-    isDedekindCut (joinLower x y) (joinUpper x y)
-  join-is-cut x y .isDedekindCut.lower-inhabited =
+    IsDedekindCut (joinLower x y) (joinUpper x y)
+  isDedekindCut⊔ x y .IsDedekindCut.lower-inhabited =
     Prop.rec squash₁
       (λ (q , q∈Lx) → ∣ q , ∣ Sum.inl q∈Lx ∣₁ ∣₁)
       (lower-inhabited x)
-  join-is-cut x y .isDedekindCut.upper-inhabited =
+  isDedekindCut⊔ x y .IsDedekindCut.upper-inhabited =
     Prop.rec2 squash₁
       (λ (ux , ux∈Ux) (uy , uy∈Uy) →
         let
@@ -698,18 +698,18 @@ module Lattice {ℓ : Level} where
         ∣₁)
       (upper-inhabited x)
       (upper-inhabited y)
-  join-is-cut x y .isDedekindCut.lower-closed =
+  isDedekindCut⊔ x y .IsDedekindCut.lower-closed =
     λ p q p<q q∈Lxy →
       Prop.rec squash₁
         (λ where
           (Sum.inl q∈Lx) → ∣ Sum.inl (lower-closed x p q p<q q∈Lx) ∣₁
           (Sum.inr q∈Ly) → ∣ Sum.inr (lower-closed y p q p<q q∈Ly) ∣₁)
         q∈Lxy
-  join-is-cut x y .isDedekindCut.upper-closed =
+  isDedekindCut⊔ x y .IsDedekindCut.upper-closed =
     λ p q p<q (p∈Ux , p∈Uy) →
       upper-closed x p q p<q p∈Ux ,
       upper-closed y p q p<q p∈Uy
-  join-is-cut x y .isDedekindCut.lower-rounded =
+  isDedekindCut⊔ x y .IsDedekindCut.lower-rounded =
     λ q q∈Lxy →
       Prop.rec squash₁
         (λ where
@@ -724,7 +724,7 @@ module Lattice {ℓ : Level} where
                 ∣ r , q<r , ∣ Sum.inr r∈Ly ∣₁ ∣₁)
               (lower-rounded y q q∈Ly))
         q∈Lxy
-  join-is-cut x y .isDedekindCut.upper-rounded =
+  isDedekindCut⊔ x y .IsDedekindCut.upper-rounded =
     λ q (q∈Ux , q∈Uy) →
       Prop.rec2 squash₁
         (λ (rx , rx<q , rx∈Ux) (ry , ry<q , ry∈Uy) →
@@ -736,14 +736,14 @@ module Lattice {ℓ : Level} where
           ∣₁)
         (upper-rounded x q q∈Ux)
         (upper-rounded y q q∈Uy)
-  join-is-cut x y .isDedekindCut.disjoint =
+  isDedekindCut⊔ x y .IsDedekindCut.disjoint =
     λ q q∈Lxy (q∈Ux , q∈Uy) →
       Prop.rec Empty.isProp⊥
         (λ where
           (Sum.inl q∈Lx) → disjoint x q q∈Lx q∈Ux
           (Sum.inr q∈Ly) → disjoint y q q∈Ly q∈Uy)
         q∈Lxy
-  join-is-cut x y .isDedekindCut.located =
+  isDedekindCut⊔ x y .IsDedekindCut.located =
     λ p q p<q →
       Prop.rec2 squash₁
         (λ where
@@ -762,7 +762,7 @@ module Lattice {ℓ : Level} where
   x ⊔ y = record
     { lower = joinLower x y
     ; upper = joinUpper x y
-    ; is-cut = join-is-cut x y
+    ; isDedekindCut = isDedekindCut⊔ x y
     }
 
   ⊓≤left : (x y : DedekindCut ℓ) → (x ⊓ y) ≤ x
@@ -885,12 +885,12 @@ module Lattice {ℓ : Level} where
       (λ q q∈Lx → ∣ Sum.inl q∈Lx ∣₁)
 
 
-module RationalEmbedding where
+module RationalEmbedding₀ where
   open Order {ℓ-zero}
 
   ℚ→<-pres :
     (p q : ℚ) → p ℚOrder.< q →
-    ℚ→DedekindCut p < ℚ→DedekindCut q
+    ℚ→𝔻₀ p < ℚ→𝔻₀ q
   ℚ→<-pres p q p<q =
     Prop.rec squash₁
       (λ (r , p<r , r<q) → ∣ r , p<r , r<q ∣₁)
@@ -898,7 +898,7 @@ module RationalEmbedding where
 
   ℚ→<-reflect :
     (p q : ℚ) →
-    ℚ→DedekindCut p < ℚ→DedekindCut q →
+    ℚ→𝔻₀ p < ℚ→𝔻₀ q →
     p ℚOrder.< q
   ℚ→<-reflect p q =
     Prop.rec (ℚOrder.isProp< p q)
@@ -906,19 +906,19 @@ module RationalEmbedding where
 
   ℚ→<-iff :
     (p q : ℚ) →
-    (p ℚOrder.< q → ℚ→DedekindCut p < ℚ→DedekindCut q)
+    (p ℚOrder.< q → ℚ→𝔻₀ p < ℚ→𝔻₀ q)
     ×
-    (ℚ→DedekindCut p < ℚ→DedekindCut q → p ℚOrder.< q)
+    (ℚ→𝔻₀ p < ℚ→𝔻₀ q → p ℚOrder.< q)
   ℚ→<-iff p q = ℚ→<-pres p q , ℚ→<-reflect p q
 
   ℚ→≤-pres :
     (p q : ℚ) → p ℚOrder.≤ q →
-    ℚ→DedekindCut p ≤ ℚ→DedekindCut q
+    ℚ→𝔻₀ p ≤ ℚ→𝔻₀ q
   ℚ→≤-pres p q p≤q r r<p = ℚOrder.isTrans<≤ r p q r<p p≤q
 
   ℚ→≤-reflect :
     (p q : ℚ) →
-    ℚ→DedekindCut p ≤ ℚ→DedekindCut q →
+    ℚ→𝔻₀ p ≤ ℚ→𝔻₀ q →
     p ℚOrder.≤ q
   ℚ→≤-reflect p q p≤q =
     ℚOrder.≮→≥ q p λ q<p →
@@ -928,30 +928,30 @@ module RationalEmbedding where
 
   ℚ→≤-iff :
     (p q : ℚ) →
-    (p ℚOrder.≤ q → ℚ→DedekindCut p ≤ ℚ→DedekindCut q)
+    (p ℚOrder.≤ q → ℚ→𝔻₀ p ≤ ℚ→𝔻₀ q)
     ×
-    (ℚ→DedekindCut p ≤ ℚ→DedekindCut q → p ℚOrder.≤ q)
+    (ℚ→𝔻₀ p ≤ ℚ→𝔻₀ q → p ℚOrder.≤ q)
   ℚ→≤-iff p q = ℚ→≤-pres p q , ℚ→≤-reflect p q
 
   ℚ→-injective :
     (p q : ℚ) →
-    ℚ→DedekindCut p ≡ ℚ→DedekindCut q →
+    ℚ→𝔻₀ p ≡ ℚ→𝔻₀ q →
     p ≡ q
   ℚ→-injective p q p*≡q* =
     ℚOrder.isAntisym≤ p q
       (ℚ→≤-reflect p q (≡→≤ p*≡q*))
       (ℚ→≤-reflect q p (≡→≤ (sym p*≡q*)))
 
-  0<1-cut : ℚ→DedekindCut ℚExtra.0ℚ < ℚ→DedekindCut ℚExtra.1ℚ
-  0<1-cut = ℚ→<-pres ℚExtra.0ℚ ℚExtra.1ℚ ℚExtra.0<1
+  0𝔻<1𝔻 : ℚ→𝔻₀ ℚExtra.0ℚ < ℚ→𝔻₀ ℚExtra.1ℚ
+  0𝔻<1𝔻 = ℚ→<-pres ℚExtra.0ℚ ℚExtra.1ℚ ℚExtra.0<1
 
 
-module RationalEmbeddingAt {ℓ : Level} where
+module RationalEmbedding {ℓ : Level} where
   open Order {ℓ}
 
   ℚ→<-pres :
     (p q : ℚ) → p ℚOrder.< q →
-    ℚ→DedekindCutAt ℓ p < ℚ→DedekindCutAt ℓ q
+    ℚ→𝔻 ℓ p < ℚ→𝔻 ℓ q
   ℚ→<-pres p q p<q =
     Prop.rec squash₁
       (λ (r , p<r , r<q) → ∣ r , lift p<r , lift r<q ∣₁)
@@ -959,7 +959,7 @@ module RationalEmbeddingAt {ℓ : Level} where
 
   ℚ→<-reflect :
     (p q : ℚ) →
-    ℚ→DedekindCutAt ℓ p < ℚ→DedekindCutAt ℓ q →
+    ℚ→𝔻 ℓ p < ℚ→𝔻 ℓ q →
     p ℚOrder.< q
   ℚ→<-reflect p q =
     Prop.rec (ℚOrder.isProp< p q)
@@ -968,20 +968,20 @@ module RationalEmbeddingAt {ℓ : Level} where
 
   ℚ→<-iff :
     (p q : ℚ) →
-    (p ℚOrder.< q → ℚ→DedekindCutAt ℓ p < ℚ→DedekindCutAt ℓ q)
+    (p ℚOrder.< q → ℚ→𝔻 ℓ p < ℚ→𝔻 ℓ q)
     ×
-    (ℚ→DedekindCutAt ℓ p < ℚ→DedekindCutAt ℓ q → p ℚOrder.< q)
+    (ℚ→𝔻 ℓ p < ℚ→𝔻 ℓ q → p ℚOrder.< q)
   ℚ→<-iff p q = ℚ→<-pres p q , ℚ→<-reflect p q
 
   ℚ→≤-pres :
     (p q : ℚ) → p ℚOrder.≤ q →
-    ℚ→DedekindCutAt ℓ p ≤ ℚ→DedekindCutAt ℓ q
+    ℚ→𝔻 ℓ p ≤ ℚ→𝔻 ℓ q
   ℚ→≤-pres p q p≤q r r<p =
     lift (ℚOrder.isTrans<≤ r p q (Lift.lower r<p) p≤q)
 
   ℚ→≤-reflect :
     (p q : ℚ) →
-    ℚ→DedekindCutAt ℓ p ≤ ℚ→DedekindCutAt ℓ q →
+    ℚ→𝔻 ℓ p ≤ ℚ→𝔻 ℓ q →
     p ℚOrder.≤ q
   ℚ→≤-reflect p q p≤q =
     ℚOrder.≮→≥ q p λ q<p →
@@ -992,22 +992,22 @@ module RationalEmbeddingAt {ℓ : Level} where
 
   ℚ→≤-iff :
     (p q : ℚ) →
-    (p ℚOrder.≤ q → ℚ→DedekindCutAt ℓ p ≤ ℚ→DedekindCutAt ℓ q)
+    (p ℚOrder.≤ q → ℚ→𝔻 ℓ p ≤ ℚ→𝔻 ℓ q)
     ×
-    (ℚ→DedekindCutAt ℓ p ≤ ℚ→DedekindCutAt ℓ q → p ℚOrder.≤ q)
+    (ℚ→𝔻 ℓ p ≤ ℚ→𝔻 ℓ q → p ℚOrder.≤ q)
   ℚ→≤-iff p q = ℚ→≤-pres p q , ℚ→≤-reflect p q
 
   ℚ→-injective :
     (p q : ℚ) →
-    ℚ→DedekindCutAt ℓ p ≡ ℚ→DedekindCutAt ℓ q →
+    ℚ→𝔻 ℓ p ≡ ℚ→𝔻 ℓ q →
     p ≡ q
   ℚ→-injective p q p*≡q* =
     ℚOrder.isAntisym≤ p q
       (ℚ→≤-reflect p q (≡→≤ p*≡q*))
       (ℚ→≤-reflect q p (≡→≤ (sym p*≡q*)))
 
-  0<1-cut : ℚ→DedekindCutAt ℓ ℚExtra.0ℚ < ℚ→DedekindCutAt ℓ ℚExtra.1ℚ
-  0<1-cut = ℚ→<-pres ℚExtra.0ℚ ℚExtra.1ℚ ℚExtra.0<1
+  0𝔻<1𝔻 : ℚ→𝔻 ℓ ℚExtra.0ℚ < ℚ→𝔻 ℓ ℚExtra.1ℚ
+  0𝔻<1𝔻 = ℚ→<-pres ℚExtra.0ℚ ℚExtra.1ℚ ℚExtra.0<1
 
 
 module Archimedean {ℓ : Level} where
@@ -1015,7 +1015,7 @@ module Archimedean {ℓ : Level} where
 
   upper-rational-bound :
     (x : DedekindCut ℓ) →
-    ∥ Σ[ n ∈ ℕ ] x < ℚ→DedekindCutAt ℓ (ℚExtra.natMul n ℚExtra.1ℚ) ∥₁
+    ∥ Σ[ n ∈ ℕ ] x < ℚ→𝔻 ℓ (ℚExtra.natMul n ℚExtra.1ℚ) ∥₁
   upper-rational-bound x =
     Prop.rec squash₁
       (λ (q , q∈Ux) →
@@ -1025,7 +1025,7 @@ module Archimedean {ℓ : Level} where
 
   lower-rational-bound :
     (x : DedekindCut ℓ) →
-    ∥ Σ[ n ∈ ℕ ] ℚ→DedekindCutAt ℓ (ℚ.- ℚExtra.natMul n ℚExtra.1ℚ) < x ∥₁
+    ∥ Σ[ n ∈ ℕ ] ℚ→𝔻 ℓ (ℚ.- ℚExtra.natMul n ℚExtra.1ℚ) < x ∥₁
   lower-rational-bound x =
     Prop.rec squash₁
       (λ (q , q∈Lx) →
@@ -1134,8 +1134,8 @@ module Approximation {ℓ : Level} where
 
   close-from-sandwich :
     (x : DedekindCut ℓ) (ε p q : ℚ) →
-    ℚ→DedekindCutAt ℓ p < x →
-    x < ℚ→DedekindCutAt ℓ q →
+    ℚ→𝔻 ℓ p < x →
+    x < ℚ→𝔻 ℓ q →
     q ℚOrder.≤ p ℚ.+ ε →
     ∥ CloseBounds x ε ∥₁
   close-from-sandwich x ε p q p<x x<q q≤p+ε =
@@ -1434,31 +1434,31 @@ module Algebra {ℓ : Level} where
   -_ : DedekindCut ℓ → DedekindCut ℓ
   (- x) .lower q = (ℚ.- q ∈ upper x) , isProp∈ (upper x) (ℚ.- q)
   (- x) .upper q = (ℚ.- q ∈ lower x) , isProp∈ (lower x) (ℚ.- q)
-  (- x) .is-cut .isDedekindCut.lower-inhabited =
+  (- x) .isDedekindCut .IsDedekindCut.lower-inhabited =
     Prop.rec squash₁
       (λ (q , q∈Ux) →
         ∣ ℚ.- q
         , subst (λ r → r ∈ upper x) (sym (ℚ.-Invol q)) q∈Ux
         ∣₁)
       (upper-inhabited x)
-  (- x) .is-cut .isDedekindCut.upper-inhabited =
+  (- x) .isDedekindCut .IsDedekindCut.upper-inhabited =
     Prop.rec squash₁
       (λ (q , q∈Lx) →
         ∣ ℚ.- q
         , subst (λ r → r ∈ lower x) (sym (ℚ.-Invol q)) q∈Lx
         ∣₁)
       (lower-inhabited x)
-  (- x) .is-cut .isDedekindCut.lower-closed =
+  (- x) .isDedekindCut .IsDedekindCut.lower-closed =
     λ p q p<q -q∈Ux →
       upper-closed x (ℚ.- q) (ℚ.- p)
         (ℚExtra.negReverse< {p = p} {q = q} p<q)
         -q∈Ux
-  (- x) .is-cut .isDedekindCut.upper-closed =
+  (- x) .isDedekindCut .IsDedekindCut.upper-closed =
     λ p q p<q -p∈Lx →
       lower-closed x (ℚ.- q) (ℚ.- p)
         (ℚExtra.negReverse< {p = p} {q = q} p<q)
         -p∈Lx
-  (- x) .is-cut .isDedekindCut.lower-rounded =
+  (- x) .isDedekindCut .IsDedekindCut.lower-rounded =
     λ q -q∈Ux →
       Prop.rec squash₁
         (λ (r , r<-q , r∈Ux) →
@@ -1469,7 +1469,7 @@ module Algebra {ℓ : Level} where
           , subst (λ s → s ∈ upper x) (sym (ℚ.-Invol r)) r∈Ux
           ∣₁)
         (upper-rounded x (ℚ.- q) -q∈Ux)
-  (- x) .is-cut .isDedekindCut.upper-rounded =
+  (- x) .isDedekindCut .IsDedekindCut.upper-rounded =
     λ q -q∈Lx →
       Prop.rec squash₁
         (λ (r , -q<r , r∈Lx) →
@@ -1480,9 +1480,9 @@ module Algebra {ℓ : Level} where
           , subst (λ s → s ∈ lower x) (sym (ℚ.-Invol r)) r∈Lx
           ∣₁)
         (lower-rounded x (ℚ.- q) -q∈Lx)
-  (- x) .is-cut .isDedekindCut.disjoint =
+  (- x) .isDedekindCut .IsDedekindCut.disjoint =
     λ q -q∈Ux -q∈Lx → disjoint x (ℚ.- q) -q∈Lx -q∈Ux
-  (- x) .is-cut .isDedekindCut.located =
+  (- x) .isDedekindCut .IsDedekindCut.located =
     λ p q p<q →
       Prop.rec squash₁
         (λ where
@@ -1558,9 +1558,9 @@ module Algebra {ℓ : Level} where
 
   neg-rational :
     (q : ℚ) →
-    - ℚ→DedekindCutAt ℓ q ≡ ℚ→DedekindCutAt ℓ (ℚ.- q)
+    - ℚ→𝔻 ℓ q ≡ ℚ→𝔻 ℓ (ℚ.- q)
   neg-rational q =
-    cutExt (- ℚ→DedekindCutAt ℓ q) (ℚ→DedekindCutAt ℓ (ℚ.- q))
+    cutExt (- ℚ→𝔻 ℓ q) (ℚ→𝔻 ℓ (ℚ.- q))
       (λ p q<-p →
         lift
           (subst (λ r → r ℚOrder.< ℚ.- q)

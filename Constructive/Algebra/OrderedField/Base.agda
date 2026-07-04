@@ -23,7 +23,7 @@ private
     ℓ ℓ' : Level
 
 
-module OrderedCommRingApartness (𝓡 : OrderedCommRing ℓ ℓ') where
+module Apartness (𝓡 : OrderedCommRing ℓ ℓ') where
   open OrderedCommRingStr (𝓡 .snd)
 
   _#_ : 𝓡 .fst → 𝓡 .fst → Type ℓ'
@@ -36,28 +36,28 @@ record IsOrderedField (𝓡 : OrderedCommRing ℓ ℓ') : Type (ℓ-max ℓ ℓ'
   no-eta-equality
 
   open OrderedCommRingStr (𝓡 .snd)
-  open OrderedCommRingApartness 𝓡
+  open Apartness 𝓡
 
   field
-    inverse# :
+    inv# :
       (x : 𝓡 .fst) →
       x # 0r →
       Σ[ y ∈ 𝓡 .fst ] x · y ≡ 1r
 
     0#1 : 0r # 1r
 
-  inverse#-left :
+  ·-lInv# :
     (x : 𝓡 .fst) →
     x # 0r →
     Σ[ y ∈ 𝓡 .fst ] y · x ≡ 1r
-  inverse#-left x x#0 =
+  ·-lInv# x x#0 =
     y , ·Comm y x ∙ y-right
     where
     y : 𝓡 .fst
-    y = inverse# x x#0 .fst
+    y = inv# x x#0 .fst
 
     y-right : x · y ≡ 1r
-    y-right = inverse# x x#0 .snd
+    y-right = inv# x x#0 .snd
 
 
 OrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
@@ -74,5 +74,5 @@ OrderedField→CommRing 𝒦 = OrderedCommRing→CommRing (OrderedField→Ordere
 
 module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
   open OrderedCommRingStr (𝒦 .fst .snd) public
-  open OrderedCommRingApartness (𝒦 .fst) public
+  open Apartness (𝒦 .fst) public
   open IsOrderedField (𝒦 .snd) public

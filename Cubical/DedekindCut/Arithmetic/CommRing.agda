@@ -16,19 +16,19 @@ open import Cubical.DedekindCut.Arithmetic.Distributivity
 open import Cubical.DedekindCut.Arithmetic.Unit
 
 
-module DedekindCommRing {ℓ : Level} where
+module CommRingStructure {ℓ : Level} where
   open Algebra {ℓ}
   open Addition {ℓ}
-  open SignedMultiplication {ℓ}
-  open SignedAssociativity {ℓ}
-  open SignedDistributivity {ℓ}
-  open NonnegativeUnit {ℓ}
+  open Multiplication {ℓ}
+  open MultiplicationAssociativity {ℓ}
+  open MultiplicationDistributivity {ℓ}
+  open UnitProperties {ℓ}
 
-  DedekindCutCommRing : CommRing (ℓ-suc ℓ)
-  DedekindCutCommRing =
+  DedekindCommRing : CommRing (ℓ-suc ℓ)
+  DedekindCommRing =
     makeCommRing
-      0D
-      1D
+      0𝔻
+      1𝔻
       _+_
       _*_
       -_
@@ -41,4 +41,3 @@ module DedekindCommRing {ℓ : Level} where
       *-idR
       *-distribL
       *-comm
-

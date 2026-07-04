@@ -26,7 +26,7 @@ private
   module OCR = OrderedCommRingStr (ℚOrderedCommRing .snd)
   module F = FieldStr (ℚField .snd)
 
-  #→≠0 : (q : ℚ) → OrderedCommRingApartness._#_ ℚOrderedCommRing q OCR.0r → ¬ q ≡ OCR.0r
+  #→≠0 : (q : ℚ) → Apartness._#_ ℚOrderedCommRing q OCR.0r → ¬ q ≡ OCR.0r
   #→≠0 q (Sum.inl q<0) q≡0 =
     ℚOrder.isIrrefl< OCR.0r
       (subst (λ r → r ℚOrder.< OCR.0r) q≡0 q<0)
@@ -36,7 +36,7 @@ private
 
 
 ℚIsOrderedField : IsOrderedField ℚOrderedCommRing
-ℚIsOrderedField .IsOrderedField.inverse# q q#0 =
+ℚIsOrderedField .IsOrderedField.inv# q q#0 =
   F._[_]⁻¹ q (#→≠0 q q#0) ,
   F.·⁻¹≡1 q (#→≠0 q q#0)
 ℚIsOrderedField .IsOrderedField.0#1 =
