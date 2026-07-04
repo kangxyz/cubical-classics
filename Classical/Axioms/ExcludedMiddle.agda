@@ -1,8 +1,3 @@
-{-
-
-Law of Excluded Middle
-
--}
 {-# OPTIONS --safe #-}
 module Classical.Axioms.ExcludedMiddle where
 
@@ -20,6 +15,9 @@ open import Cubical.Data.Unit
 open import Cubical.Relation.Nullary
 open import Cubical.Relation.Nullary.DecidablePropositions
   using (DecProp)
+open import Cubical.Axiom.ExcludedMiddle
+  using ()
+  renaming (LEM to LEMOfLevel; isPropLEM to isPropLEMOfLevel)
 
 open import Classical.Axioms.Resizing
 
@@ -28,28 +26,8 @@ private
     ℓ : Level
 
 
--- Binary operation for being inequal
-
-_≢_ : {X : Type ℓ}(x y : X) → Type ℓ
-x ≢ y = ¬ x ≡ y
-
-isProp≢ : {X : Type ℓ}{x y : X} → isProp (x ≢ y)
-isProp≢ = isProp¬ _
-
-
--- Law of Excluded Middle and Double Negation Elimination
--- (abbreviated as LEM and DNE respectively)
-
--- The "per universe" version
-
-LEMOfLevel : (ℓ : Level) → Type (ℓ-suc ℓ)
-LEMOfLevel ℓ = {P : Type ℓ} → isProp P → Dec P
-
 DNEOfLevel : (ℓ : Level) → Type (ℓ-suc ℓ)
 DNEOfLevel ℓ = {P : Type ℓ} → isProp P → ¬ ¬ P → P
-
-isPropLEMOfLevel : isProp (LEMOfLevel ℓ)
-isPropLEMOfLevel = isPropImplicitΠ (λ _ → isPropΠ isPropDec)
 
 isPropDNEOfLevel : isProp (DNEOfLevel ℓ)
 isPropDNEOfLevel = isPropImplicitΠ (λ _ → isPropΠ2 (λ p _ → p))
@@ -63,7 +41,7 @@ LEMOfLevel→DNEOfLevel decide isPropP ¬¬p with decide isPropP
 ... | no ¬p = Empty.rec (¬¬p ¬p)
 
 DNEOfLevel→LEMOfLevel : DNEOfLevel ℓ → LEMOfLevel ℓ
-DNEOfLevel→LEMOfLevel elim¬¬ {P = P} isPropP = elim¬¬ (isPropDec isPropP) ¬¬dec
+DNEOfLevel→LEMOfLevel elim¬¬ {A = P} isPropP = elim¬¬ (isPropDec isPropP) ¬¬dec
   where
   ¬¬dec : ¬ ¬ Dec P
   ¬¬dec ¬dec = ¬dec (yes (elim¬¬ isPropP λ ¬p → ¬dec (no ¬p)))
@@ -84,20 +62,9 @@ DNE→LEM : DNE → LEM
 DNE→LEM p = DNEOfLevel→LEMOfLevel p
 
 
-{-
-
-  Some corollarie of LEM
-
--}
-
 open Iso
 
 module _ (decide : LEM) where
-
-  -- Under LEM, all propositions are decidable,
-  -- and more precisely,
-  -- the type of propositions is equivalent to the type of decidable propositions
-  -- (of a given universe level ℓ).
 
   hProp→DecProp : hProp ℓ → DecProp ℓ
   hProp→DecProp P = P , decide (P .snd)
@@ -118,9 +85,6 @@ module _ (decide : LEM) where
 
   hProp≃DecProp : hProp ℓ ≃ DecProp ℓ
   hProp≃DecProp = isoToEquiv Iso-hProp-DecProp
-
-
-  -- The type Prop is a subobject classifier
 
   Bool→hProp : Bool → hProp ℓ
   Bool→hProp b = Bool→Type* b , isPropBool→Type*

@@ -1,11 +1,3 @@
-{-
-
-Voevodsky's Axiom of Propositional Resizing
-
-Notice that Resizing is a corollary of Excluded Middle,
-of which proof can be found in `Classical.Axiom.ExcludedMiddle`.
-
--}
 {-# OPTIONS --safe #-}
 module Classical.Axioms.Resizing where
 
@@ -22,16 +14,11 @@ private
     ℓ ℓ' : Level
 
 
--- Construct dependent path of isProp
-
 pathIsProp :
   (p : I → Type ℓ)(p0 : isProp (p i0))(p1 : isProp (p i1)) → PathP (λ i → isProp (p i)) p0 p1
 pathIsProp p p0 p1 = isProp→PathP (λ i → isPropIsProp {A = p i}) p0 p1
 
 
--- Formulation of Propositional Resizing
-
--- Lifting h-propositions to higher universe level
 liftProp : (ℓ' : Level) → hProp ℓ → hProp (ℓ-max ℓ ℓ')
 liftProp ℓ' P .fst = Lift ℓ' (P .fst)
 liftProp ℓ' P .snd = isOfHLevelLift 1 (P .snd)
@@ -112,16 +99,9 @@ Drop→Resizing drop = Resizing₀→Resizing (Drop→Resizing₀ drop)
 
 {-
 
-  Subobject Classifier
+  Subobject classifier
 
 -}
-
--- A (pre-)formulation of subobject classifier
-
--- Warning: This is not a complete formulation.
--- The object Ω should be a `Heyting algebra` and all equivalences should respect this.
--- (hProp automatically admit that by considering usual logical operations on propositions)
--- Moreover, the equivalences should commute with universe level lifting.
 
 isSubobjectClassifier : Type ℓ → Typeω
 isSubobjectClassifier Ω = {ℓ : Level}{X : Type ℓ} → (X → Ω) ≃ (X → hProp ℓ)

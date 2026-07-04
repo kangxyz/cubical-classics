@@ -1,21 +1,19 @@
-{-
-
-Useful lemmas about ℕ
-
--}
 {-# OPTIONS --safe #-}
 module Classical.Preliminary.Nat where
 
 open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Function
 open import Cubical.Foundations.HLevels
 open import Cubical.Data.Nat
 open import Cubical.Data.Nat.Order
+import Cubical.Data.Nat.Order.Recursive as Recursive
 open import Cubical.Data.Sum
 open import Cubical.Data.Sigma
 open import Cubical.Data.Empty as Empty
 open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.HITs.PropositionalTruncation.Monad
 open import Cubical.Relation.Nullary
+open import Cubical.Relation.Nullary.Properties as NullaryProperties
 
 private
   variable
@@ -32,6 +30,21 @@ module _
   where
 
   private
+    module Minimal = Recursive.Minimal
+
+    ≤→Recursive≤ : {m n : ℕ} → m ≤ n → Recursive._≤_ m n
+    ≤→Recursive≤ {zero} {_} _ = _
+    ≤→Recursive≤ {suc m} {zero} p = Empty.rec (¬-<-zero p)
+    ≤→Recursive≤ {suc m} {suc n} p = ≤→Recursive≤ (pred-≤-pred p)
+
+    ≤pred→Recursive< : {m n : ℕ} → m ≤ n → Recursive._<_ m (suc n)
+    ≤pred→Recursive< p = ≤→Recursive≤ (suc-≤-suc p)
+
+    Least→InhabMin : ¬ P zero → Σ[ n ∈ ℕ ] Minimal.Least P n → InhabMin P
+    Least→InhabMin ¬p₀ (zero , p₀ , _) = Empty.rec (¬p₀ p₀)
+    Least→InhabMin ¬p₀ (suc n , psn , h) =
+      n , psn , λ m m≤n → h m (≤pred→Recursive< m≤n)
+
     inhab-path : (x y : InhabMin P) → x .fst ≡ y .fst
     inhab-path x y with x .fst ≟ y .fst
     ... | lt x<y = Empty.rec (y .snd .snd _ x<y (x .snd .fst))
@@ -50,37 +63,18 @@ module _
 
   module _
     (decP : (n : ℕ) → Dec (P n))
-    (¬p₀ : ¬ P zero)
     where
 
-    private
-      module _ (n₀ : ℕ)(p₀ : P n₀) where
+    splitSupportΣP : ∥ Σ[ n ∈ ℕ ] P n ∥₁ → Σ[ n ∈ ℕ ] P n
+    splitSupportΣP =
+      NullaryProperties.Collapsible→SplitSupport
+        (Minimal.Decidable→Collapsible isPropP decP)
 
-        type-helper-zero : (m : ℕ) → m ≤ 0 → ¬ P m
-        type-helper-zero zero _ = ¬p₀
-        type-helper-zero (suc m) m≤0 _ = ¬-<-zero m≤0
-
-        type-helper-ind : (n : ℕ) → ((m : ℕ) → m ≤ n → ¬ P m)
-          → ¬ P (suc n) → (m : ℕ) → m ≤ suc n → ¬ P m
-        type-helper-ind n f ¬psuc m m≤sucn with m ≟ suc n
-        ... | lt m<sucn = f m (pred-≤-pred m<sucn)
-        ... | eq m≡sucn = transport (λ i → ¬ P (m≡sucn (~ i))) ¬psuc
-        ... | gt m>sucn = Empty.rec (<-asym m>sucn m≤sucn)
-
-        type-helper : (n : ℕ) → ((m : ℕ) → m ≤ n → ¬ P m) ⊎ InhabMin P
-        type-helper zero = inl type-helper-zero
-        type-helper (suc n) with type-helper n | decP (suc n)
-        ... | inl f | yes p = inr (n , p , f)
-        ... | inl f | no ¬p = inl (type-helper-ind _ f ¬p)
-        ... | inr m | _     = inr m
-
-        find-helper : InhabMin P
-        find-helper with type-helper n₀
-        ... | inl f = Empty.rec (f _ ≤-refl p₀)
-        ... | inr m = m
-
-    findMinProp : ∥ Σ[ n ∈ ℕ ] P n ∥₁ → InhabMin P
-    findMinProp = Prop.rec isPropInhabMin (λ (n , p) → find-helper n p)
+    findMinProp : ¬ P zero → ∥ Σ[ n ∈ ℕ ] P n ∥₁ → InhabMin P
+    findMinProp ¬p₀ =
+      Least→InhabMin ¬p₀
+      ∘ Minimal.→Least decP
+      ∘ splitSupportΣP
 
 
 module _
@@ -156,18 +150,34 @@ module _ ⦃ 🤖 : Oracle ⦄  where
 
 module LimitedOmniscience ⦃ 🤖 : Oracle ⦄  where
 
+  open import Cubical.Axiom.Omniscience using () renaming (LPO to CubicalLPO)
+  open import Cubical.Data.Bool using (Bool; Bool→Type; Dec→Bool)
+  open import Cubical.Data.Bool.Properties using (Dec→DecBool; DecBool→Dec)
   open import Classical.Preliminary.Logic
 
   open Oracle 🤖
+
+  CubicalLPOℕ : CubicalLPO ℕ
+  CubicalLPOℕ P with decide (isPropΠ (λ n → isProp¬ (Bool→Type (P n))))
+  ... | yes ∀¬p = inl ∀¬p
+  ... | no ¬∀¬p = inr (¬∀¬→∃ ¬∀¬p)
 
   module _
     {P : ℕ → Type ℓ}
     (isPropP : (n : ℕ) → isProp (P n)) where
 
+    decP : (n : ℕ) → Dec (P n)
+    decP n = decide (isPropP n)
+
+    boolP : ℕ → Bool
+    boolP n = Dec→Bool (decP n)
+
     ∥LPO∥ : ∥ Σ[ n ∈ ℕ ] P n ∥₁ ⊎ ((n : ℕ) → ¬ P n)
-    ∥LPO∥ with decide (isPropΠ (λ n → isProp¬ (P n)))
-    ... | yes ∀¬p = inr ∀¬p
-    ... | no ¬∀¬p = inl (¬∀¬→∃ ¬∀¬p)
+    ∥LPO∥ with CubicalLPOℕ boolP
+    ... | inl ∀¬p = inr (λ n p → ∀¬p n (Dec→DecBool (decP n) p))
+    ... | inr ∃p = inl (do
+      (n , p) ← ∃p
+      return (n , DecBool→Dec (decP n) p))
 
     LPO : (Σ[ n ∈ ℕ ] P n) ⊎ ((n : ℕ) → ¬ P n)
     LPO with ∥LPO∥
