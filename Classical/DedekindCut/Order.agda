@@ -1,6 +1,6 @@
 {-
 
-Order Structure on Dedekind Cuts
+Order structure on classical Dedekind cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

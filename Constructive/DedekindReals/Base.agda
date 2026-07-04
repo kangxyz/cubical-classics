@@ -1,14 +1,15 @@
 {-
 
-Constructive Dedekind cuts over the rationals.
+Constructive Dedekind reals over the rationals.
 
-This module contains the basic definition of Dedekind cuts.  The lower and
-upper cuts are level-polymorphic predicate-valued maps into hProp, so using
-the definition does not require LEM or propositional resizing.
+This module contains the basic definition of constructive Dedekind reals.  The
+lower and upper cuts are level-polymorphic predicate-valued maps into hProp,
+so using the definition does not require LEM or propositional resizing.  The
+Oracle-based classical completion by cuts is kept in Classical.DedekindCut.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Base where
+module Constructive.DedekindReals.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -65,7 +66,7 @@ predExt P Q P⊆Q Q⊆P =
       (hPropExt (isProp∈ P q) (isProp∈ Q q) (P⊆Q q) (Q⊆P q))
 
 
-record IsDedekindCut (L U : ℚPred ℓ) : Type ℓ where
+record IsDedekindReal (L U : ℚPred ℓ) : Type ℓ where
   no-eta-equality
 
   field
@@ -99,94 +100,94 @@ record IsDedekindCut (L U : ℚPred ℓ) : Type ℓ where
       (p q : ℚ) → p ℚOrder.< q → ∥ (p ∈ L) ⊎ (q ∈ U) ∥₁
 
 
-record DedekindCut (ℓ : Level) : Type (ℓ-suc ℓ) where
+record DedekindReal (ℓ : Level) : Type (ℓ-suc ℓ) where
   no-eta-equality
 
   field
     lower : ℚPred ℓ
     upper : ℚPred ℓ
-    isDedekindCut : IsDedekindCut lower upper
+    isDedekindReal : IsDedekindReal lower upper
 
-  open IsDedekindCut isDedekindCut public
-
-
-open DedekindCut public
+  open IsDedekindReal isDedekindReal public
 
 
-isPropIsDedekindCut : (L U : ℚPred ℓ) → isProp (IsDedekindCut L U)
-isPropIsDedekindCut L U c d i .IsDedekindCut.lower-inhabited =
-  squash₁ (c .IsDedekindCut.lower-inhabited) (d .IsDedekindCut.lower-inhabited) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.upper-inhabited =
-  squash₁ (c .IsDedekindCut.upper-inhabited) (d .IsDedekindCut.upper-inhabited) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.lower-closed =
+open DedekindReal public
+
+
+isPropIsDedekindReal : (L U : ℚPred ℓ) → isProp (IsDedekindReal L U)
+isPropIsDedekindReal L U c d i .IsDedekindReal.lower-inhabited =
+  squash₁ (c .IsDedekindReal.lower-inhabited) (d .IsDedekindReal.lower-inhabited) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.upper-inhabited =
+  squash₁ (c .IsDedekindReal.upper-inhabited) (d .IsDedekindReal.upper-inhabited) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.lower-closed =
   isPropΠ4 (λ p _ _ _ → isProp∈ L p)
-    (c .IsDedekindCut.lower-closed) (d .IsDedekindCut.lower-closed) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.upper-closed =
+    (c .IsDedekindReal.lower-closed) (d .IsDedekindReal.lower-closed) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.upper-closed =
   isPropΠ4 (λ _ q _ _ → isProp∈ U q)
-    (c .IsDedekindCut.upper-closed) (d .IsDedekindCut.upper-closed) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.lower-rounded =
+    (c .IsDedekindReal.upper-closed) (d .IsDedekindReal.upper-closed) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.lower-rounded =
   isPropΠ2 (λ _ _ → squash₁)
-    (c .IsDedekindCut.lower-rounded) (d .IsDedekindCut.lower-rounded) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.upper-rounded =
+    (c .IsDedekindReal.lower-rounded) (d .IsDedekindReal.lower-rounded) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.upper-rounded =
   isPropΠ2 (λ _ _ → squash₁)
-    (c .IsDedekindCut.upper-rounded) (d .IsDedekindCut.upper-rounded) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.disjoint =
+    (c .IsDedekindReal.upper-rounded) (d .IsDedekindReal.upper-rounded) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.disjoint =
   isPropΠ3 (λ _ _ _ → Empty.isProp⊥)
-    (c .IsDedekindCut.disjoint) (d .IsDedekindCut.disjoint) i
-isPropIsDedekindCut L U c d i .IsDedekindCut.located =
+    (c .IsDedekindReal.disjoint) (d .IsDedekindReal.disjoint) i
+isPropIsDedekindReal L U c d i .IsDedekindReal.located =
   isPropΠ3 (λ _ _ _ → squash₁)
-    (c .IsDedekindCut.located) (d .IsDedekindCut.located) i
+    (c .IsDedekindReal.located) (d .IsDedekindReal.located) i
 
 
-DedekindCutPath :
-  (x y : DedekindCut ℓ) →
+DedekindRealPath :
+  (x y : DedekindReal ℓ) →
   lower x ≡ lower y →
   upper x ≡ upper y →
   x ≡ y
-DedekindCutPath x y lower-path upper-path i .lower = lower-path i
-DedekindCutPath x y lower-path upper-path i .upper = upper-path i
-DedekindCutPath x y lower-path upper-path i .isDedekindCut =
+DedekindRealPath x y lower-path upper-path i .lower = lower-path i
+DedekindRealPath x y lower-path upper-path i .upper = upper-path i
+DedekindRealPath x y lower-path upper-path i .isDedekindReal =
   isProp→PathP
-    (λ i → isPropIsDedekindCut (lower-path i) (upper-path i))
-    (isDedekindCut x) (isDedekindCut y) i
+    (λ i → isPropIsDedekindReal (lower-path i) (upper-path i))
+    (isDedekindReal x) (isDedekindReal y) i
 
 
-cutExt :
-  (x y : DedekindCut ℓ) →
+realExt :
+  (x y : DedekindReal ℓ) →
   lower x ⊆ lower y →
   lower y ⊆ lower x →
   upper x ⊆ upper y →
   upper y ⊆ upper x →
   x ≡ y
-cutExt x y Lx⊆Ly Ly⊆Lx Ux⊆Uy Uy⊆Ux =
-  DedekindCutPath x y
+realExt x y Lx⊆Ly Ly⊆Lx Ux⊆Uy Uy⊆Ux =
+  DedekindRealPath x y
     (predExt (lower x) (lower y) Lx⊆Ly Ly⊆Lx)
     (predExt (upper x) (upper y) Ux⊆Uy Uy⊆Ux)
 
 
 private
-  CutΣ : (ℓ : Level) → Type (ℓ-suc ℓ)
-  CutΣ ℓ = Σ[ L ∈ ℚPred ℓ ] Σ[ U ∈ ℚPred ℓ ] IsDedekindCut L U
+  RealΣ : (ℓ : Level) → Type (ℓ-suc ℓ)
+  RealΣ ℓ = Σ[ L ∈ ℚPred ℓ ] Σ[ U ∈ ℚPred ℓ ] IsDedekindReal L U
 
-  cut→Σ : DedekindCut ℓ → CutΣ ℓ
-  cut→Σ x = lower x , upper x , isDedekindCut x
+  real→Σ : DedekindReal ℓ → RealΣ ℓ
+  real→Σ x = lower x , upper x , isDedekindReal x
 
-  Σ→cut : CutΣ ℓ → DedekindCut ℓ
-  Σ→cut (L , U , cut) = record
+  Σ→real : RealΣ ℓ → DedekindReal ℓ
+  Σ→real (L , U , real) = record
     { lower = L
     ; upper = U
-    ; isDedekindCut = cut
+    ; isDedekindReal = real
     }
 
-  isSetCutΣ : isSet (CutΣ ℓ)
-  isSetCutΣ =
+  isSetRealΣ : isSet (RealΣ ℓ)
+  isSetRealΣ =
     isOfHLevelΣ 2 isSetℚPred λ L →
     isOfHLevelΣ 2 isSetℚPred λ U →
-    isProp→isSet (isPropIsDedekindCut L U)
+    isProp→isSet (isPropIsDedekindReal L U)
 
 
-isSetDedekindCut : isSet (DedekindCut ℓ)
-isSetDedekindCut =
-  isSetRetract cut→Σ Σ→cut
-    (λ x → DedekindCutPath (Σ→cut (cut→Σ x)) x refl refl)
-    isSetCutΣ
+isSetDedekindReal : isSet (DedekindReal ℓ)
+isSetDedekindReal =
+  isSetRetract real→Σ Σ→real
+    (λ x → DedekindRealPath (Σ→real (real→Σ x)) x refl refl)
+    isSetRealΣ

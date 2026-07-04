@@ -1,6 +1,6 @@
 {-
 
-Multiplicative Structure on Dedekind Cuts
+Multiplicative structure on classical Dedekind cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

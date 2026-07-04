@@ -1,14 +1,14 @@
 {-
 
-Constructive arithmetic operations on Dedekind cuts.
+Constructive arithmetic operations on Dedekind reals.
 
-This file is the beginning of the ordered-field structure.  It currently
-contains addition as a Dedekind cut; group and field laws are added
-incrementally.
+This file is the beginning of the ordered-field structure.  It contains the
+cut-level definitions of addition and multiplication; group and field laws are
+added in the sibling modules.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.Base where
+module Constructive.DedekindReals.Arithmetic.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -23,7 +23,7 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-open import Constructive.DedekindCut
+open import Constructive.DedekindReals
 import Constructive.Rationals as ℚExtra
 
 
@@ -32,13 +32,13 @@ module Addition {ℓ : Level} where
   open Approximation {ℓ}
   open Algebra {ℓ}
 
-  0𝔻 : DedekindCut ℓ
+  0𝔻 : DedekindReal ℓ
   0𝔻 = ℚ→𝔻 ℓ ℚExtra.0ℚ
 
-  1𝔻 : DedekindCut ℓ
+  1𝔻 : DedekindReal ℓ
   1𝔻 = ℚ→𝔻 ℓ ℚExtra.1ℚ
 
-  addLower : DedekindCut ℓ → DedekindCut ℓ → ℚPred ℓ
+  addLower : DedekindReal ℓ → DedekindReal ℓ → ℚPred ℓ
   addLower x y q =
     ∥ Σ[ r ∈ ℚ ] Σ[ s ∈ ℚ ]
       (r ∈ lower x) ×
@@ -46,7 +46,7 @@ module Addition {ℓ : Level} where
       (q ℚOrder.< r ℚ.+ s) ∥₁ ,
     squash₁
 
-  addUpper : DedekindCut ℓ → DedekindCut ℓ → ℚPred ℓ
+  addUpper : DedekindReal ℓ → DedekindReal ℓ → ℚPred ℓ
   addUpper x y q =
     ∥ Σ[ r ∈ ℚ ] Σ[ s ∈ ℚ ]
       (r ∈ upper x) ×
@@ -54,10 +54,10 @@ module Addition {ℓ : Level} where
       (r ℚ.+ s ℚOrder.< q) ∥₁ ,
     squash₁
 
-  isDedekindCut+ :
-    (x y : DedekindCut ℓ) →
-    IsDedekindCut (addLower x y) (addUpper x y)
-  isDedekindCut+ x y .IsDedekindCut.lower-inhabited =
+  isDedekindReal+ :
+    (x y : DedekindReal ℓ) →
+    IsDedekindReal (addLower x y) (addUpper x y)
+  isDedekindReal+ x y .IsDedekindReal.lower-inhabited =
     Prop.rec2 squash₁
       (λ (p , p∈Lx) (q , q∈Ly) →
         ∣ (p ℚ.+ q) ℚ.- ℚExtra.1ℚ
@@ -65,7 +65,7 @@ module Addition {ℓ : Level} where
         ∣₁)
       (lower-inhabited x)
       (lower-inhabited y)
-  isDedekindCut+ x y .IsDedekindCut.upper-inhabited =
+  isDedekindReal+ x y .IsDedekindReal.upper-inhabited =
     Prop.rec2 squash₁
       (λ (p , p∈Ux) (q , q∈Uy) →
         ∣ (p ℚ.+ q) ℚ.+ ℚExtra.1ℚ
@@ -73,21 +73,21 @@ module Addition {ℓ : Level} where
         ∣₁)
       (upper-inhabited x)
       (upper-inhabited y)
-  isDedekindCut+ x y .IsDedekindCut.lower-closed =
+  isDedekindReal+ x y .IsDedekindReal.lower-closed =
     λ p q p<q →
       Prop.rec squash₁
         (λ (r , s , r∈Lx , s∈Ly , q<r+s) →
           ∣ r , s , r∈Lx , s∈Ly
           , ℚOrder.isTrans< p q (r ℚ.+ s) p<q q<r+s
           ∣₁)
-  isDedekindCut+ x y .IsDedekindCut.upper-closed =
+  isDedekindReal+ x y .IsDedekindReal.upper-closed =
     λ p q p<q →
       Prop.rec squash₁
         (λ (r , s , r∈Ux , s∈Uy , r+s<p) →
           ∣ r , s , r∈Ux , s∈Uy
           , ℚOrder.isTrans< (r ℚ.+ s) p q r+s<p p<q
           ∣₁)
-  isDedekindCut+ x y .IsDedekindCut.lower-rounded =
+  isDedekindReal+ x y .IsDedekindReal.lower-rounded =
     λ q →
       Prop.rec squash₁
         (λ (r , s , r∈Lx , s∈Ly , q<r+s) →
@@ -95,7 +95,7 @@ module Addition {ℓ : Level} where
             (λ (m , q<m , m<r+s) →
               ∣ m , q<m , ∣ r , s , r∈Lx , s∈Ly , m<r+s ∣₁ ∣₁)
             (ℚExtra.dense {p = q} {q = r ℚ.+ s} q<r+s))
-  isDedekindCut+ x y .IsDedekindCut.upper-rounded =
+  isDedekindReal+ x y .IsDedekindReal.upper-rounded =
     λ q →
       Prop.rec squash₁
         (λ (r , s , r∈Ux , s∈Uy , r+s<q) →
@@ -103,7 +103,7 @@ module Addition {ℓ : Level} where
             (λ (m , r+s<m , m<q) →
               ∣ m , m<q , ∣ r , s , r∈Ux , s∈Uy , r+s<m ∣₁ ∣₁)
             (ℚExtra.dense {p = r ℚ.+ s} {q = q} r+s<q))
-  isDedekindCut+ x y .IsDedekindCut.disjoint =
+  isDedekindReal+ x y .IsDedekindReal.disjoint =
     λ q →
       Prop.rec2 Empty.isProp⊥
         (λ (lx , ly , lx∈Lx , ly∈Ly , q<lx+ly)
@@ -126,7 +126,7 @@ module Addition {ℓ : Level} where
                   lx+ly<ux+uy ux+uy<q)
           in
           ℚOrder.isIrrefl< q q<q)
-  isDedekindCut+ x y .IsDedekindCut.located =
+  isDedekindReal+ x y .IsDedekindReal.located =
     located-add
     where
     q-p : ℚ → ℚ → ℚ
@@ -198,23 +198,23 @@ module Addition {ℓ : Level} where
         (close-bounds x (η p q) (0<η p q p<q))
         (close-bounds y (η p q) (0<η p q p<q))
 
-  _+_ : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
+  _+_ : DedekindReal ℓ → DedekindReal ℓ → DedekindReal ℓ
   (x + y) .lower = addLower x y
   (x + y) .upper = addUpper x y
-  (x + y) .isDedekindCut = isDedekindCut+ x y
+  (x + y) .isDedekindReal = isDedekindReal+ x y
 
   infixl 6 _+_
 
-  +-comm : (x y : DedekindCut ℓ) → x + y ≡ y + x
+  +-comm : (x y : DedekindReal ℓ) → x + y ≡ y + x
   +-comm x y =
-    cutExt (x + y) (y + x)
+    realExt (x + y) (y + x)
       (lower⊆ x y)
       (lower⊆ y x)
       (upper⊆ x y)
       (upper⊆ y x)
     where
     lower⊆ :
-      (x y : DedekindCut ℓ) →
+      (x y : DedekindReal ℓ) →
       addLower x y ⊆ addLower y x
     lower⊆ x y q =
       Prop.rec squash₁
@@ -224,7 +224,7 @@ module Addition {ℓ : Level} where
           ∣₁)
 
     upper⊆ :
-      (x y : DedekindCut ℓ) →
+      (x y : DedekindReal ℓ) →
       addUpper x y ⊆ addUpper y x
     upper⊆ x y q =
       Prop.rec squash₁
@@ -234,17 +234,17 @@ module Addition {ℓ : Level} where
           ∣₁)
 
   +-assoc :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x + (y + z) ≡ (x + y) + z
   +-assoc x y z =
-    cutExt (x + (y + z)) ((x + y) + z)
+    realExt (x + (y + z)) ((x + y) + z)
       (lower⊆₁ x y z)
       (lower⊆₂ x y z)
       (upper⊆₁ x y z)
       (upper⊆₂ x y z)
     where
     lower⊆₁ :
-      (x y z : DedekindCut ℓ) →
+      (x y z : DedekindReal ℓ) →
       addLower x (y + z) ⊆ addLower (x + y) z
     lower⊆₁ x y z q =
       Prop.rec squash₁
@@ -278,7 +278,7 @@ module Addition {ℓ : Level} where
             s∈Ly+z)
 
     lower⊆₂ :
-      (x y z : DedekindCut ℓ) →
+      (x y z : DedekindReal ℓ) →
       addLower (x + y) z ⊆ addLower x (y + z)
     lower⊆₂ x y z q =
       Prop.rec squash₁
@@ -316,7 +316,7 @@ module Addition {ℓ : Level} where
             a∈Lx+y)
 
     upper⊆₁ :
-      (x y z : DedekindCut ℓ) →
+      (x y z : DedekindReal ℓ) →
       addUpper x (y + z) ⊆ addUpper (x + y) z
     upper⊆₁ x y z q =
       Prop.rec squash₁
@@ -350,7 +350,7 @@ module Addition {ℓ : Level} where
             s∈Uy+z)
 
     upper⊆₂ :
-      (x y z : DedekindCut ℓ) →
+      (x y z : DedekindReal ℓ) →
       addUpper (x + y) z ⊆ addUpper x (y + z)
     upper⊆₂ x y z q =
       Prop.rec squash₁
@@ -389,9 +389,9 @@ module Addition {ℓ : Level} where
                 (ℚExtra.dense {p = t ℚ.+ u} {q = q ℚ.- r} tu<q-r))
             a∈Ux+y)
 
-  +-idR : (x : DedekindCut ℓ) → x + 0𝔻 ≡ x
+  +-idR : (x : DedekindReal ℓ) → x + 0𝔻 ≡ x
   +-idR x =
-    cutExt (x + 0𝔻) x
+    realExt (x + 0𝔻) x
       lower⊆
       lower⊇
       upper⊆
@@ -478,12 +478,12 @@ module Addition {ℓ : Level} where
               (ℚExtra.diff-positive {p = r} {q = q} r<q)))
         (upper-rounded x q q∈Ux)
 
-  +-idL : (x : DedekindCut ℓ) → 0𝔻 + x ≡ x
+  +-idL : (x : DedekindReal ℓ) → 0𝔻 + x ≡ x
   +-idL x = +-comm 0𝔻 x ∙ +-idR x
 
-  +-invR : (x : DedekindCut ℓ) → x + (- x) ≡ 0𝔻
+  +-invR : (x : DedekindReal ℓ) → x + (- x) ≡ 0𝔻
   +-invR x =
-    cutExt (x + (- x)) 0𝔻
+    realExt (x + (- x)) 0𝔻
       lower⊆
       lower⊇
       upper⊆
@@ -567,11 +567,11 @@ module Addition {ℓ : Level} where
           ∣₁)
         (close-bounds x q (Lift.lower 0<q))
 
-  +-invL : (x : DedekindCut ℓ) → (- x) + x ≡ 0𝔻
+  +-invL : (x : DedekindReal ℓ) → (- x) + x ≡ 0𝔻
   +-invL x = +-comm (- x) x ∙ +-invR x
 
   +-monoR-≤ :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x ≤ y →
     x + z ≤ y + z
   +-monoR-≤ x y z x≤y q =
@@ -580,7 +580,7 @@ module Addition {ℓ : Level} where
         ∣ r , s , x≤y r r∈Lx , s∈Lz , q<r+s ∣₁)
 
   +-monoL-≤ :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x ≤ y →
     z + x ≤ z + y
   +-monoL-≤ x y z x≤y =
@@ -588,7 +588,7 @@ module Addition {ℓ : Level} where
       (+-monoR-≤ x y z x≤y)
 
   +-mono-≤ :
-    (x y z w : DedekindCut ℓ) →
+    (x y z w : DedekindReal ℓ) →
     x ≤ y →
     z ≤ w →
     x + z ≤ y + w
@@ -598,7 +598,7 @@ module Addition {ℓ : Level} where
       (+-monoL-≤ z w y z≤w)
 
   +-Pres≥0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     0𝔻 ≤ x →
     0𝔻 ≤ y →
     0𝔻 ≤ x + y
@@ -608,7 +608,7 @@ module Addition {ℓ : Level} where
       (+-mono-≤ 0𝔻 x 0𝔻 y 0≤x 0≤y)
 
   +-monoR-< :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x < y →
     x + z < y + z
   +-monoR-< x y z =
@@ -635,7 +635,7 @@ module Addition {ℓ : Level} where
           (lower-rounded y p p∈Ly))
 
   +-monoL-< :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x < y →
     z + x < z + y
   +-monoL-< x y z x<y =
@@ -649,7 +649,7 @@ module NonNegativeMultiplication {ℓ : Level} where
   open Approximation {ℓ}
   open Addition {ℓ}
 
-  _≥0 : DedekindCut ℓ → Type ℓ
+  _≥0 : DedekindReal ℓ → Type ℓ
   x ≥0 = 0𝔻 ≤ x
 
   infix 4 _≥0
@@ -665,7 +665,7 @@ module NonNegativeMultiplication {ℓ : Level} where
         ℚExtra.0<1)
 
   ≥0+upper→>0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x ≥0 →
     (q : ℚ) →
     q ∈ upper x →
@@ -690,7 +690,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     Empty.rec (disjoint x q (0≤x q (lift q<0)) q∈Ux)
 
   ProductLowerWitness :
-    DedekindCut ℓ → DedekindCut ℓ → ℚ → Type ℓ
+    DedekindReal ℓ → DedekindReal ℓ → ℚ → Type ℓ
   ProductLowerWitness x y q =
     Σ[ a ∈ ℚ ] Σ[ b ∈ ℚ ]
       (a ∈ lower x) ×
@@ -700,7 +700,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (q ℚOrder.< a ℚ.· b)
 
   ProductUpperWitness :
-    DedekindCut ℓ → DedekindCut ℓ → ℚ → Type ℓ
+    DedekindReal ℓ → DedekindReal ℓ → ℚ → Type ℓ
   ProductUpperWitness x y q =
     Σ[ a ∈ ℚ ] Σ[ b ∈ ℚ ]
       (a ∈ upper x) ×
@@ -709,7 +709,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (ℚExtra.0ℚ ℚOrder.< b) ×
       (a ℚ.· b ℚOrder.< q)
 
-  CloseBounds≥0 : DedekindCut ℓ → ℚ → Type ℓ
+  CloseBounds≥0 : DedekindReal ℓ → ℚ → Type ℓ
   CloseBounds≥0 x ε =
     Σ[ p ∈ ℚ ] Σ[ q ∈ ℚ ]
       (p ∈ lower x) ×
@@ -718,7 +718,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (q ℚOrder.< p ℚ.+ ε) ×
       (ℚExtra.0ℚ ℚOrder.< q)
 
-  BoundedCloseBounds≥0 : DedekindCut ℓ → ℚ → ℚ → Type ℓ
+  BoundedCloseBounds≥0 : DedekindReal ℓ → ℚ → ℚ → Type ℓ
   BoundedCloseBounds≥0 x ε u =
     Σ[ p ∈ ℚ ] Σ[ q ∈ ℚ ]
       (p ∈ lower x) ×
@@ -729,7 +729,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (q ℚOrder.≤ u)
 
   close-bounds≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x ≥0 →
     (ε : ℚ) →
     ℚExtra.0ℚ ℚOrder.< ε →
@@ -747,7 +747,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (close-bounds x ε 0<ε)
 
   bounded-close-bounds≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x ≥0 →
     (ε u : ℚ) →
     ℚExtra.0ℚ ℚOrder.< ε →
@@ -767,7 +767,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (bounded-close-bounds x ε u 0<ε u∈Ux)
 
   MultiplicationCloseBounds :
-    DedekindCut ℓ → DedekindCut ℓ → ℚ → ℚ → ℚ → Type ℓ
+    DedekindReal ℓ → DedekindReal ℓ → ℚ → ℚ → ℚ → Type ℓ
   MultiplicationCloseBounds x y δ U V =
     Σ[ lx ∈ ℚ ] Σ[ ux ∈ ℚ ] Σ[ ly ∈ ℚ ] Σ[ uy ∈ ℚ ]
       (lx ∈ lower x) ×
@@ -784,7 +784,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (uy ℚOrder.≤ V)
 
   multiplication-close-bounds :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x ≥0 →
     y ≥0 →
     (δ U V : ℚ) →
@@ -842,18 +842,18 @@ module NonNegativeMultiplication {ℓ : Level} where
       0<U 0<V
       (ℚExtra.diff-positive {p = p} {q = q} p<q)
 
-  nnMulLower : DedekindCut ℓ → DedekindCut ℓ → ℚPred ℓ
+  nnMulLower : DedekindReal ℓ → DedekindReal ℓ → ℚPred ℓ
   nnMulLower x y q =
     ∥ (q ℚOrder.< ℚExtra.0ℚ) ⊎ ProductLowerWitness x y q ∥₁ ,
     squash₁
 
-  nnMulUpper : DedekindCut ℓ → DedekindCut ℓ → ℚPred ℓ
+  nnMulUpper : DedekindReal ℓ → DedekindReal ℓ → ℚPred ℓ
   nnMulUpper x y q =
     (ℚExtra.0ℚ ℚOrder.< q) × ∥ ProductUpperWitness x y q ∥₁ ,
     isProp× (ℚOrder.isProp< ℚExtra.0ℚ q) squash₁
 
   ∃upper>0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     ∥ Σ[ u ∈ ℚ ] (u ∈ upper x) × (ℚExtra.0ℚ ℚOrder.< u) ∥₁
   ∃upper>0 x =
     Prop.rec squash₁
@@ -877,13 +877,13 @@ module NonNegativeMultiplication {ℓ : Level} where
       (upper-rational-bound x)
 
   nnMul-lower-inhabited :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     ∥ Σ[ q ∈ ℚ ] q ∈ nnMulLower x y ∥₁
   nnMul-lower-inhabited x y =
     ∣ ℚExtra.-1ℚ , ∣ Sum.inl ℚExtra.-1<0 ∣₁ ∣₁
 
   nnMul-upper-inhabited :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     ∥ Σ[ q ∈ ℚ ] q ∈ nnMulUpper x y ∥₁
   nnMul-upper-inhabited x y =
     Prop.rec2 squash₁
@@ -909,7 +909,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (∃upper>0 y)
 
   nnMul-lower-closed :
-    (x y : DedekindCut ℓ) (p q : ℚ) →
+    (x y : DedekindReal ℓ) (p q : ℚ) →
     p ℚOrder.< q →
     q ∈ nnMulLower x y →
     p ∈ nnMulLower x y
@@ -927,7 +927,7 @@ module NonNegativeMultiplication {ℓ : Level} where
           ∣₁)
 
   nnMul-upper-closed :
-    (x y : DedekindCut ℓ) (p q : ℚ) →
+    (x y : DedekindReal ℓ) (p q : ℚ) →
     p ℚOrder.< q →
     p ∈ nnMulUpper x y →
     q ∈ nnMulUpper x y
@@ -941,7 +941,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       p∈U
 
   nnMul-lower-rounded :
-    (x y : DedekindCut ℓ) (q : ℚ) →
+    (x y : DedekindReal ℓ) (q : ℚ) →
     q ∈ nnMulLower x y →
     ∥ Σ[ r ∈ ℚ ] (q ℚOrder.< r) × (r ∈ nnMulLower x y) ∥₁
   nnMul-lower-rounded x y q =
@@ -961,7 +961,7 @@ module NonNegativeMultiplication {ℓ : Level} where
             (ℚExtra.dense {p = q} {q = a ℚ.· b} q<ab))
 
   nnMul-upper-rounded :
-    (x y : DedekindCut ℓ) (q : ℚ) →
+    (x y : DedekindReal ℓ) (q : ℚ) →
     q ∈ nnMulUpper x y →
     ∥ Σ[ r ∈ ℚ ] (r ℚOrder.< q) × (r ∈ nnMulUpper x y) ∥₁
   nnMul-upper-rounded x y q (0<q , q∈U) =
@@ -979,7 +979,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       q∈U
 
   nnMul-disjoint :
-    (x y : DedekindCut ℓ) (q : ℚ) →
+    (x y : DedekindReal ℓ) (q : ℚ) →
     q ∈ nnMulLower x y →
     q ∈ nnMulUpper x y →
     ⊥
@@ -1018,7 +1018,7 @@ module NonNegativeMultiplication {ℓ : Level} where
         q∈U
 
   nnMulLower-comm :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     nnMulLower x y ⊆ nnMulLower y x
   nnMulLower-comm x y q =
     Prop.rec squash₁
@@ -1035,7 +1035,7 @@ module NonNegativeMultiplication {ℓ : Level} where
           ∣₁)
 
   nnMulUpper-comm :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     nnMulUpper x y ⊆ nnMulUpper y x
   nnMulUpper-comm x y q (0<q , q∈U) =
     0<q ,
@@ -1051,7 +1051,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       q∈U
 
   nnMul-lower-from-negative :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (q : ℚ) →
     q ℚOrder.< ℚExtra.0ℚ →
     q ∈ nnMulLower x y
@@ -1059,7 +1059,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     ∣ Sum.inl q<0 ∣₁
 
   nnMul-lower-from-product :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (q : ℚ) →
     ProductLowerWitness x y q →
     q ∈ nnMulLower x y
@@ -1067,7 +1067,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     ∣ Sum.inr witness ∣₁
 
   nnMul-upper-from-product :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (q : ℚ) →
     ℚExtra.0ℚ ℚOrder.< q →
     ProductUpperWitness x y q →
@@ -1076,14 +1076,14 @@ module NonNegativeMultiplication {ℓ : Level} where
     0<q , ∣ witness ∣₁
 
   nnMulLocated :
-    DedekindCut ℓ → DedekindCut ℓ → Type ℓ
+    DedekindReal ℓ → DedekindReal ℓ → Type ℓ
   nnMulLocated x y =
     (p q : ℚ) →
     p ℚOrder.< q →
     ∥ (p ∈ nnMulLower x y) ⊎ (q ∈ nnMulUpper x y) ∥₁
 
   nnMul-located-negative-left :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q : ℚ) →
     p ℚOrder.< ℚExtra.0ℚ →
     ∥ (p ∈ nnMulLower x y) ⊎ (q ∈ nnMulUpper x y) ∥₁
@@ -1091,7 +1091,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     ∣ Sum.inl (nnMul-lower-from-negative x y p p<0) ∣₁
 
   nnMul-located-lower-product :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q : ℚ) →
     ProductLowerWitness x y p →
     ∥ (p ∈ nnMulLower x y) ⊎ (q ∈ nnMulUpper x y) ∥₁
@@ -1099,7 +1099,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     ∣ Sum.inl (nnMul-lower-from-product x y p witness) ∣₁
 
   nnMul-located-upper-product :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q : ℚ) →
     ℚExtra.0ℚ ℚOrder.< q →
     ProductUpperWitness x y q →
@@ -1108,7 +1108,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     ∣ Sum.inr (nnMul-upper-from-product x y q 0<q witness) ∣₁
 
   nnMul-located-by-p-sign :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q : ℚ) →
     p ℚOrder.< q →
     ((0≤p : ℚExtra.0ℚ ℚOrder.≤ p) →
@@ -1125,7 +1125,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (ℚExtra.nonnegative-right-of-< {p = p} {q = q} 0≤p p<q)
 
   nnMul-upper-witness-left-nonpositive :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q U V lx ux uy : ℚ) →
     (p<q : p ℚOrder.< q) →
     ℚExtra.0ℚ ℚOrder.≤ p →
@@ -1175,7 +1175,7 @@ module NonNegativeMultiplication {ℓ : Level} where
         lx≤0 ux<lx+δ 0<ux 0<uy uy≤V δV<gap gap≤q
 
   nnMul-upper-witness-right-nonpositive :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q U V ly ux uy : ℚ) →
     (p<q : p ℚOrder.< q) →
     ℚExtra.0ℚ ℚOrder.≤ p →
@@ -1225,7 +1225,7 @@ module NonNegativeMultiplication {ℓ : Level} where
         ly≤0 uy<ly+δ 0<ux 0<uy ux≤U δU<gap gap≤q
 
   nnMul-upper-witness-positive :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (p q U V lx ux ly uy : ℚ) →
     (p<q : p ℚOrder.< q) →
     (0<U : ℚExtra.0ℚ ℚOrder.< U) →
@@ -1286,7 +1286,7 @@ module NonNegativeMultiplication {ℓ : Level} where
         (ℚExtra.p+[q-p]≡q p q)
 
   nnMul-located :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x ≥0 →
     y ≥0 →
     nnMulLocated x y
@@ -1417,50 +1417,50 @@ module NonNegativeMultiplication {ℓ : Level} where
               ux<lx+δ
               0<ux 0<uy uy≤V)
 
-  isDedekindCutNNMul :
-    (x y : DedekindCut ℓ) →
+  isDedekindRealNNMul :
+    (x y : DedekindReal ℓ) →
     nnMulLocated x y →
-    IsDedekindCut (nnMulLower x y) (nnMulUpper x y)
-  isDedekindCutNNMul x y located .IsDedekindCut.lower-inhabited =
+    IsDedekindReal (nnMulLower x y) (nnMulUpper x y)
+  isDedekindRealNNMul x y located .IsDedekindReal.lower-inhabited =
     nnMul-lower-inhabited x y
-  isDedekindCutNNMul x y located .IsDedekindCut.upper-inhabited =
+  isDedekindRealNNMul x y located .IsDedekindReal.upper-inhabited =
     nnMul-upper-inhabited x y
-  isDedekindCutNNMul x y located .IsDedekindCut.lower-closed =
+  isDedekindRealNNMul x y located .IsDedekindReal.lower-closed =
     nnMul-lower-closed x y
-  isDedekindCutNNMul x y located .IsDedekindCut.upper-closed =
+  isDedekindRealNNMul x y located .IsDedekindReal.upper-closed =
     nnMul-upper-closed x y
-  isDedekindCutNNMul x y located .IsDedekindCut.lower-rounded =
+  isDedekindRealNNMul x y located .IsDedekindReal.lower-rounded =
     nnMul-lower-rounded x y
-  isDedekindCutNNMul x y located .IsDedekindCut.upper-rounded =
+  isDedekindRealNNMul x y located .IsDedekindReal.upper-rounded =
     nnMul-upper-rounded x y
-  isDedekindCutNNMul x y located .IsDedekindCut.disjoint =
+  isDedekindRealNNMul x y located .IsDedekindReal.disjoint =
     nnMul-disjoint x y
-  isDedekindCutNNMul x y located .IsDedekindCut.located =
+  isDedekindRealNNMul x y located .IsDedekindReal.located =
     located
 
-  nnMulCut :
-    (x y : DedekindCut ℓ) →
+  nnMulReal :
+    (x y : DedekindReal ℓ) →
     nnMulLocated x y →
-    DedekindCut ℓ
-  nnMulCut x y located .lower = nnMulLower x y
-  nnMulCut x y located .upper = nnMulUpper x y
-  nnMulCut x y located .isDedekindCut = isDedekindCutNNMul x y located
+    DedekindReal ℓ
+  nnMulReal x y located .lower = nnMulLower x y
+  nnMulReal x y located .upper = nnMulUpper x y
+  nnMulReal x y located .isDedekindReal = isDedekindRealNNMul x y located
 
   nnMul :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x ≥0 →
     y ≥0 →
-    DedekindCut ℓ
+    DedekindReal ℓ
   nnMul x y 0≤x 0≤y =
-    nnMulCut x y (nnMul-located x y 0≤x 0≤y)
+    nnMulReal x y (nnMul-located x y 0≤x 0≤y)
 
   nnMul-comm :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul y x 0≤y 0≤x
   nnMul-comm x y 0≤x 0≤y =
-    cutExt
+    realExt
       (nnMul x y 0≤x 0≤y)
       (nnMul y x 0≤y 0≤x)
       (nnMulLower-comm x y)
@@ -1469,11 +1469,11 @@ module NonNegativeMultiplication {ℓ : Level} where
       (nnMulUpper-comm y x)
 
   nnMul-zeroR :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     nnMul x 0𝔻 0≤x 0𝔻≥0 ≡ 0𝔻
   nnMul-zeroR x 0≤x =
-    cutExt
+    realExt
       (nnMul x 0𝔻 0≤x 0𝔻≥0)
       0𝔻
       lower⊆
@@ -1537,7 +1537,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       ε<q = ℚExtra.middle<r {p = ℚExtra.0ℚ} {q = q} 0<q
 
   nnMul-zeroL :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     nnMul 0𝔻 x 0𝔻≥0 0≤x ≡ 0𝔻
   nnMul-zeroL x 0≤x =
@@ -1545,7 +1545,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     nnMul-zeroR x 0≤x
 
   nnMul-Pres≥0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (nnMul x y 0≤x 0≤y) ≥0
@@ -1553,7 +1553,7 @@ module NonNegativeMultiplication {ℓ : Level} where
     ∣ Sum.inl (Lift.lower q∈L0) ∣₁
 
   nnMul-monoL-≤ :
-    (x x' y : DedekindCut ℓ) →
+    (x x' y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤x' : x' ≥0) →
     (0≤y : y ≥0) →
@@ -1574,7 +1574,7 @@ module NonNegativeMultiplication {ℓ : Level} where
           ∣₁)
 
   nnMul-monoR-≤ :
-    (x y y' : DedekindCut ℓ) →
+    (x y y' : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤y' : y' ≥0) →
@@ -1595,7 +1595,7 @@ module NonNegativeMultiplication {ℓ : Level} where
           ∣₁)
 
   nnMul-mono-≤ :
-    (x x' y y' : DedekindCut ℓ) →
+    (x x' y y' : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤x' : x' ≥0) →
     (0≤y : y ≥0) →
@@ -1612,12 +1612,12 @@ module NonNegativeMultiplication {ℓ : Level} where
       (nnMul-monoR-≤ x' y y' 0≤x' 0≤y 0≤y' y≤y')
 
   nnMul-proof-irrelevant :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x 0≤x' : x ≥0) →
     (0≤y 0≤y' : y ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x y 0≤x' 0≤y'
   nnMul-proof-irrelevant x y 0≤x 0≤x' 0≤y 0≤y' =
-    cutExt
+    realExt
       (nnMul x y 0≤x 0≤y)
       (nnMul x y 0≤x' 0≤y')
       (λ q q∈L → q∈L)
@@ -1626,14 +1626,14 @@ module NonNegativeMultiplication {ℓ : Level} where
       (λ q q∈U → q∈U)
 
   nnMul-congR :
-    (x y y' : DedekindCut ℓ) →
+    (x y y' : DedekindReal ℓ) →
     y ≡ y' →
     (0≤x 0≤x' : x ≥0) →
     (0≤y : y ≥0) →
     (0≤y' : y' ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x y' 0≤x' 0≤y'
   nnMul-congR x y y' y≡y' 0≤x 0≤x' 0≤y 0≤y' =
-    cutExt
+    realExt
       (nnMul x y 0≤x 0≤y)
       (nnMul x y' 0≤x' 0≤y')
       (lower-map y y' y≡y')
@@ -1642,7 +1642,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (upper-map y' y (sym y≡y'))
     where
     lower-map :
-      (z z' : DedekindCut ℓ) →
+      (z z' : DedekindReal ℓ) →
       z ≡ z' →
       nnMulLower x z ⊆ nnMulLower x z'
     lower-map z z' z≡z' q =
@@ -1660,7 +1660,7 @@ module NonNegativeMultiplication {ℓ : Level} where
             ∣₁)
 
     upper-map :
-      (z z' : DedekindCut ℓ) →
+      (z z' : DedekindReal ℓ) →
       z ≡ z' →
       nnMulUpper x z ⊆ nnMulUpper x z'
     upper-map z z' z≡z' q (0<q , q∈U) =
@@ -1677,14 +1677,14 @@ module NonNegativeMultiplication {ℓ : Level} where
         q∈U
 
   nnMul-congL :
-    (x x' y : DedekindCut ℓ) →
+    (x x' y : DedekindReal ℓ) →
     x ≡ x' →
     (0≤x : x ≥0) →
     (0≤x' : x' ≥0) →
     (0≤y 0≤y' : y ≥0) →
     nnMul x y 0≤x 0≤y ≡ nnMul x' y 0≤x' 0≤y'
   nnMul-congL x x' y x≡x' 0≤x 0≤x' 0≤y 0≤y' =
-    cutExt
+    realExt
       (nnMul x y 0≤x 0≤y)
       (nnMul x' y 0≤x' 0≤y')
       (lower-map x x' x≡x')
@@ -1693,7 +1693,7 @@ module NonNegativeMultiplication {ℓ : Level} where
       (upper-map x' x (sym x≡x'))
     where
     lower-map :
-      (z z' : DedekindCut ℓ) →
+      (z z' : DedekindReal ℓ) →
       z ≡ z' →
       nnMulLower z y ⊆ nnMulLower z' y
     lower-map z z' z≡z' q =
@@ -1711,7 +1711,7 @@ module NonNegativeMultiplication {ℓ : Level} where
             ∣₁)
 
     upper-map :
-      (z z' : DedekindCut ℓ) →
+      (z z' : DedekindReal ℓ) →
       z ≡ z' →
       nnMulUpper z y ⊆ nnMulUpper z' y
     upper-map z z' z≡z' q (0<q , q∈U) =
@@ -1728,7 +1728,7 @@ module NonNegativeMultiplication {ℓ : Level} where
         q∈U
 
   nnMul-cong₂ :
-    (x x' y y' : DedekindCut ℓ) →
+    (x x' y y' : DedekindReal ℓ) →
     x ≡ x' →
     y ≡ y' →
     (0≤x : x ≥0) →
@@ -1747,20 +1747,20 @@ module Multiplication {ℓ : Level} where
   open Addition {ℓ}
   open NonNegativeMultiplication {ℓ}
 
-  posPart : DedekindCut ℓ → DedekindCut ℓ
+  posPart : DedekindReal ℓ → DedekindReal ℓ
   posPart x = x ⊔ 0𝔻
 
-  negPart : DedekindCut ℓ → DedekindCut ℓ
+  negPart : DedekindReal ℓ → DedekindReal ℓ
   negPart x = (- x) ⊔ 0𝔻
 
   posPart≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (posPart x) ≥0
   posPart≥0 x =
     right≤⊔ x 0𝔻
 
   negPart≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (negPart x) ≥0
   negPart≥0 x =
     right≤⊔ (- x) 0𝔻
@@ -1779,7 +1779,7 @@ module Multiplication {ℓ : Level} where
     ⊔-idem 0𝔻
 
   ≥0→posPart≡id :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x ≥0 →
     posPart x ≡ x
   ≥0→posPart≡id x 0≤x =
@@ -1787,7 +1787,7 @@ module Multiplication {ℓ : Level} where
       {a = x} {b = 0𝔻} 0≤x
 
   ≥0→negPart≡0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x ≥0 →
     negPart x ≡ 0𝔻
   ≥0→negPart≡0 x 0≤x =
@@ -1807,7 +1807,7 @@ module Multiplication {ℓ : Level} where
       ≤-trans (- x) (- 0𝔻) 0𝔻 -x≤-0 -0≤0
 
   posPart-mono-≤ :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x ≤ y →
     posPart x ≤ posPart y
   posPart-mono-≤ x y x≤y =
@@ -1816,7 +1816,7 @@ module Multiplication {ℓ : Level} where
       (right≤⊔ y 0𝔻)
 
   negPart-antitone-≤ :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x ≤ y →
     negPart y ≤ negPart x
   negPart-antitone-≤ x y x≤y =
@@ -1826,7 +1826,7 @@ module Multiplication {ℓ : Level} where
         (left≤⊔ (- x) 0𝔻))
       (right≤⊔ (- x) 0𝔻)
 
-  posProducts : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
+  posProducts : DedekindReal ℓ → DedekindReal ℓ → DedekindReal ℓ
   posProducts x y =
     nnMul (posPart x) (posPart y)
       (posPart≥0 x)
@@ -1836,7 +1836,7 @@ module Multiplication {ℓ : Level} where
       (negPart≥0 x)
       (negPart≥0 y)
 
-  negProducts : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
+  negProducts : DedekindReal ℓ → DedekindReal ℓ → DedekindReal ℓ
   negProducts x y =
     nnMul (posPart x) (negPart y)
       (posPart≥0 x)
@@ -1846,13 +1846,13 @@ module Multiplication {ℓ : Level} where
       (negPart≥0 x)
       (posPart≥0 y)
 
-  _*_ : DedekindCut ℓ → DedekindCut ℓ → DedekindCut ℓ
+  _*_ : DedekindReal ℓ → DedekindReal ℓ → DedekindReal ℓ
   x * y = posProducts x y + (- negProducts x y)
 
   infixl 7 _*_
 
   posProducts-comm :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     posProducts x y ≡ posProducts y x
   posProducts-comm x y =
     cong₂ _+_
@@ -1866,7 +1866,7 @@ module Multiplication {ℓ : Level} where
         (negPart≥0 y))
 
   negProducts-comm :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     negProducts x y ≡ negProducts y x
   negProducts-comm x y =
     cong₂ _+_
@@ -1888,7 +1888,7 @@ module Multiplication {ℓ : Level} where
         (negPart≥0 x))
 
   *-comm :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x * y ≡ y * x
   *-comm x y =
     cong₂ _+_
@@ -1896,7 +1896,7 @@ module Multiplication {ℓ : Level} where
       (cong -_ (negProducts-comm x y))
 
   posProducts≥0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (posProducts x y) ≥0
   posProducts≥0 x y =
     +-Pres≥0
@@ -1918,7 +1918,7 @@ module Multiplication {ℓ : Level} where
         (negPart≥0 y))
 
   negProducts≥0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (negProducts x y) ≥0
   negProducts≥0 x y =
     +-Pres≥0
@@ -1940,7 +1940,7 @@ module Multiplication {ℓ : Level} where
         (posPart≥0 y))
 
   posProducts≡nnMul :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     posProducts x y ≡ nnMul x y 0≤x 0≤y
@@ -1986,7 +1986,7 @@ module Multiplication {ℓ : Level} where
       ∙ nnMul-zeroR 0𝔻 0𝔻≥0
 
   negProducts≡0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     negProducts x y ≡ 0𝔻
@@ -2033,7 +2033,7 @@ module Multiplication {ℓ : Level} where
       ∙ nnMul-zeroL y 0≤y
 
   *-of-≥0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     x * y ≡ nnMul x y 0≤x 0≤y
@@ -2045,7 +2045,7 @@ module Multiplication {ℓ : Level} where
     +-idR (nnMul x y 0≤x 0≤y)
 
   *-Pres≥0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (x * y) ≥0
@@ -2058,9 +2058,9 @@ module Multiplication {ℓ : Level} where
       (≡→≤ (sym (*-of-≥0 x y 0≤x 0≤y)))
 
   rMul≥0 :
-    (x z : DedekindCut ℓ) →
+    (x z : DedekindReal ℓ) →
     z ≥0 →
-    DedekindCut ℓ
+    DedekindReal ℓ
   rMul≥0 x z 0≤z =
     nnMul (posPart x) z
       (posPart≥0 x)
@@ -2071,7 +2071,7 @@ module Multiplication {ℓ : Level} where
       0≤z)
 
   posProducts-r≥0 :
-    (x z : DedekindCut ℓ) →
+    (x z : DedekindReal ℓ) →
     (0≤z : z ≥0) →
     posProducts x z ≡
       nnMul (posPart x) z (posPart≥0 x) 0≤z
@@ -2113,7 +2113,7 @@ module Multiplication {ℓ : Level} where
       ∙ nnMul-zeroR (negPart x) (negPart≥0 x)
 
   negProducts-r≥0 :
-    (x z : DedekindCut ℓ) →
+    (x z : DedekindReal ℓ) →
     (0≤z : z ≥0) →
     negProducts x z ≡
       nnMul (negPart x) z (negPart≥0 x) 0≤z
@@ -2155,7 +2155,7 @@ module Multiplication {ℓ : Level} where
         0≤z
 
   *-r≥0-form :
-    (x z : DedekindCut ℓ) →
+    (x z : DedekindReal ℓ) →
     (0≤z : z ≥0) →
     x * z ≡ rMul≥0 x z 0≤z
   *-r≥0-form x z 0≤z =
@@ -2164,7 +2164,7 @@ module Multiplication {ℓ : Level} where
       (cong -_ (negProducts-r≥0 x z 0≤z))
 
   *-rPosPres≤ :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x ≤ y →
     (0≤z : z ≥0) →
     x * z ≤ y * z
@@ -2175,10 +2175,10 @@ module Multiplication {ℓ : Level} where
         form≤
         (≡→≤ (sym (*-r≥0-form y z 0≤z))))
     where
-    xz-form : DedekindCut ℓ
+    xz-form : DedekindReal ℓ
     xz-form = rMul≥0 x z 0≤z
 
-    yz-form : DedekindCut ℓ
+    yz-form : DedekindReal ℓ
     yz-form = rMul≥0 y z 0≤z
 
     pos≤ :
@@ -2254,7 +2254,7 @@ module Multiplication {ℓ : Level} where
         neg≤
 
   *-lPosPres≤ :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x ≤ y →
     (0≤z : z ≥0) →
     z * x ≤ z * y
@@ -2266,7 +2266,7 @@ module Multiplication {ℓ : Level} where
         (≡→≤ (sym (*-comm z y))))
 
   posProducts-zeroR :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     posProducts x 0𝔻 ≡ 0𝔻
   posProducts-zeroR x =
     cong₂ _+_ first-zero second-zero ∙
@@ -2307,7 +2307,7 @@ module Multiplication {ℓ : Level} where
       ∙ nnMul-zeroR (negPart x) (negPart≥0 x)
 
   negProducts-zeroR :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     negProducts x 0𝔻 ≡ 0𝔻
   negProducts-zeroR x =
     cong₂ _+_ first-zero second-zero ∙
@@ -2348,7 +2348,7 @@ module Multiplication {ℓ : Level} where
       ∙ nnMul-zeroR (negPart x) (negPart≥0 x)
 
   *-zeroR :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x * 0𝔻 ≡ 0𝔻
   *-zeroR x =
     cong₂ _+_
@@ -2358,7 +2358,7 @@ module Multiplication {ℓ : Level} where
     +-idR 0𝔻
 
   *-zeroL :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     0𝔻 * x ≡ 0𝔻
   *-zeroL x =
     *-comm 0𝔻 x ∙

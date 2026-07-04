@@ -1,20 +1,20 @@
 {-
 
-Full signed associativity for constructive Dedekind-cut multiplication.
+Full signed associativity for constructive Dedekind-real multiplication.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.DedekindCut.Arithmetic.Associativity where
+module Constructive.DedekindReals.Arithmetic.Associativity where
 
 open import Cubical.Foundations.Prelude
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
-open import Constructive.DedekindCut.Arithmetic.Difference
-open import Constructive.DedekindCut.Arithmetic.Distributivity
-open import Constructive.DedekindCut.Arithmetic.Negation
-open import Constructive.DedekindCut.Arithmetic.NonNegative
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.AdditiveGroup
+open import Constructive.DedekindReals.Arithmetic.Difference
+open import Constructive.DedekindReals.Arithmetic.Distributivity
+open import Constructive.DedekindReals.Arithmetic.Negation
+open import Constructive.DedekindReals.Arithmetic.NonNegative
 
 
 module MultiplicationAssociativity {ℓ : Level} where
@@ -29,7 +29,7 @@ module MultiplicationAssociativity {ℓ : Level} where
   open NonNegativeProperties {ℓ}
 
   *-assoc-two-r≥0 :
-    (x a n : DedekindCut ℓ) →
+    (x a n : DedekindReal ℓ) →
     (0≤a : a ≥0) →
     (0≤n : n ≥0) →
     (x * a) * n ≡ x * (nnMul a n 0≤a 0≤n)
@@ -92,7 +92,7 @@ module MultiplicationAssociativity {ℓ : Level} where
           0≤n)
 
   *-assocR-≥0 :
-    (x y n : DedekindCut ℓ) →
+    (x y n : DedekindReal ℓ) →
     (0≤n : n ≥0) →
     (x * y) * n ≡ x * (y * n)
   *-assocR-≥0 x y n 0≤n =
@@ -114,13 +114,13 @@ module MultiplicationAssociativity {ℓ : Level} where
     distrib-back ∙
     cong (x *_) (sym (*-r≥0-form y n 0≤n))
     where
-    yn+ : DedekindCut ℓ
+    yn+ : DedekindReal ℓ
     yn+ =
       nnMul (posPart y) n
         (posPart≥0 y)
         0≤n
 
-    yn- : DedekindCut ℓ
+    yn- : DedekindReal ℓ
     yn- =
       nnMul (negPart y) n
         (negPart≥0 y)
@@ -134,7 +134,7 @@ module MultiplicationAssociativity {ℓ : Level} where
          cong₂ _+_ refl (*-negR x yn-))
 
   *-assoc :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (x * y) * z ≡ x * (y * z)
   *-assoc x y z =
     *-right-decomposition (x * y) z ∙
@@ -145,10 +145,10 @@ module MultiplicationAssociativity {ℓ : Level} where
     distrib-back ∙
     cong (x *_) (sym (*-right-decomposition y z))
     where
-    yz+ : DedekindCut ℓ
+    yz+ : DedekindReal ℓ
     yz+ = y * posPart z
 
-    yz- : DedekindCut ℓ
+    yz- : DedekindReal ℓ
     yz- = y * negPart z
 
     distrib-back :

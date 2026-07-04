@@ -2,7 +2,7 @@
 
 Constructive order lemmas for Cubical's quotient rationals.
 
-These are prerequisites for the Dedekind-cut embedding and algebra.
+These are prerequisites for the Dedekind-real embedding and algebra.
 
 -}
 {-# OPTIONS --safe #-}

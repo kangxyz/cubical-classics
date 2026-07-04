@@ -1,20 +1,20 @@
 {-
 
-Compatibility of constructive Dedekind-cut multiplication with negation.
+Compatibility of constructive Dedekind-real multiplication with negation.
 
-The signed multiplication in Constructive.DedekindCut.Arithmetic is defined through
+The signed multiplication in Constructive.DedekindReals.Arithmetic is defined through
 positive and negative parts.  These lemmas make the expected sign laws
 available without any trichotomy.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.Negation where
+module Constructive.DedekindReals.Arithmetic.Negation where
 
 open import Cubical.Foundations.Prelude
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.AdditiveGroup
 
 
 module NegationProperties {ℓ : Level} where
@@ -26,18 +26,18 @@ module NegationProperties {ℓ : Level} where
   open AdditiveGroup {ℓ}
 
   posPart-neg :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     posPart (- x) ≡ negPart x
   posPart-neg x = refl
 
   negPart-neg :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     negPart (- x) ≡ posPart x
   negPart-neg x =
     cong (λ z → z ⊔ 0𝔻) (neg-involutive x)
 
   posProducts-negL :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     posProducts (- x) y ≡ negProducts x y
   posProducts-negL x y =
     cong₂ _+_ first second ∙
@@ -88,7 +88,7 @@ module NegationProperties {ℓ : Level} where
         (negPart≥0 y)
 
   negProducts-negL :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     negProducts (- x) y ≡ posProducts x y
   negProducts-negL x y =
     cong₂ _+_ first second ∙
@@ -139,7 +139,7 @@ module NegationProperties {ℓ : Level} where
         (posPart≥0 y)
 
   *-negL :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (- x) * y ≡ - (x * y)
   *-negL x y =
     cong₂ _+_
@@ -148,7 +148,7 @@ module NegationProperties {ℓ : Level} where
     sym (neg-difference-swap (posProducts x y) (negProducts x y))
 
   *-negR :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x * (- y) ≡ - (x * y)
   *-negR x y =
     *-comm x (- y) ∙
@@ -156,7 +156,7 @@ module NegationProperties {ℓ : Level} where
     cong -_ (*-comm y x)
 
   *-negL-negR :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (- x) * (- y) ≡ x * y
   *-negL-negR x y =
     *-negL x (- y) ∙

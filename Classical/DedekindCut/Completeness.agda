@@ -1,6 +1,6 @@
 {-
 
-MacNeille Completeness of Dedekind Cuts
+MacNeille completeness of classical Dedekind cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

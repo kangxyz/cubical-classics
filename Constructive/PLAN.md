@@ -1,19 +1,21 @@
-# Constructive Dedekind Cut Roadmap
+# Constructive Dedekind Reals Roadmap
 
-This folder tracks a LEM-free Dedekind real development.  The code may depend
-on `Constructive/`, but the constructive core must not depend on `Classical/`,
-`Oracle`, `LEM`, or propositional resizing.
+This folder tracks the LEM-free constructive Dedekind-real development.  The
+code may depend on `Constructive/`, but the constructive core must not depend
+on `Classical/`, `Oracle`, `LEM`, or propositional resizing.  The
+Oracle-based classical Dedekind-real completion remains in
+`Classical.DedekindCut`.
 
 ## Target Shape
 
 There are three separate goals.
 
 1. Constructive Dedekind completeness.
-   Prove that every real-valued located Dedekind cut is represented by a unique
-   `DedekindCut`.
+   Prove that every real-valued located cut is represented by a unique
+   `DedekindReal`.
 
 2. Constructive ordered field structure.
-   Prove that `DedekindCut` forms an Archimedean ordered field, with inverses
+   Prove that `DedekindReal` forms an Archimedean ordered field, with inverses
    stated using apartness where constructively necessary.
 
 3. Classical bridge.
@@ -24,11 +26,11 @@ There are three separate goals.
 
 ## Literature Constraints
 
-- HoTT Book, Chapter 11: Dedekind cuts use lower and upper predicates
+- HoTT Book, Chapter 11: Dedekind reals are presented by lower and upper predicates
   `L U : Q -> hProp`, inhabitedness, roundedness, disjointness, and locatedness
   `q < r -> L q \/ U r`.
-- The algebra/order of Dedekind reals is constructive.  Field inverses should
-  use apartness, not mere non-equality.
+- The algebra/order of constructive Dedekind reals is LEM-free.  Field
+  inverses should use apartness, not mere non-equality.
 - Dedekind completeness is constructive when formulated as located cuts of
   reals or equivalent cuts in the order.
 - Cauchy completeness must use Cauchy approximations or explicit moduli; plain
@@ -41,7 +43,7 @@ There are three separate goals.
 
 - No `LEM`, `Oracle`, `PropResizing`, or `Classical.*` imports in the
   constructive core files.
-- Cuts stay universe-polymorphic over `Q -> hProp ell`; resizing is not
+- The rational cut presentation stays universe-polymorphic over `Q -> hProp ell`; resizing is not
   assumed.
 - Existential witnesses from cut structure stay truncated unless a local
   decidability/search argument constructively splits them.
@@ -49,11 +51,11 @@ There are three separate goals.
 
 ## Milestones
 
-### M0. Basic Cut Infrastructure
+### M0. Basic Dedekind-Real Infrastructure
 
 Status: done.
 
-- `DedekindCut ell`, extensional equality, set-truncation.
+- `DedekindReal ell`, extensional equality, set-truncation.
 - Rational embedding at `ell-zero` and lifted embeddings at arbitrary `ell`.
 - Constructive order: `<=`, `<`, apartness, rational density/locatedness.
 - Lattice operations `meet` and `join`.
@@ -66,11 +68,11 @@ Status: done.
 Status: done.
 
 - Prove every positive rational epsilon admits close rational lower/upper
-  bounds for any cut:
+  bounds for any Dedekind real:
 
 ```agda
 close-bounds :
-  (x : DedekindCut ell) (epsilon : Q) ->
+  (x : DedekindReal ell) (epsilon : Q) ->
   0 < epsilon ->
   || CloseBounds x epsilon ||_1
 ```
@@ -81,9 +83,9 @@ This is used by algebra and can also support completeness estimates.
 
 Status: done, same-universe version.
 
-Defined in `Constructive.DedekindCut.Completeness`.
+Defined in `Constructive.DedekindReals.Completeness`.
 
-Define a real-valued located cut as predicates on `DedekindCut ell`:
+Define a real-valued located cut as predicates on `DedekindReal ell`:
 
 - inhabited lower side and upper side;
 - lower/upper closure for the cut order;
@@ -94,30 +96,30 @@ Define a real-valued located cut as predicates on `DedekindCut ell`:
 Then prove:
 
 ```agda
-representing-cut :
-  RealValuedCut ell ell' -> DedekindCut (ell-max ell ell')
+representing-real :
+  RealValuedCut ell ell' -> DedekindReal (ell-max ell ell')
 
 represented-lower :
-  x is in the lower side iff x < representing-cut C
+  x is in the lower side iff x < representing-real C
 
 represented-upper :
-  x is in the upper side iff representing-cut C < x
+  x is in the upper side iff representing-real C < x
 
 representsCut :
   lower and upper representation predicates for a proposed representing cut
 
-representing-cut-unique :
+representing-real-unique :
   uniqueness by extensionality / order antisymmetry
 
 isDedekindComplete :
   every RealValuedCut has a unique representing cut
 
-isDedekindCompleteDedekindCut :
-  isDedekindComplete for DedekindCut
+isDedekindCompleteDedekindReal :
+  isDedekindComplete for DedekindReal
 ```
 
 The current checked theorem is universe-internal: predicates on
-`DedekindCut ell` valued in `hProp ell`.  This avoids resizing and is enough
+`DedekindReal ell` valued in `hProp ell`.  This avoids resizing and is enough
 for the first constructive representation theorem.  A later lifted/mixed-level
 variant can be added if a bridge theorem needs it.
 
@@ -126,9 +128,9 @@ variant can be added if a bridge theorem needs it.
 Status: done for the constructive target. Required for the final theorem.
 
 - Addition and additive group.
-  - Done: addition as a Dedekind cut in
-    `Constructive.DedekindCut.Arithmetic.Base`, re-exported by
-    `Constructive.DedekindCut.Arithmetic`.
+  - Done: addition by its Dedekind-real cut presentation in
+    `Constructive.DedekindReals.Arithmetic.Base`, re-exported by
+    `Constructive.DedekindReals.Arithmetic`.
   - Done: addition commutativity.
   - Done: addition associativity.
   - Done: additive zero laws.
@@ -187,51 +189,51 @@ Status: done for the constructive target. Required for the final theorem.
     nonnegative products, positive-inverse cancellation, and the order facts
     `q < a -> q/a < 1` and `r < q -> 1 < q/r`.
   - Done: nonnegative multiplication unit laws in
-    `Constructive.DedekindCut.Arithmetic.Unit`.
+    `Constructive.DedekindReals.Arithmetic.Unit`.
   - Done: signed multiplication unit laws `*-idR` and `*-idL`, via the
     constructive decomposition `x = x+ - x-`.
   - Done: reusable additive-group normalization lemmas in
-    `Constructive.DedekindCut.Arithmetic.AdditiveGroup`, including cancellation,
+    `Constructive.DedekindReals.Arithmetic.AdditiveGroup`, including cancellation,
     uniqueness of inverses, `-(a+b) = -a + -b`, and
     `-(a-b) = b-a`.
   - Done: signed multiplication commutes with negation in
-    `Constructive.DedekindCut.Arithmetic.Negation`:
+    `Constructive.DedekindReals.Arithmetic.Negation`:
     `(- x) * y = - (x * y)`, `x * (- y) = - (x * y)`, and
     `(- x) * (- y) = x * y`.
   - Done: nonnegative multiplication associativity in
-    `Constructive.DedekindCut.Arithmetic.NonNegative`.  The proof uses
+    `Constructive.DedekindReals.Arithmetic.NonNegative`.  The proof uses
     `<=` antisymmetry and only lower inclusions, avoiding new upper-endpoint
     epsilon estimates.
   - Done: nonnegative multiplication distributes over addition on both sides
-    in `Constructive.DedekindCut.Arithmetic.NonNegative`.  The proof handles
+    in `Constructive.DedekindReals.Arithmetic.NonNegative`.  The proof handles
     the constructive lower-cut sign split for rational addends directly and
     does not use LEM.
   - Done: full signed distributivity in
-    `Constructive.DedekindCut.Arithmetic.Distributivity`.
+    `Constructive.DedekindReals.Arithmetic.Distributivity`.
   - Done: full signed associativity in
-    `Constructive.DedekindCut.Arithmetic.Associativity`.
+    `Constructive.DedekindReals.Arithmetic.Associativity`.
   - Done: `CommRing` packaging in
-    `Constructive.DedekindCut.Arithmetic.CommRing`.
+    `Constructive.DedekindReals.Arithmetic.CommRing`.
   - Done: strict positive-factor monotonicity, positive-product preservation,
     and positive-sum splitting in
-    `Constructive.DedekindCut.Arithmetic.Order`.
+    `Constructive.DedekindReals.Arithmetic.Order`.
   - Done: `OrderedCommRing` packaging in
-    `Constructive.DedekindCut.Arithmetic.OrderedCommRing`.
+    `Constructive.DedekindReals.Arithmetic.OrderedCommRing`.
   - Done: positive reciprocal cuts and the proof
     `x * inv₊ x = 1` for `0 < x` in
-    `Constructive.DedekindCut.Arithmetic.Inverse`.
+    `Constructive.DedekindReals.Arithmetic.Inverse`.
   - Done: apartness-based inverses for all `x # 0`, with both right and left
     inverse forms exported by
-    `Constructive.DedekindCut.Arithmetic.OrderedField`.
+    `Constructive.DedekindReals.Arithmetic.OrderedField`.
   - Done: formal `Constructive.Algebra.OrderedField` instance
     `DedekindOrderedField`.
   - Done: checked arithmetic structure aggregate entry point
-    `Constructive.DedekindCut.Arithmetic`.
+    `Constructive.DedekindReals.Arithmetic`.
   - Engineering note: the unit-law proof is intentionally split into
     `Arithmetic.Unit` with abstract rational scaling witnesses; keeping it
     inline in `Arithmetic` made typechecking too slow.
-- Archimedean statement for the constructive apartness-field structure is
-  still available separately from `Constructive.DedekindCut.Archimedean` and should
+- Archimedean estimates for the constructive apartness-field structure are
+  still available inside `Constructive.DedekindReals.Properties` and should
   be packaged with the final bridge if a single record is introduced.
 
 Note: the old `Constructive.Algebra.OrderedField` record factored through
@@ -248,7 +250,7 @@ structure are now available constructively.
 
 In a separate LEM-dependent module:
 
-1. Take a nonempty bounded powerset/subset `A` of `DedekindCut`.
+1. Take a nonempty bounded powerset/subset `A` of `DedekindReal`.
 2. Use LEM to define the associated located real-valued cut:
    lower side: `x` is below some member of `A`;
    upper side: `x` is an upper bound of `A`, rounded upward.

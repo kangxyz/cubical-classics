@@ -1,6 +1,6 @@
 {-
 
-Full signed distributivity for constructive Dedekind-cut multiplication.
+Full signed distributivity for constructive Dedekind-real multiplication.
 
 The proof avoids trichotomy of reals.  It rewrites every right factor as
 `z+ - z-`, distributes over the nonnegative factors separately, and then uses
@@ -8,14 +8,14 @@ additive-group algebra.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.Distributivity where
+module Constructive.DedekindReals.Arithmetic.Distributivity where
 
 open import Cubical.Foundations.Prelude
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
-open import Constructive.DedekindCut.Arithmetic.Difference
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.AdditiveGroup
+open import Constructive.DedekindReals.Arithmetic.Difference
 
 
 module MultiplicationDistributivity {ℓ : Level} where
@@ -27,7 +27,7 @@ module MultiplicationDistributivity {ℓ : Level} where
   open DifferenceProperties {ℓ}
 
   *-right-decomposition-form :
-    (x z : DedekindCut ℓ) →
+    (x z : DedekindReal ℓ) →
     (x * posPart z) + (- (x * negPart z)) ≡ x * z
   *-right-decomposition-form x z =
     cong₂ _+_
@@ -36,25 +36,25 @@ module MultiplicationDistributivity {ℓ : Level} where
         (*-r≥0-form x (negPart z) (negPart≥0 z))) ∙
     algebra-path
     where
-    A : DedekindCut ℓ
+    A : DedekindReal ℓ
     A =
       nnMul (posPart x) (posPart z)
         (posPart≥0 x)
         (posPart≥0 z)
 
-    B : DedekindCut ℓ
+    B : DedekindReal ℓ
     B =
       nnMul (negPart x) (negPart z)
         (negPart≥0 x)
         (negPart≥0 z)
 
-    C : DedekindCut ℓ
+    C : DedekindReal ℓ
     C =
       nnMul (posPart x) (negPart z)
         (posPart≥0 x)
         (negPart≥0 z)
 
-    D : DedekindCut ℓ
+    D : DedekindReal ℓ
     D =
       nnMul (negPart x) (posPart z)
         (negPart≥0 x)
@@ -68,13 +68,13 @@ module MultiplicationDistributivity {ℓ : Level} where
       cong ((A + B) +_) (cong -_ (+-comm D C))
 
   *-right-decomposition :
-    (x z : DedekindCut ℓ) →
+    (x z : DedekindReal ℓ) →
     x * z ≡ (x * posPart z) + (- (x * negPart z))
   *-right-decomposition x z =
     sym (*-right-decomposition-form x z)
 
   *-distribR :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (x + y) * z ≡ (x * z) + (y * z)
   *-distribR x y z =
     *-right-decomposition (x + y) z ∙
@@ -93,7 +93,7 @@ module MultiplicationDistributivity {ℓ : Level} where
       (*-right-decomposition-form y z)
 
   *-distribL :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x * (y + z) ≡ (x * y) + (x * z)
   *-distribL x y z =
     *-comm x (y + z) ∙

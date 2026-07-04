@@ -1,6 +1,6 @@
 {-
 
-Algebraic laws for nonnegative Dedekind-cut multiplication.
+Algebraic laws for nonnegative Dedekind-real multiplication.
 
 The proofs here are kept apart from the construction of multiplication itself.
 They use order antisymmetry, so only lower inclusions are needed for equality
@@ -8,7 +8,7 @@ of cuts.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.NonNegative where
+module Constructive.DedekindReals.Arithmetic.NonNegative where
 
 open import Cubical.Foundations.Prelude
 
@@ -21,8 +21,8 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∣_∣₁ ; squash₁)
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
 import Constructive.Rationals as ℚExtra
 
 
@@ -32,7 +32,7 @@ module NonNegativeProperties {ℓ : Level} where
   open NonNegativeMultiplication {ℓ}
 
   nnMul-lower-positive-product :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (a b : ℚ) →
     a ∈ lower x →
     b ∈ lower y →
@@ -56,7 +56,7 @@ module NonNegativeProperties {ℓ : Level} where
       ∣₁
 
   nnMul-assoc-≤LR :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →
@@ -109,7 +109,7 @@ module NonNegativeProperties {ℓ : Level} where
           subst (λ v → q ℚOrder.< v) (ℚ.·Assoc a c d) q<a*cd
 
   nnMul-assoc-≤RL :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →
@@ -160,7 +160,7 @@ module NonNegativeProperties {ℓ : Level} where
           subst (λ v → q ℚOrder.< v) (sym (ℚ.·Assoc a b d)) q<ab*d
 
   nnMul-assoc :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →
@@ -183,7 +183,7 @@ module NonNegativeProperties {ℓ : Level} where
       (nnMul-assoc-≤RL x y z 0≤x 0≤y 0≤z)
 
   nnMul-distribL-≤LR :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →
@@ -195,10 +195,10 @@ module NonNegativeProperties {ℓ : Level} where
   nnMul-distribL-≤LR x y z 0≤x 0≤y 0≤z q =
     Prop.rec squash₁ outer
     where
-    xy : DedekindCut ℓ
+    xy : DedekindReal ℓ
     xy = nnMul x y 0≤x 0≤y
 
-    xz : DedekindCut ℓ
+    xz : DedekindReal ℓ
     xz = nnMul x z 0≤x 0≤z
 
     0≤xy : xy ≥0
@@ -456,7 +456,7 @@ module NonNegativeProperties {ℓ : Level} where
         b∈Ly+z
 
   nnMul-distribL-≤RL :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →
@@ -468,19 +468,19 @@ module NonNegativeProperties {ℓ : Level} where
   nnMul-distribL-≤RL x y z 0≤x 0≤y 0≤z q =
     Prop.rec squash₁ outer
     where
-    yz : DedekindCut ℓ
+    yz : DedekindReal ℓ
     yz = y + z
 
     0≤yz : yz ≥0
     0≤yz = +-Pres≥0 y z 0≤y 0≤z
 
-    xy : DedekindCut ℓ
+    xy : DedekindReal ℓ
     xy = nnMul x y 0≤x 0≤y
 
-    xz : DedekindCut ℓ
+    xz : DedekindReal ℓ
     xz = nnMul x z 0≤x 0≤z
 
-    x-yz : DedekindCut ℓ
+    x-yz : DedekindReal ℓ
     x-yz = nnMul x yz 0≤x 0≤yz
 
     y≤yz : y ≤ yz
@@ -722,7 +722,7 @@ module NonNegativeProperties {ℓ : Level} where
       split-products r s r∈Lxy s∈Lxz q<r+s
 
   nnMul-distribL :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →
@@ -741,7 +741,7 @@ module NonNegativeProperties {ℓ : Level} where
       (nnMul-distribL-≤RL x y z 0≤x 0≤y 0≤z)
 
   nnMul-distribR :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     (0≤z : z ≥0) →

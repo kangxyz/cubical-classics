@@ -1,14 +1,14 @@
 {-
 
-Unit laws for constructive Dedekind-cut multiplication.
+Unit laws for constructive Dedekind-real multiplication.
 
-This module is kept separate from Constructive.DedekindCut.Arithmetic so the main
+This module is kept separate from Constructive.DedekindReals.Arithmetic so the main
 arithmetic development remains quick to typecheck while the unit-law estimates
 are developed in smaller pieces.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.Unit where
+module Constructive.DedekindReals.Arithmetic.Unit where
 
 open import Cubical.Foundations.Prelude
 
@@ -20,9 +20,9 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.AdditiveGroup
 import Constructive.Rationals as ℚExtra
 
 
@@ -37,7 +37,7 @@ module UnitProperties {ℓ : Level} where
 
   abstract
     nnMul-idR-lower⊆ :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       (0≤x : x ≥0) →
       nnMulLower x 1𝔻 ⊆ lower x
     nnMul-idR-lower⊆ x 0≤x q =
@@ -52,7 +52,7 @@ module UnitProperties {ℓ : Level} where
               a∈Lx)
 
     nnMul-idR-lower⊇-≥0 :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       (q : ℚ) →
       ℚExtra.0ℚ ℚOrder.≤ q →
       q ∈ lower x →
@@ -77,7 +77,7 @@ module UnitProperties {ℓ : Level} where
         ∣₁
 
     nnMul-idR-lower⊇ :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       (0≤x : x ≥0) →
       lower x ⊆ nnMulLower x 1𝔻
     nnMul-idR-lower⊇ x 0≤x q q∈Lx with ℚExtra.negative-or-nonnegative q
@@ -87,7 +87,7 @@ module UnitProperties {ℓ : Level} where
       nnMul-idR-lower⊇-≥0 x q 0≤q q∈Lx
 
     nnMul-idR-upper⊆ :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       nnMulUpper x 1𝔻 ⊆ upper x
     nnMul-idR-upper⊆ x q (0<q , q∈U) =
       Prop.rec (isProp∈ (upper x) q)
@@ -100,7 +100,7 @@ module UnitProperties {ℓ : Level} where
         q∈U
 
     nnMul-idR-upper⊇ :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       (0≤x : x ≥0) →
       upper x ⊆ nnMulUpper x 1𝔻
     nnMul-idR-upper⊇ x 0≤x q q∈Ux =
@@ -124,11 +124,11 @@ module UnitProperties {ℓ : Level} where
         ∣₁
 
   nnMul-idR :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     nnMul x 1𝔻 0≤x 1𝔻≥0 ≡ x
   nnMul-idR x 0≤x =
-    cutExt
+    realExt
       (nnMul x 1𝔻 0≤x 1𝔻≥0)
       x
       (nnMul-idR-lower⊆ x 0≤x)
@@ -137,7 +137,7 @@ module UnitProperties {ℓ : Level} where
       (nnMul-idR-upper⊇ x 0≤x)
 
   nnMul-idL :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     nnMul 1𝔻 x 1𝔻≥0 0≤x ≡ x
   nnMul-idL x 0≤x =
@@ -145,7 +145,7 @@ module UnitProperties {ℓ : Level} where
     nnMul-idR x 0≤x
 
   *-idR-≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     x * 1𝔻 ≡ x
   *-idR-≥0 x 0≤x =
@@ -153,7 +153,7 @@ module UnitProperties {ℓ : Level} where
     nnMul-idR x 0≤x
 
   *-idL-≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     1𝔻 * x ≡ x
   *-idL-≥0 x 0≤x =
@@ -161,7 +161,7 @@ module UnitProperties {ℓ : Level} where
     *-idR-≥0 x 0≤x
 
   *-idR-positive-negative-form :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x * 1𝔻 ≡ posPart x + (- negPart x)
   *-idR-positive-negative-form x =
     *-r≥0-form x 1𝔻 1𝔻≥0 ∙
@@ -171,14 +171,14 @@ module UnitProperties {ℓ : Level} where
 
   abstract
     posPart≤x+negPart :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       posPart x ≤ x + negPart x
     posPart≤x+negPart x =
       ⊔≤ x 0𝔻 (x + negPart x)
         x≤x+n
         0≤x+n
       where
-      n : DedekindCut ℓ
+      n : DedekindReal ℓ
       n = negPart x
 
       x≤x+n : x ≤ x + n
@@ -202,7 +202,7 @@ module UnitProperties {ℓ : Level} where
           x+-x≤x+n
 
     x+negPart≤posPart :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       x + negPart x ≤ posPart x
     x+negPart≤posPart x q =
       Prop.rec (isProp∈ (lower (posPart x)) q) step
@@ -258,7 +258,7 @@ module UnitProperties {ℓ : Level} where
             lower-closed x q r q<r r∈Lx
 
     positive-negative-decomposition :
-      (x : DedekindCut ℓ) →
+      (x : DedekindReal ℓ) →
       posPart x + (- negPart x) ≡ x
     positive-negative-decomposition x =
       cong (_+ (- n))
@@ -267,18 +267,18 @@ module UnitProperties {ℓ : Level} where
           (x+negPart≤posPart x)) ∙
       plus-minus-cancelR x n
       where
-      n : DedekindCut ℓ
+      n : DedekindReal ℓ
       n = negPart x
 
   *-idR :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x * 1𝔻 ≡ x
   *-idR x =
     *-idR-positive-negative-form x ∙
     positive-negative-decomposition x
 
   *-idL :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     1𝔻 * x ≡ x
   *-idL x =
     *-comm 1𝔻 x ∙

@@ -1,14 +1,14 @@
 {-
 
-Order compatibility for constructive Dedekind-cut arithmetic.
+Order compatibility for constructive Dedekind-real arithmetic.
 
 These lemmas are the remaining non-classical order facts needed to package
-Dedekind cuts as an ordered commutative ring.  The proofs use the located cut
+Dedekind reals as an ordered commutative ring.  The proofs use the located cut
 structure and propositional truncation, but no trichotomy for reals.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.DedekindCut.Arithmetic.Order where
+module Constructive.DedekindReals.Arithmetic.Order where
 
 open import Cubical.Foundations.Prelude
 
@@ -23,11 +23,11 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 import Cubical.Functions.Logic as L
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
-open import Constructive.DedekindCut.Arithmetic.Distributivity
-open import Constructive.DedekindCut.Arithmetic.Negation
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.AdditiveGroup
+open import Constructive.DedekindReals.Arithmetic.Distributivity
+open import Constructive.DedekindReals.Arithmetic.Negation
 import Constructive.Rationals as ℚExtra
 
 
@@ -42,19 +42,19 @@ module OrderProperties {ℓ : Level} where
   open NegationProperties {ℓ}
   open MultiplicationDistributivity {ℓ}
 
-  _>0 : DedekindCut ℓ → Type ℓ
+  _>0 : DedekindReal ℓ → Type ℓ
   x >0 = 0𝔻 < x
 
   infix 4 _>0
 
   >0→≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x >0 →
     x ≥0
   >0→≥0 x = <→≤ 0𝔻 x
 
   ∃lower>0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x >0 →
     ∥ Σ[ q ∈ ℚ ] (ℚExtra.0ℚ ℚOrder.< q) × (q ∈ lower x) ∥₁
   ∃lower>0 x =
@@ -63,7 +63,7 @@ module OrderProperties {ℓ : Level} where
         ∣ q , Lift.lower 0<q , q∈Lx ∣₁)
 
   nnMul-Pres>0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (0≤x : x ≥0) →
     (0≤y : y ≥0) →
     x >0 →
@@ -88,7 +88,7 @@ module OrderProperties {ℓ : Level} where
       (∃lower>0 y 0<y)
 
   *-Pres>0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x >0 →
     y >0 →
     (x * y) >0
@@ -103,7 +103,7 @@ module OrderProperties {ℓ : Level} where
     0≤y = >0→≥0 y 0<y
 
   Diff>0 :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x < y →
     (y + (- x)) >0
   Diff>0 x y x<y =
@@ -112,7 +112,7 @@ module OrderProperties {ℓ : Level} where
       (+-monoR-< x y (- x) x<y)
 
   Diff>0→< :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (y + (- x)) >0 →
     x < y
   Diff>0→< x y 0<y-x =
@@ -122,14 +122,14 @@ module OrderProperties {ℓ : Level} where
       (+-monoR-< 0𝔻 (y + (- x)) x 0<y-x)
 
   *-right-difference :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     (y + (- x)) * z ≡ (y * z) + (- (x * z))
   *-right-difference x y z =
     *-distribR y (- x) z ∙
     cong₂ _+_ refl (*-negL x z)
 
   *-rPosPres< :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     z >0 →
     x < y →
     (x * z) < (y * z)
@@ -139,7 +139,7 @@ module OrderProperties {ℓ : Level} where
         (*-Pres>0 (y + (- x)) z (Diff>0 x y x<y) 0<z))
 
   lower>0→>0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (q : ℚ) →
     ℚExtra.0ℚ ℚOrder.< q →
     q ∈ lower x →
@@ -150,7 +150,7 @@ module OrderProperties {ℓ : Level} where
       (lower→ℚ< x q q∈Lx)
 
   posSum→pos∨pos :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     (x + y) >0 →
     (x >0) L.⊔′ (y >0)
   posSum→pos∨pos x y =

@@ -1,6 +1,6 @@
 {-
 
-The Universal Property of Dedekind Cuts
+The universal property of classical Dedekind cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

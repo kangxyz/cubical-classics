@@ -1,6 +1,6 @@
 {-
 
-Additive group lemmas for constructive Dedekind cuts.
+Additive group lemmas for constructive Dedekind reals.
 
 These are separated from the main arithmetic file so the later multiplication
 laws can reuse ordinary abelian-group algebra without duplicating path
@@ -8,14 +8,14 @@ calculations.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.AdditiveGroup where
+module Constructive.DedekindReals.Arithmetic.AdditiveGroup where
 
 open import Cubical.Foundations.Prelude
 
 open import Cubical.Algebra.AbGroup
 open import Cubical.Algebra.Group
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
 
 
 module AdditiveGroup {ℓ : Level} where
@@ -24,55 +24,55 @@ module AdditiveGroup {ℓ : Level} where
 
   DedekindAbGroup : AbGroup (ℓ-suc ℓ)
   DedekindAbGroup =
-    makeAbGroup 0𝔻 _+_ (-_) isSetDedekindCut
+    makeAbGroup 0𝔻 _+_ (-_) isSetDedekindReal
       +-assoc +-idR +-invR +-comm
 
   module DedekindAbGroupTheory = AbGroupTheory DedekindAbGroup
   module DedekindGroupTheory = GroupTheory (AbGroup→Group DedekindAbGroup)
 
   +-interchange :
-    (a b c d : DedekindCut ℓ) →
+    (a b c d : DedekindReal ℓ) →
     (a + b) + (c + d) ≡ (a + c) + (b + d)
   +-interchange =
     DedekindAbGroupTheory.comm-4
 
   +-cancelR :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     x + z ≡ y + z →
     x ≡ y
   +-cancelR x y z =
     DedekindGroupTheory.·CancelR z
 
   +-cancelL :
-    (x y z : DedekindCut ℓ) →
+    (x y z : DedekindReal ℓ) →
     z + x ≡ z + y →
     x ≡ y
   +-cancelL x y z =
     DedekindGroupTheory.·CancelL z
 
   inverse-uniqueR :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x + y ≡ 0𝔻 →
     - x ≡ y
   inverse-uniqueR x y x+y≡0 =
     sym (DedekindGroupTheory.invUniqueR x+y≡0)
 
   inverse-uniqueL :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     y + x ≡ 0𝔻 →
     - x ≡ y
   inverse-uniqueL x y y+x≡0 =
     sym (DedekindGroupTheory.invUniqueL y+x≡0)
 
   neg-add :
-    (a b : DedekindCut ℓ) →
+    (a b : DedekindReal ℓ) →
     - (a + b) ≡ (- a) + (- b)
   neg-add a b =
     DedekindGroupTheory.invDistr a b ∙
     +-comm (- b) (- a)
 
   neg-difference-swap :
-    (a b : DedekindCut ℓ) →
+    (a b : DedekindReal ℓ) →
     - (a + (- b)) ≡ b + (- a)
   neg-difference-swap a b =
     neg-add a (- b) ∙
@@ -80,13 +80,13 @@ module AdditiveGroup {ℓ : Level} where
     +-comm (- a) b
 
   difference-neg-swap :
-    (a b : DedekindCut ℓ) →
+    (a b : DedekindReal ℓ) →
     a + (- b) ≡ - (b + (- a))
   difference-neg-swap a b =
     sym (neg-difference-swap b a)
 
   plus-minus-cancelR :
-    (x n : DedekindCut ℓ) →
+    (x n : DedekindReal ℓ) →
     (x + n) + (- n) ≡ x
   plus-minus-cancelR x n =
     sym (+-assoc x n (- n)) ∙
@@ -94,7 +94,7 @@ module AdditiveGroup {ℓ : Level} where
     +-idR x
 
   minus-plus-cancelR :
-    (x n : DedekindCut ℓ) →
+    (x n : DedekindReal ℓ) →
     (x + (- n)) + n ≡ x
   minus-plus-cancelR x n =
     sym (+-assoc x (- n) n) ∙
@@ -102,14 +102,14 @@ module AdditiveGroup {ℓ : Level} where
     +-idR x
 
   sum-differences :
-    (a b c d : DedekindCut ℓ) →
+    (a b c d : DedekindReal ℓ) →
     (a + (- b)) + (c + (- d)) ≡ (a + c) + (- (b + d))
   sum-differences a b c d =
     +-interchange a (- b) c (- d) ∙
     cong ((a + c) +_) (sym (neg-add b d))
 
   difference-eq→cross-sum :
-    (a b c d : DedekindCut ℓ) →
+    (a b c d : DedekindReal ℓ) →
     a + (- b) ≡ c + (- d) →
     a + d ≡ c + b
   difference-eq→cross-sum a b c d diff-path =
@@ -131,7 +131,7 @@ module AdditiveGroup {ℓ : Level} where
       +-idR (c + b)
 
   cross-sum→difference-eq :
-    (a b c d : DedekindCut ℓ) →
+    (a b c d : DedekindReal ℓ) →
     a + d ≡ c + b →
     a + (- b) ≡ c + (- d)
   cross-sum→difference-eq a b c d cross-path =

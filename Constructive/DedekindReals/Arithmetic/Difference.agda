@@ -1,20 +1,20 @@
 {-
 
-Multiplication by a nonnegative Dedekind cut respects difference
+Multiplication by a nonnegative Dedekind real respects difference
 representations.  This is the Grothendieck-style bridge from the nonnegative
 semiring laws to signed multiplication laws.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.DedekindCut.Arithmetic.Difference where
+module Constructive.DedekindReals.Arithmetic.Difference where
 
 open import Cubical.Foundations.Prelude
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.AdditiveGroup
-open import Constructive.DedekindCut.Arithmetic.NonNegative
-open import Constructive.DedekindCut.Arithmetic.Unit
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.AdditiveGroup
+open import Constructive.DedekindReals.Arithmetic.NonNegative
+open import Constructive.DedekindReals.Arithmetic.Unit
 
 
 module DifferenceProperties {ℓ : Level} where
@@ -28,7 +28,7 @@ module DifferenceProperties {ℓ : Level} where
   open UnitProperties {ℓ}
 
   nnMul-difference-congR :
-    (a b c d n : DedekindCut ℓ) →
+    (a b c d n : DedekindReal ℓ) →
     (0≤a : a ≥0) →
     (0≤b : b ≥0) →
     (0≤c : c ≥0) →
@@ -81,7 +81,7 @@ module DifferenceProperties {ℓ : Level} where
       nnMul-distribR c b n 0≤c 0≤b 0≤n
 
   sum-decomposition :
-    (x y : DedekindCut ℓ) →
+    (x y : DedekindReal ℓ) →
     x + y ≡
     (posPart x + posPart y) +
     (- (negPart x + negPart y))
@@ -96,7 +96,7 @@ module DifferenceProperties {ℓ : Level} where
       (negPart y)
 
   rMul≥0-difference :
-    (x a b n : DedekindCut ℓ) →
+    (x a b n : DedekindReal ℓ) →
     (0≤a : a ≥0) →
     (0≤b : b ≥0) →
     (0≤n : n ≥0) →
@@ -119,7 +119,7 @@ module DifferenceProperties {ℓ : Level} where
       (positive-negative-decomposition x ∙ x≡a-b)
 
   *-distribR-≥0 :
-    (x y n : DedekindCut ℓ) →
+    (x y n : DedekindReal ℓ) →
     (0≤n : n ≥0) →
     (x + y) * n ≡ (x * n) + (y * n)
   *-distribR-≥0 x y n 0≤n =

@@ -3,7 +3,7 @@
 reciprocal >0 cuts for constructive Dedekind reals.
 
 For a positive cut `x`, the reciprocal is defined by the standard rational
-Dedekind cut:
+Dedekind real:
 
   q < 1/x  iff  q < 0 or q < 1/u for some positive upper bound u of x
   1/x < q  iff  q > 0 and 1/l < q for some positive lower bound l of x
@@ -13,7 +13,7 @@ the input proof `0𝔻 < x`.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.DedekindCut.Arithmetic.Inverse where
+module Constructive.DedekindReals.Arithmetic.Inverse where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -28,10 +28,10 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 open import Cubical.Relation.Nullary using (¬_)
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.Negation
-open import Constructive.DedekindCut.Arithmetic.Order
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.Negation
+open import Constructive.DedekindReals.Arithmetic.Order
 import Constructive.Rationals as ℚExtra
 
 
@@ -45,63 +45,63 @@ module Inverse {ℓ : Level} where
   open NegationProperties {ℓ}
   open OrderProperties {ℓ}
 
-  InvLowerWitness : DedekindCut ℓ → ℚ → Type ℓ
+  InvLowerWitness : DedekindReal ℓ → ℚ → Type ℓ
   InvLowerWitness x q =
     Σ[ u ∈ ℚ ]
       (u ∈ upper x) ×
       (Σ[ 0<u ∈ ℚExtra.0ℚ ℚOrder.< u ]
         q ℚOrder.< ℚExtra.posInv u 0<u)
 
-  InvUpperWitness : DedekindCut ℓ → ℚ → Type ℓ
+  InvUpperWitness : DedekindReal ℓ → ℚ → Type ℓ
   InvUpperWitness x q =
     Σ[ l ∈ ℚ ]
       (l ∈ lower x) ×
       (Σ[ 0<l ∈ ℚExtra.0ℚ ℚOrder.< l ]
         ℚExtra.posInv l 0<l ℚOrder.< q)
 
-  invLower : DedekindCut ℓ → ℚPred ℓ
+  invLower : DedekindReal ℓ → ℚPred ℓ
   invLower x q =
     ∥ (q ℚOrder.< ℚExtra.0ℚ) ⊎ InvLowerWitness x q ∥₁ ,
     squash₁
 
-  invUpper : DedekindCut ℓ → ℚPred ℓ
+  invUpper : DedekindReal ℓ → ℚPred ℓ
   invUpper x q =
     (ℚExtra.0ℚ ℚOrder.< q) × ∥ InvUpperWitness x q ∥₁ ,
     isProp× (ℚOrder.isProp< ℚExtra.0ℚ q) squash₁
 
   inv-lower-negative :
-    (x : DedekindCut ℓ) (q : ℚ) →
+    (x : DedekindReal ℓ) (q : ℚ) →
     q ℚOrder.< ℚExtra.0ℚ →
     q ∈ invLower x
   inv-lower-negative x q q<0 = ∣ Sum.inl q<0 ∣₁
 
   inv-lower-witness :
-    (x : DedekindCut ℓ) (q : ℚ) →
+    (x : DedekindReal ℓ) (q : ℚ) →
     InvLowerWitness x q →
     q ∈ invLower x
   inv-lower-witness x q w = ∣ Sum.inr w ∣₁
 
   inv-upper-witness :
-    (x : DedekindCut ℓ) (q : ℚ) →
+    (x : DedekindReal ℓ) (q : ℚ) →
     ℚExtra.0ℚ ℚOrder.< q →
     InvUpperWitness x q →
     q ∈ invUpper x
   inv-upper-witness x q 0<q w = 0<q , ∣ w ∣₁
 
   upperBound>0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x >0 →
     ∥ Σ[ u ∈ ℚ ] (u ∈ upper x) × (ℚExtra.0ℚ ℚOrder.< u) ∥₁
   upperBound>0 x 0<x =
     ∃upper>0 x
 
-  isDedekindCutInv₊ :
-    (x : DedekindCut ℓ) →
+  isDedekindRealInv₊ :
+    (x : DedekindReal ℓ) →
     x >0 →
-    IsDedekindCut (invLower x) (invUpper x)
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.lower-inhabited =
+    IsDedekindReal (invLower x) (invUpper x)
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.lower-inhabited =
     ∣ ℚExtra.-1ℚ , inv-lower-negative x ℚExtra.-1ℚ ℚExtra.-1<0 ∣₁
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.upper-inhabited =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.upper-inhabited =
     Prop.rec squash₁
       (λ (l , 0<l , l∈Lx) →
         let
@@ -112,7 +112,7 @@ module Inverse {ℓ : Level} where
         in
         ∣ q , inv-upper-witness x q 0<q (l , l∈Lx , 0<l , invl<q) ∣₁)
       (∃lower>0 x 0<x)
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.lower-closed =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.lower-closed =
     λ p q p<q q∈L →
       Prop.rec squash₁
         (λ where
@@ -124,7 +124,7 @@ module Inverse {ℓ : Level} where
                  ℚOrder.isTrans< p q (ℚExtra.posInv u 0<u) p<q q<1/u)
             ∣₁)
         q∈L
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.upper-closed =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.upper-closed =
     λ p q p<q (0<p , p∈U) →
       ℚOrder.isTrans< ℚExtra.0ℚ p q 0<p p<q ,
       Prop.rec squash₁
@@ -133,7 +133,7 @@ module Inverse {ℓ : Level} where
             ℚOrder.isTrans< (ℚExtra.posInv l 0<l) p q invl<p p<q
           ∣₁)
         p∈U
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.lower-rounded =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.lower-rounded =
     λ q q∈L →
       Prop.rec squash₁
         (λ where
@@ -150,7 +150,7 @@ module Inverse {ℓ : Level} where
                 ∣₁)
               (ℚExtra.dense {p = q} {q = ℚExtra.posInv u 0<u} q<1/u))
         q∈L
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.upper-rounded =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.upper-rounded =
     λ q (0<q , q∈U) →
       Prop.rec squash₁
         (λ (l , l∈Lx , 0<l , invl<q) →
@@ -164,7 +164,7 @@ module Inverse {ℓ : Level} where
               ∣ r , r<q , inv-upper-witness x r 0<r (l , l∈Lx , 0<l , invl<r) ∣₁)
             (ℚExtra.dense {p = ℚExtra.posInv l 0<l} {q = q} invl<q))
         q∈U
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.disjoint =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.disjoint =
     λ q q∈L (0<q , q∈U) →
       Prop.rec2 Empty.isProp⊥ (lower-upper q 0<q) q∈L q∈U
     where
@@ -192,7 +192,7 @@ module Inverse {ℓ : Level} where
           invl<q
           (ℚOrder.isTrans< q (ℚExtra.posInv u 0<u) (ℚExtra.posInv l 0<l)
             q<1/u invu<invl)
-  isDedekindCutInv₊ x 0<x .IsDedekindCut.located =
+  isDedekindRealInv₊ x 0<x .IsDedekindReal.located =
     λ p q p<q → located-inv p q p<q
     where
     lower-from-zero :
@@ -306,15 +306,15 @@ module Inverse {ℓ : Level} where
       ∣₁
 
   inv₊ :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x >0 →
-    DedekindCut ℓ
+    DedekindReal ℓ
   inv₊ x 0<x .lower = invLower x
   inv₊ x 0<x .upper = invUpper x
-  inv₊ x 0<x .isDedekindCut = isDedekindCutInv₊ x 0<x
+  inv₊ x 0<x .isDedekindReal = isDedekindRealInv₊ x 0<x
 
   inv₊≥0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0<x : x >0) →
     (inv₊ x 0<x) ≥0
   inv₊≥0 x 0<x q q<0 =
@@ -374,7 +374,7 @@ module Inverse {ℓ : Level} where
           1/l<b
 
   ·-rInv₊ :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     (0<x : x >0) →
     x * inv₊ x 0<x ≡ 1𝔻
   ·-rInv₊ x 0<x =
@@ -382,7 +382,7 @@ module Inverse {ℓ : Level} where
       (¬>→≤ (x * inv) 1𝔻 not-1<product)
       (¬>→≤ 1𝔻 (x * inv) not-product<1)
     where
-    inv : DedekindCut ℓ
+    inv : DedekindReal ℓ
     inv = inv₊ x 0<x
 
     0≤x : x ≥0
@@ -463,7 +463,7 @@ module Inverse {ℓ : Level} where
             (q∈Unn .snd))
 
   -Reverse<0 :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x < 0𝔻 →
     (- x) >0
   -Reverse<0 x x<0 =
@@ -471,11 +471,11 @@ module Inverse {ℓ : Level} where
       neg-0𝔻
       (neg-<-reverse x 0𝔻 x<0)
 
-  HasInv# : DedekindCut ℓ → Type (ℓ-suc ℓ)
-  HasInv# x = Σ[ y ∈ DedekindCut ℓ ] x * y ≡ 1𝔻
+  HasInv# : DedekindReal ℓ → Type (ℓ-suc ℓ)
+  HasInv# x = Σ[ y ∈ DedekindReal ℓ ] x * y ≡ 1𝔻
 
   inv# :
-    (x : DedekindCut ℓ) →
+    (x : DedekindReal ℓ) →
     x # 0𝔻 →
     HasInv# x
   inv# x (Sum.inr 0<x) =
@@ -489,5 +489,5 @@ module Inverse {ℓ : Level} where
     0<-x : (- x) >0
     0<-x = -Reverse<0 x x<0
 
-    nx⁻¹ : DedekindCut ℓ
+    nx⁻¹ : DedekindReal ℓ
     nx⁻¹ = inv₊ (- x) 0<-x

@@ -1,6 +1,6 @@
 {-
 
-Ordered commutative ring structure for constructive Dedekind cuts.
+Ordered commutative ring structure for constructive Dedekind reals.
 
 This package is deliberately weaker than the existing `StrictlyOrderedCommRing`
 interface used by ordered fields: it does not include trichotomy, so it remains
@@ -8,7 +8,7 @@ valid without LEM.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.DedekindCut.Arithmetic.OrderedCommRing where
+module Constructive.DedekindReals.Arithmetic.OrderedCommRing where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv
@@ -18,10 +18,10 @@ open import Cubical.Algebra.OrderedCommRing
 open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Cubical.Relation.Nullary
 
-open import Constructive.DedekindCut
-open import Constructive.DedekindCut.Arithmetic.Base
-open import Constructive.DedekindCut.Arithmetic.CommRing
-open import Constructive.DedekindCut.Arithmetic.Order
+open import Constructive.DedekindReals
+open import Constructive.DedekindReals.Arithmetic.Base
+open import Constructive.DedekindReals.Arithmetic.CommRing
+open import Constructive.DedekindReals.Arithmetic.Order
 
 
 module OrderedCommRingStructure {ℓ : Level} where
@@ -67,6 +67,6 @@ module OrderedCommRingStructure {ℓ : Level} where
     0𝔻<1𝔻
 
   DedekindOrderedCommRing : OrderedCommRing (ℓ-suc ℓ) ℓ
-  DedekindOrderedCommRing .fst = DedekindCut ℓ
+  DedekindOrderedCommRing .fst = DedekindReal ℓ
   DedekindOrderedCommRing .snd =
     orderedcommringstr 0𝔻 1𝔻 _+_ _*_ (-_) _<_ _≤_ DedekindIsOrderedCommRing

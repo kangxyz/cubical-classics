@@ -1,6 +1,6 @@
 {-
 
-Algebraic Operations on Dedekind Cuts
+Algebraic operations on classical Dedekind cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
