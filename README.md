@@ -1,12 +1,9 @@
-# ¬¬||🧊|| : Cubical Classics
+# Cubical Classics
 
-> From program halts in the tale,
-> towards program only *Übermensch* is able to run.
-
-The `cubical-classics` is an experimental Agda library for formalizing classical mathematics in cubical type theory.
-I hope someday it can present important ideas of modern mathematics eventually.
-
-Advice and contributions are welcomed!
+`cubical-classics` is an experimental Agda library for formalizing classical
+mathematics in Cubical Agda. It develops classical principles, impredicative
+powersets, ordered algebra, Dedekind cuts, and elementary real analysis on top
+of the Cubical Agda library.
 
 ## Dependencies
 
@@ -20,16 +17,30 @@ Known working setup:
 - Cubical Agda library `master`, tested at commit `9216603`
 
 Older Cubical releases, including the `v0.9` checkout, are not expected to
-work. In particular, this repository uses the newer `Cubical.Data.Int`,
-`Cubical.Data.Rationals`, and `Lift` APIs.
+work. In particular, this repository uses APIs from:
+
+- `Cubical.Axiom.Choice`, `Cubical.Axiom.ExcludedMiddle`, and
+  `Cubical.Axiom.Omniscience`;
+- `Cubical.Data.Int` and `Cubical.Data.Rationals`;
+- `Cubical.Algebra.OrderedCommRing` and `Cubical.Algebra.Field`;
+- the current `Lift` API.
+
+To type-check the library:
+
+```sh
+agda --build-library
+```
 
 ## Contents
 
 The library currently includes:
 
-- classical principles such as excluded middle, Diaconescu's theorem, choice principles,
-  and propositional resizing;
-- basic logical and natural-number lemmas used by the later developments;
+- a classical interface over Cubical's excluded middle, choice,
+  Diaconescu's theorem, and omniscience principles, plus local
+  propositional resizing;
+- basic logical and natural-number lemmas, with minimum search and LPO
+  wrappers built on Cubical's natural-number minimality and omniscience
+  machinery;
 - strictly ordered commutative rings built on Cubical's ordered
   commutative rings, with integer and rational instances;
 - ordered fields, ordered morphisms, Archimedean structures, and the
