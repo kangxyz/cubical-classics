@@ -50,9 +50,9 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open Oracle 🤖
 
-  open AbsoluteValue   (ℝCompleteOrderedField .fst .fst)
-  open OrderedFieldStr (ℝCompleteOrderedField .fst)
-  open CompleteOrderedField (ℝCompleteOrderedField .fst)
+  open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
+  open OrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open MacNeilleCompleteOrderedField (ℝMacNeilleCompleteOrderedField .fst)
 
 
   -- A continuous partial function defined on a subset of ℝ,
@@ -93,8 +93,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
       contΣ : Σ[ δ ∈ ℝ ] (δ > 0) × ((y : ℝ) ⦃ _ : y ∈ 𝔻 ⦄ → abs (x - y) < δ → abs (f .fun x - f .fun y) < ε)
       contΣ = findExplicit
-        (ℝCompleteOrderedField .fst)
-        (isComplete→isArchimedean (ℝCompleteOrderedField .snd))
+        (ℝMacNeilleCompleteOrderedField .fst)
+        (isMacNeilleComplete→isArchimedean (ℝMacNeilleCompleteOrderedField .snd))
         isPropCont (λ _ → decide (isPropCont _)) cont-<-close (f .cont x ε ε>0)
 
 
@@ -148,12 +148,12 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   findZero f f0<0 f1>0 = x₀ , x₀∈𝐈 , fx₀≡0
     where
 
-    open Helpers  (StrictlyOrderedCommRing→CommRing (ℝCompleteOrderedField .fst .fst))
+    open Helpers  (StrictlyOrderedCommRing→CommRing (ℝMacNeilleCompleteOrderedField .fst .fst))
 
-    open Extremum (ℝCompleteOrderedField .fst)
+    open Extremum (ℝMacNeilleCompleteOrderedField .fst)
     open Supremum
 
-    getSup = ℝCompleteOrderedField .snd
+    getSup = ℝMacNeilleCompleteOrderedField .snd
 
     f<0-prop : ℝ → hProp _
     f<0-prop x = (Σ[ x∈𝐈 ∈ x ∈ 𝐈 ] f .fun x ⦃ x∈𝐈 ⦄ < 0) , isPropΣ (isProp∈ 𝐈) (λ _ → isProp<)
@@ -190,7 +190,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       x₀<1 : x₀ < 1
       x₀<1 = case-split (trichotomy x₀ 1)
         where
-        case-split : Trichotomy (ℝCompleteOrderedField .fst .fst .fst) x₀ 1 → _
+        case-split : Trichotomy (ℝMacNeilleCompleteOrderedField .fst .fst .fst) x₀ 1 → _
         case-split (lt x₀<1) = x₀<1
         case-split (eq x₀≡1) = Empty.rec (<-asym f1>0 f1<0)
           where
@@ -233,7 +233,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       x₀>0 : x₀ > 0
       x₀>0 = case-split (trichotomy x₀ 0)
         where
-        case-split : Trichotomy (ℝCompleteOrderedField .fst .fst .fst) x₀ 0 → _
+        case-split : Trichotomy (ℝMacNeilleCompleteOrderedField .fst .fst .fst) x₀ 0 → _
         case-split (lt x₀<0) = Empty.rec (<≤-asym x₀<0 0≤x₀)
         case-split (eq x₀≡0) = Empty.rec (<-asym f0>0 f0<0)
           where
@@ -292,7 +292,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     fx₀≡0 : f .fun x₀ ≡ 0
     fx₀≡0 = case-split (trichotomy (f .fun x₀) 0)
       where
-      case-split : Trichotomy (ℝCompleteOrderedField .fst .fst .fst) (f .fun x₀) 0 → _
+      case-split : Trichotomy (ℝMacNeilleCompleteOrderedField .fst .fst .fst) (f .fun x₀) 0 → _
       case-split (lt fx₀<0) = Empty.rec (¬fx₀<0 fx₀<0)
       case-split (eq fx₀≡0) = fx₀≡0
       case-split (gt fx₀>0) = Empty.rec (¬fx₀>0 fx₀>0)

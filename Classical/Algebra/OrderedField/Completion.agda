@@ -1,11 +1,13 @@
 {-
 
-Completion of Archimedean Ordered Field
+MacNeille Completion of Archimedean Ordered Fields
 
-Warning: Though classically the procedure defined here is called Dedekind completion,
-constructively it is the MacNeille completion, which is different from the Dedekind one.
+The construction is by Dedekind cuts. Classically, for linear orders
+and ordered fields, MacNeille completeness is the usual Dedekind
+least-upper-bound completeness. Constructively, the MacNeille name
+keeps this apart from other Dedekind-cut completeness notions.
 
-TODO: Separating the completion procedure into construtive/classical parts,
+TODO: Separate the completion procedure into constructive/classical parts,
 as indicated in `https://github.com/kangrongji/cubical-classics/issues/10`.
 
 -}
@@ -29,12 +31,12 @@ private
 module Completion ⦃ 🤖 : Oracle ⦄
   (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 
-  open CompleteOrderedField
+  open MacNeilleCompleteOrderedField
   open CompletenessOfCuts 𝒦
   open UniversalProperty  𝒦
 
-  complete : CompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  complete = 𝕂CompleteOrderedField archimedes
+  complete : MacNeilleCompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  complete = 𝕂MacNeilleCompleteOrderedField archimedes
 
-  extend : (𝒦' : CompleteOrderedField ℓ'' ℓ''') → OrderedFieldHom 𝒦 (𝒦' .fst) → OrderedFieldHom (complete .fst) (𝒦' .fst)
+  extend : (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''') → OrderedFieldHom 𝒦 (𝒦' .fst) → OrderedFieldHom (complete .fst) (𝒦' .fst)
   extend = extendedOrderedFieldHom archimedes

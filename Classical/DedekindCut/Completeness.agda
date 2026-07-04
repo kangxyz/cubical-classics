@@ -1,6 +1,6 @@
 {-
 
-Dedekind Completion is Complete
+MacNeille Completeness of Dedekind Cuts
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
@@ -41,7 +41,7 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
   open Multiplication 𝒦 archimedes
   open DedekindCut
 
-  open CompleteOrderedField
+  open MacNeilleCompleteOrderedField
   open Extremum 𝕂OrderedField
   open Supremum
 
@@ -98,12 +98,12 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
 
   {-
 
-    Complete Ordered Field Instance
+    MacNeille Complete Ordered Field Instance
 
   -}
 
-  isComplete𝕂 : isComplete 𝕂OrderedField
-  isComplete𝕂 {A = A} =
+  isMacNeilleComplete𝕂 : isMacNeilleComplete 𝕂OrderedField
+  isMacNeilleComplete𝕂 {A = A} =
     Prop.rec2 (isPropSupremum A)
     (λ (a₀ , a₀∈A) (b , bound) →
       proof _ , isPropSupremum A by do
@@ -113,5 +113,5 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
         ; bound = boundSup𝕂 A a₀ a₀∈A s s∈x∈A
         ; least = leastSup𝕂 A a₀ a₀∈A s s∈x∈A })
 
-  𝕂CompleteOrderedField : CompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂CompleteOrderedField = 𝕂OrderedField , isComplete𝕂
+  𝕂MacNeilleCompleteOrderedField : MacNeilleCompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  𝕂MacNeilleCompleteOrderedField = 𝕂OrderedField , isMacNeilleComplete𝕂

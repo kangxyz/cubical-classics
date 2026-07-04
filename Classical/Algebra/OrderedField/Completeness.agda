@@ -1,14 +1,15 @@
 {-
 
-Dedekind/MacNeille Completeness of Ordered Field
+MacNeille Completeness of Ordered Fields
 
-We say an ordered field is complete, as in usually understood,
-if any inhabited and bounded above subset admits least upper bound.
+`isMacNeilleComplete` is the supremum principle for powersets:
+every inhabited subset with an upper bound has a least upper bound.
 
-Warning: Classically everything is well,
-but in constructive setting, this condition is called MacNeille completeness,
-and Dedekind completeness refers to another notion,
-c.f. `https://github.com/kangrongji/cubical-classics/issues/10`.
+For linearly ordered fields, this is the usual real-analysis
+Dedekind completeness, i.e. the least-upper-bound property. The name
+MacNeille is used here because the cut construction is the
+Dedekind-MacNeille completion of the underlying order. Constructively,
+this should be kept separate from other Dedekind-cut completeness notions.
 
 -}
 {-# OPTIONS --safe #-}
@@ -56,7 +57,7 @@ private
     helper1 _ _ = solve! 𝓡
 
 
-module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
+module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
 
   open Oracle 🤖
 
@@ -75,35 +76,35 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
 
   {-
 
-    The Supremum Principle / Dedekind Completeness
+    The Supremum Principle / MacNeille Completeness
 
   -}
 
-  isComplete : Type (ℓ-max ℓ ℓ')
-  isComplete = {A : ℙ K} → isInhabited A → isUpperBounded A → Supremum A
+  isMacNeilleComplete : Type (ℓ-max ℓ ℓ')
+  isMacNeilleComplete = {A : ℙ K} → isInhabited A → isUpperBounded A → Supremum A
 
-  isPropIsComplete : isProp isComplete
-  isPropIsComplete = isPropImplicitΠ (λ _ → isPropΠ2 (λ _ _ → isPropSupremum _))
-
-
-  isLowerComplete : Type (ℓ-max ℓ ℓ')
-  isLowerComplete = {A : ℙ K} → isInhabited A → isLowerBounded A → Infimum A
+  isPropIsMacNeilleComplete : isProp isMacNeilleComplete
+  isPropIsMacNeilleComplete = isPropImplicitΠ (λ _ → isPropΠ2 (λ _ _ → isPropSupremum _))
 
 
-  -- Equivalence of upper/lower completeness
+  isLowerMacNeilleComplete : Type (ℓ-max ℓ ℓ')
+  isLowerMacNeilleComplete = {A : ℙ K} → isInhabited A → isLowerBounded A → Infimum A
 
-  isComplete→isLowerComplete : isComplete → isLowerComplete
-  isComplete→isLowerComplete getSup inhab bound =
+
+  -- Equivalence of upper/lower MacNeille completeness
+
+  isMacNeilleComplete→isLowerMacNeilleComplete : isMacNeilleComplete → isLowerMacNeilleComplete
+  isMacNeilleComplete→isLowerMacNeilleComplete getSup inhab bound =
     Sup→Inf _ (getSup (isInhabited- _ inhab) (isLowerBounded→isUpperBounded _ bound))
 
-  isLowerComplete→isComplete : isLowerComplete → isComplete
-  isLowerComplete→isComplete getInf inhab bound =
+  isLowerMacNeilleComplete→isMacNeilleComplete : isLowerMacNeilleComplete → isMacNeilleComplete
+  isLowerMacNeilleComplete→isMacNeilleComplete getInf inhab bound =
     Inf→Sup _ (getInf (isInhabited- _ inhab) (isUpperBounded→isLowerBounded _ bound))
 
 
   {-
 
-    Completeness Implies the Archimedean Property
+    MacNeille Completeness Implies the Archimedean Property
 
   -}
 
@@ -111,7 +112,7 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
   private
 
     module _
-      (getSup : isComplete)(q ε : K)(ε>0 : ε > 0r)
+      (getSup : isMacNeilleComplete)(q ε : K)(ε>0 : ε > 0r)
       (insurmountable' : (n : ℕ) → ¬ n ⋆ ε > q)
       where
 
@@ -164,37 +165,37 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
         return (no-way' _ p>q-ε p∈A)
 
 
-  -- A complete ordered field is Archimedean.
+  -- A MacNeille complete ordered field is Archimedean.
 
-  isComplete→isArchimedean∥∥ : isComplete → isArchimedean∥∥ (𝒦 .fst)
-  isComplete→isArchimedean∥∥ getSup q ε ε>0 = ¬∀¬→∃ (no-way getSup q ε ε>0)
+  isMacNeilleComplete→isArchimedean∥∥ : isMacNeilleComplete → isArchimedean∥∥ (𝒦 .fst)
+  isMacNeilleComplete→isArchimedean∥∥ getSup q ε ε>0 = ¬∀¬→∃ (no-way getSup q ε ε>0)
 
-  isComplete→isArchimedean : isComplete → isArchimedean (𝒦 .fst)
-  isComplete→isArchimedean getSup = isArchimedean∥∥→isArchimedean (𝒦 .fst) (isComplete→isArchimedean∥∥ getSup)
+  isMacNeilleComplete→isArchimedean : isMacNeilleComplete → isArchimedean (𝒦 .fst)
+  isMacNeilleComplete→isArchimedean getSup = isArchimedean∥∥→isArchimedean (𝒦 .fst) (isMacNeilleComplete→isArchimedean∥∥ getSup)
 
 
 module _ ⦃ 🤖 : Oracle ⦄ where
 
-  open CompleteOrderedField
+  open MacNeilleCompleteOrderedField
 
-  CompleteOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-  CompleteOrderedField ℓ ℓ' = Σ[ 𝒦 ∈ OrderedField ℓ ℓ' ] isComplete 𝒦
+  MacNeilleCompleteOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
+  MacNeilleCompleteOrderedField ℓ ℓ' = Σ[ 𝒦 ∈ OrderedField ℓ ℓ' ] isMacNeilleComplete 𝒦
 
 
-  module CompleteOrderedFieldStr (𝒦 : CompleteOrderedField ℓ ℓ') where
+  module MacNeilleCompleteOrderedFieldStr (𝒦 : MacNeilleCompleteOrderedField ℓ ℓ') where
 
-  -- TODO: Basic corollaries of completeness.
+  -- TODO: Basic corollaries of MacNeille completeness.
 
 
   {-
 
-    Homomorphism between complete ordered fields
+    Homomorphism between MacNeille complete ordered fields
 
   -}
 
-  module CompleteOrderedFieldHom (f : OrderedFieldHom 𝒦 𝒦')
-    (getSup  : isComplete 𝒦 )
-    (getSup' : isComplete 𝒦')
+  module MacNeilleCompleteOrderedFieldHom (f : OrderedFieldHom 𝒦 𝒦')
+    (getSup  : isMacNeilleComplete 𝒦 )
+    (getSup' : isMacNeilleComplete 𝒦')
     where
 
     open OrderedFieldStr 𝒦
@@ -219,7 +220,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 
     findBetween : isDense
-    findBetween = isArchimedean→isDense (isComplete→isArchimedean _ getSup')
+    findBetween = isArchimedean→isDense (isMacNeilleComplete→isArchimedean _ getSup')
 
     open Extremum 𝒦
     open Supremum
@@ -237,14 +238,14 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         (r , fr<y) ←
           isUnbounded→isLowerUnbounded
           (isArchimedean→isUnbounded
-          (isComplete→isArchimedean _ getSup')) y
+          (isMacNeilleComplete→isArchimedean _ getSup')) y
         return (r , Inhab→∈ P fr<y)
 
       bounded-is-bounded : isUpperBounded bounded
       bounded-is-bounded = do
         (r , y<fr) ←
           isArchimedean→isUnbounded
-          (isComplete→isArchimedean _ getSup') y
+          (isMacNeilleComplete→isArchimedean _ getSup') y
         return (r , λ s s∈b →
           <-≤-weaken (homRefl< s r (<'-trans (∈→Inhab P s∈b) y<fr)))
 
@@ -275,26 +276,26 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     isSurjection-f : isSurjection f-map
     isSurjection-f y = ∣ _ , fiber-path y ∣₁
 
-    -- A homomorphism between complete ordered fields is always an isomorphism.
+    -- A homomorphism between MacNeille complete ordered fields is always an isomorphism.
 
     isEquiv-f : isEquiv f-map
     isEquiv-f = isEmbedding×isSurjection→isEquiv (isEmbedding-f , isSurjection-f)
 
-    isOrderedFieldEquivComplete : isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
-    isOrderedFieldEquivComplete = isEquiv-f
+    isOrderedFieldEquivMacNeilleComplete : isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
+    isOrderedFieldEquivMacNeilleComplete = isEquiv-f
 
 
   {-
 
-    SIP for Complete Ordered Field
+    SIP for MacNeille Complete Ordered Fields
 
   -}
 
-  open CompleteOrderedField
-  open CompleteOrderedFieldHom
+  open MacNeilleCompleteOrderedField
+  open MacNeilleCompleteOrderedFieldHom
 
-  uaCompleteOrderedField : (𝒦 𝒦' : CompleteOrderedField ℓ ℓ') → OrderedFieldHom (𝒦 .fst) (𝒦' .fst) → 𝒦 ≡ 𝒦'
-  uaCompleteOrderedField 𝒦 𝒦' f i .fst =
-    uaOrderedField {𝒦 = 𝒦 .fst} {𝒦' = 𝒦' .fst} {f = f} (isOrderedFieldEquivComplete f (𝒦 .snd) (𝒦' .snd)) i
-  uaCompleteOrderedField 𝒦 𝒦' f i .snd =
-    isProp→PathP (λ i → isPropIsComplete (uaCompleteOrderedField 𝒦 𝒦' f i .fst)) (𝒦 .snd) (𝒦' .snd) i
+  uaMacNeilleCompleteOrderedField : (𝒦 𝒦' : MacNeilleCompleteOrderedField ℓ ℓ') → OrderedFieldHom (𝒦 .fst) (𝒦' .fst) → 𝒦 ≡ 𝒦'
+  uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .fst =
+    uaOrderedField {𝒦 = 𝒦 .fst} {𝒦' = 𝒦' .fst} {f = f} (isOrderedFieldEquivMacNeilleComplete f (𝒦 .snd) (𝒦' .snd)) i
+  uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .snd =
+    isProp→PathP (λ i → isPropIsMacNeilleComplete (uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .fst)) (𝒦 .snd) (𝒦' .snd) i

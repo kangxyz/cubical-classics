@@ -51,19 +51,19 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open Oracle 🤖
 
-  open OrderedFieldStr (ℝCompleteOrderedField .fst)
-  open AbsoluteValue   (ℝCompleteOrderedField .fst .fst)
+  open OrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
   open Metric   ℝMetric
 
-  open CompleteOrderedField (ℝCompleteOrderedField .fst)
-  open Extremum        (ℝCompleteOrderedField .fst)
+  open MacNeilleCompleteOrderedField (ℝMacNeilleCompleteOrderedField .fst)
+  open Extremum        (ℝMacNeilleCompleteOrderedField .fst)
   open Supremum
 
   open Limit
   open ClusterPoint
 
   private
-    getSup = ℝCompleteOrderedField .snd
+    getSup = ℝMacNeilleCompleteOrderedField .snd
 
 
   {-

@@ -38,8 +38,8 @@ open import Classical.Topology.Metric
 
 module _ ⦃ 🤖 : Oracle ⦄ where
 
-  open AbsoluteValue   (ℝCompleteOrderedField .fst .fst)
-  open OrderedFieldStr (ℝCompleteOrderedField .fst)
+  open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
+  open OrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open Topology
   open Metric
 
@@ -132,10 +132,10 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
       module _ {𝒰 : ℙ ℙ ℝ}(𝒰cov𝐈 : 𝒰 covers [ a , b ]) where
 
-        open Extremum (ℝCompleteOrderedField .fst)
+        open Extremum (ℝMacNeilleCompleteOrderedField .fst)
         open Supremum
 
-        getSup = ℝCompleteOrderedField .snd
+        getSup = ℝMacNeilleCompleteOrderedField .snd
 
         cov-prop : ℝ → hProp _
         cov-prop x =

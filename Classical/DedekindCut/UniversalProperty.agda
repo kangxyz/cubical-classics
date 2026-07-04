@@ -58,10 +58,10 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
   open Oracle 🤖
 
-  open CompleteOrderedField
+  open MacNeilleCompleteOrderedField
 
   module _
-    (𝒦' : CompleteOrderedField ℓ'' ℓ''')(f : OrderedFieldHom 𝒦 (𝒦' .fst)) where
+    (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''')(f : OrderedFieldHom 𝒦 (𝒦' .fst)) where
 
 
     open OrderedFieldStr 𝒦
@@ -114,7 +114,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
       f-map = ring-hom .fst
 
     getSup = 𝒦' .snd
-    findBetween = isArchimedean→isDense (isComplete→isArchimedean _ (𝒦' .snd))
+    findBetween = isArchimedean→isDense (isMacNeilleComplete→isArchimedean _ (𝒦' .snd))
 
     open Extremum (𝒦' .fst)
     open Supremum

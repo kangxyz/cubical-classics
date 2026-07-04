@@ -33,12 +33,13 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   module AxiomsOfRealNumber where
 
-    open CompleteOrderedField
+    open MacNeilleCompleteOrderedField
 
-    -- The real numbers form a complete ordered field, as usual in classical mathematics.
+    -- The real numbers form a MacNeille complete ordered field.
+    -- Classically this is the usual Dedekind-complete ordered field axiom.
 
     Reals : Type (ℓ-suc ℓ-zero)
-    Reals = CompleteOrderedField ℓ-zero ℓ-zero
+    Reals = MacNeilleCompleteOrderedField ℓ-zero ℓ-zero
 
     open InclusionFromℚ
     open Completion ℚOrderedField isArchimedeanℚ
@@ -47,7 +48,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     isContrReals : isContr Reals
     isContrReals .fst = complete
-    isContrReals .snd 𝒦 i = uaCompleteOrderedField complete 𝒦 (extend 𝒦 (ℚ→KOrderedFieldHom (𝒦 .fst))) i
+    isContrReals .snd 𝒦 i = uaMacNeilleCompleteOrderedField complete 𝒦 (extend 𝒦 (ℚ→KOrderedFieldHom (𝒦 .fst))) i
 
 
 {-
@@ -58,22 +59,22 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open AxiomsOfRealNumber
 
-  open CompleteOrderedField
+  open MacNeilleCompleteOrderedField
   open InclusionFromℚ
   open OrderedCommRingHom
 
 
   abstract
 
-    ℝCompleteOrderedField : CompleteOrderedField ℓ-zero ℓ-zero
-    ℝCompleteOrderedField = isContrReals .fst
+    ℝMacNeilleCompleteOrderedField : MacNeilleCompleteOrderedField ℓ-zero ℓ-zero
+    ℝMacNeilleCompleteOrderedField = isContrReals .fst
 
-    ℚ→ℝOrderedFieldHom : OrderedFieldHom ℚOrderedField (ℝCompleteOrderedField .fst)
-    ℚ→ℝOrderedFieldHom = ℚ→KOrderedFieldHom (ℝCompleteOrderedField .fst)
+    ℚ→ℝOrderedFieldHom : OrderedFieldHom ℚOrderedField (ℝMacNeilleCompleteOrderedField .fst)
+    ℚ→ℝOrderedFieldHom = ℚ→KOrderedFieldHom (ℝMacNeilleCompleteOrderedField .fst)
 
 
   ℝ : Type
-  ℝ = ℝCompleteOrderedField .fst .fst .fst .fst
+  ℝ = ℝMacNeilleCompleteOrderedField .fst .fst .fst .fst
 
   ℚ→ℝ : ℚ → ℝ
   ℚ→ℝ = ℚ→ℝOrderedFieldHom .ring-hom .fst
@@ -81,7 +82,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -- Natural number and negative integer literals for ℝ
 
-  open StrictlyOrderedCommRingStr (ℝCompleteOrderedField .fst .fst)
+  open StrictlyOrderedCommRingStr (ℝMacNeilleCompleteOrderedField .fst .fst)
 
   instance
     fromNatℝ : HasFromNat ℝ

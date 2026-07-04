@@ -5,7 +5,7 @@
 
 `cubical-classics` is an experimental Agda library for doing classical
 mathematics in Cubical Agda. It develops classical principles, ordered algebra,
-Dedekind cuts, real numbers, and some basic real analysis.
+Dedekind cuts, MacNeille-complete real numbers, and some basic real analysis.
 
 We are open to advice and contributions!
 
@@ -42,8 +42,8 @@ agda --build-library
   `ℤ` and `ℚ` instances.
 - `Classical/` is for the axiom interface and the parts that use it:
   powersets, topology, the real numbers, and real analysis.
-- `Classical/DedekindCut/` contains the Dedekind-cut construction as its own
-  topic.
+- `Classical/DedekindCut/` contains the Dedekind-cut construction, used here as
+  the MacNeille completion of an Archimedean ordered field.
 - `Solvers/` contains small Boolean, propositional, and powerset solvers used
   by the powerset development.
 
@@ -63,8 +63,9 @@ At the moment the library has:
 - small Boolean/propositional and powerset solvers;
 - topological spaces, neighbourhoods, Hausdorff spaces, compactness, and
   metric spaces;
-- Dedekind cuts and the construction of the real numbers as a complete
-  Archimedean ordered field;
+- Dedekind cuts and the construction of the real numbers as a MacNeille
+  complete Archimedean ordered field; classically, this is the usual
+  least-upper-bound (Dedekind) completeness;
 - elementary real analysis, including sequences, Cauchy convergence,
   monotone convergence, Bolzano-Weierstrass, Heine-Borel, and the
   intermediate value theorem.

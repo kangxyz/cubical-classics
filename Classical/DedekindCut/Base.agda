@@ -77,7 +77,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
   open DedekindCut
 
 
-  -- Dedekind Completion of K
+  -- The cut carrier for the MacNeille completion of K
 
   𝕂 : Type (ℓ-max ℓ ℓ')
   𝕂 = DedekindCut
