@@ -1,10 +1,8 @@
 {-
 
-Additive group lemmas for constructive Dedekind reals.
+Additive group lemmas for constructive Dedekind reals
 
-These are separated from the main arithmetic file so the later multiplication
-laws can reuse ordinary abelian-group algebra without duplicating path
-calculations.
+The later multiplication laws reuse these ordinary abelian-group calculations.
 
 -}
 {-# OPTIONS --safe #-}

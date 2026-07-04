@@ -1,8 +1,8 @@
 {-
 
-Constructive order lemmas for Cubical's quotient rationals.
+Constructive order lemmas for Cubical's quotient rationals
 
-These are prerequisites for the Dedekind-real embedding and algebra.
+Prerequisites for the Dedekind-real embedding and algebra.
 
 -}
 {-# OPTIONS --safe #-}

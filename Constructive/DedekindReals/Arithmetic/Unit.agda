@@ -1,10 +1,8 @@
 {-
 
-Unit laws for constructive Dedekind-real multiplication.
+Unit laws for constructive Dedekind-real multiplication
 
-This module is kept separate from Constructive.DedekindReals.Arithmetic so the main
-arithmetic development remains quick to typecheck while the unit-law estimates
-are developed in smaller pieces.
+The unit-law estimates are kept separate from the main arithmetic entry point.
 
 -}
 {-# OPTIONS --safe #-}

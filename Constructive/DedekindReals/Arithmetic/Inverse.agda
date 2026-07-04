@@ -1,6 +1,6 @@
 {-
 
-reciprocal >0 cuts for constructive Dedekind reals.
+Reciprocal cuts for positive constructive Dedekind reals
 
 For a positive cut `x`, the reciprocal is defined by the standard rational
 Dedekind real:
@@ -8,8 +8,7 @@ Dedekind real:
   q < 1/x  iff  q < 0 or q < 1/u for some positive upper bound u of x
   1/x < q  iff  q > 0 and 1/l < q for some positive lower bound l of x
 
-The definition and cut laws are constructive; the sign information comes from
-the input proof `0𝔻 < x`.
+The sign information comes from the input proof `0𝔻 < x`.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

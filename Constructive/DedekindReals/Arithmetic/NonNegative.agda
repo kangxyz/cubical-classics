@@ -1,10 +1,8 @@
 {-
 
-Algebraic laws for nonnegative Dedekind-real multiplication.
+Algebraic laws for nonnegative Dedekind-real multiplication
 
-The proofs here are kept apart from the construction of multiplication itself.
-They use order antisymmetry, so only lower inclusions are needed for equality
-of cuts.
+Order antisymmetry reduces equality of cuts to lower inclusions.
 
 -}
 {-# OPTIONS --safe #-}

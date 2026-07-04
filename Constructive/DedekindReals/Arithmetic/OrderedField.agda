@@ -1,11 +1,11 @@
 {-
 
-Constructive apartness-field packaging for Dedekind reals.
+Constructive apartness-field structure for Dedekind reals
 
 Cubical's `Field` record asks for inverses from mere inequality `x != 0`.
 Constructively, Dedekind reals provide inverses from apartness `x # 0`
-instead.  This module packages exactly that LEM-free field content together
-with the ordered commutative ring structure.
+instead.  The structure below packages that LEM-free field content with the
+ordered commutative ring structure.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

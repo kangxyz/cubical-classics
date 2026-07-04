@@ -1,6 +1,6 @@
 {-
 
-Full signed associativity for constructive Dedekind-real multiplication.
+Full signed associativity for constructive Dedekind-real multiplication
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

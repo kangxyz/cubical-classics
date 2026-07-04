@@ -1,6 +1,6 @@
 {-
 
-Commutative ring packaging for constructive Dedekind reals.
+Commutative ring structure for constructive Dedekind reals
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

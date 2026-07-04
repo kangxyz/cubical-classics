@@ -1,11 +1,10 @@
 {-
 
-Constructive Dedekind completeness for constructive Dedekind reals.
+Constructive Dedekind completeness for constructive Dedekind reals
 
-This module proves the representation form of Dedekind completeness: a
-located cut whose elements are Dedekind reals is represented by a unique
-Dedekind real.  No LEM or resizing is used here; the Oracle-based classical
-MacNeille bridge belongs outside this constructive namespace.
+Dedekind completeness is stated in representation form: every located cut of
+Dedekind reals is represented by a unique Dedekind real.  No LEM or resizing
+is used here.
 
 -}
 {-# OPTIONS --safe #-}

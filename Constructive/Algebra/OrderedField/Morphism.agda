@@ -1,10 +1,8 @@
 {-
 
-Morphisms between constructive ordered fields.
+Morphisms between constructive ordered fields
 
-For now these are just homomorphisms of the underlying ordered commutative
-rings.  The inverse-from-apartness field law is propositional data on the
-codomain and does not need an additional preservation field.
+These are homomorphisms of the underlying ordered commutative rings.
 
 -}
 {-# OPTIONS --safe #-}

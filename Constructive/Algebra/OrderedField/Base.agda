@@ -1,11 +1,9 @@
 {-
 
-Constructive ordered fields.
+Constructive ordered fields
 
-This is the LEM-free ordered-field interface: the order is the weak ordered
-commutative-ring structure from Cubical, and multiplicative inverses are
-required only for elements apart from zero.  The trichotomous/inequality-based
-field interface lives in `Constructive.Algebra.StrictlyOrderedField`.
+The order is Cubical's weak ordered commutative-ring structure.  Multiplicative
+inverses are required only for elements apart from zero.
 
 -}
 {-# OPTIONS --safe #-}

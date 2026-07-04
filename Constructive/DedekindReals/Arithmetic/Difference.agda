@@ -1,8 +1,9 @@
 {-
 
-Multiplication by a nonnegative Dedekind real respects difference
-representations.  This is the Grothendieck-style bridge from the nonnegative
-semiring laws to signed multiplication laws.
+Difference compatibility for multiplication by nonnegative Dedekind reals
+
+This is the bridge from nonnegative semiring laws to signed multiplication
+laws.
 
 -}
 {-# OPTIONS --safe #-}
@@ -166,4 +167,3 @@ module DifferenceProperties {ℓ : Level} where
     cong₂ _+_
       (sym (*-r≥0-form x n 0≤n))
       (sym (*-r≥0-form y n 0≤n))
-

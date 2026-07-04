@@ -1,10 +1,8 @@
 {-
 
-Ordered commutative ring structure for constructive Dedekind reals.
+Ordered commutative ring structure for constructive Dedekind reals
 
-This package is deliberately weaker than the existing `StrictlyOrderedCommRing`
-interface used by ordered fields: it does not include trichotomy, so it remains
-valid without LEM.
+The structure does not include trichotomy, so it remains valid without LEM.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

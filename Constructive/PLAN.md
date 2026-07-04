@@ -1,8 +1,8 @@
 # Constructive Dedekind Reals Roadmap
 
-This folder tracks the LEM-free constructive Dedekind-real development.  The
-code may depend on `Constructive/`, but the constructive core must not depend
-on `Classical/`, `Oracle`, `LEM`, or propositional resizing.  The
+LEM-free constructive Dedekind-real development.  The code may depend on
+`Constructive/`, but the constructive core must not depend on `Classical/`,
+`Oracle`, `LEM`, or propositional resizing.  The
 Oracle-based classical Dedekind-real completion remains in
 `Classical.DedekindCut`.
 
@@ -10,15 +10,15 @@ Oracle-based classical Dedekind-real completion remains in
 
 There are three separate goals.
 
-1. Constructive Dedekind completeness.
+1. Constructive Dedekind completeness
    Prove that every real-valued located cut is represented by a unique
    `DedekindReal`.
 
-2. Constructive ordered field structure.
+2. Constructive ordered field structure
    Prove that `DedekindReal` forms an Archimedean ordered field, with inverses
    stated using apartness where constructively necessary.
 
-3. Classical bridge.
+3. Classical bridge
    Under LEM, show that the constructive Dedekind completeness theorem gives
    the powerset supremum principle called `MacNeilleCompleteness` in the
    existing classical development.  Combining this with the ordered-field
@@ -53,7 +53,7 @@ There are three separate goals.
 
 ### M0. Basic Dedekind-Real Infrastructure
 
-Status: done.
+Status: done
 
 - `DedekindReal ell`, extensional equality, set-truncation.
 - Rational embedding at `ell-zero` and lifted embeddings at arbitrary `ell`.
@@ -65,7 +65,7 @@ Status: done.
 
 ### M1. Rational Approximation
 
-Status: done.
+Status: done
 
 - Prove every positive rational epsilon admits close rational lower/upper
   bounds for any Dedekind real:
@@ -81,7 +81,7 @@ This is used by algebra and can also support completeness estimates.
 
 ### M2. Constructive Dedekind Completeness
 
-Status: done, same-universe version.
+Status: done, same-universe version
 
 Defined in `Constructive.DedekindReals.Completeness`.
 
@@ -125,7 +125,9 @@ variant can be added if a bridge theorem needs it.
 
 ### Ordered-Field Arithmetic Structure
 
-Status: done for the constructive target. Required for the final theorem.
+Status: done for the constructive target
+
+Required for the final theorem.
 
 - Addition and additive group.
   - Done: addition by its Dedekind-real cut presentation in
@@ -245,7 +247,9 @@ uses inverses from apartness `x # 0`.
 
 ### M4. LEM Bridge to MacNeille Completeness
 
-Status: pending.  Dedekind completeness and the ordered-field arithmetic
+Status: pending
+
+Dedekind completeness and the ordered-field arithmetic
 structure are now available constructively.
 
 In a separate LEM-dependent module:

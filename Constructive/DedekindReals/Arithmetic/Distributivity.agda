@@ -1,8 +1,8 @@
 {-
 
-Full signed distributivity for constructive Dedekind-real multiplication.
+Full signed distributivity for constructive Dedekind-real multiplication
 
-The proof avoids trichotomy of reals.  It rewrites every right factor as
+The proof avoids trichotomy of reals.  It rewrites each right factor as
 `z+ - z-`, distributes over the nonnegative factors separately, and then uses
 additive-group algebra.
 
@@ -99,4 +99,3 @@ module MultiplicationDistributivity {ℓ : Level} where
     *-comm x (y + z) ∙
     *-distribR y z x ∙
     cong₂ _+_ (*-comm y x) (*-comm z x)
-

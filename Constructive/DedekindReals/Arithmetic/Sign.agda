@@ -1,10 +1,8 @@
 {-
 
-Constructive signs used by the Dedekind-real arithmetic.
+Constructive signs used by Dedekind-real arithmetic
 
-This is the non-classical sign algebra from the old cut-based development,
-moved under the Constructive arithmetic namespace.  It has no dependency on
-LEM, Oracle, or powersets.
+This sign algebra has no dependency on LEM, Oracle, or powersets.
 
 -}
 {-# OPTIONS --safe #-}

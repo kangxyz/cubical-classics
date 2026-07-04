@@ -1,11 +1,9 @@
 {-
 
-Constructive Dedekind reals over the rationals.
+Constructive Dedekind reals over the rationals
 
-This module contains the basic definition of constructive Dedekind reals.  The
-lower and upper cuts are level-polymorphic predicate-valued maps into hProp,
-so using the definition does not require LEM or propositional resizing.  The
-Oracle-based classical completion by cuts is kept in Classical.DedekindCut.
+The lower and upper cuts are level-polymorphic predicates into hProp.  This
+keeps the definition independent of LEM and propositional resizing.
 
 -}
 {-# OPTIONS --safe #-}
@@ -28,8 +26,7 @@ private
     ℓ : Level
 
 
--- A small predicate on rationals.  Keeping the level explicit is what avoids
--- assuming propositional resizing.
+-- Small predicates on rationals, with the level kept explicit
 ℚPred : (ℓ : Level) → Type (ℓ-suc ℓ)
 ℚPred ℓ = ℚ → hProp ℓ
 
@@ -70,18 +67,18 @@ record IsDedekindReal (L U : ℚPred ℓ) : Type ℓ where
   no-eta-equality
 
   field
-    -- Both sides are inhabited.
+    -- Both sides are inhabited
     lower-inhabited : ∥ Σ[ q ∈ ℚ ] q ∈ L ∥₁
     upper-inhabited : ∥ Σ[ q ∈ ℚ ] q ∈ U ∥₁
 
-    -- Lower and upper closure.
+    -- Lower and upper closure
     lower-closed :
       (p q : ℚ) → p ℚOrder.< q → q ∈ L → p ∈ L
 
     upper-closed :
       (p q : ℚ) → p ℚOrder.< q → p ∈ U → q ∈ U
 
-    -- Roundedness: membership can be improved inward.
+    -- Roundedness: membership can be improved inward
     lower-rounded :
       (q : ℚ) → q ∈ L →
       ∥ Σ[ r ∈ ℚ ] (q ℚOrder.< r) × (r ∈ L) ∥₁
@@ -90,12 +87,12 @@ record IsDedekindReal (L U : ℚPred ℓ) : Type ℓ where
       (q : ℚ) → q ∈ U →
       ∥ Σ[ r ∈ ℚ ] (r ℚOrder.< q) × (r ∈ U) ∥₁
 
-    -- The two sides do not overlap.
+    -- The two sides do not overlap
     disjoint :
       (q : ℚ) → q ∈ L → q ∈ U → ⊥
 
-    -- Constructive locatedness.  This is the replacement for deciding
-    -- membership in one side of the cut.
+    -- Constructive locatedness: the replacement for deciding membership in
+    -- one side of the cut
     located :
       (p q : ℚ) → p ℚOrder.< q → ∥ (p ∈ L) ⊎ (q ∈ U) ∥₁
 

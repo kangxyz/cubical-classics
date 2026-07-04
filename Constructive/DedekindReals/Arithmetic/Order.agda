@@ -1,10 +1,10 @@
 {-
 
-Order compatibility for constructive Dedekind-real arithmetic.
+Order compatibility for constructive Dedekind-real arithmetic
 
-These lemmas are the remaining non-classical order facts needed to package
-Dedekind reals as an ordered commutative ring.  The proofs use the located cut
-structure and propositional truncation, but no trichotomy for reals.
+These are the order facts needed for the ordered commutative ring structure.
+They use located cuts and propositional truncation, but no trichotomy for
+reals.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}

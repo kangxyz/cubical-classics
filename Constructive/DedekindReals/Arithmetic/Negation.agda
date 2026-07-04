@@ -1,10 +1,9 @@
 {-
 
-Compatibility of constructive Dedekind-real multiplication with negation.
+Compatibility of constructive Dedekind-real multiplication with negation
 
-The signed multiplication in Constructive.DedekindReals.Arithmetic is defined through
-positive and negative parts.  These lemmas make the expected sign laws
-available without any trichotomy.
+Signed multiplication is defined through positive and negative parts.  These
+lemmas give the expected sign laws without trichotomy.
 
 -}
 {-# OPTIONS --safe #-}
@@ -162,4 +161,3 @@ module NegationProperties {ℓ : Level} where
     *-negL x (- y) ∙
     cong -_ (*-negR x y) ∙
     neg-involutive (x * y)
-

@@ -1,11 +1,9 @@
 {-
 
-Constructive arithmetic structure on Dedekind reals.
+Arithmetic structure for constructive Dedekind reals
 
-This module is the public arithmetic entry point.  It re-exports the LEM-free
-Dedekind-real arithmetic fragments, including the ordered-field structure.  The
-cut-level definitions of addition, non-negative multiplication, and signed
-multiplication live in Constructive.DedekindReals.Arithmetic.Base.
+Public entry point for the cut-level operations, algebraic laws, and ordered
+field structure.
 
 -}
 {-# OPTIONS --safe #-}

@@ -1,12 +1,9 @@
 {-
 
-Constructive Dedekind reals over the rationals.
+Order and approximation lemmas for constructive Dedekind reals
 
-This module deliberately avoids the classical powerset/Oracle setup used in
-Classical.DedekindCut.  The lower and upper cuts are level-polymorphic
-predicate-valued maps into hProp, so using the definition does not require
-LEM or propositional resizing.  Users who want a single small universe of
-propositions can instantiate this with their own resizing principle elsewhere.
+The rational cut presentation remains level-polymorphic.  No Oracle, LEM, or
+propositional resizing is used here.
 
 -}
 {-# OPTIONS --safe #-}
@@ -36,7 +33,7 @@ private
   variable
     ℓ : Level
 
--- The same rational cut, lifted to an arbitrary predicate universe.
+-- The same rational cut, lifted to an arbitrary predicate universe
 ℚ→𝔻 : (ℓ : Level) → ℚ → DedekindReal ℓ
 ℚ→𝔻 ℓ q .lower p =
   Lift ℓ (p ℚOrder.< q) ,
@@ -73,7 +70,7 @@ private
       (ℚOrder.isWeaklyLinear< p r q p<r)
 
 
--- The order and strict order used constructively for Dedekind reals.
+-- The order and strict order used constructively for Dedekind reals
 module Order {ℓ : Level} where
   open DedekindReal
 

@@ -1,10 +1,9 @@
 {-
 
-Constructive arithmetic operations on Dedekind reals.
+Constructive arithmetic operations on Dedekind reals
 
-This file is the beginning of the ordered-field structure.  It contains the
-cut-level definitions of addition and multiplication; group and field laws are
-added in the sibling modules.
+Cut-level definitions of addition, non-negative multiplication, and signed
+multiplication.
 
 -}
 {-# OPTIONS --safe #-}

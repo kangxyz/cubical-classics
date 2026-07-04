@@ -1,6 +1,6 @@
 {-
 
-Rational numbers as a constructive ordered field.
+Rational numbers as a constructive ordered field
 
 -}
 {-# OPTIONS --safe #-}
