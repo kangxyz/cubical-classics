@@ -33,7 +33,7 @@ open import Cubical.Data.Nat.Order using ()
   renaming (_<_ to _<ℕ_ ; _>_ to _>ℕ_)
 open import Cubical.Data.NatPlusOne
 open import Cubical.Data.Int as Int
-  using    (ℤ ; pos ; negsuc)
+  using    (ℤ ; pos ; negsuc ; pos+)
   renaming (_+_ to _+ℤ_ ; _·_ to _·ℤ_ ; -_ to -ℤ_)
 open import Cubical.Data.Int.Order as IntOrder
   using    (zero-<sucPos ; isIrrefl< ; ¬pos≤negsuc)
@@ -80,7 +80,7 @@ trichotomyℤ x y with x ≟ℤ y
 open StrictlyOrderedCommRingStr ℤStrictlyOrderedCommRing
 
 ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n > 0
-ℕ₊₁→ℤ>0 n = transport (>0≡>0r (ℕ₊₁→ℤ n)) (helper n)
+ℕ₊₁→ℤ>0 n = helper n
   where helper : (n : ℕ₊₁) → ℕ₊₁→ℤ n >0
         helper (1+ n) = zero-<sucPos
 
@@ -92,19 +92,17 @@ possucn-1≡1 : (n : ℕ) → pos (suc n) - 1 ≡ pos n
 possucn-1≡1 n = refl
 
 n>0→n≥1 : (n : ℤ) → n > 0 → n ≥ 1
-n>0→n≥1 (pos zero) n>0 = Empty.rec (isIrrefl< (transport (sym (>0≡>0r 0)) n>0))
-n>0→n≥1 (pos (suc zero)) _ = inr refl
-n>0→n≥1 n@(pos (suc (suc a))) _ = inl (subst (_>0) (sym (possucn-1≡1 (suc a))) zero-<sucPos)
-n>0→n≥1 n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc (transport (sym (>0≡>0r n)) n>0))
+n>0→n≥1 (pos zero) n>0 = Empty.rec (isIrrefl< n>0)
+n>0→n≥1 (pos (suc zero)) _ = 0 , refl
+n>0→n≥1 n@(pos (suc (suc a))) _ = suc a , sym (pos+ 1 (suc a))
+n>0→n≥1 n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc n>0)
 
 possucn>posn : (n : ℕ) → pos (suc n) > pos n
-possucn>posn n = subst (_>0) (sym possucn-posn≡1) zero-<sucPos
-  where possucn-posn≡1 : pos (suc n) - pos n ≡ 1
-        possucn-posn≡1 = helper2 (pos (suc n)) (pos n) ∙ (λ i → possucn-1≡1 n i + 1 - pos n) ∙ helper3 (pos n)
+possucn>posn n = 0 , refl
 
 n>0→posm≡n : (n : ℤ) → n > 0 → Σ[ m ∈ ℕ ] pos m ≡ n
 n>0→posm≡n (pos n) _ = n , refl
-n>0→posm≡n n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc (transport (sym (>0≡>0r n)) n>0))
+n>0→posm≡n n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc n>0)
 
 
 {-
@@ -114,7 +112,7 @@ n>0→posm≡n n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc (transport (sym (>0�
 -}
 
 archimedes : (a b : ℤ) → b > 0 → Σ[ n ∈ ℕ ] pos n · b > a
-archimedes a (negsuc b) b>0 = Empty.rec (¬pos≤negsuc (transport (sym (>0≡>0r (negsuc b))) b>0))
+archimedes a (negsuc b) b>0 = Empty.rec (¬pos≤negsuc b>0)
 archimedes a (pos b) b>0 with trichotomy a 0
 ... | lt a<0 = 1 , <-trans {x = a} {y = 0} {z = 1 · pos b} a<0 (subst (_> 0) (sym (·IdL (pos b))) b>0)
 ... | eq a≡0 = 1 , subst (1 · pos b >_) (sym a≡0) (subst (_> 0) (sym (·IdL (pos b))) b>0)

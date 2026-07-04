@@ -93,10 +93,10 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     instance
       a∈𝐈 : a ∈ [_,_]
-      a∈𝐈 = Inhab→∈ 𝐈-prop (inr refl , a≤b)
+      a∈𝐈 = Inhab→∈ 𝐈-prop (≤-refl refl , a≤b)
 
       b∈𝐈 : b ∈ [_,_]
-      b∈𝐈 = Inhab→∈ 𝐈-prop (a≤b , inr refl)
+      b∈𝐈 = Inhab→∈ 𝐈-prop (a≤b , ≤-refl refl)
 
 
   module _ {a b : ℝ} ⦃ a≤b : a ≤ b ⦄ where
@@ -116,7 +116,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   instance
     _ : 0 ≤ 1
-    _ = inl 1>0
+    _ = <-≤-weaken 1>0
 
   Unit𝐈 : ℙ ℝ
   Unit𝐈 = [ 0 , 1 ]
@@ -153,7 +153,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
         instance
           a≤a : a ≤ a
-          a≤a = inr refl
+          a≤a = ≤-refl refl
 
         cov-sup : Supremum cov-sub
         cov-sup = getSup ∣ a , Inhab→∈ cov-prop (a∈𝐈 a b , cov-a) ∣₁ ∣ b , b≥x∈sub ∣₁
@@ -230,10 +230,10 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
               instance
                 a≤x₀+ε : a ≤ x₀ + ε
-                a≤x₀+ε = inl (≤<-trans x₀≥a (+-rPos→> ε>0))
+                a≤x₀+ε = <-≤-weaken (≤<-trans x₀≥a (+-rPos→> ε>0))
 
               x₀+ε∈𝐈 : (x₀ + ε) ∈ [ a , b ]
-              x₀+ε∈𝐈 = Inhab→∈𝐈 a≤x₀+ε (inl (-MoveRToL<' ε<b-x₀))
+              x₀+ε∈𝐈 = Inhab→∈𝐈 a≤x₀+ε (<-≤-weaken (-MoveRToL<' ε<b-x₀))
 
               covMore : 𝒰₀+U covers [ a , x₀ + ε ]
               covMore .fst {x = x} x∈[a,x₀+ε] = case-split (<≤-total y x)

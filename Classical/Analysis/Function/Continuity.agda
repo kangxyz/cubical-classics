@@ -133,10 +133,10 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     instance
       0∈𝐈 : 0 ∈ 𝐈
-      0∈𝐈 = Inhab→∈ 𝐈-prop (inr refl , inl 1>0)
+      0∈𝐈 = Inhab→∈ 𝐈-prop (≤-refl refl , <-≤-weaken 1>0)
 
       1∈𝐈 : 1 ∈ 𝐈
-      1∈𝐈 = Inhab→∈ 𝐈-prop (inl 1>0 , inr refl)
+      1∈𝐈 = Inhab→∈ 𝐈-prop (<-≤-weaken 1>0 , ≤-refl refl)
 
 
   -- Given a continuous function defined on the unit interval,
@@ -218,7 +218,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
         instance
           x₀+δ∈𝐈 : (x₀ + δ) ∈ 𝐈
-          x₀+δ∈𝐈 = Inhab→∈ 𝐈-prop (inl (≤<-trans 0≤x₀ x₀<x₀+δ) , inl x₀+δ<1)
+          x₀+δ∈𝐈 = Inhab→∈ 𝐈-prop (<-≤-weaken (≤<-trans 0≤x₀ x₀<x₀+δ) , <-≤-weaken x₀+δ<1)
 
         abs<δ₀ : abs (x₀ - (x₀ + δ)) < δ₀-triple .fst
         abs<δ₀ = subst (_< δ₀-triple .fst)
@@ -263,7 +263,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
       instance
         x₀+δ∈𝐈 : (x₀ - δ) ∈ 𝐈
-        x₀+δ∈𝐈 = Inhab→∈ 𝐈-prop (inl 0<x₀-δ , inl (<≤-trans x₀-δ<x₀ x₀≤1))
+        x₀+δ∈𝐈 = Inhab→∈ 𝐈-prop (<-≤-weaken 0<x₀-δ , <-≤-weaken (<≤-trans x₀-δ<x₀ x₀≤1))
 
       abs<δ₀ : abs (x₀ - (x₀ - δ)) < δ₀
       abs<δ₀ = subst (_< δ₀) (sym (x>0→abs≡x δ>0) ∙ (λ i → abs (helper3 x₀ δ (~ i)))) (δ-tetrad .snd .snd .snd)
@@ -278,7 +278,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
         let x≤x₀ : x ≤ x₀
             x≤x₀ = f<0-sup .bound _ x∈sub
             ∣x-x₀∣<δ₀ : abs (x₀ - x) < δ₀
-            ∣x-x₀∣<δ₀ = ≤<-trans (absInBetween δ>0 (inl x₀-δ<x) x≤x₀) (δ-tetrad .snd .snd .snd)
+            ∣x-x₀∣<δ₀ = ≤<-trans (absInBetween δ>0 (<-≤-weaken x₀-δ<x) x≤x₀) (δ-tetrad .snd .snd .snd)
             x-pair = ∈→Inhab f<0-prop x∈sub
             instance
               x∈𝐈 : x ∈ 𝐈

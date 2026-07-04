@@ -109,7 +109,7 @@ private
   archimedes-helper : (x y : ℤ × ℕ₊₁) → [ y ] > 0 → Σ[ n ∈ ℕ ] n ⋆ [ y ] > [ x ]
   archimedes-helper (a , b) (c , d) y>0 =
     let right = -ℤ a ·ℤ ℕ₊₁→ℤ d
-        c>0 = transport (sym (>0≡>0r [ c , d ])) y>0
+        c>0 = y>0
         c>0' = subst (_>ℤ pos zero) (Int.·IdR c) c>0
         (n , ->-) =
           archimedesℤ right (c ·ℤ ℕ₊₁→ℤ b)
@@ -122,7 +122,9 @@ private
             (sym (Int.·IdR (pos n ·ℤ c ·ℤ ℕ₊₁→ℤ b +ℤ right))
               ∙ cong ((pos n ·ℤ c ·ℤ ℕ₊₁→ℤ b +ℤ right) ·ℤ_) one-den)
             direct-core
-        direct = subst (_>0) (sym (cong ([ pos n ·ℤ c , d ] +_) (neg-repr a b))) direct-normalized
+        direct : [ pos n ·ℤ c , d ] > [ a , b ]
+        direct = Diff>0→> {x = [ pos n ·ℤ c , d ]} {y = [ a , b ]}
+          (subst (_>0) (sym (cong ([ pos n ·ℤ c , d ] +_) (neg-repr a b))) direct-normalized)
     in  n , subst (_> [ a , b ]) (sym (⋆-repr n c d)) direct
 
 ∥archimedes∥ : (q ε : ℚ) → ε > 0 → ∥ Σ[ n ∈ ℕ ] n ⋆ ε > q ∥₁

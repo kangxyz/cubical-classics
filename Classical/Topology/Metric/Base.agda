@@ -75,8 +75,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
     dist≥0 : dist x y ≥ 0
     dist≥0 {x = x} {y = y} with trichotomy (dist x y) 0
-    ... | gt d>0 = inl d>0
-    ... | eq d≡0 = inr (sym d≡0)
+    ... | gt d>0 = <-≤-weaken d>0
+    ... | eq d≡0 = ≤-refl (sym d≡0)
     ... | lt d<0 = Empty.rec (<≤-asym (+-Pres<0 d<0 d<0) d+d≥0)
       where
       d+d≥0 : dist x y + dist x y ≥ 0

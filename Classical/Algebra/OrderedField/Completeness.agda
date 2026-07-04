@@ -133,7 +133,7 @@ module CompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ')
         return (<≤-trans nε>q (insurmountable n))
 
       q-bound' : (x : K) → x ∈ bounded → x ≤ q
-      q-bound' x x∈b = inl (q-bound x x∈b)
+      q-bound' x x∈b = <-≤-weaken (q-bound x x∈b)
 
       boundary : Supremum bounded
       boundary = getSup ∣ 0r , 0∈bounded ∣₁ ∣ q , q-bound' ∣₁
@@ -246,7 +246,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
           isArchimedean→isUnbounded
           (isComplete→isArchimedean _ getSup') y
         return (r , λ s s∈b →
-          inl (homRefl< s r (<'-trans (∈→Inhab P s∈b) y<fr)))
+          <-≤-weaken (homRefl< s r (<'-trans (∈→Inhab P s∈b) y<fr)))
 
       boundary : Supremum bounded
       boundary = getSup bounded-inhab bounded-is-bounded

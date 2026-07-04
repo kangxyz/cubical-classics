@@ -67,12 +67,57 @@ private
     helper7 _ = solve! 𝓡
 
 
--- The homomorphism between strictly ordered commutative rings is just a ring homomorphism that preserves positive elements.
+-- Homomorphisms preserve the underlying commutative ring structure and the
+-- native Cubical order relations.
 
 record StrictlyOrderedCommRingHom (𝓡 : StrictlyOrderedCommRing ℓ ℓ')(𝓡' : StrictlyOrderedCommRing ℓ'' ℓ''') : Type (ℓ-max (ℓ-max ℓ ℓ') (ℓ-max ℓ'' ℓ''')) where
   field
     ring-hom : CommRingHom (StrictlyOrderedCommRing→CommRing 𝓡) (StrictlyOrderedCommRing→CommRing 𝓡')
-    pres->0  : (x : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._>0 𝓡 x → StrictlyOrderedCommRingStr._>0 𝓡' (ring-hom .fst x)
+    pres<    : (x y : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._<_ 𝓡 x y →
+               StrictlyOrderedCommRingStr._<_ 𝓡' (ring-hom .fst x) (ring-hom .fst y)
+    pres≤    : (x y : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._≤_ 𝓡 x y →
+               StrictlyOrderedCommRingStr._≤_ 𝓡' (ring-hom .fst x) (ring-hom .fst y)
+
+
+module PositivePreservation
+  (𝓡 : StrictlyOrderedCommRing ℓ ℓ')
+  (𝓡' : StrictlyOrderedCommRing ℓ'' ℓ''')
+  (ring-hom : CommRingHom (StrictlyOrderedCommRing→CommRing 𝓡) (StrictlyOrderedCommRing→CommRing 𝓡'))
+  (pres>0 : (x : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._>0 𝓡 x →
+             StrictlyOrderedCommRingStr._>0 𝓡' (ring-hom .fst x))
+  where
+
+  private
+    R = 𝓡 .fst .fst
+
+  open StrictlyOrderedCommRingStr 𝓡
+  open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
+  open StrictlyOrderedCommRingStr 𝓡' using ()
+    renaming ( _<_ to _<'_ ; _≤_ to _≤'_
+             ; _>0 to _>0'_
+             ; Diff>0→< to Diff>0→<'
+             ; <-asym to <'-asym
+             ; <-arefl to <'-arefl
+             ; ≤≃¬> to ≤'≃¬>
+             ; trichotomy to trichotomy')
+  open IsCommRingHom (ring-hom .snd)
+  open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡') .snd) using ()
+    renaming (_+_ to _+'_ ; -_ to -'_)
+
+  private
+    hom-helper : (x y : R) → ring-hom .fst (y - x) ≡ ring-hom .fst y +' (-' ring-hom .fst x)
+    hom-helper x y = pres+ y (- x) ∙ (λ i → ring-hom .fst y +' pres- x i)
+
+  pres< : (x y : R) → x < y → ring-hom .fst x <' ring-hom .fst y
+  pres< x y x<y = Diff>0→<' (subst (_>0'_) (hom-helper x y) (pres>0 (y - x) (<→Diff>0 x<y)))
+
+  pres≤ : (x y : R) → x ≤ y → ring-hom .fst x ≤' ring-hom .fst y
+  pres≤ x y x≤y = invEq (≤'≃¬> (ring-hom .fst x) (ring-hom .fst y)) (notGreater (trichotomy x y))
+    where
+    notGreater : Trichotomy x y → ¬ ring-hom .fst y <' ring-hom .fst x
+    notGreater (lt x<y) fy<fx = <'-asym (pres< x y x<y) fy<fx
+    notGreater (eq x≡y) fy<fx = <'-arefl fy<fx (cong (ring-hom .fst) (sym x≡y))
+    notGreater (gt y<x) _ = equivFun (≤≃¬> x y) x≤y y<x
 
 
 {-
@@ -93,9 +138,10 @@ module StrictlyOrderedCommRingHomStr (f : StrictlyOrderedCommRingHom 𝓡 𝓡')
              ; _>_ to _>'_ ; _≥_ to _≥'_
              ; _>0 to _>0'_
              ; trichotomy to trichotomy'
-             ; >0≡>0r to >0≡>0r'
              ; <-arefl to <'-arefl
              ; <-asym  to <'-asym
+             ; <≤-asym to <≤'-asym
+             ; <-≤-weaken to <'-≤'-weaken
              ; _⋆_ to _⋆'_
              ; 0⋆q≡0 to 0⋆'q≡0 ; 1⋆q≡q to 1⋆'q≡q
              ; sucn⋆q≡n⋆q+q to sucn⋆'q≡n⋆'q+q)
@@ -108,34 +154,24 @@ module StrictlyOrderedCommRingHomStr (f : StrictlyOrderedCommRingHom 𝓡 𝓡')
   open IsCommRingHom (ring-hom .snd)
 
 
-  private
-    hom-helper : (x y : R) → ring-hom .fst (y - x) ≡ (ring-hom .fst y) -' (ring-hom .fst x)
-    hom-helper x y = pres+ y (- x) ∙ (λ i → ring-hom .fst y +' pres- x i)
-
   homPres< : (x y : R) → x < y → ring-hom .fst x <' ring-hom .fst y
-  homPres< x y x<y = subst (_>0'_) (hom-helper x y) (pres->0 (y - x) x<y)
+  homPres< = pres<
 
   homPres≤ : (x y : R) → x ≤ y → ring-hom .fst x ≤' ring-hom .fst y
-  homPres≤ x y (inl x<y) = inl (homPres< _ _ x<y)
-  homPres≤ x y (inr x≡y) = inr (cong (ring-hom .fst) x≡y)
+  homPres≤ = pres≤
 
 
   homPres<0 : (x : R) → x < 0r → ring-hom .fst x <' 0r'
   homPres<0 x x<0 = subst (ring-hom .fst x <'_) pres0 (homPres< _ _ x<0)
 
   homPres>0 : (x : R) → x > 0r → ring-hom .fst x >' 0r'
-  homPres>0 x x>0 = subst (ring-hom .fst x >'_) pres0 (homPres< _ _ x>0)
+  homPres>0 x x>0 = subst (_<' ring-hom .fst x) pres0 (homPres< _ _ x>0)
 
   homRefl>0 : (x : R) → ring-hom .fst x >' 0r' → x > 0r
   homRefl>0 x x>0 with trichotomy x 0r
   ... | lt x<0 = Empty.rec (<'-asym  (homPres<0 _ x<0) x>0)
   ... | eq x≡0 = Empty.rec (<'-arefl x>0 (sym pres0 ∙ cong (ring-hom .fst) (sym x≡0)))
   ... | gt x>0 = x>0
-
-
-  homRefl>0' : (x : R) → _>0'_ (ring-hom .fst x) → x >0
-  homRefl>0' x = transport (λ i → >0≡>0r' (ring-hom .fst x) (~ i) →  >0≡>0r x (~ i)) (homRefl>0 x)
-
 
   homRefl≡ : (x y : R) → ring-hom .fst x ≡ ring-hom .fst y → x ≡ y
   homRefl≡ x y fx≡fy with trichotomy x y
@@ -150,8 +186,10 @@ module StrictlyOrderedCommRingHomStr (f : StrictlyOrderedCommRingHom 𝓡 𝓡')
   ... | gt x>y = Empty.rec (<'-asym fx<fy (homPres< _ _ x>y))
 
   homRefl≤ : (x y : R) → ring-hom .fst x ≤' ring-hom .fst y → x ≤ y
-  homRefl≤ x y (inl fx<fy) = inl (homRefl< _ _ fx<fy)
-  homRefl≤ x y (inr fx≡fy) = inr (homRefl≡ _ _ fx≡fy)
+  homRefl≤ x y fx≤fy with trichotomy x y
+  ... | lt x<y = <-≤-weaken x<y
+  ... | eq x≡y = ≤-refl x≡y
+  ... | gt y<x = Empty.rec (<≤'-asym (homPres< _ _ y<x) fx≤fy)
 
 
   homPres⋆ : (n : ℕ)(ε : R) → ring-hom .fst (n ⋆ ε) ≡ n ⋆' ring-hom .fst ε
@@ -175,7 +213,14 @@ module InclusionFromℤ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
   open CommRingStr   ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
   open StrictlyOrderedCommRingStr 𝓡
 
-  open StrictlyOrderedCommRingStr ℤStrictlyOrderedCommRing using () renaming (_>_ to _>ℤ_ ; >0≡>0r to >0≡>0r-ℤ)
+  open StrictlyOrderedCommRingStr ℤStrictlyOrderedCommRing using ()
+    renaming (_<_ to _<ℤ_ ; _>_ to _>ℤ_
+             ; _≤_ to _≤ℤ_
+             ; <→Diff>0 to <ℤ→Diff>0
+             ; <≤-asym to <≤ℤ-asym
+             ; <-≤-weaken to <ℤ-≤ℤ-weaken
+             ; ≤-refl to ≤ℤ-refl
+             ; trichotomy to trichotomyℤ)
 
   open Helpers (StrictlyOrderedCommRing→CommRing 𝓡)
 
@@ -253,18 +298,31 @@ module InclusionFromℤ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
 
 
   ℤ→R-Pres>0' : (n : ℤ) → n >ℤ pos zero → ℤ→R n > 0r
-  ℤ→R-Pres>0' (pos zero) h = Empty.rec (isIrrefl< (transport (sym (>0≡>0r-ℤ (pos zero))) h))
+  ℤ→R-Pres>0' (pos zero) h = Empty.rec (isIrrefl< h)
   ℤ→R-Pres>0' (pos (suc zero)) _ = 1>0
   ℤ→R-Pres>0' (pos (suc (suc n))) _ =
     +-Pres>0 1>0
-      (ℤ→R-Pres>0' (pos (suc n)) (transport (>0≡>0r-ℤ (pos (suc n))) zero-<sucPos))
-  ℤ→R-Pres>0' (negsuc n) h = Empty.rec (¬pos≤negsuc (transport (sym (>0≡>0r-ℤ (negsuc n))) h))
+      (ℤ→R-Pres>0' (pos (suc n)) zero-<sucPos)
+  ℤ→R-Pres>0' (negsuc n) h = Empty.rec (¬pos≤negsuc h)
 
   ℤ→R-Pres>0'' : (n : ℤ) → n >ℤ pos 0 → ℤ→R n > 0r
-  ℤ→R-Pres>0'' n n>0 = ℤ→R-Pres>0' n (transport (sym (>0≡>0r-ℤ _)) n>0)
+  ℤ→R-Pres>0'' n n>0 = ℤ→R-Pres>0' n n>0
 
   ℤ→R-Pres>0 : (n : ℤ) → n >ℤ pos zero → ℤ→R n >0
-  ℤ→R-Pres>0 n h = transport (sym (>0≡>0r _)) (ℤ→R-Pres>0' n h)
+  ℤ→R-Pres>0 n h = ℤ→R-Pres>0' n h
+
+  ℤ→R-Pres-- : (m n : ℤ) → ℤ→R (m -ℤ n) ≡ ℤ→R m - ℤ→R n
+  ℤ→R-Pres-- m n = ℤ→R-Pres-+ m (-ℤ n) ∙ (λ i → ℤ→R m + ℤ→R-Negate n i)
+
+  ℤ→R-Pres< : (m n : ℤ) → m <ℤ n → ℤ→R m < ℤ→R n
+  ℤ→R-Pres< m n m<n =
+    Diff>0→< (subst (_>0) (ℤ→R-Pres-- n m) (ℤ→R-Pres>0 (n -ℤ m) (<ℤ→Diff>0 m<n)))
+
+  ℤ→R-Pres≤ : (m n : ℤ) → m ≤ℤ n → ℤ→R m ≤ ℤ→R n
+  ℤ→R-Pres≤ m n m≤n with trichotomyℤ m n
+  ... | lt m<n = <-≤-weaken (ℤ→R-Pres< m n m<n)
+  ... | eq m≡n = ≤-refl (cong ℤ→R m≡n)
+  ... | gt n<m = Empty.rec (<≤ℤ-asym n<m m≤n)
 
 
   {-
@@ -283,4 +341,5 @@ module InclusionFromℤ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
 
   ℤ→RStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom ℤStrictlyOrderedCommRing 𝓡
   ℤ→RStrictlyOrderedCommRingHom .ring-hom = ℤ→RCommRingHom
-  ℤ→RStrictlyOrderedCommRingHom .pres->0  = ℤ→R-Pres>0
+  ℤ→RStrictlyOrderedCommRingHom .pres<    = ℤ→R-Pres<
+  ℤ→RStrictlyOrderedCommRingHom .pres≤    = ℤ→R-Pres≤

@@ -117,16 +117,22 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
     variable
       x y z w : R
 
-  _<ᶜ_ : R → R → Type ℓ'
-  _<ᶜ_ = Ord._<_
+  _<_ : R → R → Type ℓ'
+  _<_ = Ord._<_
 
-  _≤ᶜ_ : R → R → Type ℓ'
-  _≤ᶜ_ = Ord._≤_
+  _≤_ : R → R → Type ℓ'
+  _≤_ = Ord._≤_
 
-  infix 4 _<ᶜ_ _≤ᶜ_
+  _>_ : R → R → Type ℓ'
+  x > y = y < x
+
+  _≥_ : R → R → Type ℓ'
+  x ≥ y = y ≤ x
+
+  infix 4 _>_ _<_ _≥_ _≤_
 
   _>0 : R → Type ℓ'
-  x >0 = 0r <ᶜ x
+  x >0 = 0r < x
 
   isProp>0 : (x : R) → isProp (x >0)
   isProp>0 x = Ord.is-prop-valued< 0r x
@@ -134,32 +140,32 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   >0-1r : 1r >0
   >0-1r = Ord.0<1
 
-  -Pos→Neg : (- x) >0 → x <ᶜ 0r
+  -Pos→Neg : (- x) >0 → x < 0r
   -Pos→Neg {x = x} -x>0 =
-    transport (λ i → +IdL x i <ᶜ +InvL x i) (Ord.+MonoR< 0r (- x) x -x>0)
+    transport (λ i → +IdL x i < +InvL x i) (Ord.+MonoR< 0r (- x) x -x>0)
 
   >0-asym : (x : R) → x >0 → (- x) >0 → ⊥
   >0-asym x x>0 -x>0 = Ord.is-asym 0r x x>0 (-Pos→Neg -x>0)
 
   >0-arefl : (x : R) → x >0 → x ≡ 0r → ⊥
-  >0-arefl x x>0 x≡0 = Ord.is-irrefl 0r (subst (0r <ᶜ_) x≡0 x>0)
+  >0-arefl x x>0 x≡0 = Ord.is-irrefl 0r (subst (0r <_) x≡0 x>0)
 
   >0-+ : (x y : R) → x >0 → y >0 → (x + y) >0
   >0-+ x y x>0 y>0 =
     Ord.is-trans< 0r y (x + y) y>0
-      (subst (_<ᶜ x + y) (+IdL y) (Ord.+MonoR< 0r x y x>0))
+      (subst (_< x + y) (+IdL y) (Ord.+MonoR< 0r x y x>0))
 
   >0-· : (x y : R) → x >0 → y >0 → (x · y) >0
   >0-· x y x>0 y>0 =
-    subst (_<ᶜ x · y) (0LeftAnnihilates y) (Ord.·MonoR< 0r x y y>0 x>0)
+    subst (_< x · y) (0LeftAnnihilates y) (Ord.·MonoR< 0r x y y>0 x>0)
 
-  <ᶜ→Diff>0 : {x y : R} → x <ᶜ y → (y - x) >0
-  <ᶜ→Diff>0 {x = x} {y = y} x<ᶜy =
-    transport (λ i → +InvR x i <ᶜ y - x) (Ord.+MonoR< x y (- x) x<ᶜy)
+  <→Diff>0 : {x y : R} → x < y → (y - x) >0
+  <→Diff>0 {x = x} {y = y} x<y =
+    transport (λ i → +InvR x i < y - x) (Ord.+MonoR< x y (- x) x<y)
 
-  Diff>0→<ᶜ : {x y : R} → (y - x) >0 → x <ᶜ y
-  Diff>0→<ᶜ {x = x} {y = y} y-x>0 =
-    transport (λ i → +IdL x i <ᶜ helper4 x y i) (Ord.+MonoR< 0r (y - x) x y-x>0)
+  Diff>0→< : {x y : R} → (y - x) >0 → x < y
+  Diff>0→< {x = x} {y = y} y-x>0 =
+    transport (λ i → +IdL x i < helper4 x y i) (Ord.+MonoR< 0r (y - x) x y-x>0)
 
 
   {-
@@ -168,32 +174,21 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
   -}
 
-  _>_ : R → R → Type ℓ'
-  x > y = (x - y) >0
-
-  _<_ : R → R → Type ℓ'
-  x < y = y > x
-
-  infix 4 _>_ _<_
-
   isProp< : {x y : R} → isProp (x < y)
-  isProp< {x = x} {y = y} = isProp>0 (y - x)
-
-  >0≡>0r : (x : R) → (x >0) ≡ (x > 0r)
-  >0≡>0r x i = (helper1 x i) >0
+  isProp< {x = x} {y = y} = Ord.is-prop-valued< x y
 
 
   <-asym : x < y → x > y → ⊥
-  <-asym {x = x} {y = y} x<y x>y = >0-asym (y - x) x<y (subst (_>0) (helper2 x y) x>y)
+  <-asym {x = x} {y = y} = Ord.is-asym x y
 
   <-arefl : x < y → x ≡ y → ⊥
-  <-arefl {x = x} {y = y} x<y x≡y = <-asym {x = x} {y = y} x<y (transport (λ i → x≡y i < x≡y (~ i)) x<y)
+  <-arefl {x = x} {y = y} x<y x≡y = Ord.is-irrefl y (subst (_< y) x≡y x<y)
 
   >-arefl : x > y → x ≡ y → ⊥
   >-arefl x>y x≡y = <-arefl x>y (sym x≡y)
 
   <-trans : x < y → y < z → x < z
-  <-trans {x = x} {y = y} {z = z} x<y y<z = subst (_>0) (helper3 x y z) (>0-+ (z - y) (y - x) y<z x<y)
+  <-trans {x = x} {y = y} {z = z} = Ord.is-trans< x y z
 
 
   data Trichotomy (x y : R) : Type (ℓ-max ℓ ℓ') where
@@ -214,9 +209,9 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
   trichotomy : (x y : R) → Trichotomy x y
   trichotomy x y with trichotomyᶜ x y
-  ... | StrictBase.lt x<ᶜy = lt (<ᶜ→Diff>0 x<ᶜy)
+  ... | StrictBase.lt x<y = lt x<y
   ... | StrictBase.eq x≡y = eq x≡y
-  ... | StrictBase.gt y<ᶜx = gt (<ᶜ→Diff>0 y<ᶜx)
+  ... | StrictBase.gt y<x = gt y<x
 
   dec< : (x y : R) → Dec (x < y)
   dec< x y with trichotomy x y
@@ -226,17 +221,20 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   +-Pres< : x < y → z < w → x + z < y + w
-  +-Pres< x<y z<w = subst (_>0) (helper5 _ _ _ _) (>0-+ _ _ x<y z<w)
+  +-Pres< {x = x} {y = y} {z = z} {w = w} x<y z<w =
+    <-trans (Ord.+MonoR< x y z x<y)
+      (transport (λ i → +Comm z y i < +Comm w y i) (Ord.+MonoR< z w y z<w))
 
   +-lPres< : x < y → z + x < z + y
-  +-lPres< {z = z} x<y = subst (_>0) (helper13 _ _ z) x<y
+  +-lPres< {x = x} {y = y} {z = z} x<y =
+    transport (λ i → +Comm x z i < +Comm y z i) (Ord.+MonoR< x y z x<y)
 
   +-rPres< : x < y → x + z < y + z
-  +-rPres< {z = z} x<y = subst (_>0) (helper12 _ _ z) x<y
+  +-rPres< {x = x} {y = y} {z = z} = Ord.+MonoR< x y z
 
 
   -Reverse< : x < y → - x > - y
-  -Reverse< x<y = subst (_>0) (helper6 _ _) x<y
+  -Reverse< {x = x} {y = y} x<y = Diff>0→< (subst (_>0) (helper6 x y) (<→Diff>0 x<y))
 
   -lReverse< : - x < y → x > - y
   -lReverse< {x = x} {y = y} -x<y = subst (_> - y) (-Idempotent x) (-Reverse< -x<y)
@@ -259,10 +257,10 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   +-rPos→> : x > 0r → y + x > y
-  +-rPos→> {x = x} {y = y} x>0 = subst (y + x >_) (+IdR y) (+-lPres< {z = y} x>0)
+  +-rPos→> {x = x} {y = y} x>0 = subst (_< y + x) (+IdR y) (+-lPres< {z = y} x>0)
 
   +-rNeg→< : x < 0r → y + x < y
-  +-rNeg→< {x = x} {y = y} x<0 = subst (_> y + x) (+IdR y) (+-lPres< {z = y} x<0)
+  +-rNeg→< {x = x} {y = y} x<0 = subst (y + x <_) (+IdR y) (+-lPres< {z = y} x<0)
 
   -rPos→< : x > 0r → y - x < y
   -rPos→< x>0 = +-rNeg→< (-Reverse>0 x>0)
@@ -272,10 +270,11 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   ·-lPosPres< : x > 0r → y < z → x · y < x · z
-  ·-lPosPres< x>0 y<z = subst (_>0) (helper9  _ _ _) (>0-· _ _ x>0 y<z)
+  ·-lPosPres< {x = x} {y = y} {z = z} x>0 y<z =
+    transport (λ i → ·Comm y x i < ·Comm z x i) (Ord.·MonoR< y z x x>0 y<z)
 
   ·-rPosPres< : x > 0r → y < z → y · x < z · x
-  ·-rPosPres< x>0 y<z = subst (_>0) (helper10 _ _ _) (>0-· _ _ y<z x>0)
+  ·-rPosPres< {x = x} {y = y} {z = z} = Ord.·MonoR< y z x
 
   ·-PosPres> : x > 0r → z > 0r → x < y → z < w → x · z < y · w
   ·-PosPres> x>0 z>0 x<y z<w = <-trans (·-rPosPres< z>0 x<y) (·-lPosPres< (<-trans x>0 x<y) z<w)
@@ -288,20 +287,20 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   +-Pres<0 {x = x} {y = y} x<0 y<0 = subst (x + y <_) (+IdR _) (+-Pres< x<0 y<0)
 
   ·-Pres>0 : x > 0r → y > 0r → x · y > 0r
-  ·-Pres>0 {x = x} {y = y} = transport (λ i → >0≡>0r x i → >0≡>0r y i → >0≡>0r (x · y) i) (>0-· x y)
+  ·-Pres>0 {x = x} {y = y} = >0-· x y
 
 
   >→Diff>0 : x > y → x - y > 0r
-  >→Diff>0 x>y = transport (>0≡>0r _) x>y
+  >→Diff>0 = <→Diff>0
 
   <→Diff<0 : x < y → x - y < 0r
-  <→Diff<0 x<y = subst (_< 0r) (sym (helper2 _ _)) (-Reverse>0 (transport (>0≡>0r _) x<y))
+  <→Diff<0 {x = x} {y = y} x<y = subst (_< 0r) (sym (helper2 x y)) (-Reverse>0 (<→Diff>0 x<y))
 
   Diff>0→> : x - y > 0r → x > y
-  Diff>0→> x-y>0 = transport (sym (>0≡>0r _)) x-y>0
+  Diff>0→> = Diff>0→<
 
   Diff<0→< : x - y < 0r → x < y
-  Diff<0→< x-y<0 = transport (sym (>0≡>0r _)) (subst (_> 0r) (sym (helper2 _ _)) (-Reverse<0 x-y<0))
+  Diff<0→< {x = x} {y = y} x-y<0 = Diff>0→< (subst (_> 0r) (sym (helper2 y x)) (-Reverse<0 x-y<0))
 
 
   ·-lNegReverse< : x < 0r → y < z → x · y > x · z
@@ -347,7 +346,8 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   ·-Pos·>1→> : x > 0r → y > 1r → x · y > x
-  ·-Pos·>1→> x>0 y>1 = subst (_>0) (helper15 _ _) (>0-· _ _ x>0 y>1)
+  ·-Pos·>1→> {x = x} {y = y} x>0 y>1 =
+    transport (λ i → ·IdL x i < ·Comm y x i) (Ord.·MonoR< 1r y x x>0 y>1)
 
 
   +-MoveLToR< : x + y < z → x < z - y
@@ -375,86 +375,65 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   -MoveRToL<' {x = x} x-y>z = subst (x >_) (+Comm _ _) (-MoveRToL< x-y>z)
 
 
-  {-
-
-    Non-strict Ordering
-
-  -}
-
-  _≤_ : R → R → Type (ℓ-max ℓ ℓ')
-  x ≤ y = (x < y) ⊎ (x ≡ y)
-
-  _≥_ : R → R → Type (ℓ-max ℓ ℓ')
-  x ≥ y = y ≤ x
-
-  infix 4 _≥_ _≤_
-
   isProp≤ : isProp (x ≤ y)
-  isProp≤ {x = x} {y = y} (inl x<y) (inl x<y') i = inl (isProp< {x} {y} x<y x<y' i)
-  isProp≤ (inr x≡y) (inr x≡y') i = inr (isSetR _ _ x≡y x≡y' i)
-  isProp≤ (inl x<y) (inr x≡y) = Empty.rec (<-arefl x<y x≡y)
-  isProp≤ (inr x≡y) (inl x<y) = Empty.rec (<-arefl x<y x≡y)
+  isProp≤ {x = x} {y = y} = Ord.is-prop-valued≤ x y
 
 
   ≤-asym : x ≤ y → x ≥ y → x ≡ y
-  ≤-asym (inr x≡y) _ = x≡y
-  ≤-asym _ (inr y≡x) = sym y≡x
-  ≤-asym {x = x} {y = y} (inl x<y) (inl x>y) = Empty.rec (<-asym {x = x} {y = y} x<y x>y)
+  ≤-asym {x = x} {y = y} = Ord.is-antisym x y
 
   ≤-refl : x ≡ y → x ≤ y
-  ≤-refl x≡y = inr x≡y
+  ≤-refl {x = x} {y = y} x≡y = subst (x ≤_) x≡y (Ord.is-refl x)
+
+  <-≤-weaken : x < y → x ≤ y
+  <-≤-weaken {x = x} {y = y} = Ord.<-≤-weaken x y
+
+  ≤≃¬> : (x y : R) → (x ≤ y) ≃ (¬ y < x)
+  ≤≃¬> = Ord.≤≃¬>
 
   ≤-trans : x ≤ y → y ≤ z → x ≤ z
-  ≤-trans {z = z} (inr x≡y) y≤z = subst (_≤ z) (sym x≡y) y≤z
-  ≤-trans {x = x} x≤y (inr y≡z) = subst (x ≤_) y≡z x≤y
-  ≤-trans {x = x} {y = y} {z = z} (inl x<y) (inl y<z) = inl (<-trans {x = x} {y = y} {z = z} x<y y<z)
+  ≤-trans {x = x} {y = y} {z = z} = Ord.is-trans≤ x y z
 
   ≤-total : (x y : R) → (x ≤ y) ⊎ (y ≤ x)
   ≤-total x y with trichotomy x y
-  ... | lt x<y = inl (inl x<y)
-  ... | eq x≡y = inl (inr x≡y)
-  ... | gt x>y = inr (inl x>y)
+  ... | lt x<y = inl (<-≤-weaken x<y)
+  ... | eq x≡y = inl (≤-refl x≡y)
+  ... | gt x>y = inr (<-≤-weaken x>y)
 
 
   +-Pres≥0 : x ≥ 0r → y ≥ 0r → (x + y) ≥ 0r
-  +-Pres≥0 {x = x} {y = y} (inl x>0) (inl y>0) = inl (+-Pres>0 {x = x} {y = y} x>0 y>0)
-  +-Pres≥0 {x = x} {y = y} (inr 0≡x) y≥0 = subst (_≥ 0r) y≡x+y y≥0
-    where y≡x+y : y ≡ x + y
-          y≡x+y = sym (+IdL _) ∙ (λ i → 0≡x i + y)
-  +-Pres≥0 {x = x} {y = y} x≥0 (inr 0≡y) = subst (_≥ 0r) x≡x+y x≥0
-    where x≡x+y : x ≡ x + y
-          x≡x+y = sym (+IdR _) ∙ (λ i → x + 0≡y i)
+  +-Pres≥0 {x = x} {y = y} x≥0 y≥0 =
+    ≤-trans y≥0 (subst (_≤ x + y) (+IdL y) (Ord.+MonoR≤ 0r x y x≥0))
 
   ·-Pres≥0 : x ≥ 0r → y ≥ 0r → (x · y) ≥ 0r
-  ·-Pres≥0 {x = x} {y = y} (inl x>0) (inl y>0) = inl (·-Pres>0 {x = x} {y = y} x>0 y>0)
-  ·-Pres≥0 {x = x} {y = y} (inr 0≡x) y≥0 = inr 0≡x·y
-    where 0≡x·y : 0r ≡ x · y
-          0≡x·y = sym (0LeftAnnihilates  y) ∙ (λ i → 0≡x i · y)
-  ·-Pres≥0 {x = x} {y = y} x≥0 (inr 0≡y) = inr 0≡x·y
-    where 0≡x·y : 0r ≡ x · y
-          0≡x·y = sym (0RightAnnihilates x) ∙ (λ i → x · 0≡y i)
+  ·-Pres≥0 {x = x} {y = y} x≥0 y≥0 =
+    subst (_≤ x · y) (0LeftAnnihilates y) (Ord.·MonoR≤ 0r x y y≥0 x≥0)
 
 
   +-rPos→≥ : x ≥ 0r → y + x ≥ y
-  +-rPos→≥ (inl x>0) = inl (+-rPos→> x>0)
-  +-rPos→≥ {y = y} (inr 0≡x) = inr (sym (+IdR y) ∙ (λ i → y + 0≡x i))
+  +-rPos→≥ {x = x} {y = y} x≥0 =
+    transport (λ i → +IdL y i ≤ +Comm x y i) (Ord.+MonoR≤ 0r x y x≥0)
 
   +-rNeg→≤ : x ≤ 0r → y + x ≤ y
-  +-rNeg→≤ (inl x<0) = inl (+-rNeg→< x<0)
-  +-rNeg→≤ {y = y} (inr x≡0) = inr ((λ i → y + x≡0 i) ∙ +IdR y)
+  +-rNeg→≤ {x = x} {y = y} x≤0 =
+    transport (λ i → +Comm x y i ≤ +IdL y i) (Ord.+MonoR≤ x 0r y x≤0)
 
 
   ≥→Diff≥0 : x ≥ y → x - y ≥ 0r
-  ≥→Diff≥0 (inl x>y) = inl (>→Diff>0 x>y)
-  ≥→Diff≥0 {y = y} (inr x≡y) = inr (sym (+InvR y) ∙ (λ i → x≡y i - y))
+  ≥→Diff≥0 {x = x} {y = y} y≤x =
+    transport (λ i → +InvR y i ≤ x - y) (Ord.+MonoR≤ y x (- y) y≤x)
 
   ≤→Diff≤0 : x ≤ y → x - y ≤ 0r
-  ≤→Diff≤0 (inl x<y) = inl (<→Diff<0 x<y)
-  ≤→Diff≤0 {y = y} (inr y≡x) = inr ((λ i → y≡x i - y) ∙ +InvR y)
+  ≤→Diff≤0 {x = x} {y = y} x≤y =
+    transport (λ i → x - y ≤ +InvR y i) (Ord.+MonoR≤ x y (- y) x≤y)
 
   Diff≥0→≥ : x - y ≥ 0r → x ≥ y
-  Diff≥0→≥ (inl x-y>0) = inl (Diff>0→> x-y>0)
-  Diff≥0→≥ {x = x} {y = y} (inr x-y≡0) = inr (sym (+IdL y) ∙ (λ i → x-y≡0 i + y) ∙ helper19 x y)
+  Diff≥0→≥ {x = x} {y = y} 0≤x-y =
+    transport (λ i → +IdL y i ≤ helper19 x y i) (Ord.+MonoR≤ 0r (x - y) y 0≤x-y)
+
+  Diff≤0→≤ : x - y ≤ 0r → x ≤ y
+  Diff≤0→≤ {x = x} {y = y} x-y≤0 =
+    transport (λ i → helper19 x y i ≤ +IdL y i) (Ord.+MonoR≤ (x - y) 0r y x-y≤0)
 
 
   +-Pres≤ : x ≤ y → z ≤ w → x + z ≤ y + w
@@ -468,8 +447,7 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   -Reverse≤ : x ≤ y → - x ≥ - y
-  -Reverse≤ (inl x<y) = inl (-Reverse< x<y)
-  -Reverse≤ (inr x≡y) = inr (λ i → - x≡y (~ i))
+  -Reverse≤ {x = x} {y = y} x≤y = Diff≥0→≥ (subst (_≥ 0r) (helper6 x y) (≥→Diff≥0 x≤y))
 
   -lReverse≤ : - x ≤ y → x ≥ - y
   -lReverse≤ {x = x} {y = y} -x≥y = subst (_≥ - y) (-Idempotent x) (-Reverse≤ -x≥y)
@@ -479,13 +457,11 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   ·-lPosPres≤ : x ≥ 0r → y ≤ z → x · y ≤ x · z
-  ·-lPosPres≤ (inl 0<x) (inl y<z) = inl (·-lPosPres< 0<x y<z)
-  ·-lPosPres≤ {y = y} {z = z} (inr 0≡x) _ =
-    inr ((λ i → 0≡x (~ i) · y) ∙ 0LeftAnnihilates _ ∙ sym (0LeftAnnihilates _) ∙ (λ i → 0≡x i · z))
-  ·-lPosPres≤ {x = x} _ (inr y≡z) = inr (λ i → x · y≡z i)
+  ·-lPosPres≤ {x = x} {y = y} {z = z} x≥0 y≤z =
+    transport (λ i → ·Comm y x i ≤ ·Comm z x i) (Ord.·MonoR≤ y z x x≥0 y≤z)
 
   ·-rPosPres≤ : x ≥ 0r → y ≤ z → y · x ≤ z · x
-  ·-rPosPres≤ {x = x} {y = y} {z = z} x≥0 y≤z = transport (λ i → ·Comm x y i ≤ ·Comm x z i) (·-lPosPres≤ x≥0 y≤z)
+  ·-rPosPres≤ {x = x} {y = y} {z = z} = Ord.·MonoR≤ y z x
 
   ·-PosPres≥ : x ≥ 0r → z ≥ 0r → x ≤ y → z ≤ w → x · z ≤ y · w
   ·-PosPres≥ x≥0 z≥0 x≤y z≤w = ≤-trans (·-rPosPres≤ z≥0 x≤y) (·-lPosPres≤ (≤-trans x≥0 x≤y) z≤w)
@@ -498,30 +474,25 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   -}
 
   <≤-asym : x < y → y ≤ x → ⊥
-  <≤-asym x<y (inl x>y) = <-asym  x<y x>y
-  <≤-asym x<y (inr x≡y) = <-arefl x<y (sym x≡y)
+  <≤-asym {x = x} {y = y} x<y y≤x = equivFun (Ord.≤≃¬> y x) y≤x x<y
 
 
   <≤-trans : x < y → y ≤ z → x < z
-  <≤-trans x<y (inl y<z) = <-trans x<y y<z
-  <≤-trans {x = x} x<y (inr y≡z) = subst (x <_) y≡z x<y
+  <≤-trans {x = x} {y = y} {z = z} = Ord.<-≤-trans x y z
 
   ≤<-trans : x ≤ y → y < z → x < z
-  ≤<-trans (inl x<y) y<z = <-trans x<y y<z
-  ≤<-trans {z = z} (inr x≡y) y<z = subst (_< z) (sym x≡y) y<z
+  ≤<-trans {x = x} {y = y} {z = z} = Ord.≤-<-trans x y z
 
 
   <≤-total : (x y : R) → (x < y) ⊎ (y ≤ x)
   <≤-total x y with trichotomy x y
   ... | lt x<y = inl x<y
-  ... | eq x≡y = inr (inr (sym x≡y))
-  ... | gt x>y = inr (inl x>y)
+  ... | eq x≡y = inr (≤-refl (sym x≡y))
+  ... | gt x>y = inr (Ord.<-≤-weaken y x x>y)
 
 
   ¬<→≥ : ¬ x < y → x ≥ y
-  ¬<→≥ {x = x} {y = y} ¬x<y with <≤-total x y
-  ... | inl x<y = Empty.rec (¬x<y x<y)
-  ... | inr x≥y = x≥y
+  ¬<→≥ {x = x} {y = y} ¬x<y = invEq (Ord.≤≃¬> y x) ¬x<y
 
   ¬≤→> : ¬ x ≤ y → x > y
   ¬≤→> {x = x} {y = y} ¬x≤y with <≤-total y x
@@ -529,25 +500,32 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   ... | inr x≤y = Empty.rec (¬x≤y x≤y)
 
   ≤+¬≡→< : x ≤ y → ¬ x ≡ y → x < y
-  ≤+¬≡→< (inl x<y) _ = x<y
-  ≤+¬≡→< (inr x≡y) ¬x≡y = Empty.rec (¬x≡y x≡y)
+  ≤+¬≡→< {x = x} {y = y} x≤y ¬x≡y with trichotomy x y
+  ... | lt x<y = x<y
+  ... | eq x≡y = Empty.rec (¬x≡y x≡y)
+  ... | gt y<x = Empty.rec (equivFun (Ord.≤≃¬> x y) x≤y y<x)
 
   ≤+¬<→≡ : x ≤ y → ¬ x < y → x ≡ y
-  ≤+¬<→≡ (inl x<y) ¬x<y = Empty.rec (¬x<y x<y)
-  ≤+¬<→≡ (inr x≡y) _ = x≡y
+  ≤+¬<→≡ {x = x} {y = y} x≤y ¬x<y with trichotomy x y
+  ... | lt x<y = Empty.rec (¬x<y x<y)
+  ... | eq x≡y = x≡y
+  ... | gt y<x = Empty.rec (equivFun (Ord.≤≃¬> x y) x≤y y<x)
 
 
   ·-PosPres>≥ : x > 0r → z > 0r → x < y → z ≤ w → x · z < y · w
-  ·-PosPres>≥ x>0 z>0 x<y (inl z<w) = ·-PosPres> x>0 z>0 x<y z<w
-  ·-PosPres>≥ {x = x} {z = z} {y = y} x>0 z>0 x<y (inr z≡w) =
-    subst (λ w → x · z < y · w) z≡w (·-rPosPres< z>0 x<y)
+  ·-PosPres>≥ x>0 z>0 x<y z≤w =
+    <≤-trans (·-rPosPres< z>0 x<y) (·-lPosPres≤ (Ord.<-≤-weaken _ _ (<-trans x>0 x<y)) z≤w)
 
   ·-PosPres≥0>0 : x ≥ 0r → z ≥ 0r → y > 0r → w > 0r → x < y → z < w → x · z < y · w
-  ·-PosPres≥0>0 (inl x>0) (inl z>0) _ _ x<y z<w = ·-PosPres> x>0 z>0 x<y z<w
-  ·-PosPres≥0>0 {z = z} {y = y} {w = w} (inr 0≡x) _ y>0 w>0 _ _ =
-    subst (y · w >_) (sym (0LeftAnnihilates _) ∙ (λ i → 0≡x i · z)) (·-Pres>0 y>0 w>0)
-  ·-PosPres≥0>0 {x = x} {y = y} {w = w} _ (inr 0≡z) y>0 w>0 _ _ =
-    subst (y · w >_) (sym (0RightAnnihilates _) ∙ (λ i → x · 0≡z i)) (·-Pres>0 y>0 w>0)
+  ·-PosPres≥0>0 {x = x} {z = z} {y = y} {w = w} x≥0 z≥0 y>0 w>0 x<y z<w
+    with trichotomy x 0r | trichotomy z 0r
+  ... | lt x<0 | _ = Empty.rec (<≤-asym x<0 x≥0)
+  ... | _ | lt z<0 = Empty.rec (<≤-asym z<0 z≥0)
+  ... | gt x>0 | gt z>0 = ·-PosPres> x>0 z>0 x<y z<w
+  ... | eq x≡0 | _ =
+    subst (y · w >_) (sym (0LeftAnnihilates _) ∙ (λ i → x≡0 (~ i) · z)) (·-Pres>0 y>0 w>0)
+  ... | _ | eq z≡0 =
+    subst (y · w >_) (sym (0RightAnnihilates _) ∙ (λ i → x · z≡0 (~ i))) (·-Pres>0 y>0 w>0)
 
 
   {-
@@ -576,7 +554,7 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   -}
 
   1>0 : 1r > 0r
-  1>0 = subst (_>0) (sym helper16) (>0-1r)
+  1>0 = >0-1r
 
 
   ℕ→R-Pos : ℕ → R
@@ -600,15 +578,15 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   ℕ→R-PosSuc>0 (suc n) = +-Pres>0 1>0 (ℕ→R-PosSuc>0 n)
 
   ℕ→R-Pos≥0 : (n : ℕ) → ℕ→R-Pos n ≥ 0r
-  ℕ→R-Pos≥0 zero = inr refl
-  ℕ→R-Pos≥0 (suc n) = inl (ℕ→R-PosSuc>0 n)
+  ℕ→R-Pos≥0 zero = ≤-refl refl
+  ℕ→R-Pos≥0 (suc n) = Ord.<-≤-weaken 0r (ℕ→R-Pos (suc n)) (ℕ→R-PosSuc>0 n)
 
   ℕ→R-NegSuc<0 : (n : ℕ) → ℕ→R-Neg (suc n) < 0r
   ℕ→R-NegSuc<0 n = -Reverse>0 (ℕ→R-PosSuc>0 n)
 
   ℕ→R-Neg≤0 : (n : ℕ) → ℕ→R-Neg n ≤ 0r
-  ℕ→R-Neg≤0 zero = inr 0Selfinverse
-  ℕ→R-Neg≤0 (suc n) = inl (ℕ→R-NegSuc<0 n)
+  ℕ→R-Neg≤0 zero = ≤-refl 0Selfinverse
+  ℕ→R-Neg≤0 (suc n) = Ord.<-≤-weaken (ℕ→R-Neg (suc n)) 0r (ℕ→R-NegSuc<0 n)
 
 
   -1r : R
@@ -657,8 +635,8 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
     (+-Pres>0 {x = suc n ⋆ q} (sucn⋆q>0 n q q>0) q>0)
 
   n⋆q≥0 : (n : ℕ)(q : R) → q > 0r → n ⋆ q ≥ 0r
-  n⋆q≥0 zero q _ = inr (sym (0⋆q≡0 q))
-  n⋆q≥0 (suc n) q q>0 = inl (sucn⋆q>0 n q q>0)
+  n⋆q≥0 zero q _ = ≤-refl (sym (0⋆q≡0 q))
+  n⋆q≥0 (suc n) q q>0 = Ord.<-≤-weaken 0r (suc n ⋆ q) (sucn⋆q>0 n q q>0)
 
 
   {-

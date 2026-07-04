@@ -261,11 +261,11 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
       case-split : (n : ℕ) → (n >ℕ n₀) ⊎ (n ≤ℕ n₀) → (a - ε ≤ seq n) × (seq n ≤ b + ε)
       case-split n (inr n≤n₀) =
-        ≤-trans (inl (-rPos→< ε>0)) (bfin _ n≤n₀ .fst) ,
-        ≤-trans (bfin _ n≤n₀ .snd) (inl (+-rPos→> ε>0))
+        ≤-trans (<-≤-weaken (-rPos→< ε>0)) (bfin _ n≤n₀ .fst) ,
+        ≤-trans (bfin _ n≤n₀ .snd) (<-≤-weaken (+-rPos→> ε>0))
       case-split n (inl n>n₀) =
-        inl (absSuppress≥ (bfin _ ≤ℕ-refl .fst) (abs< _ n>n₀)) ,
-        inl (absSuppress≤ (bfin _ ≤ℕ-refl .snd) (abs< _ n>n₀))
+        <-≤-weaken (absSuppress≥ (bfin _ ≤ℕ-refl .fst) (abs< _ n>n₀)) ,
+        <-≤-weaken (absSuppress≤ (bfin _ ≤ℕ-refl .snd) (abs< _ n>n₀))
 
       ΣbSeq : Σ[ a ∈ ℝ ] Σ[ b ∈ ℝ ] ((n : ℕ) → (a ≤ seq n) × (seq n ≤ b))
       ΣbSeq = a - ε , b + ε , λ n → case-split n (<≤-split n₀ n)

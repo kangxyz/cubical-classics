@@ -517,29 +517,6 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   𝕂StrictlyOrderedCommRing = 𝕂OrderedCommRing , strictorderstr trichotomy𝕂ᶜ
 
 
-  -- The ordering given by general theory of oredered ring is same as the one used here before
-
-  open StrictlyOrderedCommRingStr 𝕂StrictlyOrderedCommRing using ()
-    renaming (_<_ to _<𝕂'_ ; _>_ to _>𝕂'_ ; _≤_ to _≤𝕂'_ ; _≥_ to _≥𝕂'_)
-
-  <𝕂→<𝕂' : (a b : 𝕂) → a <𝕂 b → a <𝕂' b
-  <𝕂→<𝕂' a b a<b = subst ((b +𝕂 (-𝕂 a)) >𝕂_) (+𝕂InvR a) (+𝕂-rPres< a b (-𝕂 a) a<b)
-
-  <𝕂'→<𝕂 : (a b : 𝕂) → a <𝕂' b → a <𝕂 b
-  <𝕂'→<𝕂 a b 0<b-a = transport (λ i → +𝕂IdL a i <𝕂 b-a+b≡b i) (+𝕂-rPres< 𝟘 (b +𝕂 (-𝕂 a)) a 0<b-a)
-    where b-a+b≡b : (b +𝕂 (-𝕂 a)) +𝕂 a ≡ b
-          b-a+b≡b = sym (+𝕂Assoc _ _ _) ∙ (λ i → b +𝕂 +𝕂InvL a i) ∙ +𝕂IdR b
-
-  ≤𝕂→≤𝕂' : (a b : 𝕂) → a ≤𝕂 b → a ≤𝕂' b
-  ≤𝕂→≤𝕂' a b a≤b with split≤𝕂 a b a≤b
-  ... | lt a<b = inl (<𝕂→<𝕂' a b a<b)
-  ... | eq a≡b = inr a≡b
-
-  ≤𝕂'→≤𝕂 : (a b : 𝕂) → a ≤𝕂' b → a ≤𝕂 b
-  ≤𝕂'→≤𝕂 a b (inl a<b') = <𝕂→≤𝕂 {a = a} {b = b} (<𝕂'→<𝕂 a b a<b')
-  ≤𝕂'→≤𝕂 a b (inr a≡b ) = ≤𝕂-refl a≡b
-
-
   {-
 
     Multiplicative Inverse
@@ -631,3 +608,9 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
 
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   𝕂OrderedField = 𝕂StrictlyOrderedCommRing , IsField𝕂
+
+  ≤𝕂→≤𝕂ᶜ : (a b : 𝕂) → a ≤𝕂 b → OrderedFieldStr._≤_ 𝕂OrderedField a b
+  ≤𝕂→≤𝕂ᶜ a b a≤b = lift a≤b
+
+  ≤𝕂ᶜ→≤𝕂 : (a b : 𝕂) → OrderedFieldStr._≤_ 𝕂OrderedField a b → a ≤𝕂 b
+  ≤𝕂ᶜ→≤𝕂 a b a≤b = lower a≤b

@@ -46,7 +46,7 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
   open Supremum
 
   open OrderedFieldStr 𝕂OrderedField using ()
-    renaming (_<_ to _<𝕂'_ ; _>_ to _>𝕂'_ ; _≤_ to _≤𝕂'_ ; _≥_ to _≥𝕂'_)
+    renaming (_≤_ to _≤𝕂ᶜ_ ; _≥_ to _≥𝕂ᶜ_)
 
 
   module _
@@ -89,20 +89,20 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
       (r , r<q , r∈y) ← y .upper-round q q∈y
       return (Inhab→∈ sup-upper ∣ r , (λ x x∈A → x∈A→x≤y x x∈A r∈y) , r<q ∣₁)
 
-    boundSup𝕂' : (x : 𝕂) → x ∈ A → x ≤𝕂' sup𝕂
-    boundSup𝕂' x h = ≤𝕂→≤𝕂' _ _ (boundSup𝕂 x h)
+    boundSup𝕂ᶜ : (x : 𝕂) → x ∈ A → x ≤𝕂ᶜ sup𝕂
+    boundSup𝕂ᶜ x h = ≤𝕂→≤𝕂ᶜ _ _ (boundSup𝕂 x h)
 
-    leastSup𝕂' : (y : 𝕂) → ((x : 𝕂) → x ∈ A → x ≤𝕂' y) → y ≥𝕂' sup𝕂
-    leastSup𝕂' y h = ≤𝕂→≤𝕂' _ _ (leastSup𝕂 y (λ x k → ≤𝕂'→≤𝕂 _ _ (h x k)))
+    leastSup𝕂ᶜ : (y : 𝕂) → ((x : 𝕂) → x ∈ A → x ≤𝕂ᶜ y) → y ≥𝕂ᶜ sup𝕂
+    leastSup𝕂ᶜ y h = ≤𝕂→≤𝕂ᶜ _ _ (leastSup𝕂 y (λ x k → ≤𝕂ᶜ→≤𝕂 _ _ (h x k)))
 
 
   private
     findBound : (A : ℙ 𝕂)
-      → (b : 𝕂)(bound : (x : 𝕂) → x ∈ A → x ≤𝕂' b)
+      → (b : 𝕂)(bound : (x : 𝕂) → x ∈ A → x ≤𝕂ᶜ b)
       → ∥ Σ[ s ∈ K ] ((x : 𝕂) → x ∈ A → s ∈ x .upper) ∥₁
     findBound A b bound = do
       (s , s∈b) ← b .upper-inhab
-      return (s , λ x x∈A → ≤𝕂'→≤𝕂 _ _ (bound x x∈A) s∈b)
+      return (s , λ x x∈A → ≤𝕂ᶜ→≤𝕂 _ _ (bound x x∈A) s∈b)
 
 
   {-
@@ -119,8 +119,8 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
       (s , s∈x∈A) ← findBound A b bound
       return record
         { sup = sup𝕂 A a₀ a₀∈A s s∈x∈A
-        ; bound = boundSup𝕂' A a₀ a₀∈A s s∈x∈A
-        ; least = leastSup𝕂' A a₀ a₀∈A s s∈x∈A })
+        ; bound = boundSup𝕂ᶜ A a₀ a₀∈A s s∈x∈A
+        ; least = leastSup𝕂ᶜ A a₀ a₀∈A s s∈x∈A })
 
   𝕂CompleteOrderedField : CompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   𝕂CompleteOrderedField = 𝕂OrderedField , isComplete𝕂

@@ -191,28 +191,7 @@ module _ {𝓡 𝓡' : StrictlyOrderedCommRing ℓ ℓ'}
 
   open StrictlyOrderedCommRingHom f
   open StrictlyOrderedCommRingHomStr f
-  open StrictlyOrderedCommRingStr 𝓡
-    using    (Diff>0→<ᶜ ; <ᶜ→Diff>0)
-  open StrictlyOrderedCommRingStr 𝓡'
-    using    ()
-    renaming (Diff>0→<ᶜ to Diff>0→<ᶜ' ; <ᶜ→Diff>0 to <ᶜ→Diff>0')
   open IsCommRingHom (f .ring-hom .snd)
-
-  <ᶜPres : (x y : 𝓡ᵒ .fst) → x R.< y → f .ring-hom .fst x R'.< f .ring-hom .fst y
-  <ᶜPres x y x<y = Diff>0→<ᶜ' (homPres< x y (<ᶜ→Diff>0 x<y))
-
-  <ᶜRefl : (x y : 𝓡ᵒ .fst) → f .ring-hom .fst x R'.< f .ring-hom .fst y → x R.< y
-  <ᶜRefl x y fx<fy = Diff>0→<ᶜ (homRefl< x y (<ᶜ→Diff>0' fx<fy))
-
-  ≤ᶜPres : (x y : 𝓡ᵒ .fst) → x R.≤ y → f .ring-hom .fst x R'.≤ f .ring-hom .fst y
-  ≤ᶜPres x y x≤y =
-    invEq (R'.≤≃¬> (f .ring-hom .fst x) (f .ring-hom .fst y)) λ fy<fx →
-      equivFun (R.≤≃¬> x y) x≤y (<ᶜRefl y x fy<fx)
-
-  ≤ᶜRefl : (x y : 𝓡ᵒ .fst) → f .ring-hom .fst x R'.≤ f .ring-hom .fst y → x R.≤ y
-  ≤ᶜRefl x y fx≤fy =
-    invEq (R.≤≃¬> x y) λ y<x →
-      equivFun (R'.≤≃¬> (f .ring-hom .fst x) (f .ring-hom .fst y)) fx≤fy (<ᶜPres y x y<x)
 
   orderedCommRingEquiv : OrderedCommRingEquiv 𝓡ᵒ 𝓡'ᵒ
   orderedCommRingEquiv .fst = f .ring-hom .fst , isEquiv-f
@@ -222,9 +201,9 @@ module _ {𝓡 𝓡' : StrictlyOrderedCommRing ℓ ℓ'}
   orderedCommRingEquiv .snd .IsOrderedCommRingEquiv.pres· = pres·
   orderedCommRingEquiv .snd .IsOrderedCommRingEquiv.pres- = pres-
   orderedCommRingEquiv .snd .IsOrderedCommRingEquiv.pres< x y =
-    propBiimpl→Equiv (R.is-prop-valued< x y) (R'.is-prop-valued< _ _) (<ᶜPres x y) (<ᶜRefl x y)
+    propBiimpl→Equiv (R.is-prop-valued< x y) (R'.is-prop-valued< _ _) (homPres< x y) (homRefl< x y)
   orderedCommRingEquiv .snd .IsOrderedCommRingEquiv.pres≤ x y =
-    propBiimpl→Equiv (R.is-prop-valued≤ x y) (R'.is-prop-valued≤ _ _) (≤ᶜPres x y) (≤ᶜRefl x y)
+    propBiimpl→Equiv (R.is-prop-valued≤ x y) (R'.is-prop-valued≤ _ _) (homPres≤ x y) (homRefl≤ x y)
 
   path-orderedCommRing : 𝓡ᵒ ≡ 𝓡'ᵒ
   path-orderedCommRing = uaOrderedCommRing orderedCommRingEquiv

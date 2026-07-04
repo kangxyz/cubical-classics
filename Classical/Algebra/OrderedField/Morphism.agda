@@ -300,8 +300,8 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
         where
         case-split : Trichotomy a (step n₀) → b > step (suc n₀)
         case-split (lt a<n) = Empty.rec (interval .snd .fst a<n)
-        case-split (eq a≡n) = a-n≥0→b>sucn (inr (sym a≡n))
-        case-split (gt a>n) = a-n≥0→b>sucn (inl a>n)
+        case-split (eq a≡n) = a-n≥0→b>sucn (≤-refl (sym a≡n))
+        case-split (gt a>n) = a-n≥0→b>sucn (<-≤-weaken a>n)
 
       in-the-image : (n : ℕ) → step n ≡ f-map (lower +' n ⋆' ε)
       in-the-image n = (λ i → f-map lower + homPres⋆ n ε (~ i)) ∙ sym (pres+ _ _)
@@ -341,7 +341,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
     using    (zero-<sucPos)
   open import Cubical.Data.Rationals
     using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
-    renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_)
+    renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_ ; -_ to -ℚ_)
 
   open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
     using    (ℤStrictlyOrderedCommRing)
@@ -352,7 +352,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
 
   open OrderedFieldStr 𝒦
   open InclusionFromℤ (𝒦 .fst)
-  open StrictlyOrderedCommRingStr  ℤStrictlyOrderedCommRing using () renaming (_>_ to _>ℤ_ ; >0≡>0r to >0≡>0r-ℤ)
+  open StrictlyOrderedCommRingStr  ℤStrictlyOrderedCommRing using () renaming (_>_ to _>ℤ_)
   module ℚSO = StrictlyOrderedCommRingStr (ℚOrderedField .fst)
 
   private
@@ -363,7 +363,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
 
 
   ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n >ℤ pos 0
-  ℕ₊₁→ℤ>0 (1+ n) = transport (>0≡>0r-ℤ (ℕ₊₁→ℤ (1+ n))) zero-<sucPos
+  ℕ₊₁→ℤ>0 (1+ n) = zero-<sucPos
 
   ℕ₊₁→R : ℕ₊₁ → K
   ℕ₊₁→R n = ℤ→R (ℕ₊₁→ℤ n)
@@ -390,8 +390,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
 
       >0-helper : ℚSO._>0 [ a , b ] → map-helper >0
       >0-helper a/b>0 =
-        transport (sym (>0≡>0r _))
-          (>0-helper' (subst (_>ℤ pos 0) (Int.·IdR a) a/b>0))
+        >0-helper' (subst (_>ℤ pos 0) (Int.·IdR a) a/b>0)
 
 
     module _ ((a , b)(c , d) : ℤ × ℕ₊₁) where
@@ -447,8 +446,8 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   ℚ→K-Pres-· : (p q : ℚ) → ℚ→K (p ·ℚ q) ≡ ℚ→K p · ℚ→K q
   ℚ→K-Pres-· = elimProp2 (λ _ _ → isSetK _ _) ·-helper
 
-  ℚ→K-Pres->0 : (p : ℚ) → ℚSO._>0 p → ℚ→K p >0
-  ℚ→K-Pres->0 = elimProp (λ _ → isPropΠ (λ _ → isProp>0 _)) >0-helper
+  ℚ→K-Pres>0 : (p : ℚ) → ℚSO._>0 p → ℚ→K p >0
+  ℚ→K-Pres>0 = elimProp (λ _ → isPropΠ (λ _ → isProp>0 _)) >0-helper
 
 
   {-
@@ -463,11 +462,21 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   ℚ→KCommRingHom : CommRingHom ℚCommRing (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
   ℚ→KCommRingHom = _ , IsRingHom→IsCommRingHom ℚCommRing (StrictlyOrderedCommRing→CommRing (𝒦 .fst)) ℚ→K isRingHomℚ→K
 
+  module ℚ→KOrder =
+    PositivePreservation (ℚOrderedField .fst) (𝒦 .fst) ℚ→KCommRingHom ℚ→K-Pres>0
+
+  ℚ→K-Pres< : (p q : ℚ) → ℚSO._<_ p q → ℚ→K p < ℚ→K q
+  ℚ→K-Pres< = ℚ→KOrder.pres<
+
+  ℚ→K-Pres≤ : (p q : ℚ) → ℚSO._≤_ p q → ℚ→K p ≤ ℚ→K q
+  ℚ→K-Pres≤ = ℚ→KOrder.pres≤
+
   open StrictlyOrderedCommRingHom
 
   ℚ→KStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom (ℚOrderedField .fst) (𝒦 .fst)
   ℚ→KStrictlyOrderedCommRingHom .ring-hom = ℚ→KCommRingHom
-  ℚ→KStrictlyOrderedCommRingHom .pres->0  = ℚ→K-Pres->0
+  ℚ→KStrictlyOrderedCommRingHom .pres<    = ℚ→K-Pres<
+  ℚ→KStrictlyOrderedCommRingHom .pres≤    = ℚ→K-Pres≤
 
   ℚ→KOrderedFieldHom : OrderedFieldHom ℚOrderedField 𝒦
   ℚ→KOrderedFieldHom = ℚ→KStrictlyOrderedCommRingHom

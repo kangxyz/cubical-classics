@@ -86,6 +86,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; trichotomy to trichotomy'
                ; <-asym   to <'-asym
                ; ≤-refl   to ≤-refl'
+               ; <-≤-weaken to <-≤-weaken'
                ; <≤-total to <≤-total'
                ; <≤-trans to <≤-trans'
                ; ≤<-trans to ≤<-trans'
@@ -95,8 +96,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; ·-PosPres≥0>0 to ·-PosPres≥0>0'
                ; ·-PosPres> to ·-PosPres>'
                ; <-+-Decompose to <-+-Decompose'
-               ; <-·-Decompose to <-·-Decompose'
-               ; >0≡>0r to >0≡>0r')
+               ; <-·-Decompose to <-·-Decompose')
     open StrictlyOrderedCommRingHom    f
     open StrictlyOrderedCommRingHomStr f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
@@ -131,7 +131,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
         map-sub-bound : isUpperBounded map-sub
         map-sub-bound = do
           (q , q∈upper) ← a .upper-inhab
-          return (f-map q , (λ r r∈map → inl (∈→Inhab map-prop r∈map _ q∈upper)))
+          return (f-map q , (λ r r∈map → <-≤-weaken' (∈→Inhab map-prop r∈map _ q∈upper)))
 
       map-sup : Supremum map-sub
       map-sup = getSup map-sub-inhab map-sub-bound
@@ -292,7 +292,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     map-helper-pres>0 a a>0 = subst (map-helper a >'_) map-pres0 (map-helper-pres> a 𝟘 a>0)
 
     map-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → StrictlyOrderedCommRingStr._>0 (𝒦' .fst .fst) (map-helper a)
-    map-pres>0 a a>0 = transport (sym (>0≡>0r' _)) (map-helper-pres>0 a a>0)
+    map-pres>0 a a>0 = map-helper-pres>0 a a>0
 
 
     module _ (a b : 𝕂)(a>0 : a >𝕂 𝟘)(b>0 : b >𝕂 𝟘) where
@@ -398,9 +398,13 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
     open StrictlyOrderedCommRingHom
 
+    module extendedOrder =
+      PositivePreservation 𝕂StrictlyOrderedCommRing (𝒦' .fst .fst) extendedRingHom map-pres>0
+
     extendedStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom 𝕂StrictlyOrderedCommRing (𝒦' .fst .fst)
     extendedStrictlyOrderedCommRingHom .ring-hom = extendedRingHom
-    extendedStrictlyOrderedCommRingHom .pres->0  = map-pres>0
+    extendedStrictlyOrderedCommRingHom .pres<    = extendedOrder.pres<
+    extendedStrictlyOrderedCommRingHom .pres≤    = extendedOrder.pres≤
 
     extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
     extendedOrderedFieldHom = extendedStrictlyOrderedCommRingHom

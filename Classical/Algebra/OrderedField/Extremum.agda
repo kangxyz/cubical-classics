@@ -104,8 +104,8 @@ module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
   ... | no ¬p = Empty.rec (<≤-asym q<sup (boundary .least _ (λ r r∈A → case-split r (trichotomy q r) r∈A)))
     where
     case-split : (x : K) → Trichotomy q x → x ∈ A → x ≤ q
-    case-split _ (eq q≡x) _ = inr (sym q≡x)
-    case-split _ (gt q>x) _ = inl q>x
+    case-split _ (eq q≡x) _ = ≤-refl (sym q≡x)
+    case-split _ (gt q>x) _ = <-≤-weaken q>x
     case-split x (lt q<x) x∈A = Empty.rec (¬∃×→∀→¬ (λ _ → isProp<) (λ _ → isProp∈ A) ¬p x q<x x∈A)
 
   >sup→¬∈ : {A : ℙ K}(q : K)(boundary : Supremum A) → q > boundary .sup → ¬ q ∈ A
@@ -123,8 +123,8 @@ module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
   ... | no ¬p = Empty.rec (<≤-asym q>inf (boundary .most _ (λ r r∈A → case-split r (trichotomy q r) r∈A)))
     where
     case-split : (x : K) → Trichotomy q x → x ∈ A → q ≤ x
-    case-split _ (eq q≡x) _ = inr q≡x
-    case-split _ (lt q<x) _ = inl q<x
+    case-split _ (eq q≡x) _ = ≤-refl q≡x
+    case-split _ (lt q<x) _ = <-≤-weaken q<x
     case-split x (gt q>x) x∈A = Empty.rec (¬∃×→∀→¬ (λ _ → isProp<) (λ _ → isProp∈ A) ¬p x q>x x∈A)
 
   <inf→¬∈ : {A : ℙ K}(q : K)(boundary : Infimum A) → q < boundary .inf → ¬ q ∈ A
@@ -158,7 +158,7 @@ module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
     sub-≤b = specify prop-≤b
 
     b∈sub : b ∈ sub-≤b
-    b∈sub = Inhab→∈ prop-≤b (inr refl)
+    b∈sub = Inhab→∈ prop-≤b (≤-refl refl)
 
     Sup≤b : Supremum sub-≤b
     Sup≤b .sup = b
