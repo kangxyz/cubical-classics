@@ -29,6 +29,8 @@ open import Classical.Topology.Properties
 open import Classical.Topology.Neighbourhood
 open import Classical.Topology.Hausdorff
 
+open import Classical.Algebra.StrictlyOrderedCommRing
+  using (lt ; eq ; gt)
 open import Classical.Algebra.OrderedField
 open import Classical.Analysis.Real
 

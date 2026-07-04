@@ -12,6 +12,7 @@ open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Algebra.Ring
 
 open import Classical.Axioms
+open import Classical.Algebra.OrderedCommRing.Morphism
 open import Classical.Algebra.OrderedField.Instances.Rationals
 open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
@@ -59,7 +60,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open CompleteOrderedField
   open InclusionFromℚ
-  open StrictlyOrderedCommRingHom
+  open OrderedCommRingHom
 
 
   abstract

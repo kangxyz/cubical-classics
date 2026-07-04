@@ -1,7 +1,7 @@
 {-
 
-  Homomorphism between strictly ordered commutative rings,
-  namely ring homomorphism that preserves order relation
+  Properties of ordered commutative ring homomorphisms between strictly
+  ordered commutative rings
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
@@ -30,6 +30,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
 open import Cubical.Algebra.CommRing.Instances.Int
+open import Classical.Algebra.OrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing.Instances.Int
   using    (ℤStrictlyOrderedCommRing)
 open import Classical.Algebra.StrictlyOrderedCommRing
@@ -67,25 +68,13 @@ private
     helper7 _ = solve! 𝓡
 
 
--- Homomorphisms preserve the underlying commutative ring structure and the
--- native Cubical order relations.
-
-record StrictlyOrderedCommRingHom (𝓡 : StrictlyOrderedCommRing ℓ ℓ')(𝓡' : StrictlyOrderedCommRing ℓ'' ℓ''') : Type (ℓ-max (ℓ-max ℓ ℓ') (ℓ-max ℓ'' ℓ''')) where
-  field
-    ring-hom : CommRingHom (StrictlyOrderedCommRing→CommRing 𝓡) (StrictlyOrderedCommRing→CommRing 𝓡')
-    pres<    : (x y : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._<_ 𝓡 x y →
-               StrictlyOrderedCommRingStr._<_ 𝓡' (ring-hom .fst x) (ring-hom .fst y)
-    pres≤    : (x y : 𝓡 .fst .fst) → StrictlyOrderedCommRingStr._≤_ 𝓡 x y →
-               StrictlyOrderedCommRingStr._≤_ 𝓡' (ring-hom .fst x) (ring-hom .fst y)
-
-
 {-
 
-  Properties of strictly ordered commutative ring homomorphisms
+  Properties using the trichotomy carried by strictly ordered commutative rings
 
 -}
 
-module StrictlyOrderedCommRingHomStr (f : StrictlyOrderedCommRingHom 𝓡 𝓡') where
+module OrderedCommRingHomProperties (f : OrderedCommRingHom (𝓡 .fst) (𝓡' .fst)) where
 
   private
     R  = 𝓡  .fst .fst
@@ -105,7 +94,7 @@ module StrictlyOrderedCommRingHomStr (f : StrictlyOrderedCommRingHom 𝓡 𝓡')
              ; 0⋆q≡0 to 0⋆'q≡0 ; 1⋆q≡q to 1⋆'q≡q
              ; sucn⋆q≡n⋆q+q to sucn⋆'q≡n⋆'q+q)
 
-  open StrictlyOrderedCommRingHom f
+  open OrderedCommRingHom f
 
   open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
   open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡') .snd) using ()
@@ -256,19 +245,13 @@ module InclusionFromℤ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
     ∙ (λ i → ℤ→R-Negate (pos (suc m)) (~ i) · ℤ→R n)
 
 
-  ℤ→R-Pres>0' : (n : ℤ) → n >ℤ pos zero → ℤ→R n > 0r
-  ℤ→R-Pres>0' (pos zero) h = Empty.rec (isIrrefl< h)
-  ℤ→R-Pres>0' (pos (suc zero)) _ = 1>0
-  ℤ→R-Pres>0' (pos (suc (suc n))) _ =
-    +-Pres>0 1>0
-      (ℤ→R-Pres>0' (pos (suc n)) zero-<sucPos)
-  ℤ→R-Pres>0' (negsuc n) h = Empty.rec (¬pos≤negsuc h)
-
-  ℤ→R-Pres>0'' : (n : ℤ) → n >ℤ pos 0 → ℤ→R n > 0r
-  ℤ→R-Pres>0'' n n>0 = ℤ→R-Pres>0' n n>0
-
   ℤ→R-Pres>0 : (n : ℤ) → n >ℤ pos zero → ℤ→R n >0
-  ℤ→R-Pres>0 n h = ℤ→R-Pres>0' n h
+  ℤ→R-Pres>0 (pos zero) h = Empty.rec (isIrrefl< h)
+  ℤ→R-Pres>0 (pos (suc zero)) _ = 1>0
+  ℤ→R-Pres>0 (pos (suc (suc n))) _ =
+    +-Pres>0 1>0
+      (ℤ→R-Pres>0 (pos (suc n)) zero-<sucPos)
+  ℤ→R-Pres>0 (negsuc n) h = Empty.rec (¬pos≤negsuc h)
 
   ℤ→R-Pres-- : (m n : ℤ) → ℤ→R (m -ℤ n) ≡ ℤ→R m - ℤ→R n
   ℤ→R-Pres-- m n = ℤ→R-Pres-+ m (-ℤ n) ∙ (λ i → ℤ→R m + ℤ→R-Negate n i)
@@ -296,9 +279,9 @@ module InclusionFromℤ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
   ℤ→RCommRingHom : CommRingHom ℤCommRing (StrictlyOrderedCommRing→CommRing 𝓡)
   ℤ→RCommRingHom = _ , IsRingHom→IsCommRingHom ℤCommRing (StrictlyOrderedCommRing→CommRing 𝓡) ℤ→R isRingHomℤ→R
 
-  open StrictlyOrderedCommRingHom
+  open OrderedCommRingHom
 
-  ℤ→RStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom ℤStrictlyOrderedCommRing 𝓡
-  ℤ→RStrictlyOrderedCommRingHom .ring-hom = ℤ→RCommRingHom
-  ℤ→RStrictlyOrderedCommRingHom .pres<    = ℤ→R-Pres<
-  ℤ→RStrictlyOrderedCommRingHom .pres≤    = ℤ→R-Pres≤
+  ℤ→ROrderedCommRingHom : OrderedCommRingHom (ℤStrictlyOrderedCommRing .fst) (𝓡 .fst)
+  ℤ→ROrderedCommRingHom .ring-hom = ℤ→RCommRingHom
+  ℤ→ROrderedCommRingHom .pres<    = ℤ→R-Pres<
+  ℤ→ROrderedCommRingHom .pres≤    = ℤ→R-Pres≤

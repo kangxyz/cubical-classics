@@ -1,11 +1,12 @@
 # ¬¬||🧊|| : Cubical Classics
+
 > From program halts in the tale,
 > towards program only *Übermensch* is able to run.
 
 The `cubical-classics` is an experimental Agda library for formalizing classical mathematics in cubical type theory.
-I hope someday it will have some important ideas of modern mathematics eventually.
+I hope someday it can present important ideas of modern mathematics eventually.
 
-We are open to advice and contributions!
+Advice and contributions are welcomed!
 
 ## Dependencies
 

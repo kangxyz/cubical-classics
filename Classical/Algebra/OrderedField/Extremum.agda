@@ -21,6 +21,8 @@ open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
 open import Classical.Algebra.OrderedField
+open import Classical.Algebra.StrictlyOrderedCommRing
+  using (Trichotomy ; lt ; eq ; gt)
 
 private
   variable
@@ -103,7 +105,7 @@ module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
   ... | yes p = p
   ... | no ¬p = Empty.rec (<≤-asym q<sup (boundary .least _ (λ r r∈A → case-split r (trichotomy q r) r∈A)))
     where
-    case-split : (x : K) → Trichotomy q x → x ∈ A → x ≤ q
+    case-split : (x : K) → Trichotomy (𝒦 .fst .fst) q x → x ∈ A → x ≤ q
     case-split _ (eq q≡x) _ = ≤-refl (sym q≡x)
     case-split _ (gt q>x) _ = <-≤-weaken q>x
     case-split x (lt q<x) x∈A = Empty.rec (¬∃×→∀→¬ (λ _ → isProp<) (λ _ → isProp∈ A) ¬p x q<x x∈A)
@@ -122,7 +124,7 @@ module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
   ... | yes p = p
   ... | no ¬p = Empty.rec (<≤-asym q>inf (boundary .most _ (λ r r∈A → case-split r (trichotomy q r) r∈A)))
     where
-    case-split : (x : K) → Trichotomy q x → x ∈ A → q ≤ x
+    case-split : (x : K) → Trichotomy (𝒦 .fst .fst) q x → x ∈ A → q ≤ x
     case-split _ (eq q≡x) _ = ≤-refl q≡x
     case-split _ (lt q<x) _ = <-≤-weaken q<x
     case-split x (gt q>x) x∈A = Empty.rec (¬∃×→∀→¬ (λ _ → isProp<) (λ _ → isProp∈ A) ¬p x q>x x∈A)

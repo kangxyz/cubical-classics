@@ -256,11 +256,18 @@ module Algebra ⦃ 🤖 : Oracle ⦄
     upper-round2 a p q p∈upper q∈upper = do
       (r , r<p , r∈upper) ← a .upper-round p p∈upper
       (s , s<q , s∈upper) ← a .upper-round q q∈upper
-      return (
-        case trichotomy r s of λ
-        { (lt r<s) → r , r<p , <-trans r<s s<q , r∈upper
-        ; (eq r≡s) → s , subst (_< p) r≡s r<p , s<q , s∈upper
-        ; (gt r>s) → s , <-trans r>s r<p , s<q , s∈upper })
+      return (case-split r s r<p r∈upper s<q s∈upper (trichotomy r s))
+      where
+      case-split : (r s : K)
+        → r < p → r ∈ a .upper → s < q → s ∈ a .upper
+        → Trichotomy (𝒦 .fst .fst) r s
+        → Σ[ t ∈ K ] (t < p) × (t < q) × (t ∈ a .upper)
+      case-split r s r<p r∈upper s<q s∈upper (lt r<s) =
+        r , r<p , <-trans r<s s<q , r∈upper
+      case-split r s r<p r∈upper s<q s∈upper (eq r≡s) =
+        s , subst (_< p) r≡s r<p , s<q , s∈upper
+      case-split r s r<p r∈upper s<q s∈upper (gt r>s) =
+        s , <-trans r>s r<p , s<q , s∈upper
 
 
   ·𝕂₊DistR : (a b c : 𝕂₊) → (a ·𝕂₊ b) +𝕂₊ (a ·𝕂₊ c) ≡ a ·𝕂₊ (b +𝕂₊ c)

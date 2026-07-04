@@ -17,12 +17,12 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 
 open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
-open import Cubical.Algebra.OrderedCommRing as CubicalOrderedCommRing
+open import Cubical.Algebra.OrderedCommRing
   using (OrderedCommRing ; OrderedCommRingStr)
 open import Cubical.Tactics.CommRingSolver.Reflection
 open import Cubical.Relation.Nullary
 
-open import Classical.Algebra.StrictlyOrderedCommRing.Base hiding (Trichotomy ; lt ; eq ; gt)
+open import Classical.Algebra.StrictlyOrderedCommRing.Base hiding (Trichotomy ; isPropTrichotomy ; lt ; eq ; gt)
 import Classical.Algebra.StrictlyOrderedCommRing.Base as StrictBase
 
 private
@@ -46,9 +46,6 @@ private
     helper4 : (x y : 𝓡 .fst) → (y - x) + x ≡ y
     helper4 _ _ = solve! 𝓡
 
-    helper5 : (x y z w : 𝓡 .fst) → (y - x) + (w - z) ≡ (y + w) - (x + z)
-    helper5 _ _ _ _ = solve! 𝓡
-
     helper6 : (x y : 𝓡 .fst) → y - x ≡ ((- x) - (- y))
     helper6 _ _ = solve! 𝓡
 
@@ -66,12 +63,6 @@ private
 
     helper11 : (x y : 𝓡 .fst) → - ((- x) · y) ≡ x · y
     helper11 _ _ = solve! 𝓡
-
-    helper12 : (x y z : 𝓡 .fst) → y - x ≡ (y + z) - (x + z)
-    helper12 _ _ _ = solve! 𝓡
-
-    helper13 : (x y z : 𝓡 .fst) → y - x ≡ (z + y) - (z + x)
-    helper13 _ _ _ = solve! 𝓡
 
     helper14 : (x y : 𝓡 .fst) → x ≡ (y + x) - y
     helper14 _ _ = solve! 𝓡
@@ -191,27 +182,19 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
   <-trans {x = x} {y = y} {z = z} = Ord.is-trans< x y z
 
 
-  data Trichotomy (x y : R) : Type (ℓ-max ℓ ℓ') where
-    lt : x < y → Trichotomy x y
-    eq : x ≡ y → Trichotomy x y
-    gt : x > y → Trichotomy x y
+  private
+    Trichotomy : R → R → Type (ℓ-max ℓ ℓ')
+    Trichotomy = StrictBase.Trichotomy 𝓡ᶜ
 
-  isPropTrichotomy : (x y : R) → isProp (Trichotomy x y)
-  isPropTrichotomy x y (lt x<y) (lt x<y') i = lt (isProp< x<y x<y' i)
-  isPropTrichotomy x y (eq x≡y) (eq x≡y') i = eq (isSetR _ _ x≡y x≡y' i)
-  isPropTrichotomy x y (gt x>y) (gt x>y') i = gt (isProp< x>y x>y' i)
-  isPropTrichotomy x y (lt x<y) (eq x≡y) = Empty.rec (<-arefl x<y x≡y)
-  isPropTrichotomy x y (lt x<y) (gt x>y) = Empty.rec (<-asym x<y x>y)
-  isPropTrichotomy x y (gt x>y) (eq x≡y) = Empty.rec (<-arefl x>y (sym x≡y))
-  isPropTrichotomy x y (gt x>y) (lt x<y) = Empty.rec (<-asym x<y x>y)
-  isPropTrichotomy x y (eq x≡y) (lt x<y) = Empty.rec (<-arefl x<y x≡y)
-  isPropTrichotomy x y (eq x≡y) (gt x>y) = Empty.rec (<-arefl x>y (sym x≡y))
+    pattern lt x<y = StrictBase.lt x<y
+    pattern eq x≡y = StrictBase.eq x≡y
+    pattern gt y<x = StrictBase.gt y<x
 
-  trichotomy : (x y : R) → Trichotomy x y
-  trichotomy x y with trichotomyᶜ x y
-  ... | StrictBase.lt x<y = lt x<y
-  ... | StrictBase.eq x≡y = eq x≡y
-  ... | StrictBase.gt y<x = gt y<x
+  isPropTrichotomy : (x y : R) → isProp (StrictBase.Trichotomy 𝓡ᶜ x y)
+  isPropTrichotomy = StrictBase.isPropTrichotomy 𝓡ᶜ
+
+  trichotomy : (x y : R) → StrictBase.Trichotomy 𝓡ᶜ x y
+  trichotomy = trichotomyᶜ
 
   dec< : (x y : R) → Dec (x < y)
   dec< x y with trichotomy x y
@@ -437,13 +420,16 @@ module StrictlyOrderedCommRingStr (𝓡 : StrictlyOrderedCommRing ℓ ℓ') wher
 
 
   +-Pres≤ : x ≤ y → z ≤ w → x + z ≤ y + w
-  +-Pres≤ x≤y z≤w = Diff≥0→≥ (subst (_≥ 0r) (helper5 _ _ _ _) (+-Pres≥0 (≥→Diff≥0 x≤y) (≥→Diff≥0 z≤w)))
+  +-Pres≤ {x = x} {y = y} {z = z} {w = w} x≤y z≤w =
+    ≤-trans (Ord.+MonoR≤ x y z x≤y)
+      (transport (λ i → +Comm z y i ≤ +Comm w y i) (Ord.+MonoR≤ z w y z≤w))
 
   +-lPres≤ : x ≤ y → z + x ≤ z + y
-  +-lPres≤ {z = z} x≤y = Diff≥0→≥ (subst (_≥ 0r) (helper13 _ _ z) (≥→Diff≥0 x≤y))
+  +-lPres≤ {x = x} {y = y} {z = z} x≤y =
+    transport (λ i → +Comm x z i ≤ +Comm y z i) (Ord.+MonoR≤ x y z x≤y)
 
   +-rPres≤ : x ≤ y → x + z ≤ y + z
-  +-rPres≤ {z = z} x≤y = Diff≥0→≥ (subst (_≥ 0r) (helper12 _ _ z) (≥→Diff≥0 x≤y))
+  +-rPres≤ {x = x} {y = y} {z = z} = Ord.+MonoR≤ x y z
 
 
   -Reverse≤ : x ≤ y → - x ≥ - y

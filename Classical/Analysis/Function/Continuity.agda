@@ -25,7 +25,7 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
 open import Classical.Algebra.StrictlyOrderedCommRing
-  using (StrictlyOrderedCommRing→CommRing)
+  using (StrictlyOrderedCommRing→CommRing ; Trichotomy ; lt ; eq ; gt)
 open import Classical.Algebra.StrictlyOrderedCommRing.AbsoluteValue
 open import Classical.Algebra.OrderedField
 open import Classical.Algebra.OrderedField.Extremum
@@ -190,7 +190,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       x₀<1 : x₀ < 1
       x₀<1 = case-split (trichotomy x₀ 1)
         where
-        case-split : Trichotomy x₀ 1 → _
+        case-split : Trichotomy (ℝCompleteOrderedField .fst .fst .fst) x₀ 1 → _
         case-split (lt x₀<1) = x₀<1
         case-split (eq x₀≡1) = Empty.rec (<-asym f1>0 f1<0)
           where
@@ -233,7 +233,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       x₀>0 : x₀ > 0
       x₀>0 = case-split (trichotomy x₀ 0)
         where
-        case-split : Trichotomy x₀ 0 → _
+        case-split : Trichotomy (ℝCompleteOrderedField .fst .fst .fst) x₀ 0 → _
         case-split (lt x₀<0) = Empty.rec (<≤-asym x₀<0 0≤x₀)
         case-split (eq x₀≡0) = Empty.rec (<-asym f0>0 f0<0)
           where
@@ -292,7 +292,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     fx₀≡0 : f .fun x₀ ≡ 0
     fx₀≡0 = case-split (trichotomy (f .fun x₀) 0)
       where
-      case-split : Trichotomy (f .fun x₀) 0 → _
+      case-split : Trichotomy (ℝCompleteOrderedField .fst .fst .fst) (f .fun x₀) 0 → _
       case-split (lt fx₀<0) = Empty.rec (¬fx₀<0 fx₀<0)
       case-split (eq fx₀≡0) = fx₀≡0
       case-split (gt fx₀>0) = Empty.rec (¬fx₀>0 fx₀>0)

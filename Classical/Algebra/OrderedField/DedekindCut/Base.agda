@@ -188,7 +188,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
     ¬∈upper→<upper : ¬ q ∈ a .upper → (r : K) → r ∈ a .upper → q < r
     ¬∈upper→<upper ¬q∈upper r r∈upper = case-split (trichotomy q r)
       where
-      case-split : Trichotomy q r → q < r
+      case-split : Trichotomy (𝒦 .fst .fst) q r → q < r
       case-split (lt q<r) = q<r
       case-split (eq q≡r) = Empty.rec (¬q∈upper (subst (_∈ a .upper) (sym q≡r) r∈upper))
       case-split (gt q>r) = Empty.rec (¬q∈upper (a .upper-close _ _ r∈upper q>r))

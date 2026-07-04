@@ -298,7 +298,7 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
   min2 : x > 0r → y > 0r → Σ[ z ∈ K ] (z > 0r) × (z < x) × (z < y)
   min2 {x = x} {y = y} x>0 y>0 = case-split (trichotomy x y)
     where
-    case-split : Trichotomy x y → Σ[ z ∈ K ] (z > 0r) × (z < x) × (z < y)
+    case-split : Trichotomy (𝒦 .fst .fst) x y → Σ[ z ∈ K ] (z > 0r) × (z < x) × (z < y)
     case-split (lt x<y) = middle 0r x , middle>l x>0 , middle<r x>0 , <-trans (middle<r x>0) x<y
     case-split (gt x>y) = middle 0r y , middle>l y>0 , <-trans (middle<r y>0) x>y , middle<r y>0
     case-split (eq x≡y) =

@@ -48,7 +48,7 @@ module _ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
   isArchimedean∥∥→isArchimedean : isArchimedean∥∥ → isArchimedean
   isArchimedean∥∥→isArchimedean ∥archimedes∥ q ε ε>0 = case-split (trichotomy q 0r)
     where
-    case-split : Trichotomy q 0r → _
+    case-split : Trichotomy (𝓡 .fst) q 0r → _
     case-split (lt q<0) = 0 , subst (_> q) (sym (0⋆q≡0 ε)) q<0
     case-split (eq q≡0) = 1 , transport (λ i → 1⋆q≡q ε (~ i) > q≡0 (~ i)) ε>0
     case-split (gt q>0) = find (λ _ → dec< _ _) (∥archimedes∥ q ε ε>0)

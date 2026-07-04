@@ -22,6 +22,7 @@ open import Cubical.Algebra.Ring
 open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Classical.Algebra.OrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing.Univalence
@@ -67,10 +68,11 @@ private
     helper9 _ _ _ = solve! 𝓡
 
 
--- The homomorphism between ordered fields is just the homomorphism between their underlying strictly ordered commutative rings.
+-- Ordered-field homomorphisms are homomorphisms of the underlying Cubical
+-- ordered commutative rings.
 
 OrderedFieldHom : (𝒦 : OrderedField ℓ ℓ')(𝒦' : OrderedField ℓ'' ℓ''') → Type _
-OrderedFieldHom 𝒦 𝒦' = StrictlyOrderedCommRingHom (𝒦 .fst) (𝒦' .fst)
+OrderedFieldHom 𝒦 𝒦' = OrderedCommRingHom (𝒦 .fst .fst) (𝒦' .fst .fst)
 
 
 {-
@@ -79,10 +81,11 @@ OrderedFieldHom 𝒦 𝒦' = StrictlyOrderedCommRingHom (𝒦 .fst) (𝒦' .fst)
 
 -}
 
--- Equivalence of strictly ordered commutative rings
+-- Equivalence of ordered fields
 
 isOrderedFieldEquiv : OrderedFieldHom 𝒦 𝒦' → Type _
-isOrderedFieldEquiv = isStrictlyOrderedCommRingEquiv
+isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} =
+  isStrictlyOrderedCommRingEquiv {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst}
 
 
 uaOrderedField : {𝒦 𝒦' : OrderedField ℓ ℓ'}
@@ -111,8 +114,8 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
              ; _>_ to _>'_ ; _≥_ to _≥'_
              ; _⋆_ to _⋆'_
              ; p>0→p⁻¹>0 to p>'0→p⁻¹>'0)
-  open StrictlyOrderedCommRingHom    f
-  open StrictlyOrderedCommRingHomStr f
+  open OrderedCommRingHom           f
+  open OrderedCommRingHomProperties {𝓡 = 𝒦' .fst} {𝓡' = 𝒦 .fst} f
   open IsCommRingHom (ring-hom .snd)
 
   private
@@ -299,7 +302,7 @@ module OrderedFieldHomStr (f : OrderedFieldHom 𝒦' 𝒦) where
       b>sucn : b > step (suc n₀)
       b>sucn = case-split (trichotomy a (step n₀))
         where
-        case-split : Trichotomy a (step n₀) → b > step (suc n₀)
+        case-split : Trichotomy (𝒦 .fst .fst) a (step n₀) → b > step (suc n₀)
         case-split (lt a<n) = Empty.rec (interval .snd .fst a<n)
         case-split (eq a≡n) = a-n≥0→b>sucn (≤-refl (sym a≡n))
         case-split (gt a>n) = a-n≥0→b>sucn (<-≤-weaken a>n)
@@ -370,7 +373,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   ℕ₊₁→R n = ℤ→R (ℕ₊₁→ℤ n)
 
   ℕ₊₁→R>0 : (n : ℕ₊₁) → ℕ₊₁→R n > 0r
-  ℕ₊₁→R>0 n = ℤ→R-Pres>0'' (ℕ₊₁→ℤ n) (ℕ₊₁→ℤ>0 n)
+  ℕ₊₁→R>0 n = ℤ→R-Pres>0 (ℕ₊₁→ℤ n) (ℕ₊₁→ℤ>0 n)
 
   ℕ₊₁→R≢0 : (n : ℕ₊₁) → ¬ ℕ₊₁→R n ≡ 0r
   ℕ₊₁→R≢0 n = >-arefl (ℕ₊₁→R>0 n)
@@ -387,7 +390,7 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
       map-helper = ℤ→R a · inv (ℕ₊₁→R≢0 b)
 
       >0-helper' : a >ℤ 0 → map-helper > 0r
-      >0-helper' a>0 = ·-Pres>0 (ℤ→R-Pres>0'' _ a>0) (p>0→p⁻¹>0 (ℕ₊₁→R>0 b))
+      >0-helper' a>0 = ·-Pres>0 (ℤ→R-Pres>0 _ a>0) (p>0→p⁻¹>0 (ℕ₊₁→R>0 b))
 
       >0-helper : ℚSO._>0 [ a , b ] → map-helper >0
       >0-helper a/b>0 =
@@ -479,17 +482,17 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
   ℚ→K-Pres≤ p q p≤q =
     invEq (≤≃¬> (ℚ→K p) (ℚ→K q)) (notGreater (ℚSO.trichotomy p q))
     where
-    notGreater : ℚSO.Trichotomy p q → ¬ ℚ→K q < ℚ→K p
-    notGreater (ℚSO.lt p<q) fq<fp = <-asym (ℚ→K-Pres< p q p<q) fq<fp
-    notGreater (ℚSO.eq p≡q) fq<fp = <-arefl fq<fp (cong ℚ→K (sym p≡q))
-    notGreater (ℚSO.gt q<p) _ = equivFun (ℚSO.≤≃¬> p q) p≤q q<p
+    notGreater : Trichotomy (ℚOrderedField .fst .fst) p q → ¬ ℚ→K q < ℚ→K p
+    notGreater (lt p<q) fq<fp = <-asym (ℚ→K-Pres< p q p<q) fq<fp
+    notGreater (eq p≡q) fq<fp = <-arefl fq<fp (cong ℚ→K (sym p≡q))
+    notGreater (gt q<p) _ = equivFun (ℚSO.≤≃¬> p q) p≤q q<p
 
-  open StrictlyOrderedCommRingHom
+  open OrderedCommRingHom
 
-  ℚ→KStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom (ℚOrderedField .fst) (𝒦 .fst)
-  ℚ→KStrictlyOrderedCommRingHom .ring-hom = ℚ→KCommRingHom
-  ℚ→KStrictlyOrderedCommRingHom .pres<    = ℚ→K-Pres<
-  ℚ→KStrictlyOrderedCommRingHom .pres≤    = ℚ→K-Pres≤
+  ℚ→KOrderedCommRingHom : OrderedCommRingHom (ℚOrderedField .fst .fst) (𝒦 .fst .fst)
+  ℚ→KOrderedCommRingHom .ring-hom = ℚ→KCommRingHom
+  ℚ→KOrderedCommRingHom .pres<    = ℚ→K-Pres<
+  ℚ→KOrderedCommRingHom .pres≤    = ℚ→K-Pres≤
 
   ℚ→KOrderedFieldHom : OrderedFieldHom ℚOrderedField 𝒦
-  ℚ→KOrderedFieldHom = ℚ→KStrictlyOrderedCommRingHom
+  ℚ→KOrderedFieldHom = ℚ→KOrderedCommRingHom

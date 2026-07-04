@@ -25,6 +25,7 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Logic
 
+open import Classical.Algebra.OrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
@@ -84,7 +85,6 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; _>0 to _>0'_
                ; isProp< to isProp<'
                ; isProp≤ to isProp≤'
-               ; Trichotomy to Trichotomy'
                ; trichotomy to trichotomy'
                ; <-asym   to <'-asym
                ; <-arefl  to <'-arefl
@@ -102,8 +102,8 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; ·-PosPres> to ·-PosPres>'
                ; <-+-Decompose to <-+-Decompose'
                ; <-·-Decompose to <-·-Decompose')
-    open StrictlyOrderedCommRingHom    f
-    open StrictlyOrderedCommRingHomStr f
+    open OrderedCommRingHom           f
+    open OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst .fst} f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
     open IsCommRingHom (ring-hom .snd)
     module 𝕂SO = StrictlyOrderedCommRingStr 𝕂StrictlyOrderedCommRing
@@ -270,7 +270,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
       map-pres+ : map-helper (a +𝕂 b) ≡ map-helper a +' map-helper b
       map-pres+ = case-split (trichotomy' _ _)
         where
-        case-split : Trichotomy' _ _ → _
+        case-split : Trichotomy (𝒦' .fst .fst .fst) _ _ → _
         case-split (lt fa+b<fa+fb) = Empty.rec (<≤-asym' fa+b<fa+fb fa+fb≤fa+b)
         case-split (eq fa+b≡fa+fb) = fa+b≡fa+fb
         case-split (gt fa+b>fa+fb) = Empty.rec (¬fa+fb<fa+b fa+b>fa+fb)
@@ -344,7 +344,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
       map-pres·PosPos' : map-helper ((a₊ ·𝕂₊ b₊) .fst) ≡ map-helper a ·' map-helper b
       map-pres·PosPos' = case-split (trichotomy' _ _)
         where
-        case-split : Trichotomy' _ _ → _
+        case-split : Trichotomy (𝒦' .fst .fst .fst) _ _ → _
         case-split (lt fa·b<fa·fb) = Empty.rec (<≤-asym' fa·b<fa·fb fa·fb≤fa·b)
         case-split (eq fa·b≡fa·fb) = fa·b≡fa·fb
         case-split (gt fa·b>fa·fb) = Empty.rec (¬fa·fb<fa·b fa·b>fa·fb)
@@ -402,7 +402,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     extendedRingHom : CommRingHom 𝕂CommRing (StrictlyOrderedCommRing→CommRing (𝒦' .fst .fst))
     extendedRingHom = map-helper , makeIsCommRingHom map-pres1 map-pres+ map-pres·
 
-    open StrictlyOrderedCommRingHom
+    open OrderedCommRingHom
 
     map-pres-- : (a b : 𝕂) → map-helper ((𝕂SO.Ord._-_) b a) ≡ map-helper b -' map-helper a
     map-pres-- a b =
@@ -418,15 +418,15 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     map-pres≤ a b a≤b =
       invEq (≤'≃¬> (map-helper a) (map-helper b)) (notGreater (𝕂SO.trichotomy a b))
       where
-      notGreater : 𝕂SO.Trichotomy a b → ¬ map-helper b <' map-helper a
-      notGreater (𝕂SO.lt a<b) fb<fa = <'-asym (map-pres< a b a<b) fb<fa
-      notGreater (𝕂SO.eq a≡b) fb<fa = <'-arefl fb<fa (cong map-helper (sym a≡b))
-      notGreater (𝕂SO.gt b<a) _ = equivFun (𝕂SO.≤≃¬> a b) a≤b b<a
+      notGreater : Trichotomy (𝕂StrictlyOrderedCommRing .fst) a b → ¬ map-helper b <' map-helper a
+      notGreater (lt a<b) fb<fa = <'-asym (map-pres< a b a<b) fb<fa
+      notGreater (eq a≡b) fb<fa = <'-arefl fb<fa (cong map-helper (sym a≡b))
+      notGreater (gt b<a) _ = equivFun (𝕂SO.≤≃¬> a b) a≤b b<a
 
-    extendedStrictlyOrderedCommRingHom : StrictlyOrderedCommRingHom 𝕂StrictlyOrderedCommRing (𝒦' .fst .fst)
-    extendedStrictlyOrderedCommRingHom .ring-hom = extendedRingHom
-    extendedStrictlyOrderedCommRingHom .pres<    = map-pres<
-    extendedStrictlyOrderedCommRingHom .pres≤    = map-pres≤
+    extendedOrderedCommRingHom : OrderedCommRingHom (𝕂StrictlyOrderedCommRing .fst) (𝒦' .fst .fst .fst)
+    extendedOrderedCommRingHom .ring-hom = extendedRingHom
+    extendedOrderedCommRingHom .pres<    = map-pres<
+    extendedOrderedCommRingHom .pres≤    = map-pres≤
 
     extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
-    extendedOrderedFieldHom = extendedStrictlyOrderedCommRingHom
+    extendedOrderedFieldHom = extendedOrderedCommRingHom

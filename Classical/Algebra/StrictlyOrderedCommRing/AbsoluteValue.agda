@@ -206,7 +206,7 @@ module AbsoluteValue (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
   absInOpenInterval : d > 0r → x - d < y → y < x + d → abs (x - y) < d
   absInOpenInterval {d = d} {x = x} {y = y} d>0 x-d<y y<x+d = case-split (trichotomy x y)
     where
-    case-split : Trichotomy x y → _
+    case-split : Trichotomy (𝓡 .fst) x y → _
     case-split (gt x>y) = absInBetween<  d>0 x-d<y x>y
     case-split (lt x<y) = absInBetween<' d>0 x<y y<x+d
     case-split (eq x≡y) = subst (_< d) (sym (x≡0→abs≡0 (x≡y→diff≡0 x≡y))) d>0
@@ -223,7 +223,7 @@ module AbsoluteValue (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
       ≤-refl (cong abs ((λ i → x≡0 i + y) ∙ +IdL _) ∙ sym (+IdL _))
     ... | gt x>0 = case-split (trichotomy y 0r) (trichotomy (x + y) 0r)
       where
-      case-split : Trichotomy y 0r → Trichotomy (x + y) 0r → _
+      case-split : Trichotomy (𝓡 .fst) y 0r → Trichotomy (𝓡 .fst) (x + y) 0r → _
       case-split (eq y≡0) _ =
         ≤-refl
           ( cong abs ((λ i → x + y≡0 i) ∙ +IdR _)

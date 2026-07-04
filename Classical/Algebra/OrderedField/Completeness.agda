@@ -34,6 +34,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
+open import Classical.Algebra.OrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing
 open import Classical.Algebra.StrictlyOrderedCommRing.Morphism
 open import Classical.Algebra.StrictlyOrderedCommRing.Archimedes
@@ -201,13 +202,12 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       renaming ( _<_ to _<'_ ; _≤_ to _≤'_
                ; _>_ to _>'_ ; _≥_ to _≥'_
                ; isProp< to isProp<'
-               ; Trichotomy to Trichotomy'
                ; trichotomy to trichotomy'
                ; <-asym  to <'-asym
                ; <-trans to <'-trans
                ; is-set  to is-set')
-    open StrictlyOrderedCommRingHom    f
-    open StrictlyOrderedCommRingHomStr f
+    open OrderedCommRingHom           f
+    open OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} f
     open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦'} f
 
     private
@@ -256,7 +256,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
       fiber-path : f-map x ≡ y
       fiber-path = case-split (trichotomy' (f-map x) y)
         where
-        case-split : Trichotomy' (f-map x) y → f-map x ≡ y
+        case-split : Trichotomy (𝒦' .fst .fst) (f-map x) y → f-map x ≡ y
         case-split (eq fx≡y) = fx≡y
         case-split (lt fx<y) = Empty.rec (
           proof _ , isProp⊥ by do
