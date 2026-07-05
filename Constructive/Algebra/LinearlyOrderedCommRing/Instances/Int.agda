@@ -111,9 +111,9 @@ n>0→posm≡n n@(negsuc _) n>0 = Empty.rec (¬pos≤negsuc n>0)
 
 -}
 
-archimedes : (a b : ℤ) → b > 0 → Σ[ n ∈ ℕ ] pos n · b > a
-archimedes a (negsuc b) b>0 = Empty.rec (¬pos≤negsuc b>0)
-archimedes a (pos b) b>0 with trichotomy a 0
+archimedean : (a b : ℤ) → b > 0 → Σ[ n ∈ ℕ ] pos n · b > a
+archimedean a (negsuc b) b>0 = Empty.rec (¬pos≤negsuc b>0)
+archimedean a (pos b) b>0 with trichotomy a 0
 ... | lt a<0 = 1 , <-trans {x = a} {y = 0} {z = 1 · pos b} a<0 (subst (_> 0) (sym (·IdL (pos b))) b>0)
 ... | eq a≡0 = 1 , subst (1 · pos b >_) (sym a≡0) (subst (_> 0) (sym (·IdL (pos b))) b>0)
 ... | gt a>0 = suc an , subst (pos (suc an) · (pos b) >_) (·IdR a) posn·b>a·1
@@ -124,9 +124,9 @@ archimedes a (pos b) b>0 with trichotomy a 0
         posn·b>a·1 : pos (suc an) · (pos b) > a · 1
         posn·b>a·1 = ·-PosPres>≥ {x = a} {y = pos (suc an)} a>0 1>0 possucm>a (n>0→n≥1 (pos b) b>0)
 
-archimedes' : (a b : ℤ) → b > 0 → Σ[ n ∈ ℕ ] pos n · b + a > 0
-archimedes' a b b>0 =
-  let (n , posn·b>-a) = archimedes (- a) b b>0
+archimedean' : (a b : ℤ) → b > 0 → Σ[ n ∈ ℕ ] pos n · b + a > 0
+archimedean' a b b>0 =
+  let (n , posn·b>-a) = archimedean (- a) b b>0
       posn·b+a>-a+a : pos n · b + a > - a + a
       posn·b+a>-a+a = +-rPres< {x = - a} {y = pos n · b} {z = a} posn·b>-a
   in  n , subst (pos n · b + a >_) (+InvL a) posn·b+a>-a+a

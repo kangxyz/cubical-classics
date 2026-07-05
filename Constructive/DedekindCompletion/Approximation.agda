@@ -17,11 +17,11 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Algebra.LinearlyOrderedCommRing
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField.Archimedean
 open import Constructive.DedekindCompletion.Base
 open import Constructive.DedekindCompletion.Order
-open import Constructive.DedekindCompletion.Archimedean
 
 private
   variable
@@ -48,8 +48,8 @@ module CompletionApproximation
   𝒦 : LinearlyOrderedField ℓ ℓ'
   𝒦 = 𝒜 .fst
 
-  archimedes : isArchimedean (𝒦 .fst)
-  archimedes = 𝒜 .snd
+  archimedean : isArchimedean (𝒦 .fst)
+  archimedean = 𝒜 .snd
 
   private
     K : Type ℓ
@@ -244,10 +244,10 @@ module CompletionApproximation
         p∈Lx u∈Ux u≤p+sucnδ (≤-refl refl)
       where
       n : ℕ
-      n = fst (archimedes (u - p) δ δ>0)
+      n = fst (archimedean (u - p) δ δ>0)
 
       u-p<nδ : u - p < n ⋆ δ
-      u-p<nδ = snd (archimedes (u - p) δ δ>0)
+      u-p<nδ = snd (archimedean (u - p) δ δ>0)
 
       u<p+nδ : u < p + (n ⋆ δ)
       u<p+nδ =

@@ -38,7 +38,7 @@ open import Classical.Foundations.Powerset
 open import Constructive.Algebra.OrderedCommRing.Morphism
 open import Constructive.Algebra.LinearlyOrderedCommRing
 import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Algebra.LinearlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum

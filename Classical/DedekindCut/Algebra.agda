@@ -20,10 +20,10 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
 open import Constructive.Algebra.LinearlyOrderedCommRing
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
-open import Classical.DedekindCut.Archimedes
+open import Classical.DedekindCut.Archimedean
 
 private
   variable
@@ -47,7 +47,7 @@ private
 
 
 module Algebra ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedeanK : isArchimedean (𝒦 . fst))
   where
 
   private
@@ -56,7 +56,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
 
   open LinearlyOrderedFieldStr 𝒦
   open Basics      𝒦
-  open Archimedes  𝒦 archimedesK
+  open Archimedean  𝒦 archimedeanK
   open DedekindCut
 
   open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
@@ -139,7 +139,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
     upper⊇ {q = q} q∈upper =
       proof _ , isProp∈ ((a +𝕂 (-𝕂 a)) .upper) by do
       let q>0 = ∈→Inhab (0r <P_) q∈upper
-      (r , s , s<q∈upper , r<s , r+q∈upper) ← archimedes a q q>0
+      (r , s , s<q∈upper , r<s , r+q∈upper) ← archimedean a q q>0
       return (
         Inhab→∈ (+upper a (-𝕂 a)) ∣ q + r , - r ,
         subst (_∈ a .upper) (+Comm r q) r+q∈upper ,
@@ -362,7 +362,7 @@ module Algebra ⦃ 🤖 : Oracle ⦄
             ε = q' · (q - 1r)
             ε>0 : ε > 0r
             ε>0 = ·-Pres>0 q'>0 q-1>0
-        (r , s , s<q∈upper , q'<r , r<s , r+ε∈upper) ← archimedes' a ε ε>0 q' (q₀ , q₀<r∈upper , q'<q₀)
+        (r , s , s<q∈upper , q'<r , r<s , r+ε∈upper) ← archimedean' a ε ε>0 q' (q₀ , q₀<r∈upper , q'<q₀)
         let r+ε<r·q : r + ε < r · q
             r+ε<r·q = ineq-helper r q q' q-1>0 q'<r
             r·q∈upper : r · q ∈ a .upper

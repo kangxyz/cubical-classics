@@ -19,7 +19,7 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-open import Constructive.DedekindCompletion.Archimedean
+open import Constructive.Algebra.LinearlyOrderedField.Archimedean
 open import Constructive.DedekindCompletion.Base
 open import Constructive.DedekindCompletion.Order
 

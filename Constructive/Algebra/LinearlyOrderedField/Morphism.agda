@@ -29,7 +29,7 @@ open import Constructive.Algebra.OrderedField.Morphism public
 open import Constructive.Algebra.LinearlyOrderedCommRing
 import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
 open import Constructive.Algebra.LinearlyOrderedCommRing.Univalence
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 
 private
@@ -150,15 +150,15 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
 
 
   isArchimedean→isUnboundedΣ : isArchimedean (𝒦 .fst) → isUnboundedΣ
-  isArchimedean→isUnboundedΣ archimedes x =
+  isArchimedean→isUnboundedΣ archimedean x =
     (helper .fst) ⋆' 1r' , subst (_> x) (sym (homPres⋆ _ _)) (helper .snd)
     where
     helper : _
-    helper = archimedes x (f-map 1r') (homPres>0 _ 1>'0)
+    helper = archimedean x (f-map 1r') (homPres>0 _ 1>'0)
 
 
   isArchimedean→isUnbounded : isArchimedean (𝒦 .fst) → isUnbounded
-  isArchimedean→isUnbounded archimedes x = ∣ isArchimedean→isUnboundedΣ archimedes x ∣₁
+  isArchimedean→isUnbounded archimedean x = ∣ isArchimedean→isUnboundedΣ archimedean x ∣₁
 
 
   -- Unboundedness in the other direction, equivalent by using additive inverses.
@@ -227,7 +227,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
   private
 
     module _
-      (archimedes : isArchimedean (𝒦 .fst))
+      (archimedean : isArchimedean (𝒦 .fst))
       (a b : K)(ε : K')
       (fε>0 : f-map ε > 0r)(fε<δ : f-map ε < b - a)
       (lower : K')(lower<a : f-map lower < a) where
@@ -258,7 +258,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
       ∃Pn : ∥ Σ[ n ∈ ℕ ] P n ∥₁
       ∃Pn =
         let (n , n·ε>a-lower) =
-              archimedes (a - f-map lower) (f-map ε) fε>0
+              archimedean (a - f-map lower) (f-map ε) fε>0
             lower+n·ε>a : step n > a
             lower+n·ε>a = subst (step n >_)
               (helper1 (f-map lower) a) (+-lPres< n·ε>a-lower)
@@ -304,15 +304,15 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
 
 
   isArchimedean→isDenseΣ : isArchimedean (𝒦 .fst) → isDenseΣ
-  isArchimedean→isDenseΣ archimedes {x = x} {y = y} x<y =
+  isArchimedean→isDenseΣ archimedean {x = x} {y = y} x<y =
     let (lower , lower<a) =
-          isUnboundedΣ→isLowerUnboundedΣ (isArchimedean→isUnboundedΣ archimedes) x
+          isUnboundedΣ→isLowerUnboundedΣ (isArchimedean→isUnboundedΣ archimedean) x
         (ε , fε>0 , fε<δ) =
-          isUnboundedΣ→isArbitrarilySmallΣ (isArchimedean→isUnboundedΣ archimedes) (y - x) (>→Diff>0 x<y)
-    in among-them archimedes x y ε fε>0 fε<δ lower lower<a
+          isUnboundedΣ→isArbitrarilySmallΣ (isArchimedean→isUnboundedΣ archimedean) (y - x) (>→Diff>0 x<y)
+    in among-them archimedean x y ε fε>0 fε<δ lower lower<a
 
   isArchimedean→isDense : isArchimedean (𝒦 .fst) → isDense
-  isArchimedean→isDense archimedes x<y = ∣ isArchimedean→isDenseΣ archimedes x<y ∣₁
+  isArchimedean→isDense archimedean x<y = ∣ isArchimedean→isDenseΣ archimedean x<y ∣₁
 
 {-
 

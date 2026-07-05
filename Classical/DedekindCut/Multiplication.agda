@@ -29,7 +29,7 @@ open import Classical.Foundations.Powerset
 
 open import Constructive.Algebra.LinearlyOrderedCommRing
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.OrderedField.Base
   using (OrderedField)
 open import Constructive.Algebra.LinearlyOrderedField
@@ -44,7 +44,7 @@ private
 
 
 module Multiplication ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 . fst))
   where
 
   private
@@ -52,8 +52,8 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
 
   open LinearlyOrderedFieldStr 𝒦
   open Basics   𝒦
-  open Algebra  𝒦 archimedes
-  open Order    𝒦 archimedes
+  open Algebra  𝒦 archimedean
+  open Order    𝒦 archimedean
   open DedekindCut
 
 

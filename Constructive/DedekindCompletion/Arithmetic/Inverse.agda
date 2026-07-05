@@ -17,7 +17,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Relation.Nullary using (¬_)
 
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
 open import Constructive.DedekindCompletion.Arithmetic.Base

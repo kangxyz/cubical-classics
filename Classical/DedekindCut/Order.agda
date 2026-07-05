@@ -19,7 +19,7 @@ open import Classical.Preliminary.Logic
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
 open import Classical.DedekindCut.Algebra
@@ -31,7 +31,7 @@ private
 
 
 module Order ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 . fst))
   where
 
   open Oracle 🤖
@@ -41,7 +41,7 @@ module Order ⦃ 🤖 : Oracle ⦄
 
   open LinearlyOrderedFieldStr 𝒦
   open Basics   𝒦
-  open Algebra  𝒦 archimedes
+  open Algebra  𝒦 archimedean
   open DedekindCut
 
   {-

@@ -15,9 +15,9 @@ import Cubical.Algebra.Field as CubicalField
 
 open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals
   using (ℚLinearlyOrderedCommRing)
-open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedean
   using (isArchimedeanℚ) public
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Algebra.OrderedField.Instances.Rationals
   using (ℚOrderedField) public
@@ -28,6 +28,11 @@ open import Constructive.Algebra.OrderedField.Instances.Rationals
 ℚLinearlyOrderedField : LinearlyOrderedField ℓ-zero ℓ-zero
 ℚLinearlyOrderedField =
   ℚLinearlyOrderedCommRing , ℚOrderedField .snd
+
+
+ℚArchimedeanLinearlyOrderedField : ArchimedeanLinearlyOrderedField ℓ-zero ℓ-zero
+ℚArchimedeanLinearlyOrderedField =
+  ℚLinearlyOrderedField , isArchimedeanℚ
 
 
 -- Inclusions from natural numbers.

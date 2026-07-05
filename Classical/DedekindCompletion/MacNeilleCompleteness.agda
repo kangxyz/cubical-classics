@@ -35,7 +35,7 @@ open import Classical.Algebra.OrderedField.Completeness
 import Constructive.Algebra.LinearlyOrderedCommRing as LinearOCR
 import Constructive.Algebra.LinearlyOrderedField as LinearOF
 open import Constructive.Algebra.LinearlyOrderedField
-open import Constructive.DedekindCompletion.Archimedean
+open import Constructive.Algebra.LinearlyOrderedField.Archimedean
 open import Constructive.DedekindCompletion.Base
 open import Constructive.DedekindCompletion.Order
 open import Constructive.DedekindCompletion.Completeness

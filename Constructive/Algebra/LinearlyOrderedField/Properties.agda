@@ -856,9 +856,9 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 -}
 
 open import Constructive.Preliminary.Nat
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 
-module _ (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
+module _ (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst)) where
 
   open LinearlyOrderedFieldStr 𝒦
 
@@ -872,7 +872,7 @@ module _ (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦
   isArchimedeanInv = (x ε : K) → x > 0r → ε > 0r → Σ[ n ∈ ℕ₊₁ ] ε / n < x
 
   isArchimedean→isArchimedeanInv : isArchimedeanInv
-  isArchimedean→isArchimedeanInv x ε x>0 ε>0 = let (n , nx>ε) = archimedes ε x x>0 in helper n nx>ε
+  isArchimedean→isArchimedeanInv x ε x>0 ε>0 = let (n , nx>ε) = archimedean ε x x>0 in helper n nx>ε
     where
     helper : (n : ℕ) → n ⋆ x > ε → Σ[ n ∈ ℕ₊₁ ] ε / n < x
     helper zero nx>ε = Empty.rec (<-asym ε>0 (subst (_> ε) (0⋆q≡0 _) nx>ε))

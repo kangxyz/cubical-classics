@@ -10,7 +10,7 @@ module Constructive.DedekindReals.Arithmetic where
 
 open import Cubical.Foundations.Prelude
 
-open import Constructive.DedekindCompletion.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
 open import Constructive.DedekindCompletion.Arithmetic.Sign public
 import Constructive.DedekindCompletion.Arithmetic.Base as GBase
 import Constructive.DedekindCompletion.Arithmetic.Negation as GNegation

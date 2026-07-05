@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedes where
+module Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedean where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
@@ -44,12 +44,12 @@ open import Cubical.Relation.Nullary
 
 open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Int
   using    (ℤLinearlyOrderedCommRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
-  renaming (archimedes' to archimedesℤ)
+  renaming (archimedean' to archimedeanℤ)
 open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals
   using    (ℚLinearlyOrderedCommRing)
 open import Constructive.Preliminary.Nat
 open import Constructive.Algebra.LinearlyOrderedCommRing
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 
 
 open CommRingStr    ((LinearlyOrderedCommRing→CommRing ℚLinearlyOrderedCommRing) .snd)
@@ -106,13 +106,13 @@ neg-repr a b =
 -- The Archimedean property of ℚ, using the alternative product
 
 private
-  archimedes-helper : (x y : ℤ × ℕ₊₁) → [ y ] > 0 → Σ[ n ∈ ℕ ] n ⋆ [ y ] > [ x ]
-  archimedes-helper (a , b) (c , d) y>0 =
+  archimedean-helper : (x y : ℤ × ℕ₊₁) → [ y ] > 0 → Σ[ n ∈ ℕ ] n ⋆ [ y ] > [ x ]
+  archimedean-helper (a , b) (c , d) y>0 =
     let right = -ℤ a ·ℤ ℕ₊₁→ℤ d
         c>0 = y>0
         c>0' = subst (_>ℤ pos zero) (Int.·IdR c) c>0
         (n , ->-) =
-          archimedesℤ right (c ·ℤ ℕ₊₁→ℤ b)
+          archimedeanℤ right (c ·ℤ ℕ₊₁→ℤ b)
             (·ℤ-Pres>0 {x = c} {y = ℕ₊₁→ℤ b} c>0' (ℕ₊₁→ℤ>0 b))
         direct-core : pos n ·ℤ c ·ℤ ℕ₊₁→ℤ b +ℤ right >ℤ pos zero
         direct-core = subst (λ t → t +ℤ right >ℤ pos zero) (helper1 (pos n) c (ℕ₊₁→ℤ b)) ->-
@@ -127,19 +127,19 @@ private
           (subst (_>0) (sym (cong ([ pos n ·ℤ c , d ] +_) (neg-repr a b))) direct-normalized)
     in  n , subst (_> [ a , b ]) (sym (⋆-repr n c d)) direct
 
-∥archimedes∥ : (q ε : ℚ) → ε > 0 → ∥ Σ[ n ∈ ℕ ] n ⋆ ε > q ∥₁
-∥archimedes∥ = SetQuot.elimProp2 (λ _ _ → isPropΠ (λ _ → squash₁))
-  (λ x y h → ∣ archimedes-helper x y h ∣₁)
+∥archimedean∥ : (q ε : ℚ) → ε > 0 → ∥ Σ[ n ∈ ℕ ] n ⋆ ε > q ∥₁
+∥archimedean∥ = SetQuot.elimProp2 (λ _ _ → isPropΠ (λ _ → squash₁))
+  (λ x y h → ∣ archimedean-helper x y h ∣₁)
 
-archimedes : (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] n ⋆ ε > q
-archimedes q ε ε>0 = case-split (dec< q (zero ⋆ ε))
+archimedean : (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] n ⋆ ε > q
+archimedean q ε ε>0 = case-split (dec< q (zero ⋆ ε))
   where
   case-split : Dec (zero ⋆ ε > q) → Σ[ n ∈ ℕ ] n ⋆ ε > q
   case-split (yes p) = zero , p
-  case-split (no ¬p) = find (λ n → dec< q (n ⋆ ε)) (∥archimedes∥ q ε ε>0)
+  case-split (no ¬p) = find (λ n → dec< q (n ⋆ ε)) (∥archimedean∥ q ε ε>0)
 
 
 -- The Archimedean property of ℚ
 
 isArchimedeanℚ : isArchimedean ℚLinearlyOrderedCommRing
-isArchimedeanℚ = transport (λ i → (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] ⋆≡⋆' n ε i > q) archimedes
+isArchimedeanℚ = transport (λ i → (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] ⋆≡⋆' n ε i > q) archimedean

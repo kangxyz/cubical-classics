@@ -10,7 +10,7 @@ open import Cubical.Foundations.Prelude
 
 open import Classical.Axioms
 import Classical.DedekindCompletion.MacNeilleCompleteness as Completion
-open import Constructive.DedekindCompletion.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
   using (ℚArchimedeanLinearlyOrderedField)
 
 private

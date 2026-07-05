@@ -22,7 +22,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 import Constructive.DedekindCompletion.Base as CompletionBase
 import Constructive.DedekindCompletion.Order as CompletionOrder
 import Constructive.DedekindCompletion.Arithmetic.Base as CompletionArithmetic
-open import Constructive.DedekindCompletion.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
 open import Constructive.DedekindReals.Base public
 import Constructive.Rationals as ℚExtra
 
@@ -172,7 +172,7 @@ module Archimedean {ℓ : Level} where
   upper-rational-bound x =
     Prop.rec squash₁
       (λ (q , q∈Ux) →
-        let (n , q<n) = ℚExtra.archimedes q ℚExtra.1ℚ ℚExtra.0<1 in
+        let (n , q<n) = ℚExtra.archimedean q ℚExtra.1ℚ ℚExtra.0<1 in
         ∣ n , ∣ q , q∈Ux , lift q<n ∣₁ ∣₁)
       (upper-inhabited x)
 
@@ -183,7 +183,7 @@ module Archimedean {ℓ : Level} where
     Prop.rec squash₁
       (λ (q , q∈Lx) →
         let
-          n , -q<n = ℚExtra.archimedes (ℚ.- q) ℚExtra.1ℚ ℚExtra.0<1
+          n , -q<n = ℚExtra.archimedean (ℚ.- q) ℚExtra.1ℚ ℚExtra.0<1
           -n<q =
             subst (λ r → (ℚ.- ℚExtra.natMul n ℚExtra.1ℚ) ℚOrder.< r)
               (ℚ.-Invol q)

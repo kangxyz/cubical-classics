@@ -4,7 +4,7 @@ A Technical Lemma about the Archimedean Property
 
 -}
 {-# OPTIONS --safe #-}
-module Classical.DedekindCut.Archimedes where
+module Classical.DedekindCut.Archimedean where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Sigma
@@ -20,7 +20,7 @@ open import Constructive.Preliminary.Nat
 open import Classical.Foundations.Powerset
 
 open import Constructive.Algebra.LinearlyOrderedCommRing
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
 
@@ -45,8 +45,8 @@ private
     helper4 _ _ = solve! 𝓡
 
 
-module Archimedes ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
+module Archimedean ⦃ 🤖 : Oracle ⦄
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedeanK : isArchimedean (𝒦 . fst))
   where
 
   open Oracle 🤖
@@ -84,7 +84,7 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
         ∃Pn : ∥ Σ[ n ∈ ℕ ] P n ∥₁
         ∃Pn = do
           (q , q∈upper) ← a .upper-inhab
-          let (n , n·ε>q-p) = archimedesK (q - p) ε ε>0
+          let (n , n·ε>q-p) = archimedeanK (q - p) ε ε>0
               p+n·ε>q : p + n ⋆ ε > q
               p+n·ε>q = subst (p + n ⋆ ε >_) (helper1 p q) (+-lPres< {z = p} n·ε>q-p)
           return (n , a .upper-close _ _ q∈upper p+n·ε>q)
@@ -92,8 +92,8 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
         interval : Σ[ n ∈ ℕ ] (¬ P n) × P (suc n)
         interval = findInterval decP ¬P0 ∃Pn
 
-      archimedes'' : Σ[ r ∈ K ] (¬ r ∈ a .upper) × (p ≤ r) × (r + ε) ∈ a .upper
-      archimedes'' = _ , interval .snd .fst , +-rPos→≥ (n⋆q≥0 (interval .fst) ε ε>0) ,
+      archimedean'' : Σ[ r ∈ K ] (¬ r ∈ a .upper) × (p ≤ r) × (r + ε) ∈ a .upper
+      archimedean'' = _ , interval .snd .fst , +-rPos→≥ (n⋆q≥0 (interval .fst) ε ε>0) ,
         subst (_∈ a .upper)
           ((λ i → p + sucn⋆q≡n⋆q+q (interval .fst) ε i) ∙ +Assoc _ _ _)
           (interval .snd .snd)
@@ -109,10 +109,10 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
         >-exchange {a = a} {b = b} {c = c} a-b>c =
           transport (λ i → helper3 a b c i > helper4 b c i) (+-rPres< {z = b - c} a-b>c)
 
-      archimedes''' :
+      archimedean''' :
         ∥ Σ[ r ∈ K ] Σ[ s ∈ K ] (¬ s ∈ a .upper) × (q < r) × (r < s) × (r + ε) ∈ a .upper ∥₁
-      archimedes''' = do
-        let (r , ¬r∈upper , p≤r , r+ε∈upper) = archimedes'' p ¬p∈upper
+      archimedean''' = do
+        let (r , ¬r∈upper , p≤r , r+ε∈upper) = archimedean'' p ¬p∈upper
         (t , t<r+ε , t∈upper) ← a .upper-round _ r+ε∈upper
         let r-q = r - q
             r+ε-t = (r + ε) - t
@@ -133,16 +133,16 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
         return (r-u , r , ¬r∈upper , r-u>q , r-u<r , a .upper-close _ _ t∈upper r-u+ε>t)
 
 
-  archimedes' : (a : 𝕂)(ε : K)(ε>0 : ε > 0r)
+  archimedean' : (a : 𝕂)(ε : K)(ε>0 : ε > 0r)
     → (p : K)  → Σ[ s ∈ K ] ((q : K) → q ∈ a .upper → s < q) × (p < s)
     → ∥ Σ[ r ∈ K ] Σ[ s ∈ K ] ((q : K) → q ∈ a .upper → s < q) × (p < r) × (r < s) × (r + ε) ∈ a .upper ∥₁
-  archimedes' a ε ε>0 p (s , s<q∈upper , p<s) = do
-    (r , s , ¬s∈upper , q<r , r<s , r+ε∈upper) ← archimedes''' a ε ε>0 s (<upper→¬∈upper a _ s<q∈upper) p p<s
+  archimedean' a ε ε>0 p (s , s<q∈upper , p<s) = do
+    (r , s , ¬s∈upper , q<r , r<s , r+ε∈upper) ← archimedean''' a ε ε>0 s (<upper→¬∈upper a _ s<q∈upper) p p<s
     return (r , s , ¬∈upper→<upper a _ ¬s∈upper , q<r , r<s , r+ε∈upper)
 
-  archimedes : (a : 𝕂)(ε : K)(ε>0 : ε > 0r)
+  archimedean : (a : 𝕂)(ε : K)(ε>0 : ε > 0r)
     → ∥ Σ[ r ∈ K ] Σ[ s ∈ K ] ((q : K) → q ∈ a .upper → s < q) × (r < s) × (r + ε) ∈ a .upper ∥₁
-  archimedes a ε ε>0 = do
+  archimedean a ε ε>0 = do
     (q , q<r∈upper) ← a .lower-inhab
-    (r , s , s<t∈upper , p<r , r<s , r+ε∈upper) ← archimedes' a ε ε>0 (q - 1r) (q , q<r∈upper , q-1<q)
+    (r , s , s<t∈upper , p<r , r<s , r+ε∈upper) ← archimedean' a ε ε>0 (q - 1r) (q , q<r∈upper , q-1<q)
     return (r , s , s<t∈upper , r<s , r+ε∈upper)

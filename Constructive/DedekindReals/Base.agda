@@ -13,7 +13,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Rationals using (ℚ)
 
 import Constructive.DedekindCompletion.Base as Completion
-open import Constructive.DedekindCompletion.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
 
 private
   variable

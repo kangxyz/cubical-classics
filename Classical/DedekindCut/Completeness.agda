@@ -15,7 +15,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
@@ -29,7 +29,7 @@ private
 
 
 module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 . fst))
   where
 
   private
@@ -37,8 +37,8 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
 
   open LinearlyOrderedFieldStr 𝒦
   open Basics   𝒦
-  open Order    𝒦 archimedes
-  open Multiplication 𝒦 archimedes
+  open Order    𝒦 archimedean
+  open Multiplication 𝒦 archimedean
   open DedekindCut
 
   open MacNeilleCompleteOrderedField

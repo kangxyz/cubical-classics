@@ -26,7 +26,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Constructive.Algebra.LinearlyOrderedCommRing
 open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals
   using (ℚLinearlyOrderedCommRing)
-import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedes as ℚArch
+import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedean as ℚArch
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
   using (ℚLinearlyOrderedField)
@@ -1304,11 +1304,11 @@ natMul : ℕ → ℚ → ℚ
 natMul = ℚLOR._⋆_
 
 
-archimedes :
+archimedean :
   (q ε : ℚ) →
   0 ℚOrder.< ε →
   Σ[ n ∈ ℕ ] q ℚOrder.< natMul n ε
-archimedes = ℚArch.isArchimedeanℚ
+archimedean = ℚArch.isArchimedeanℚ
 
 
 natMul-zero : (ε : ℚ) → natMul zero ε ≡ 0

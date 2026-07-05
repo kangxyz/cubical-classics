@@ -19,7 +19,7 @@ open import Cubical.Data.Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation using (∥_∥₁)
 
 open import Constructive.DedekindCompletion.Completeness as Completion
-open import Constructive.DedekindCompletion.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
 open import Constructive.DedekindReals
 
 private

@@ -8,7 +8,7 @@ module Constructive.DedekindCompletion.Arithmetic.Distributivity where
 
 open import Cubical.Foundations.Prelude
 
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
 open import Constructive.DedekindCompletion.Arithmetic.Base

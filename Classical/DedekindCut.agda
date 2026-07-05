@@ -10,7 +10,7 @@ rational-cut presentation is Constructive.DedekindReals.
 module Classical.DedekindCut where
 
 open import Classical.DedekindCut.Base public
-open import Classical.DedekindCut.Archimedes public
+open import Classical.DedekindCut.Archimedean public
 open import Classical.DedekindCut.Algebra public
 open import Classical.DedekindCut.Signature public
 open import Classical.DedekindCut.Order public

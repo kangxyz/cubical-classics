@@ -28,7 +28,7 @@ open import Classical.Preliminary.Logic
 open import Constructive.Algebra.OrderedCommRing.Morphism
 open import Constructive.Algebra.LinearlyOrderedCommRing
 import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Algebra.LinearlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
@@ -54,7 +54,7 @@ private
 
 
 module UniversalProperty ⦃ 🤖 : Oracle ⦄
-  (𝒦  : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst)) where
+  (𝒦  : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 . fst)) where
 
   open Oracle 🤖
 
@@ -66,9 +66,9 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
     open LinearlyOrderedFieldStr 𝒦
     open Basics   𝒦
-    open Algebra  𝒦 archimedes
-    open Order    𝒦 archimedes
-    open Multiplication 𝒦 archimedes
+    open Algebra  𝒦 archimedean
+    open Order    𝒦 archimedean
+    open Multiplication 𝒦 archimedean
     open DedekindCut
 
     open LinearlyOrderedFieldStr (𝒦' .fst) using ()

@@ -14,7 +14,7 @@ open import Cubical.Algebra.OrderedCommRing
 open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Cubical.Relation.Nullary
 
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
 open import Constructive.DedekindCompletion.Arithmetic.Base

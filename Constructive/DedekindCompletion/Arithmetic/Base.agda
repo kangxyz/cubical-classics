@@ -14,7 +14,7 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
@@ -30,8 +30,8 @@ module ArithmeticBase (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') where
   𝒦 : LinearlyOrderedField ℓ ℓ'
   𝒦 = 𝒜 .fst
 
-  archimedes : isArchimedean (𝒦 .fst)
-  archimedes = 𝒜 .snd
+  archimedean : isArchimedean (𝒦 .fst)
+  archimedean = 𝒜 .snd
 
   private
     K : Type ℓ
@@ -48,7 +48,7 @@ module ArithmeticBase (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') where
 
 
   module Addition {ℓᴾ : Level} where
-    open Approximation {ℓᴾ} hiding (𝒦 ; archimedes)
+    open Approximation {ℓᴾ} hiding (𝒦 ; archimedean)
 
     0𝔻 : DedekindCompletion ℓᴾ
     0𝔻 = K→𝔻 ℓᴾ 0r
