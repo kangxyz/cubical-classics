@@ -59,6 +59,9 @@ between them.
   `ℚ`, using lower and upper predicates and locatedness.  Its completeness
   theorem says that every located cut of constructive Dedekind reals is
   represented by a unique constructive Dedekind real.
+- `Constructive.DedekindCompletion` abstracts the same two-sided located cut
+  definition over an arbitrary linearly ordered field, with an
+  Archimedean-field wrapper for completion-oriented results.
 - `Classical.DedekindCut` is the Oracle-based classical completion of an
   Archimedean ordered field by cuts.  It is used for the classical
   MacNeille-complete real-number construction and universal property.
@@ -82,12 +85,18 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Algebra/OrderedField/` contains ordered fields as ordered
   commutative rings whose underlying Cubical ring is a field, together with
   field-theoretic lemmas and the rational embedding as a ring homomorphism.
+- `Constructive/Algebra/OrderedHeytingField/` contains ordered Heyting fields:
+  ordered commutative rings whose order-apart elements have multiplicative
+  inverses.
 - `Constructive/Algebra/LinearlyOrderedField/` contains the trichotomous
   ordered-field interface, lemmas that use trichotomy, the rational ordered
   field, and the order-preserving part of the canonical inclusion of `ℚ`.
 - `Constructive/DedekindReals/` contains the LEM-free constructive Dedekind
   reals over `ℚ`, their lower/upper cut presentation, ordered arithmetic,
   apartness-field structure, and constructive Dedekind completeness.
+- `Constructive/DedekindCompletion/` contains the parameterized two-sided
+  Dedekind-cut construction over a linearly ordered field, its principal cuts,
+  order lemmas, and the rational Archimedean base-field instance.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,

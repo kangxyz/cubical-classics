@@ -16,6 +16,7 @@ open import Cubical.Data.Sigma
 open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.Algebra.OrderedCommRing
 
+import Constructive.Algebra.OrderedHeytingField.Base as OrderedHeytingField
 open import Constructive.DedekindReals
 open import Constructive.DedekindReals.Arithmetic.Base
 open import Constructive.DedekindReals.Arithmetic.OrderedCommRing
@@ -32,6 +33,17 @@ module OrderedFieldStructure {ℓ : Level} where
 
   orderedCommRing : OrderedCommRing (ℓ-suc ℓ) ℓ
   orderedCommRing = DedekindOrderedCommRing
+
+  DedekindIsHeytingFieldOnOrderedCommRing :
+    OrderedHeytingField.IsHeytingFieldOnOrderedCommRing DedekindOrderedCommRing
+  DedekindIsHeytingFieldOnOrderedCommRing
+    .OrderedHeytingField.IsHeytingFieldOnOrderedCommRing.inv# =
+      inv#
+
+  DedekindOrderedHeytingField :
+    OrderedHeytingField.OrderedHeytingField (ℓ-suc ℓ) ℓ
+  DedekindOrderedHeytingField =
+    DedekindOrderedCommRing , DedekindIsHeytingFieldOnOrderedCommRing
 
   ·-lInv#' :
     (x : DedekindReal ℓ) →
