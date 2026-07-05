@@ -1,5 +1,7 @@
 # Agent Notes
 
+DO NOT send optional commentary
+
 Repository-wide operating rules for agents. For naming, comments,
 documentation tone, and module style, follow `STYLE.md`.
 
