@@ -224,6 +224,115 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
     case-split (eq x≡y) =
       middle 0r x , middle>l x>0 , middle<r x>0 , subst (middle 0r x <_) x≡y (middle<r x>0)
 
+
+  abstract
+    mul-by-<1 :
+      {a b : K} →
+      0r < a →
+      b < 1r →
+      a · b < a
+    mul-by-<1 {a = a} {b = b} 0<a b<1 =
+      subst (a · b <_) (·IdR a) (·-lPosPres< 0<a b<1)
+
+    mul-by->1 :
+      {a b : K} →
+      0r < a →
+      1r < b →
+      a < a · b
+    mul-by->1 {a = a} {b = b} 0<a 1<b =
+      subst (_< a · b) (·IdR a) (·-lPosPres< 0<a 1<b)
+
+    unit-lower-factor :
+      (q a : K) →
+      0r ≤ q →
+      q < a →
+      0r < a →
+      Σ[ b ∈ K ]
+        (0r < b) ×
+        (b < 1r) ×
+        (q < a · b)
+    unit-lower-factor q a 0≤q q<a 0<a =
+      b , 0<b , b<1 , q<ab
+      where
+      qa : K
+      qa = q · inv₊ 0<a
+
+      qa<1 : qa < 1r
+      qa<1 =
+        subst (qa <_) (·-rInv₊ 0<a)
+          (·-rPosPres< (p>0→p⁻¹>0 0<a) q<a)
+
+      b : K
+      b = middle qa 1r
+
+      qa<b : qa < b
+      qa<b = middle>l qa<1
+
+      b<1 : b < 1r
+      b<1 = middle<r qa<1
+
+      0≤qa : 0r ≤ qa
+      0≤qa =
+        ·-Pres≥0
+          0≤q
+          (<-≤-weaken (p>0→p⁻¹>0 0<a))
+
+      0<b : 0r < b
+      0<b =
+        ≤<-trans 0≤qa qa<b
+
+      aqa<ab : a · qa < a · b
+      aqa<ab =
+        ·-lPosPres< 0<a qa<b
+
+      q<ab : q < a · b
+      q<ab =
+        subst (λ v → v < a · b)
+          (·inv-helper' {x = a} {y = q} 0<a)
+          aqa<ab
+
+    unit-upper-factor :
+      (r q : K) →
+      0r < r →
+      r < q →
+      Σ[ b ∈ K ]
+        (1r < b) ×
+        (0r < b) ×
+        (r · b < q)
+    unit-upper-factor r q 0<r r<q =
+      b , 1<b , 0<b , rb<q
+      where
+      t : K
+      t = q · inv₊ 0<r
+
+      1<t : 1r < t
+      1<t =
+        subst (_< t) (·-rInv₊ 0<r)
+          (·-rPosPres< (p>0→p⁻¹>0 0<r) r<q)
+
+      b : K
+      b = middle 1r t
+
+      1<b : 1r < b
+      1<b = middle>l 1<t
+
+      b<t : b < t
+      b<t = middle<r 1<t
+
+      0<b : 0r < b
+      0<b =
+        <-trans 1>0 1<b
+
+      rb<rt : r · b < r · t
+      rb<rt =
+        ·-lPosPres< 0<r b<t
+
+      rb<q : r · b < q
+      rb<q =
+        subst (λ v → r · b < v)
+          (·inv-helper' {x = r} {y = q} 0<r)
+          rb<rt
+
 {-
 
   The Archimedean Property of Linearly Ordered Fields

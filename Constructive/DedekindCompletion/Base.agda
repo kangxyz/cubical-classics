@@ -36,11 +36,14 @@ module CompletionBase (𝒦 : LinearlyOrderedField ℓ ℓ') where
     K : Type ℓ
     K = 𝒦 .fst .fst .fst
 
+  Carrier : Type ℓ
+  Carrier = K
 
-  Pred : (ℓᴾ : Level) → Type (ℓ-max ℓ (ℓ-suc (ℓ-max ℓ' ℓᴾ)))
-  Pred ℓᴾ = K → hProp (ℓ-max ℓ' ℓᴾ)
 
-  _∈_ : K → Pred ℓᴾ → Type (ℓ-max ℓ' ℓᴾ)
+  Pred : (ℓᴾ : Level) → Type (ℓ-suc (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ)))
+  Pred ℓᴾ = K → hProp (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
+
+  _∈_ : K → Pred ℓᴾ → Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
   q ∈ P = P q .fst
 
   infix 4 _∈_
@@ -201,10 +204,10 @@ module CompletionBase (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   K→𝔻 : (ℓᴾ : Level) → K → DedekindCompletion ℓᴾ
   K→𝔻 ℓᴾ x .lower p =
-    Lift ℓᴾ (p < x) ,
+    Lift (ℓ-max ℓ ℓᴾ) (p < x) ,
     isOfHLevelLift 1 isProp<
   K→𝔻 ℓᴾ x .upper p =
-    Lift ℓᴾ (x < p) ,
+    Lift (ℓ-max ℓ ℓᴾ) (x < p) ,
     isOfHLevelLift 1 isProp<
   K→𝔻 ℓᴾ x .isDedekindCut .IsDedekindCut.lower-inhabited =
     ∣ x - 1r , lift q-1<q ∣₁

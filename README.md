@@ -26,8 +26,9 @@ The library proves, among other things:
 - SIP/univalence for ordered commutative rings, linearly ordered commutative
   rings, ordered fields, and MacNeille-complete ordered fields;
 - canonical ordered homomorphisms from `ℤ` and `ℚ` into ordered targets;
-- LEM-free constructive Dedekind reals over `ℚ`, with ordered arithmetic,
-  apartness-field structure, and same-universe Dedekind completeness;
+- LEM-free constructive Dedekind completions over Archimedean linearly ordered
+  fields, with ordered arithmetic, ordered Heyting-field structure, and
+  same-universe Dedekind completeness;
 - a constructive formulation of MacNeille completeness for posets, plus its
   classical comparison with the powerset supremum principle for ordered fields;
 - the LEM-based classical Dedekind-cut completion of an Archimedean ordered
@@ -62,19 +63,24 @@ agda --build-library
 There are two related Dedekind-real developments, with a bridge namespace
 between them.
 
-- `Constructive.DedekindReals` is the LEM-free HoTT-style construction over
-  `ℚ`, using lower and upper predicates and locatedness.  Its completeness
-  theorem says that every located cut of constructive Dedekind reals is
-  represented by a unique constructive Dedekind real.
 - `Constructive.DedekindCompletion` abstracts the same two-sided located cut
   definition over an arbitrary linearly ordered field, with an
-  Archimedean-field wrapper for completion-oriented results.
+  Archimedean-field wrapper for ordered arithmetic, ordered Heyting-field
+  structure, and Dedekind completeness.  Its completeness theorem says that
+  every located cut of completion elements is represented by a unique
+  completion element.
+- `Constructive.DedekindReals` is the `ℚ` instance of
+  `Constructive.DedekindCompletion`, using lower and upper predicates and
+  locatedness in the HoTT-style Dedekind-real presentation.
 - `Classical.DedekindCut` is the Oracle-based classical completion of an
   Archimedean ordered field by cuts.  It is used for the classical
   MacNeille-complete real-number construction and universal property.
+- `Classical.DedekindCompletion` proves, under `Oracle`, that the constructive
+  Dedekind completion of an Archimedean linearly ordered field is classically
+  MacNeille complete.
 - `Classical.DedekindReals` contains Oracle-based bridge theorems for
-  `Constructive.DedekindReals`, including the route from constructive
-  Dedekind completeness to classical MacNeille completeness.
+  `Constructive.DedekindReals`; its MacNeille-completeness result is the `ℚ`
+  instance of `Classical.DedekindCompletion`.
 
 ## Layout
 
@@ -98,12 +104,12 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Algebra/LinearlyOrderedField/` contains the trichotomous
   ordered-field interface, lemmas that use trichotomy, the rational ordered
   field, and the order-preserving part of the canonical inclusion of `ℚ`.
-- `Constructive/DedekindReals/` contains the LEM-free constructive Dedekind
-  reals over `ℚ`, their lower/upper cut presentation, ordered arithmetic,
-  apartness-field structure, and constructive Dedekind completeness.
 - `Constructive/DedekindCompletion/` contains the parameterized two-sided
-  Dedekind-cut construction over a linearly ordered field, its principal cuts,
-  order lemmas, and the rational Archimedean base-field instance.
+  Dedekind-cut construction over a linearly ordered field, principal cuts,
+  order lemmas, ordered arithmetic, ordered Heyting-field structure, generic
+  Dedekind completeness, and the rational Archimedean base-field instance.
+- `Constructive/DedekindReals/` contains the `ℚ` instance of the LEM-free
+  constructive Dedekind completion, preserving the rational Dedekind-real API.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,
@@ -116,9 +122,11 @@ The code is split by whether it uses the library's classical `Oracle`.
   completion by cuts.  This is the classical completion construction for an
   Archimedean ordered field, with algebra, order, the ordered-field instance,
   MacNeille completeness, and the universal property.
+- `Classical/DedekindCompletion/` contains the Oracle-based proof that
+  constructive Dedekind completions are classically MacNeille complete.
 - `Classical/DedekindReals/` contains Oracle-based bridges for the
-  constructive Dedekind reals, including classical MacNeille completeness from
-  constructive Dedekind completeness.
+  constructive Dedekind reals, as the rational instance of the generic
+  constructive Dedekind-completion bridge.
 - `Classical/Topology/` contains topological spaces, neighbourhoods,
   Hausdorff spaces, compactness, metric spaces, limits, cluster points, and
   Cauchy sequences.
