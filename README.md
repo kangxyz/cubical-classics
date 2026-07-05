@@ -5,8 +5,8 @@
 
 `cubical-classics` is an experimental Agda library for doing classical
 mathematics in Cubical Agda.  It develops classical principles, ordered
-algebra, constructive Dedekind reals, classical Dedekind-cut completions,
-MacNeille-complete real numbers, and some basic real analysis.
+algebra, constructive Dedekind and Cauchy reals, classical Dedekind-cut
+completions, MacNeille-complete real numbers, and some basic real analysis.
 
 We are open to advice and contributions!
 
@@ -30,6 +30,8 @@ The library proves, among other things:
   fields, with ordered arithmetic, ordered Heyting-field structure, and
   same-universe Dedekind completeness, plus the truncated Archimedean
   property;
+- HoTT-style constructive Cauchy reals as a higher inductive-inductive type
+  with a rational-indexed closeness relation;
 - a constructive formulation of MacNeille completeness for posets, plus its
   classical comparison with the powerset supremum principle for ordered fields;
 - a predicative constructive powerset interface used by constructive cuts and
@@ -117,6 +119,9 @@ The code is split by whether it uses the library's classical `Oracle`.
   Archimedean base-field instance.
 - `Constructive/DedekindReals` contains the `ℚ` instance of the LEM-free
   constructive Dedekind completion, preserving the rational Dedekind-real API.
+- `Constructive/CauchyReals/` contains the HoTT-style Cauchy-real
+  construction as a higher inductive-inductive type with a rational-indexed
+  closeness relation.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,
