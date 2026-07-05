@@ -48,6 +48,58 @@ private
     helper4 : (x y z : 𝓡 .fst) → x · (y · z) ≡ (y · x) · z
     helper4 _ _ _ = solve! 𝓡
 
+    helper5 :
+      (lx ux ly uy : 𝓡 .fst) →
+      ux · uy ≡ lx · ly + (((ux - lx) · uy) + (lx · (uy - ly)))
+    helper5 _ _ _ _ = solve! 𝓡
+
+    helper6 :
+      (U V gap : 𝓡 .fst) →
+      U + ((V + gap) + 1r) ≡ ((U + V) + gap) + 1r
+    helper6 _ _ _ = solve! 𝓡
+
+    helper7 :
+      (U V gap : 𝓡 .fst) →
+      V + ((U + gap) + 1r) ≡ ((U + V) + gap) + 1r
+    helper7 _ _ _ = solve! 𝓡
+
+    helper8 :
+      (U V gap : 𝓡 .fst) →
+      (U + V) + (gap + 1r) ≡ ((U + V) + gap) + 1r
+    helper8 _ _ _ = solve! 𝓡
+
+    helper9 :
+      (ε M M⁻¹ : 𝓡 .fst) →
+      M⁻¹ · M ≡ 1r →
+      (ε · M⁻¹) · M ≡ ε
+    helper9 ε M M⁻¹ M⁻¹M≡1 =
+      sym (·Assoc ε M⁻¹ M) ∙
+      cong (ε ·_) M⁻¹M≡1 ∙
+      ·IdR ε
+
+    helper10 :
+      (δ U V : 𝓡 .fst) →
+      (δ · V) + (δ · U) ≡ δ · (U + V)
+    helper10 _ _ _ = solve! 𝓡
+
+    helper11 :
+      (a b c : 𝓡 .fst) →
+      a · (b + c) ≡ (a · b) + (a · c)
+    helper11 _ _ _ = solve! 𝓡
+
+    helper12 : (p q : 𝓡 .fst) → (p - q) + q ≡ p
+    helper12 _ _ = solve! 𝓡
+
+    helper13 :
+      (lx ly η : 𝓡 .fst) →
+      (lx + η) + (ly + η) ≡ (lx + ly) + (η + η)
+    helper13 _ _ _ = solve! 𝓡
+
+    helper14 :
+      (p l r : 𝓡 .fst) →
+      p + (l + (r - p)) ≡ r + l
+    helper14 _ _ _ = solve! 𝓡
+
 
 module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
@@ -154,6 +206,470 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
   inv₊Idem {q = q} q>0 = sym (·IdL _)
     ∙ (λ i → ·-rInv₊ q>0 (~ i) · inv₊ (p>0→p⁻¹>0 q>0))
     ∙ sym (·Assoc _ _ _) ∙ (λ i →  q · ·-rInv₊ (p>0→p⁻¹>0 q>0) i) ∙ ·IdR _
+
+  dense :
+    {p q : K} →
+    p < q →
+    ∥ Σ[ r ∈ K ] (p < r) × (r < q) ∥₁
+  dense {p = p} {q = q} p<q =
+    ∣ middle p q , middle>l p<q , middle<r p<q ∣₁
+
+  negative-or-nonnegative :
+    (q : K) →
+    (q < 0r) ⊎ (0r ≤ q)
+  negative-or-nonnegative q with trichotomy 0r q
+  ... | lt 0<q = inr (<-≤-weaken 0<q)
+  ... | eq 0≡q = inr (≤-refl 0≡q)
+  ... | gt q<0 = inl q<0
+
+  nonnegative-right-of-< :
+    {p q : K} →
+    0r ≤ p →
+    p < q →
+    0r < q
+  nonnegative-right-of-< = ≤<-trans
+
+  positive-sum-split :
+    (r s : K) →
+    0r < r + s →
+    (0r < r) ⊎ (0r < s)
+  positive-sum-split r s 0<r+s with trichotomy 0r r
+  ... | lt 0<r = inl 0<r
+  ... | eq 0≡r = inr 0<s
+    where
+    r+s≡s : r + s ≡ s
+    r+s≡s =
+      cong (_+ s) (sym 0≡r) ∙
+      +IdL s
+
+    0<s : 0r < s
+    0<s =
+      subst (0r <_) r+s≡s 0<r+s
+  ... | gt r<0 with trichotomy 0r s
+  ... | lt 0<s = inr 0<s
+  ... | eq 0≡s =
+    Empty.rec (<-asym 0<r+s r+s<0)
+    where
+    r+s≡r : r + s ≡ r
+    r+s≡r =
+      cong (r +_) (sym 0≡s) ∙
+      +IdR r
+
+    r+s<0 : r + s < 0r
+    r+s<0 =
+      subst (_< 0r) (sym r+s≡r) r<0
+  ... | gt s<0 =
+    Empty.rec (<-asym 0<r+s r+s<0)
+    where
+    r+s<0+0 : r + s < 0r + 0r
+    r+s<0+0 =
+      +-Pres< r<0 s<0
+
+    r+s<0 : r + s < 0r
+    r+s<0 =
+      subst (r + s <_) (+IdR 0r) r+s<0+0
+
+  n⋆1<sn⋆1 : (n : ℕ) → n ⋆ 1r < suc n ⋆ 1r
+  n⋆1<sn⋆1 n =
+    subst (n ⋆ 1r <_) (sym (sucn⋆q≡n⋆q+q n 1r))
+      (subst (_< n ⋆ 1r + 1r) (+IdR (n ⋆ 1r))
+        (+-lPres< {z = n ⋆ 1r} 1>0))
+
+  mul-mono-positive-<≤ :
+    {a b c d : K} →
+    0r < a →
+    0r < c →
+    a < b →
+    c ≤ d →
+    a · c < b · d
+  mul-mono-positive-<≤ 0<a 0<c a<b c≤d =
+    ·-PosPres>≥ 0<a 0<c a<b c≤d
+
+  scaleByPositive : (ε M : K) → 0r < M → K
+  scaleByPositive ε M 0<M = ε · inv₊ 0<M
+
+  scaleByPositive-positive :
+    {ε M : K} →
+    0r < ε →
+    (0<M : 0r < M) →
+    0r < scaleByPositive ε M 0<M
+  scaleByPositive-positive 0<ε 0<M =
+    ·-Pres>0 0<ε (p>0→p⁻¹>0 0<M)
+
+  scaleByPositive-cancelR :
+    (ε M : K) →
+    (0<M : 0r < M) →
+    scaleByPositive ε M 0<M · M ≡ ε
+  scaleByPositive-cancelR ε M 0<M =
+    helper9 ε M (inv₊ 0<M) (·-lInv₊ 0<M)
+
+  p+[q-p]≡q : (p q : K) → p + (q - p) ≡ q
+  p+[q-p]≡q = helper3
+
+  [p-q]+q≡p : (p q : K) → (p - q) + q ≡ p
+  [p-q]+q≡p = helper12
+
+  left-diff+ : (p q : K) → p + (q - p) ≡ q
+  left-diff+ = helper3
+
+  mul-distrib-left :
+    (a b c : K) →
+    a · (b + c) ≡ (a · b) + (a · c)
+  mul-distrib-left = helper11
+
+  sum-left-close-path :
+    (p l r : K) →
+    p + (l + (r - p)) ≡ r + l
+  sum-left-close-path = helper14
+
+  sum-close-upper< :
+    (lx ly ux uy η p q : K) →
+    ux < lx + η →
+    uy < ly + η →
+    lx + ly ≤ p →
+    η + η ≡ q - p →
+    p < q →
+    ux + uy < q
+  sum-close-upper< lx ly ux uy η p q ux<lx+η uy<ly+η lx+ly≤p η+η≡q-p p<q =
+    <≤-trans ux+uy<lx+ly+η+η lx+ly+η+η≤q
+    where
+    ux+uy<lx+η+ly+η : ux + uy < (lx + η) + (ly + η)
+    ux+uy<lx+η+ly+η = +-Pres< ux<lx+η uy<ly+η
+
+    ux+uy<lx+ly+η+η : ux + uy < (lx + ly) + (η + η)
+    ux+uy<lx+ly+η+η =
+      subst (ux + uy <_)
+        (helper13 lx ly η)
+        ux+uy<lx+η+ly+η
+
+    lx+ly+η+η≤p+η+η : (lx + ly) + (η + η) ≤ p + (η + η)
+    lx+ly+η+η≤p+η+η = +-rPres≤ lx+ly≤p
+
+    p+η+η≡q : p + (η + η) ≡ q
+    p+η+η≡q =
+      cong (p +_) η+η≡q-p ∙
+      p+[q-p]≡q p q
+
+    lx+ly+η+η≤q : (lx + ly) + (η + η) ≤ q
+    lx+ly+η+η≤q =
+      ≤-trans lx+ly+η+η≤p+η+η (≤-refl p+η+η≡q)
+
+  mulErrorDenom : K → K → K → K
+  mulErrorDenom U V gap = ((U + V) + gap) + 1r
+
+  mulErrorDenom-positive :
+    {U V gap : K} →
+    0r < U →
+    0r < V →
+    0r < gap →
+    0r < mulErrorDenom U V gap
+  mulErrorDenom-positive 0<U 0<V 0<gap =
+    +-Pres>0 (+-Pres>0 (+-Pres>0 0<U 0<V) 0<gap) 1>0
+
+  mulErrorScale :
+    (gap U V : K) →
+    0r < U →
+    0r < V →
+    0r < gap →
+    K
+  mulErrorScale gap U V 0<U 0<V 0<gap =
+    scaleByPositive gap (mulErrorDenom U V gap)
+      (mulErrorDenom-positive 0<U 0<V 0<gap)
+
+  mulErrorScale-positive :
+    {gap U V : K} →
+    (0<U : 0r < U) →
+    (0<V : 0r < V) →
+    (0<gap : 0r < gap) →
+    0r < mulErrorScale gap U V 0<U 0<V 0<gap
+  mulErrorScale-positive 0<U 0<V 0<gap =
+    scaleByPositive-positive 0<gap
+      (mulErrorDenom-positive 0<U 0<V 0<gap)
+
+  mulErrorDenom>U :
+    {gap U V : K} →
+    0r < V →
+    0r < gap →
+    U < mulErrorDenom U V gap
+  mulErrorDenom>U {gap = gap} {U = U} {V = V} 0<V 0<gap =
+    subst (U <_) (helper6 U V gap)
+      (+-rPos→> (+-Pres>0 (+-Pres>0 0<V 0<gap) 1>0))
+
+  mulErrorDenom>V :
+    {gap U V : K} →
+    0r < U →
+    0r < gap →
+    V < mulErrorDenom U V gap
+  mulErrorDenom>V {gap = gap} {U = U} {V = V} 0<U 0<gap =
+    subst (V <_) (helper7 U V gap)
+      (+-rPos→> (+-Pres>0 (+-Pres>0 0<U 0<gap) 1>0))
+
+  mulErrorDenom>U+V :
+    {gap U V : K} →
+    0r < gap →
+    U + V < mulErrorDenom U V gap
+  mulErrorDenom>U+V {gap = gap} {U = U} {V = V} 0<gap =
+    subst (U + V <_) (helper8 U V gap)
+      (+-rPos→> (+-Pres>0 0<gap 1>0))
+
+  mulErrorScale-times-U<gap :
+    {gap U V : K} →
+    (0<U : 0r < U) →
+    (0<V : 0r < V) →
+    (0<gap : 0r < gap) →
+    mulErrorScale gap U V 0<U 0<V 0<gap · U < gap
+  mulErrorScale-times-U<gap {gap = gap} {U = U} {V = V} 0<U 0<V 0<gap =
+    subst (λ r → δ · U < r)
+      (scaleByPositive-cancelR gap D 0<D)
+      (·-lPosPres< 0<δ U<D)
+    where
+    D : K
+    D = mulErrorDenom U V gap
+
+    0<D : 0r < D
+    0<D = mulErrorDenom-positive 0<U 0<V 0<gap
+
+    δ : K
+    δ = mulErrorScale gap U V 0<U 0<V 0<gap
+
+    0<δ : 0r < δ
+    0<δ = mulErrorScale-positive 0<U 0<V 0<gap
+
+    U<D : U < D
+    U<D = mulErrorDenom>U 0<V 0<gap
+
+  mulErrorScale-times-V<gap :
+    {gap U V : K} →
+    (0<U : 0r < U) →
+    (0<V : 0r < V) →
+    (0<gap : 0r < gap) →
+    mulErrorScale gap U V 0<U 0<V 0<gap · V < gap
+  mulErrorScale-times-V<gap {gap = gap} {U = U} {V = V} 0<U 0<V 0<gap =
+    subst (λ r → δ · V < r)
+      (scaleByPositive-cancelR gap D 0<D)
+      (·-lPosPres< 0<δ V<D)
+    where
+    D : K
+    D = mulErrorDenom U V gap
+
+    0<D : 0r < D
+    0<D = mulErrorDenom-positive 0<U 0<V 0<gap
+
+    δ : K
+    δ = mulErrorScale gap U V 0<U 0<V 0<gap
+
+    0<δ : 0r < δ
+    0<δ = mulErrorScale-positive 0<U 0<V 0<gap
+
+    V<D : V < D
+    V<D = mulErrorDenom>V 0<U 0<gap
+
+  mulErrorScale-times-sum<gap :
+    {gap U V : K} →
+    (0<U : 0r < U) →
+    (0<V : 0r < V) →
+    (0<gap : 0r < gap) →
+    mulErrorScale gap U V 0<U 0<V 0<gap · (U + V) < gap
+  mulErrorScale-times-sum<gap {gap = gap} {U = U} {V = V} 0<U 0<V 0<gap =
+    subst (λ r → δ · (U + V) < r)
+      (scaleByPositive-cancelR gap D 0<D)
+      (·-lPosPres< 0<δ U+V<D)
+    where
+    D : K
+    D = mulErrorDenom U V gap
+
+    0<D : 0r < D
+    0<D = mulErrorDenom-positive 0<U 0<V 0<gap
+
+    δ : K
+    δ = mulErrorScale gap U V 0<U 0<V 0<gap
+
+    0<δ : 0r < δ
+    0<δ = mulErrorScale-positive 0<U 0<V 0<gap
+
+    U+V<D : U + V < D
+    U+V<D = mulErrorDenom>U+V 0<gap
+
+  add-nonpositive≤right :
+    {p r : K} →
+    p ≤ 0r →
+    p + r ≤ r
+  add-nonpositive≤right {p = p} {r = r} p≤0 =
+    subst (_≤ r) (+Comm r p) (+-rNeg→≤ p≤0)
+
+  diff≤right :
+    {p q : K} →
+    0r ≤ p →
+    q - p ≤ q
+  diff≤right {p = p} 0≤p =
+    +-rNeg→≤
+      (subst (- p ≤_) 0Selfinverse (-Reverse≤ 0≤p))
+
+  mul-close-left-nonpositive-upper< :
+    {q gap δ V lx ux uy : K} →
+    lx ≤ 0r →
+    ux < lx + δ →
+    0r < ux →
+    0r < uy →
+    uy ≤ V →
+    δ · V < gap →
+    gap ≤ q →
+    ux · uy < q
+  mul-close-left-nonpositive-upper<
+    {q = q} {gap = gap} {δ = δ} {V = V} {lx = lx} {ux = ux} {uy = uy}
+    lx≤0 ux<lx+δ 0<ux 0<uy uy≤V δV<gap gap≤q =
+    <≤-trans (<-trans uxuy<δV δV<gap) gap≤q
+    where
+    lx+δ≤δ : lx + δ ≤ δ
+    lx+δ≤δ = add-nonpositive≤right lx≤0
+
+    ux<δ : ux < δ
+    ux<δ = <≤-trans ux<lx+δ lx+δ≤δ
+
+    uxuy<δV : ux · uy < δ · V
+    uxuy<δV =
+      mul-mono-positive-<≤ 0<ux 0<uy ux<δ uy≤V
+
+  mul-close-right-nonpositive-upper< :
+    {q gap δ U ly ux uy : K} →
+    ly ≤ 0r →
+    uy < ly + δ →
+    0r < ux →
+    0r < uy →
+    ux ≤ U →
+    δ · U < gap →
+    gap ≤ q →
+    ux · uy < q
+  mul-close-right-nonpositive-upper<
+    {q = q} {gap = gap} {δ = δ} {U = U} {ly = ly} {ux = ux} {uy = uy}
+    ly≤0 uy<ly+δ 0<ux 0<uy ux≤U δU<gap gap≤q =
+    <≤-trans (<-trans uxuy<δU δU<gap) gap≤q
+    where
+    ly+δ≤δ : ly + δ ≤ δ
+    ly+δ≤δ = add-nonpositive≤right ly≤0
+
+    uy<δ : uy < δ
+    uy<δ = <≤-trans uy<ly+δ ly+δ≤δ
+
+    uyux<δU : uy · ux < δ · U
+    uyux<δU =
+      mul-mono-positive-<≤ 0<uy 0<ux uy<δ ux≤U
+
+    uxuy<δU : ux · uy < δ · U
+    uxuy<δU =
+      subst (λ r → r < δ · U) (·Comm uy ux) uyux<δU
+
+  mul-close-positive-upper< :
+    {p q gap δ U V lx ux ly uy : K} →
+    lx < ux →
+    ly < uy →
+    0r < lx →
+    0r < ly →
+    ux < lx + δ →
+    uy < ly + δ →
+    ux ≤ U →
+    uy ≤ V →
+    lx · ly ≤ p →
+    δ · (U + V) < gap →
+    p + gap ≡ q →
+    ux · uy < q
+  mul-close-positive-upper<
+    {p = p} {q = q} {gap = gap} {δ = δ} {U = U} {V = V}
+    {lx = lx} {ux = ux} {ly = ly} {uy = uy}
+    lx<ux ly<uy 0<lx 0<ly ux<lx+δ uy<ly+δ ux≤U uy≤V lxly≤p δUV<gap p+gap≡q =
+    subst (λ r → r < q)
+      (sym (helper5 lx ux ly uy))
+      rhs<q
+    where
+    err₁ : K
+    err₁ = (ux - lx) · uy
+
+    err₂ : K
+    err₂ = lx · (uy - ly)
+
+    0<uy : 0r < uy
+    0<uy = <-trans 0<ly ly<uy
+
+    ux<δ+lx : ux < δ + lx
+    ux<δ+lx =
+      subst (λ r → ux < r) (+Comm lx δ) ux<lx+δ
+
+    ux-lx<δ : ux - lx < δ
+    ux-lx<δ = +-MoveRToL< ux<δ+lx
+
+    0<ux-lx : 0r < ux - lx
+    0<ux-lx = <→Diff>0 lx<ux
+
+    err₁<δV : err₁ < δ · V
+    err₁<δV =
+      mul-mono-positive-<≤ 0<ux-lx 0<uy ux-lx<δ uy≤V
+
+    uy<δ+ly : uy < δ + ly
+    uy<δ+ly =
+      subst (λ r → uy < r) (+Comm ly δ) uy<ly+δ
+
+    uy-ly<δ : uy - ly < δ
+    uy-ly<δ = +-MoveRToL< uy<δ+ly
+
+    0<uy-ly : 0r < uy - ly
+    0<uy-ly = <→Diff>0 ly<uy
+
+    lx≤ux : lx ≤ ux
+    lx≤ux = <-≤-weaken lx<ux
+
+    lx≤U : lx ≤ U
+    lx≤U = ≤-trans lx≤ux ux≤U
+
+    uy-ly*lx<δU : (uy - ly) · lx < δ · U
+    uy-ly*lx<δU =
+      mul-mono-positive-<≤ 0<uy-ly 0<lx uy-ly<δ lx≤U
+
+    err₂<δU : err₂ < δ · U
+    err₂<δU =
+      subst (λ r → r < δ · U) (·Comm (uy - ly) lx) uy-ly*lx<δU
+
+    err₁+err₂<δV+δU : err₁ + err₂ < (δ · V) + (δ · U)
+    err₁+err₂<δV+δU =
+      +-Pres< err₁<δV err₂<δU
+
+    err₁+err₂<δUV : err₁ + err₂ < δ · (U + V)
+    err₁+err₂<δUV =
+      subst (λ r → err₁ + err₂ < r)
+        (helper10 δ U V)
+        err₁+err₂<δV+δU
+
+    err₁+err₂<gap : err₁ + err₂ < gap
+    err₁+err₂<gap = <-trans err₁+err₂<δUV δUV<gap
+
+    base+err≤p+err :
+      (lx · ly) + (err₁ + err₂) ≤ p + (err₁ + err₂)
+    base+err≤p+err =
+      +-rPres≤ lxly≤p
+
+    p+err<p+gap : p + (err₁ + err₂) < p + gap
+    p+err<p+gap =
+      +-lPres< {z = p} err₁+err₂<gap
+
+    rhs<p+gap :
+      (lx · ly) + (err₁ + err₂) < p + gap
+    rhs<p+gap =
+      ≤<-trans base+err≤p+err p+err<p+gap
+
+    rhs<q :
+      (lx · ly) + (err₁ + err₂) < q
+    rhs<q =
+      subst (λ r → (lx · ly) + (err₁ + err₂) < r)
+        p+gap≡q
+        rhs<p+gap
+
+  mul-nonpositive-right :
+    {a b : K} →
+    0r < a →
+    b ≤ 0r →
+    a · b ≤ 0r
+  mul-nonpositive-right {a = a} {b = b} 0<a b≤0 =
+    subst (a · b ≤_) (0RightAnnihilates a)
+      (·-lPosPres≤ (<-≤-weaken 0<a) b≤0)
 
 
   private

@@ -68,13 +68,6 @@ module Inverse (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ : Level
     K : Type ℓ
     K = Carrier
 
-    dense :
-      {p q : K} →
-      p < q →
-      ∥ Σ[ r ∈ K ] (p < r) × (r < q) ∥₁
-    dense {p = p} {q = q} p<q =
-      ∣ middle p q , middle>l p<q , middle<r p<q ∣₁
-
   InvLowerWitness : DedekindCompletion ℓᴾ → K → Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
   InvLowerWitness x q =
     Σ[ u ∈ K ]

@@ -13,12 +13,8 @@ open import Cubical.Data.Sigma
 open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
-open import Cubical.Algebra.CommRing
-open import Cubical.Tactics.CommRingSolver.Reflection
 import Cubical.Functions.Logic as L
 
-import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
-open import Constructive.Algebra.LinearlyOrderedCommRing
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
@@ -33,14 +29,6 @@ open import Constructive.DedekindCompletion.Arithmetic.Distributivity
 private
   variable
     ℓ ℓ' ℓᴾ : Level
-
-  module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
-    open CommRingStr (𝓡 .snd)
-
-    sum-left-close-path :
-      (p l r : 𝓡 .fst) →
-      p + (l + (r - p)) ≡ r + l
-    sum-left-close-path _ _ _ = solve! 𝓡
 
 
 module OrderProperties
@@ -64,7 +52,6 @@ module OrderProperties
       ; <-trans to <D-trans
       )
   open LinearlyOrderedFieldStr orderedBaseField
-  open Helpers (LinearlyOrderedCommRing→CommRing (orderedBaseField .fst))
 
   open ArithmeticBase 𝒜
   open Approximation {ℓᴾ}
@@ -80,46 +67,6 @@ module OrderProperties
   private
     K : Type ℓ
     K = Carrier
-
-    positive-sum-split :
-      (r s : K) →
-      0r < r + s →
-      (0r < r) ⊎ (0r < s)
-    positive-sum-split r s 0<r+s with trichotomy 0r r
-    ... | LinearBase.lt 0<r = Sum.inl 0<r
-    ... | LinearBase.eq 0≡r = Sum.inr 0<s
-      where
-      r+s≡s : r + s ≡ s
-      r+s≡s =
-        cong (_+ s) (sym 0≡r) ∙
-        +IdL s
-
-      0<s : 0r < s
-      0<s =
-        subst (0r <_) r+s≡s 0<r+s
-    ... | LinearBase.gt r<0 with trichotomy 0r s
-    ... | LinearBase.lt 0<s = Sum.inr 0<s
-    ... | LinearBase.eq 0≡s =
-      Empty.rec (<-asym 0<r+s r+s<0)
-      where
-      r+s≡r : r + s ≡ r
-      r+s≡r =
-        cong (r +_) (sym 0≡s) ∙
-        +IdR r
-
-      r+s<0 : r + s < 0r
-      r+s<0 =
-        subst (_< 0r) (sym r+s≡r) r<0
-    ... | LinearBase.gt s<0 =
-      Empty.rec (<-asym 0<r+s r+s<0)
-      where
-      r+s<0+0 : r + s < 0r + 0r
-      r+s<0+0 =
-        +-Pres< r<0 s<0
-
-      r+s<0 : r + s < 0r
-      r+s<0 =
-        subst (r + s <_) (+IdR 0r) r+s<0+0
 
   K→<-pres :
     (p q : K) →

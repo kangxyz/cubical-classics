@@ -13,7 +13,6 @@ open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
-import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
@@ -34,8 +33,8 @@ module UnitProperties (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ 
   baseField = 𝒜 .fst
 
   open CompletionBase baseField
-  module CutOrder = CompletionOrder baseField
-  open CutOrder
+  module UnitOrder = CompletionOrder baseField
+  open UnitOrder
     using
       ( ⊔≤ ; left≤⊔
       )
@@ -57,14 +56,6 @@ module UnitProperties (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ 
   private
     K : Type ℓ
     K = Carrier
-
-    negative-or-nonnegative :
-      (q : K) →
-      (q < 0r) ⊎ (0r ≤ q)
-    negative-or-nonnegative q with trichotomy 0r q
-    ... | LinearBase.lt 0<q = Sum.inr (<-≤-weaken 0<q)
-    ... | LinearBase.eq 0≡q = Sum.inr (≤-refl 0≡q)
-    ... | LinearBase.gt q<0 = Sum.inl q<0
 
   abstract
     nnMul-idR-lower⊆ :
@@ -203,7 +194,7 @@ module UnitProperties (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ 
   abstract
     posPart≤x+negPart :
       (x : DedekindCompletion ℓᴾ) →
-      CutOrder._≤_ (posPart x) (x +𝔻 negPart x)
+      UnitOrder._≤_ (posPart x) (x +𝔻 negPart x)
     posPart≤x+negPart x =
       ⊔≤ x 0𝔻 (x +𝔻 negPart x)
         x≤x+n
@@ -212,21 +203,21 @@ module UnitProperties (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ 
       n : DedekindCompletion ℓᴾ
       n = negPart x
 
-      x≤x+n : CutOrder._≤_ x (x +𝔻 n)
+      x≤x+n : UnitOrder._≤_ x (x +𝔻 n)
       x≤x+n =
         ≤D-trans x (x +𝔻 0𝔻) (x +𝔻 n)
           (≡→≤D (sym (+-idR x)))
           (+-monoL-≤ 0𝔻 n x (negPart≥0 x))
 
-      0≤x+-x : CutOrder._≤_ 0𝔻 (x +𝔻 (-𝔻 x))
+      0≤x+-x : UnitOrder._≤_ 0𝔻 (x +𝔻 (-𝔻 x))
       0≤x+-x =
         ≡→≤D (sym (+-invR x))
 
-      x+-x≤x+n : CutOrder._≤_ (x +𝔻 (-𝔻 x)) (x +𝔻 n)
+      x+-x≤x+n : UnitOrder._≤_ (x +𝔻 (-𝔻 x)) (x +𝔻 n)
       x+-x≤x+n =
         +-monoL-≤ (-𝔻 x) n x (left≤⊔ (-𝔻 x) 0𝔻)
 
-      0≤x+n : CutOrder._≤_ 0𝔻 (x +𝔻 n)
+      0≤x+n : UnitOrder._≤_ 0𝔻 (x +𝔻 n)
       0≤x+n =
         ≤D-trans 0𝔻 (x +𝔻 (-𝔻 x)) (x +𝔻 n)
           0≤x+-x
@@ -234,7 +225,7 @@ module UnitProperties (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ 
 
     x+negPart≤posPart :
       (x : DedekindCompletion ℓᴾ) →
-      CutOrder._≤_ (x +𝔻 negPart x) (posPart x)
+      UnitOrder._≤_ (x +𝔻 negPart x) (posPart x)
     x+negPart≤posPart x q =
       Prop.rec (isProp∈ (lower (posPart x)) q) step
       where

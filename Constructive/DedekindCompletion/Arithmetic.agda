@@ -11,6 +11,7 @@ open import Constructive.DedekindCompletion.Arithmetic.Negation public
 open import Constructive.DedekindCompletion.Arithmetic.AdditiveGroup public
 open import Constructive.DedekindCompletion.Arithmetic.Difference public
 open import Constructive.DedekindCompletion.Arithmetic.Sign public
+open import Constructive.DedekindCompletion.Arithmetic.Approximation public
 open import Constructive.DedekindCompletion.Arithmetic.NonNegative public
 open import Constructive.DedekindCompletion.Arithmetic.Multiplication public
 open import Constructive.DedekindCompletion.Arithmetic.Unit public
