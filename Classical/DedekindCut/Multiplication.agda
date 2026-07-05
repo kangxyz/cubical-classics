@@ -42,13 +42,13 @@ private
 
 
 module Multiplication ⦃ 🤖 : Oracle ⦄
-  (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
   where
 
   private
     K = 𝒦 .fst .fst .fst
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
   open Basics   𝒦
   open Algebra  𝒦 archimedes
   open Order    𝒦 archimedes
@@ -600,5 +600,8 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   IsField𝕂 : IsField 𝟘 𝟙 _+𝕂_ _·𝕂_ (-𝕂_)
   IsField𝕂 = isfield (CommRingStr.isCommRing (𝕂CommRing .snd)) ·𝕂InvR 𝟘≢𝟙
 
+  𝕂StrictlyOrderedField : StrictlyOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  𝕂StrictlyOrderedField = 𝕂StrictlyOrderedCommRing , IsField𝕂
+
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂OrderedField = 𝕂StrictlyOrderedCommRing , IsField𝕂
+  𝕂OrderedField = 𝕂StrictlyOrderedField

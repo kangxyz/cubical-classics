@@ -47,14 +47,14 @@ private
 
 
 module Algebra ⦃ 🤖 : Oracle ⦄
-  (𝒦 : OrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
+  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
   where
 
   private
     K = 𝒦 .fst .fst .fst
 
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
   open Basics      𝒦
   open Archimedes  𝒦 archimedesK
   open DedekindCut

@@ -29,20 +29,20 @@ private
 
 
 module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
-  (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
   where
 
   private
     K = 𝒦 .fst .fst .fst
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
   open Basics   𝒦
   open Order    𝒦 archimedes
   open Multiplication 𝒦 archimedes
   open DedekindCut
 
   open MacNeilleCompleteOrderedField
-  open Extremum 𝕂OrderedField
+  open Extremum 𝕂StrictlyOrderedField
   open Supremum
 
 
@@ -102,7 +102,7 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  isMacNeilleComplete𝕂 : isMacNeilleComplete 𝕂OrderedField
+  isMacNeilleComplete𝕂 : isMacNeilleComplete 𝕂StrictlyOrderedField
   isMacNeilleComplete𝕂 {A = A} =
     Prop.rec2 (isPropSupremum A)
     (λ (a₀ , a₀∈A) (b , bound) →
@@ -114,4 +114,4 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
         ; least = leastSup𝕂 A a₀ a₀∈A s s∈x∈A })
 
   𝕂MacNeilleCompleteOrderedField : MacNeilleCompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂MacNeilleCompleteOrderedField = 𝕂OrderedField , isMacNeilleComplete𝕂
+  𝕂MacNeilleCompleteOrderedField = 𝕂StrictlyOrderedField , isMacNeilleComplete𝕂

@@ -39,7 +39,7 @@ open import Classical.Topology.Metric
 module _ ⦃ 🤖 : Oracle ⦄ where
 
   open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
-  open OrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open Topology
   open Metric
 

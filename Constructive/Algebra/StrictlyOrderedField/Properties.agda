@@ -1,6 +1,6 @@
 {-
 
-Properties of Ordered Field
+Properties of strictly ordered fields
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
@@ -57,10 +57,10 @@ private
     field-helper1 _ _ _ _ = solve! 𝓡
 
 
-module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
+module StrictlyOrderedFieldStr (𝒦 : StrictlyOrderedField ℓ ℓ') where
 
   private
-    𝒦ᶠ = OrderedField→Field 𝒦
+    𝒦ᶠ = StrictlyOrderedField→Field 𝒦
 
   open CubicalField.FieldStr (𝒦ᶠ .snd) public
   open RingTheory  (CommRing→Ring (Field→CommRing 𝒦ᶠ)) public
@@ -305,18 +305,22 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
       middle 0r x , middle>l x>0 , middle<r x>0 , subst (middle 0r x <_) x≡y (middle<r x>0)
 
 
+module OrderedFieldStr {ℓ ℓ' : Level} (𝒦 : OrderedField ℓ ℓ') =
+  StrictlyOrderedFieldStr 𝒦
+
+
 {-
 
-  The Archimedean Property of Ordered Fields
+  The Archimedean Property of Strictly Ordered Fields
 
 -}
 
 open import Constructive.Preliminary.Nat
 open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 
-module _ (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
+module _ (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
 
   private
     K = 𝒦 .fst .fst .fst

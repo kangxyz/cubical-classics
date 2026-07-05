@@ -46,7 +46,7 @@ private
 
 
 module Archimedes ⦃ 🤖 : Oracle ⦄
-  (𝒦 : OrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
+  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
   where
 
   open Oracle 🤖
@@ -55,7 +55,7 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
     K = 𝒦 .fst .fst .fst
 
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
   open Basics   𝒦
   open DedekindCut
 

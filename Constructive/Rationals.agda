@@ -29,12 +29,12 @@ open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals
 import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes as ℚArch
 open import Constructive.Algebra.StrictlyOrderedField
 open import Constructive.Algebra.StrictlyOrderedField.Instances.Rationals
-  using (ℚOrderedField)
+  using (ℚStrictlyOrderedField)
 
 
 private
   module ℚSOR = StrictlyOrderedCommRingStr ℚStrictlyOrderedCommRing
-  module ℚOF = OrderedFieldStr ℚOrderedField
+  module ℚOF = StrictlyOrderedFieldStr ℚStrictlyOrderedField
   ℚCommRing = StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing
 
   module RingSolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where

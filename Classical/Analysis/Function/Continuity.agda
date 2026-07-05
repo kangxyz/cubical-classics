@@ -51,7 +51,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open Oracle 🤖
 
   open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
-  open OrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open MacNeilleCompleteOrderedField (ℝMacNeilleCompleteOrderedField .fst)
 
 

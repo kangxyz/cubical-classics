@@ -36,10 +36,10 @@ private
     ℓ ℓ' ℓᴸ ℓᵁ : Level
 
 
-module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
+module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrderedField ℓ ℓ') where
 
   open Oracle 🤖
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
   open Extremum 𝒦
   open Supremum
   open MacNeilleCompleteOrderedField 𝒦

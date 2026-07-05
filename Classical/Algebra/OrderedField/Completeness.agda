@@ -46,8 +46,8 @@ open import Classical.Algebra.OrderedField.Extremum
 private
   variable
     ℓ ℓ' ℓ'' ℓ''' : Level
-    𝒦  : OrderedField ℓ   ℓ'
-    𝒦' : OrderedField ℓ'' ℓ'''
+    𝒦  : StrictlyOrderedField ℓ   ℓ'
+    𝒦' : StrictlyOrderedField ℓ'' ℓ'''
 
 private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
@@ -57,7 +57,7 @@ private
     helper1 _ _ = solve! 𝓡
 
 
-module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField ℓ ℓ') where
+module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrderedField ℓ ℓ') where
 
   open Oracle 🤖
 
@@ -67,7 +67,7 @@ module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : OrderedField 
     variable
       p q : K
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
 
   open Extremum 𝒦
   open Supremum
@@ -179,7 +179,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open MacNeilleCompleteOrderedField
 
   MacNeilleCompleteOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-  MacNeilleCompleteOrderedField ℓ ℓ' = Σ[ 𝒦 ∈ OrderedField ℓ ℓ' ] isMacNeilleComplete 𝒦
+  MacNeilleCompleteOrderedField ℓ ℓ' = Σ[ 𝒦 ∈ StrictlyOrderedField ℓ ℓ' ] isMacNeilleComplete 𝒦
 
 
   module MacNeilleCompleteOrderedFieldStr (𝒦 : MacNeilleCompleteOrderedField ℓ ℓ') where
@@ -193,13 +193,13 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  module MacNeilleCompleteOrderedFieldHom (f : OrderedFieldHom 𝒦 𝒦')
+  module MacNeilleCompleteOrderedFieldHom (f : StrictlyOrderedFieldHom 𝒦 𝒦')
     (getSup  : isMacNeilleComplete 𝒦 )
     (getSup' : isMacNeilleComplete 𝒦')
     where
 
-    open OrderedFieldStr 𝒦
-    open OrderedFieldStr 𝒦' using ()
+    open StrictlyOrderedFieldStr 𝒦
+    open StrictlyOrderedFieldStr 𝒦' using ()
       renaming ( _<_ to _<'_ ; _≤_ to _≤'_
                ; _>_ to _>'_ ; _≥_ to _≥'_
                ; isProp< to isProp<'
@@ -209,7 +209,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
                ; is-set  to is-set')
     open OrderedCommRingHom           f
     open OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} f
-    open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦'} f
+    open StrictlyOrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦'} f
 
     private
       K  = 𝒦  .fst .fst .fst
@@ -281,8 +281,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     isEquiv-f : isEquiv f-map
     isEquiv-f = isEmbedding×isSurjection→isEquiv (isEmbedding-f , isSurjection-f)
 
-    isOrderedFieldEquivMacNeilleComplete : isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
-    isOrderedFieldEquivMacNeilleComplete = isEquiv-f
+    isStrictlyOrderedFieldEquivMacNeilleComplete : isStrictlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
+    isStrictlyOrderedFieldEquivMacNeilleComplete = isEquiv-f
 
 
   {-
@@ -294,8 +294,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open MacNeilleCompleteOrderedField
   open MacNeilleCompleteOrderedFieldHom
 
-  uaMacNeilleCompleteOrderedField : (𝒦 𝒦' : MacNeilleCompleteOrderedField ℓ ℓ') → OrderedFieldHom (𝒦 .fst) (𝒦' .fst) → 𝒦 ≡ 𝒦'
+  uaMacNeilleCompleteOrderedField : (𝒦 𝒦' : MacNeilleCompleteOrderedField ℓ ℓ') → StrictlyOrderedFieldHom (𝒦 .fst) (𝒦' .fst) → 𝒦 ≡ 𝒦'
   uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .fst =
-    uaOrderedField {𝒦 = 𝒦 .fst} {𝒦' = 𝒦' .fst} {f = f} (isOrderedFieldEquivMacNeilleComplete f (𝒦 .snd) (𝒦' .snd)) i
+    uaStrictlyOrderedField {𝒦 = 𝒦 .fst} {𝒦' = 𝒦' .fst} {f = f} (isStrictlyOrderedFieldEquivMacNeilleComplete f (𝒦 .snd) (𝒦' .snd)) i
   uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .snd =
     isProp→PathP (λ i → isPropIsMacNeilleComplete (uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .fst)) (𝒦 .snd) (𝒦' .snd) i

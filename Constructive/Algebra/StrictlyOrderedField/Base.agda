@@ -1,6 +1,6 @@
 {-
 
-Totally Ordered Field
+Strictly ordered fields
 
 -}
 {-# OPTIONS --safe #-}
@@ -23,18 +23,22 @@ IsFieldOnStrictlyOrderedCommRing 𝓡 = IsField 0r 1r _+_ _·_ (-_)
   where
   open CommRingStr ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
 
-OrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-OrderedField ℓ ℓ' = Σ[ 𝒦 ∈ StrictlyOrderedCommRing ℓ ℓ' ] IsFieldOnStrictlyOrderedCommRing 𝒦
-
 StrictlyOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-StrictlyOrderedField = OrderedField
+StrictlyOrderedField ℓ ℓ' =
+  Σ[ 𝒦 ∈ StrictlyOrderedCommRing ℓ ℓ' ] IsFieldOnStrictlyOrderedCommRing 𝒦
 
-OrderedField→Field : OrderedField ℓ ℓ' → Field ℓ
-OrderedField→Field 𝒦 .fst = 𝒦 .fst .fst .fst
-OrderedField→Field 𝒦 .snd = fieldstr _ _ _ _ _ (𝒦 .snd)
 
 StrictlyOrderedField→Field : StrictlyOrderedField ℓ ℓ' → Field ℓ
-StrictlyOrderedField→Field = OrderedField→Field
+StrictlyOrderedField→Field 𝒦 .fst = 𝒦 .fst .fst .fst
+StrictlyOrderedField→Field 𝒦 .snd = fieldstr _ _ _ _ _ (𝒦 .snd)
+
+
+OrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
+OrderedField = StrictlyOrderedField
+
+
+OrderedField→Field : OrderedField ℓ ℓ' → Field ℓ
+OrderedField→Field = StrictlyOrderedField→Field
 
 isPropIsFieldOnStrictlyOrderedCommRing : (𝓡 : StrictlyOrderedCommRing ℓ ℓ') → isProp (IsFieldOnStrictlyOrderedCommRing 𝓡)
 isPropIsFieldOnStrictlyOrderedCommRing 𝓡 = isPropIsField 0r 1r _+_ _·_ (-_)

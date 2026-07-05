@@ -42,13 +42,13 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     Reals = MacNeilleCompleteOrderedField ℓ-zero ℓ-zero
 
     open InclusionFromℚ
-    open Completion ℚOrderedField isArchimedeanℚ
+    open Completion ℚStrictlyOrderedField isArchimedeanℚ
 
     -- Existence and uniqueness of the real numbers
 
     isContrReals : isContr Reals
     isContrReals .fst = complete
-    isContrReals .snd 𝒦 i = uaMacNeilleCompleteOrderedField complete 𝒦 (extend 𝒦 (ℚ→KOrderedFieldHom (𝒦 .fst))) i
+    isContrReals .snd 𝒦 i = uaMacNeilleCompleteOrderedField complete 𝒦 (extend 𝒦 (ℚ→KStrictlyOrderedFieldHom (𝒦 .fst))) i
 
 
 {-
@@ -69,15 +69,18 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     ℝMacNeilleCompleteOrderedField : MacNeilleCompleteOrderedField ℓ-zero ℓ-zero
     ℝMacNeilleCompleteOrderedField = isContrReals .fst
 
+    ℚ→ℝStrictlyOrderedFieldHom : StrictlyOrderedFieldHom ℚStrictlyOrderedField (ℝMacNeilleCompleteOrderedField .fst)
+    ℚ→ℝStrictlyOrderedFieldHom = ℚ→KStrictlyOrderedFieldHom (ℝMacNeilleCompleteOrderedField .fst)
+
     ℚ→ℝOrderedFieldHom : OrderedFieldHom ℚOrderedField (ℝMacNeilleCompleteOrderedField .fst)
-    ℚ→ℝOrderedFieldHom = ℚ→KOrderedFieldHom (ℝMacNeilleCompleteOrderedField .fst)
+    ℚ→ℝOrderedFieldHom = ℚ→ℝStrictlyOrderedFieldHom
 
 
   ℝ : Type
   ℝ = ℝMacNeilleCompleteOrderedField .fst .fst .fst .fst
 
   ℚ→ℝ : ℚ → ℝ
-  ℚ→ℝ = ℚ→ℝOrderedFieldHom .ring-hom .fst
+  ℚ→ℝ = ℚ→ℝStrictlyOrderedFieldHom .ring-hom .fst
 
 
   -- Natural number and negative integer literals for ℝ

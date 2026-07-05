@@ -29,7 +29,7 @@ private
 
 
 module Completion ⦃ 🤖 : Oracle ⦄
-  (𝒦 : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
+  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 
   open MacNeilleCompleteOrderedField
   open CompletenessOfCuts 𝒦
@@ -38,5 +38,5 @@ module Completion ⦃ 🤖 : Oracle ⦄
   complete : MacNeilleCompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   complete = 𝕂MacNeilleCompleteOrderedField archimedes
 
-  extend : (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''') → OrderedFieldHom 𝒦 (𝒦' .fst) → OrderedFieldHom (complete .fst) (𝒦' .fst)
-  extend = extendedOrderedFieldHom archimedes
+  extend : (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''') → StrictlyOrderedFieldHom 𝒦 (𝒦' .fst) → StrictlyOrderedFieldHom (complete .fst) (𝒦' .fst)
+  extend = extendedStrictlyOrderedFieldHom archimedes

@@ -54,24 +54,24 @@ private
 
 
 module UniversalProperty ⦃ 🤖 : Oracle ⦄
-  (𝒦  : OrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst)) where
+  (𝒦  : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst)) where
 
   open Oracle 🤖
 
   open MacNeilleCompleteOrderedField
 
   module _
-    (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''')(f : OrderedFieldHom 𝒦 (𝒦' .fst)) where
+    (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''')(f : StrictlyOrderedFieldHom 𝒦 (𝒦' .fst)) where
 
 
-    open OrderedFieldStr 𝒦
+    open StrictlyOrderedFieldStr 𝒦
     open Basics   𝒦
     open Algebra  𝒦 archimedes
     open Order    𝒦 archimedes
     open Multiplication 𝒦 archimedes
     open DedekindCut
 
-    open OrderedFieldStr (𝒦' .fst) using ()
+    open StrictlyOrderedFieldStr (𝒦' .fst) using ()
       renaming ( _+_ to _+'_ ; -_ to -'_ ; _-_ to _-'_
                ; 0r to 0r' ; 1r to 1r'
                ; _·_ to _·'_
@@ -104,7 +104,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; <-·-Decompose to <-·-Decompose')
     open OrderedCommRingHom           f
     open OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst .fst} f
-    open OrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
+    open StrictlyOrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
     open IsCommRingHom (ring-hom .snd)
     module 𝕂SO = StrictlyOrderedCommRingStr 𝕂StrictlyOrderedCommRing
 
@@ -428,5 +428,8 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     extendedOrderedCommRingHom .pres<    = map-pres<
     extendedOrderedCommRingHom .pres≤    = map-pres≤
 
+    extendedStrictlyOrderedFieldHom : StrictlyOrderedFieldHom 𝕂StrictlyOrderedField (𝒦' .fst)
+    extendedStrictlyOrderedFieldHom = extendedOrderedCommRingHom
+
     extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
-    extendedOrderedFieldHom = extendedOrderedCommRingHom
+    extendedOrderedFieldHom = extendedStrictlyOrderedFieldHom

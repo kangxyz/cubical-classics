@@ -1,6 +1,6 @@
 {-
 
-Rational Numbers
+Rationals as a strictly ordered field
 
 -}
 {-# OPTIONS --safe #-}
@@ -21,18 +21,19 @@ open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.StrictlyOrderedField
 
 
--- ℚ is a totally ordered field.
-
-ℚOrderedField : OrderedField ℓ-zero ℓ-zero
-ℚOrderedField = ℚStrictlyOrderedCommRing , CubicalField.FieldStr.isField (ℚField .snd)
+-- ℚ is a strictly ordered field
 
 ℚStrictlyOrderedField : StrictlyOrderedField ℓ-zero ℓ-zero
-ℚStrictlyOrderedField = ℚOrderedField
+ℚStrictlyOrderedField =
+  ℚStrictlyOrderedCommRing , CubicalField.FieldStr.isField (ℚField .snd)
+
+ℚOrderedField : OrderedField ℓ-zero ℓ-zero
+ℚOrderedField = ℚStrictlyOrderedField
 
 
 -- Inclusions from natural numbers.
 
-open OrderedFieldStr ℚOrderedField using (ℕ→R-Pos ; ℕ→R-Neg)
+open StrictlyOrderedFieldStr ℚStrictlyOrderedField using (ℕ→R-Pos ; ℕ→R-Neg)
 
 ℕ→ℚPos : ℕ → ℚ
 ℕ→ℚPos = ℕ→R-Pos

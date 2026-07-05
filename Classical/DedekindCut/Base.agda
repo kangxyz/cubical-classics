@@ -45,7 +45,7 @@ private
 
 
 module Basics ⦃ 🤖 : Oracle ⦄
-  (𝒦 : OrderedField ℓ ℓ')
+  (𝒦 : StrictlyOrderedField ℓ ℓ')
   where
 
   open Oracle 🤖
@@ -54,7 +54,7 @@ module Basics ⦃ 🤖 : Oracle ⦄
     K = 𝒦 .fst .fst .fst
 
 
-  open OrderedFieldStr 𝒦
+  open StrictlyOrderedFieldStr 𝒦
 
   open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
 

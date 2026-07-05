@@ -69,7 +69,7 @@ module ClassicalResize ⦃ 🤖 : Oracle ⦄ where
   ... | no ¬p = Empty.rec* p
 
 
-module StrictOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
+module StrictlyOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
   open Oracle 🤖
   module O = Order {ℓ}
   open Addition {ℓ}
@@ -131,7 +131,7 @@ module StrictOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
       0≢1
 
   DedekindStrictlyOrderedField :
-    StrictOF.OrderedField (ℓ-suc ℓ) ℓ
+    StrictOF.StrictlyOrderedField (ℓ-suc ℓ) ℓ
   DedekindStrictlyOrderedField =
     DedekindStrictlyOrderedCommRing ,
     DedekindIsFieldOnStrictlyOrderedCommRing
@@ -140,7 +140,7 @@ module StrictOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
 module MacNeilleCompleteness ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
   open Oracle 🤖
   open ClassicalResize ⦃ 🤖 ⦄
-  module SOF = StrictOrderedFieldStructure ⦃ 🤖 ⦄ {ℓ}
+  module SOF = StrictlyOrderedFieldStructure ⦃ 🤖 ⦄ {ℓ}
   module O = Order {ℓ}
   module Arch = Archimedean {ℓ}
   open Addition {ℓ}
@@ -316,7 +316,7 @@ module MacNeilleCompleteness ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
     supremum A
 
 
-open StrictOrderedFieldStructure public
+open StrictlyOrderedFieldStructure public
   using (DedekindStrictlyOrderedField ; DedekindStrictlyOrderedCommRing)
 
 open MacNeilleCompleteness public

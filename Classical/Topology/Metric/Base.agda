@@ -43,7 +43,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open Oracle 🤖
 
-  open OrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open Topology
 
 
