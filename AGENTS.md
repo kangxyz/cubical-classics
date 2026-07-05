@@ -11,6 +11,8 @@ documentation tone, and module style, follow `STYLE.md`.
 - Keep changes narrowly scoped to the user's request. Avoid unrelated
   refactors, formatting churn, or opportunistic cleanup.
 - Preserve public APIs and user-facing behavior when possible.
+- When changing public module paths, exported interfaces, or the library
+  layout, update `README.md` in the same change.
 
 ## Boundaries And Assumptions
 
