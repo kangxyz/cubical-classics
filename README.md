@@ -16,7 +16,7 @@ The library proves, among other things:
 
 - choice implies excluded middle, through Cubical's Diaconescu theorem and the
   local `Oracle`;
-- SIP/univalence for ordered commutative rings, strictly ordered commutative
+- SIP/univalence for ordered commutative rings, linearly ordered commutative
   rings, ordered fields, and MacNeille-complete ordered fields;
 - canonical ordered homomorphisms from `ℤ` and `ℚ` into ordered targets;
 - LEM-free constructive Dedekind reals over `ℚ`, with ordered arithmetic,
@@ -76,13 +76,13 @@ The code is split by whether it uses the library's classical `Oracle`.
   commutative rings, with morphisms and univalence.
 - `Constructive/Algebra/Order/` contains constructive order-completeness
   notions, including MacNeille completeness for posets.
-- `Constructive/Algebra/StrictlyOrderedCommRing/` adds strict orders,
-  trichotomy, absolute value, Archimedean structures, morphisms, univalence,
+- `Constructive/Algebra/LinearlyOrderedCommRing/` adds trichotomy,
+  absolute value, Archimedean structures, morphisms, univalence,
   and the `ℤ` and `ℚ` instances.
 - `Constructive/Algebra/OrderedField/` contains the weak ordered-field
   interface used constructively: order is inherited from ordered commutative
   rings, and inverses are required from apartness.
-- `Constructive/Algebra/StrictlyOrderedField/` contains the trichotomous
+- `Constructive/Algebra/LinearlyOrderedField/` contains the trichotomous
   ordered-field interface, ordered-field lemmas, the rational ordered field,
   and the canonical inclusion of `ℚ` into any ordered field.
 - `Constructive/DedekindReals/` contains the LEM-free constructive Dedekind

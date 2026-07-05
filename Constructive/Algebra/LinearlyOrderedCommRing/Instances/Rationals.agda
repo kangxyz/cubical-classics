@@ -4,7 +4,7 @@ Ordering of rational numbers
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals where
+module Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv
@@ -35,8 +35,8 @@ open import Cubical.Relation.Binary.Order.Poset
 open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Cubical.Relation.Binary.Order.StrictOrder
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Base
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing.Base
   using    (Trichotomy ; lt ; eq ; gt)
 
 
@@ -107,9 +107,9 @@ trichotomyℚ x y with x ℚOrder.≟ y
 
 {-
 
-  ℚ is a strictly ordered commutative ring
+  ℚ is a linearly ordered commutative ring
 
 -}
 
-ℚStrictlyOrderedCommRing : StrictlyOrderedCommRing _ _
-ℚStrictlyOrderedCommRing = ℚOrderedCommRing , strictorderstr trichotomyℚ
+ℚLinearlyOrderedCommRing : LinearlyOrderedCommRing _ _
+ℚLinearlyOrderedCommRing = ℚOrderedCommRing , linearorderstr trichotomyℚ

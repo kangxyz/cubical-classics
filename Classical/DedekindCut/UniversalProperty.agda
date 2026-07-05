@@ -26,11 +26,11 @@ open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Logic
 
 open import Constructive.Algebra.OrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
-open import Constructive.Algebra.StrictlyOrderedField.Morphism
+open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.DedekindCut.Base
@@ -54,24 +54,24 @@ private
 
 
 module UniversalProperty ⦃ 🤖 : Oracle ⦄
-  (𝒦  : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst)) where
+  (𝒦  : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst)) where
 
   open Oracle 🤖
 
   open MacNeilleCompleteOrderedField
 
   module _
-    (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''')(f : StrictlyOrderedFieldHom 𝒦 (𝒦' .fst)) where
+    (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''')(f : LinearlyOrderedFieldHom 𝒦 (𝒦' .fst)) where
 
 
-    open StrictlyOrderedFieldStr 𝒦
+    open LinearlyOrderedFieldStr 𝒦
     open Basics   𝒦
     open Algebra  𝒦 archimedes
     open Order    𝒦 archimedes
     open Multiplication 𝒦 archimedes
     open DedekindCut
 
-    open StrictlyOrderedFieldStr (𝒦' .fst) using ()
+    open LinearlyOrderedFieldStr (𝒦' .fst) using ()
       renaming ( _+_ to _+'_ ; -_ to -'_ ; _-_ to _-'_
                ; 0r to 0r' ; 1r to 1r'
                ; _·_ to _·'_
@@ -103,10 +103,10 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
                ; <-+-Decompose to <-+-Decompose'
                ; <-·-Decompose to <-·-Decompose')
     open OrderedCommRingHom           f
-    open OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst .fst} f
-    open StrictlyOrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
+    open LinearMorphism.OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst .fst} f
+    open LinearlyOrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦' .fst} f
     open IsCommRingHom (ring-hom .snd)
-    module 𝕂SO = StrictlyOrderedCommRingStr 𝕂StrictlyOrderedCommRing
+    module 𝕂LO = LinearlyOrderedCommRingStr 𝕂LinearlyOrderedCommRing
 
     private
       K  = 𝒦  .fst .fst .fst
@@ -297,7 +297,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     map-helper-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → map-helper a >' 0r'
     map-helper-pres>0 a a>0 = subst (map-helper a >'_) map-pres0 (map-helper-pres> a 𝟘 a>0)
 
-    map-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → StrictlyOrderedCommRingStr._>0 (𝒦' .fst .fst) (map-helper a)
+    map-pres>0 : (a : 𝕂) → a >𝕂 𝟘 → LinearlyOrderedCommRingStr._>0 (𝒦' .fst .fst) (map-helper a)
     map-pres>0 a a>0 = map-helper-pres>0 a a>0
 
 
@@ -354,7 +354,7 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
 
     open Helpers 𝕂CommRing renaming (helper1 to helper𝕂1 ; helper2 to helper𝕂2)
-    open Helpers (StrictlyOrderedCommRing→CommRing (𝒦' .fst .fst))
+    open Helpers (LinearlyOrderedCommRing→CommRing (𝒦' .fst .fst))
 
     map-pres·Pos : (a b : 𝕂) → a >𝕂 𝟘 → map-helper (a ·𝕂 b) ≡ map-helper a ·' map-helper b
     map-pres·Pos a b a>0 = case-split (trichotomy𝕂 b 𝟘)
@@ -399,37 +399,37 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
 
     -}
 
-    extendedRingHom : CommRingHom 𝕂CommRing (StrictlyOrderedCommRing→CommRing (𝒦' .fst .fst))
+    extendedRingHom : CommRingHom 𝕂CommRing (LinearlyOrderedCommRing→CommRing (𝒦' .fst .fst))
     extendedRingHom = map-helper , makeIsCommRingHom map-pres1 map-pres+ map-pres·
 
     open OrderedCommRingHom
 
-    map-pres-- : (a b : 𝕂) → map-helper ((𝕂SO.Ord._-_) b a) ≡ map-helper b -' map-helper a
+    map-pres-- : (a b : 𝕂) → map-helper ((𝕂LO.Ord._-_) b a) ≡ map-helper b -' map-helper a
     map-pres-- a b =
       map-pres+ b (-𝕂 a)
       ∙ (λ i → map-helper b +' map-pres- a i)
 
-    map-pres< : (a b : 𝕂) → 𝕂SO._<_ a b → map-helper a <' map-helper b
+    map-pres< : (a b : 𝕂) → 𝕂LO._<_ a b → map-helper a <' map-helper b
     map-pres< a b a<b =
       Diff>0→<' (subst (_>0'_) (map-pres-- a b)
-        (map-pres>0 ((𝕂SO.Ord._-_) b a) (𝕂SO.<→Diff>0 a<b)))
+        (map-pres>0 ((𝕂LO.Ord._-_) b a) (𝕂LO.<→Diff>0 a<b)))
 
-    map-pres≤ : (a b : 𝕂) → 𝕂SO._≤_ a b → map-helper a ≤' map-helper b
+    map-pres≤ : (a b : 𝕂) → 𝕂LO._≤_ a b → map-helper a ≤' map-helper b
     map-pres≤ a b a≤b =
-      invEq (≤'≃¬> (map-helper a) (map-helper b)) (notGreater (𝕂SO.trichotomy a b))
+      invEq (≤'≃¬> (map-helper a) (map-helper b)) (notGreater (𝕂LO.trichotomy a b))
       where
-      notGreater : Trichotomy (𝕂StrictlyOrderedCommRing .fst) a b → ¬ map-helper b <' map-helper a
+      notGreater : Trichotomy (𝕂LinearlyOrderedCommRing .fst) a b → ¬ map-helper b <' map-helper a
       notGreater (lt a<b) fb<fa = <'-asym (map-pres< a b a<b) fb<fa
       notGreater (eq a≡b) fb<fa = <'-arefl fb<fa (cong map-helper (sym a≡b))
-      notGreater (gt b<a) _ = equivFun (𝕂SO.≤≃¬> a b) a≤b b<a
+      notGreater (gt b<a) _ = equivFun (𝕂LO.≤≃¬> a b) a≤b b<a
 
-    extendedOrderedCommRingHom : OrderedCommRingHom (𝕂StrictlyOrderedCommRing .fst) (𝒦' .fst .fst .fst)
+    extendedOrderedCommRingHom : OrderedCommRingHom (𝕂LinearlyOrderedCommRing .fst) (𝒦' .fst .fst .fst)
     extendedOrderedCommRingHom .ring-hom = extendedRingHom
     extendedOrderedCommRingHom .pres<    = map-pres<
     extendedOrderedCommRingHom .pres≤    = map-pres≤
 
-    extendedStrictlyOrderedFieldHom : StrictlyOrderedFieldHom 𝕂StrictlyOrderedField (𝒦' .fst)
-    extendedStrictlyOrderedFieldHom = extendedOrderedCommRingHom
+    extendedLinearlyOrderedFieldHom : LinearlyOrderedFieldHom 𝕂LinearlyOrderedField (𝒦' .fst)
+    extendedLinearlyOrderedFieldHom = extendedOrderedCommRingHom
 
     extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
-    extendedOrderedFieldHom = extendedStrictlyOrderedFieldHom
+    extendedOrderedFieldHom = extendedLinearlyOrderedFieldHom

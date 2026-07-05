@@ -16,9 +16,9 @@ module Classical.Algebra.OrderedField.Completion where
 
 open import Cubical.Foundations.Prelude
 open import Classical.Axioms
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField.Base
-open import Constructive.Algebra.StrictlyOrderedField.Morphism
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField.Base
+open import Constructive.Algebra.LinearlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.DedekindCut.Completeness
 open import Classical.DedekindCut.UniversalProperty
@@ -29,7 +29,7 @@ private
 
 
 module Completion ⦃ 🤖 : Oracle ⦄
-  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 
   open MacNeilleCompleteOrderedField
   open CompletenessOfCuts 𝒦
@@ -38,5 +38,5 @@ module Completion ⦃ 🤖 : Oracle ⦄
   complete : MacNeilleCompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
   complete = 𝕂MacNeilleCompleteOrderedField archimedes
 
-  extend : (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''') → StrictlyOrderedFieldHom 𝒦 (𝒦' .fst) → StrictlyOrderedFieldHom (complete .fst) (𝒦' .fst)
-  extend = extendedStrictlyOrderedFieldHom archimedes
+  extend : (𝒦' : MacNeilleCompleteOrderedField ℓ'' ℓ''') → LinearlyOrderedFieldHom 𝒦 (𝒦' .fst) → LinearlyOrderedFieldHom (complete .fst) (𝒦' .fst)
+  extend = extendedLinearlyOrderedFieldHom archimedes

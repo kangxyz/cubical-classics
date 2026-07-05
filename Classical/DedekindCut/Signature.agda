@@ -1,6 +1,6 @@
 {-
 
-Datatype to describe the sign of an element in a strictly ordered commutative ring
+Datatype to describe the sign of an element in a linearly ordered commutative ring
 
 -}
 {-# OPTIONS --safe #-}

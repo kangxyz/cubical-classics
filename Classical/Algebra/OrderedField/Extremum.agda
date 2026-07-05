@@ -20,8 +20,8 @@ open import Cubical.Relation.Nullary
 open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
-open import Constructive.Algebra.StrictlyOrderedField
-open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
   using (Trichotomy ; lt ; eq ; gt)
 
 private
@@ -29,11 +29,11 @@ private
     ℓ ℓ' : Level
 
 
-module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrderedField ℓ ℓ') where
+module Extremum ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   open Oracle 🤖
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
 
   private
       K = 𝒦 .fst .fst .fst

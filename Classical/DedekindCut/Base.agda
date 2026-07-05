@@ -22,8 +22,8 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedField
 
 private
   variable
@@ -45,7 +45,7 @@ private
 
 
 module Basics ⦃ 🤖 : Oracle ⦄
-  (𝒦 : StrictlyOrderedField ℓ ℓ')
+  (𝒦 : LinearlyOrderedField ℓ ℓ')
   where
 
   open Oracle 🤖
@@ -54,9 +54,9 @@ module Basics ⦃ 🤖 : Oracle ⦄
     K = 𝒦 .fst .fst .fst
 
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
 
-  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+  open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   {-

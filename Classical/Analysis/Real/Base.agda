@@ -13,11 +13,11 @@ open import Cubical.Algebra.Ring
 
 open import Classical.Axioms
 open import Constructive.Algebra.OrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedField.Instances.Rationals
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedField
-open import Constructive.Algebra.StrictlyOrderedField.Morphism
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
+open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Algebra.OrderedField.Completion
 
@@ -42,13 +42,13 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     Reals = MacNeilleCompleteOrderedField ℓ-zero ℓ-zero
 
     open InclusionFromℚ
-    open Completion ℚStrictlyOrderedField isArchimedeanℚ
+    open Completion ℚLinearlyOrderedField isArchimedeanℚ
 
     -- Existence and uniqueness of the real numbers
 
     isContrReals : isContr Reals
     isContrReals .fst = complete
-    isContrReals .snd 𝒦 i = uaMacNeilleCompleteOrderedField complete 𝒦 (extend 𝒦 (ℚ→KStrictlyOrderedFieldHom (𝒦 .fst))) i
+    isContrReals .snd 𝒦 i = uaMacNeilleCompleteOrderedField complete 𝒦 (extend 𝒦 (ℚ→KLinearlyOrderedFieldHom (𝒦 .fst))) i
 
 
 {-
@@ -69,23 +69,23 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     ℝMacNeilleCompleteOrderedField : MacNeilleCompleteOrderedField ℓ-zero ℓ-zero
     ℝMacNeilleCompleteOrderedField = isContrReals .fst
 
-    ℚ→ℝStrictlyOrderedFieldHom : StrictlyOrderedFieldHom ℚStrictlyOrderedField (ℝMacNeilleCompleteOrderedField .fst)
-    ℚ→ℝStrictlyOrderedFieldHom = ℚ→KStrictlyOrderedFieldHom (ℝMacNeilleCompleteOrderedField .fst)
+    ℚ→ℝLinearlyOrderedFieldHom : LinearlyOrderedFieldHom ℚLinearlyOrderedField (ℝMacNeilleCompleteOrderedField .fst)
+    ℚ→ℝLinearlyOrderedFieldHom = ℚ→KLinearlyOrderedFieldHom (ℝMacNeilleCompleteOrderedField .fst)
 
     ℚ→ℝOrderedFieldHom : OrderedFieldHom ℚOrderedField (ℝMacNeilleCompleteOrderedField .fst)
-    ℚ→ℝOrderedFieldHom = ℚ→ℝStrictlyOrderedFieldHom
+    ℚ→ℝOrderedFieldHom = ℚ→ℝLinearlyOrderedFieldHom
 
 
   ℝ : Type
   ℝ = ℝMacNeilleCompleteOrderedField .fst .fst .fst .fst
 
   ℚ→ℝ : ℚ → ℝ
-  ℚ→ℝ = ℚ→ℝStrictlyOrderedFieldHom .ring-hom .fst
+  ℚ→ℝ = ℚ→ℝLinearlyOrderedFieldHom .ring-hom .fst
 
 
   -- Natural number and negative integer literals for ℝ
 
-  open StrictlyOrderedCommRingStr (ℝMacNeilleCompleteOrderedField .fst .fst)
+  open LinearlyOrderedCommRingStr (ℝMacNeilleCompleteOrderedField .fst .fst)
 
   instance
     fromNatℝ : HasFromNat ℝ

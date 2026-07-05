@@ -36,18 +36,18 @@ open import Classical.Axioms
 open import Classical.Preliminary.Logic
 open import Classical.Foundations.Powerset
 open import Constructive.Algebra.OrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
-open import Constructive.Algebra.StrictlyOrderedField.Morphism
+open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField.Morphism
 open import Classical.Algebra.OrderedField.Extremum
 
 private
   variable
     ℓ ℓ' ℓ'' ℓ''' : Level
-    𝒦  : StrictlyOrderedField ℓ   ℓ'
-    𝒦' : StrictlyOrderedField ℓ'' ℓ'''
+    𝒦  : LinearlyOrderedField ℓ   ℓ'
+    𝒦' : LinearlyOrderedField ℓ'' ℓ'''
 
 private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
@@ -57,7 +57,7 @@ private
     helper1 _ _ = solve! 𝓡
 
 
-module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrderedField ℓ ℓ') where
+module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   open Oracle 🤖
 
@@ -67,7 +67,7 @@ module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrder
     variable
       p q : K
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
 
   open Extremum 𝒦
   open Supremum
@@ -148,7 +148,7 @@ module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrder
           return (suc n ,
             subst (_> p + ε) (sym (sucn⋆q≡n⋆q+q n _)) (+-rPres< {z = ε} n⋆ε>p))
 
-        open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+        open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
         q<p+ε : p + ε > boundary .sup
         q<p+ε = subst (_< p + ε) (helper1 _ _) (+-rPres< {z = ε} p>q-ε)
@@ -179,7 +179,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open MacNeilleCompleteOrderedField
 
   MacNeilleCompleteOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-  MacNeilleCompleteOrderedField ℓ ℓ' = Σ[ 𝒦 ∈ StrictlyOrderedField ℓ ℓ' ] isMacNeilleComplete 𝒦
+  MacNeilleCompleteOrderedField ℓ ℓ' = Σ[ 𝒦 ∈ LinearlyOrderedField ℓ ℓ' ] isMacNeilleComplete 𝒦
 
 
   module MacNeilleCompleteOrderedFieldStr (𝒦 : MacNeilleCompleteOrderedField ℓ ℓ') where
@@ -193,13 +193,13 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   -}
 
-  module MacNeilleCompleteOrderedFieldHom (f : StrictlyOrderedFieldHom 𝒦 𝒦')
+  module MacNeilleCompleteOrderedFieldHom (f : LinearlyOrderedFieldHom 𝒦 𝒦')
     (getSup  : isMacNeilleComplete 𝒦 )
     (getSup' : isMacNeilleComplete 𝒦')
     where
 
-    open StrictlyOrderedFieldStr 𝒦
-    open StrictlyOrderedFieldStr 𝒦' using ()
+    open LinearlyOrderedFieldStr 𝒦
+    open LinearlyOrderedFieldStr 𝒦' using ()
       renaming ( _<_ to _<'_ ; _≤_ to _≤'_
                ; _>_ to _>'_ ; _≥_ to _≥'_
                ; isProp< to isProp<'
@@ -208,8 +208,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
                ; <-trans to <'-trans
                ; is-set  to is-set')
     open OrderedCommRingHom           f
-    open OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} f
-    open StrictlyOrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦'} f
+    open LinearMorphism.OrderedCommRingHomProperties {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} f
+    open LinearlyOrderedFieldHomStr {𝒦' = 𝒦} {𝒦 = 𝒦'} f
 
     private
       K  = 𝒦  .fst .fst .fst
@@ -281,8 +281,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     isEquiv-f : isEquiv f-map
     isEquiv-f = isEmbedding×isSurjection→isEquiv (isEmbedding-f , isSurjection-f)
 
-    isStrictlyOrderedFieldEquivMacNeilleComplete : isStrictlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
-    isStrictlyOrderedFieldEquivMacNeilleComplete = isEquiv-f
+    isLinearlyOrderedFieldEquivMacNeilleComplete : isLinearlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
+    isLinearlyOrderedFieldEquivMacNeilleComplete = isEquiv-f
 
 
   {-
@@ -294,8 +294,8 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open MacNeilleCompleteOrderedField
   open MacNeilleCompleteOrderedFieldHom
 
-  uaMacNeilleCompleteOrderedField : (𝒦 𝒦' : MacNeilleCompleteOrderedField ℓ ℓ') → StrictlyOrderedFieldHom (𝒦 .fst) (𝒦' .fst) → 𝒦 ≡ 𝒦'
+  uaMacNeilleCompleteOrderedField : (𝒦 𝒦' : MacNeilleCompleteOrderedField ℓ ℓ') → LinearlyOrderedFieldHom (𝒦 .fst) (𝒦' .fst) → 𝒦 ≡ 𝒦'
   uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .fst =
-    uaStrictlyOrderedField {𝒦 = 𝒦 .fst} {𝒦' = 𝒦' .fst} {f = f} (isStrictlyOrderedFieldEquivMacNeilleComplete f (𝒦 .snd) (𝒦' .snd)) i
+    uaLinearlyOrderedField {𝒦 = 𝒦 .fst} {𝒦' = 𝒦' .fst} {f = f} (isLinearlyOrderedFieldEquivMacNeilleComplete f (𝒦 .snd) (𝒦' .snd)) i
   uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .snd =
     isProp→PathP (λ i → isPropIsMacNeilleComplete (uaMacNeilleCompleteOrderedField 𝒦 𝒦' f i .fst)) (𝒦 .snd) (𝒦' .snd) i

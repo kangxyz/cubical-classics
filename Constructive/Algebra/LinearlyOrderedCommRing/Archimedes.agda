@@ -1,10 +1,10 @@
 {-
 
-  The Archimedean Property of Strictly Ordered Commutative Rings
+  The Archimedean Property of Linearly Ordered Commutative Rings
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.StrictlyOrderedCommRing.Archimedes where
+module Constructive.Algebra.LinearlyOrderedCommRing.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
@@ -13,20 +13,20 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Relation.Nullary
 
 open import Constructive.Preliminary.Nat
-open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing
 
 private
   variable
     ℓ ℓ' : Level
 
 
-module _ (𝓡 : StrictlyOrderedCommRing ℓ ℓ') where
+module _ (𝓡 : LinearlyOrderedCommRing ℓ ℓ') where
 
   private
     R = 𝓡 .fst .fst
 
-  open CommRingStr   ((StrictlyOrderedCommRing→CommRing 𝓡) .snd)
-  open StrictlyOrderedCommRingStr 𝓡
+  open CommRingStr   ((LinearlyOrderedCommRing→CommRing 𝓡) .snd)
+  open LinearlyOrderedCommRingStr 𝓡
 
 
   -- We have two versions of the Archimedean property.

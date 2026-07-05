@@ -29,17 +29,17 @@ open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 
 import Constructive.Algebra.Order.MacNeille as ConstructiveMacNeille
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField
 
 private
   variable
     ℓ ℓ' ℓᴸ ℓᵁ : Level
 
 
-module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : StrictlyOrderedField ℓ ℓ') where
+module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   open Oracle 🤖
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
   open Extremum 𝒦
   open Supremum
   open MacNeilleCompleteOrderedField 𝒦

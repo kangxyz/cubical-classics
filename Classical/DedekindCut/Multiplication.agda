@@ -27,10 +27,10 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-import Constructive.Algebra.StrictlyOrderedCommRing.Base as StrictBase
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
 open import Classical.DedekindCut.Algebra
 open import Classical.DedekindCut.Signature
@@ -42,13 +42,13 @@ private
 
 
 module Multiplication ⦃ 🤖 : Oracle ⦄
-  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
   where
 
   private
     K = 𝒦 .fst .fst .fst
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
   open Basics   𝒦
   open Algebra  𝒦 archimedes
   open Order    𝒦 archimedes
@@ -317,7 +317,7 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
 
   {-
 
-    Strictly ordered commutative ring instance
+    Linearly ordered commutative ring instance
 
   -}
 
@@ -501,14 +501,14 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   𝕂OrderedCommRing .snd =
     orderedcommringstr 𝟘 𝟙 _+𝕂_ _·𝕂_ -𝕂_ _<𝕂_ _≤𝕂_ 𝕂IsOrderedCommRing
 
-  trichotomy𝕂ᶜ : (a b : 𝕂) → StrictBase.Trichotomy 𝕂OrderedCommRing a b
+  trichotomy𝕂ᶜ : (a b : 𝕂) → LinearBase.Trichotomy 𝕂OrderedCommRing a b
   trichotomy𝕂ᶜ a b with trichotomy𝕂 a b
-  ... | lt a<b = StrictBase.lt a<b
-  ... | eq a≡b = StrictBase.eq a≡b
-  ... | gt a>b = StrictBase.gt a>b
+  ... | lt a<b = LinearBase.lt a<b
+  ... | eq a≡b = LinearBase.eq a≡b
+  ... | gt a>b = LinearBase.gt a>b
 
-  𝕂StrictlyOrderedCommRing : StrictlyOrderedCommRing (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂StrictlyOrderedCommRing = 𝕂OrderedCommRing , strictorderstr trichotomy𝕂ᶜ
+  𝕂LinearlyOrderedCommRing : LinearlyOrderedCommRing (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  𝕂LinearlyOrderedCommRing = 𝕂OrderedCommRing , linearorderstr trichotomy𝕂ᶜ
 
 
   {-
@@ -600,8 +600,8 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   IsField𝕂 : IsField 𝟘 𝟙 _+𝕂_ _·𝕂_ (-𝕂_)
   IsField𝕂 = isfield (CommRingStr.isCommRing (𝕂CommRing .snd)) ·𝕂InvR 𝟘≢𝟙
 
-  𝕂StrictlyOrderedField : StrictlyOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂StrictlyOrderedField = 𝕂StrictlyOrderedCommRing , IsField𝕂
+  𝕂LinearlyOrderedField : LinearlyOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
+  𝕂LinearlyOrderedField = 𝕂LinearlyOrderedCommRing , IsField𝕂
 
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂OrderedField = 𝕂StrictlyOrderedField
+  𝕂OrderedField = 𝕂LinearlyOrderedField

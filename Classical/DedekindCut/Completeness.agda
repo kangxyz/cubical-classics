@@ -15,8 +15,8 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.DedekindCut.Base
@@ -29,20 +29,20 @@ private
 
 
 module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
-  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 . fst))
   where
 
   private
     K = 𝒦 .fst .fst .fst
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
   open Basics   𝒦
   open Order    𝒦 archimedes
   open Multiplication 𝒦 archimedes
   open DedekindCut
 
   open MacNeilleCompleteOrderedField
-  open Extremum 𝕂StrictlyOrderedField
+  open Extremum 𝕂LinearlyOrderedField
   open Supremum
 
 
@@ -102,7 +102,7 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
 
   -}
 
-  isMacNeilleComplete𝕂 : isMacNeilleComplete 𝕂StrictlyOrderedField
+  isMacNeilleComplete𝕂 : isMacNeilleComplete 𝕂LinearlyOrderedField
   isMacNeilleComplete𝕂 {A = A} =
     Prop.rec2 (isPropSupremum A)
     (λ (a₀ , a₀∈A) (b , bound) →
@@ -114,4 +114,4 @@ module CompletenessOfCuts ⦃ 🤖 : Oracle ⦄
         ; least = leastSup𝕂 A a₀ a₀∈A s s∈x∈A })
 
   𝕂MacNeilleCompleteOrderedField : MacNeilleCompleteOrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂MacNeilleCompleteOrderedField = 𝕂StrictlyOrderedField , isMacNeilleComplete𝕂
+  𝕂MacNeilleCompleteOrderedField = 𝕂LinearlyOrderedField , isMacNeilleComplete𝕂

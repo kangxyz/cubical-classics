@@ -4,7 +4,7 @@
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes where
+module Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedes where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
@@ -42,24 +42,24 @@ open import Cubical.HITs.SetQuotients as SetQuot
 open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Relation.Nullary
 
-open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int
-  using    (ℤStrictlyOrderedCommRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
+open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Int
+  using    (ℤLinearlyOrderedCommRing ; ℕ₊₁→ℤ>0 ; -1·n≡-n)
   renaming (archimedes' to archimedesℤ)
-open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals
-  using    (ℚStrictlyOrderedCommRing)
+open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals
+  using    (ℚLinearlyOrderedCommRing)
 open import Constructive.Preliminary.Nat
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
 
 
-open CommRingStr    ((StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing) .snd)
-open StrictlyOrderedCommRingStr  ℚStrictlyOrderedCommRing renaming (_⋆_ to _⋆'_)
-open StrictlyOrderedCommRingStr  ℤStrictlyOrderedCommRing using    ()
+open CommRingStr    ((LinearlyOrderedCommRing→CommRing ℚLinearlyOrderedCommRing) .snd)
+open LinearlyOrderedCommRingStr  ℚLinearlyOrderedCommRing renaming (_⋆_ to _⋆'_)
+open LinearlyOrderedCommRingStr  ℤLinearlyOrderedCommRing using    ()
   renaming (_<_ to _<ℤ_ ; _>_ to _>ℤ_
            ; ·-Pres>0 to ·ℤ-Pres>0)
 
-open Helpers (StrictlyOrderedCommRing→CommRing ℤStrictlyOrderedCommRing)
-open Helpers (StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing) using ()
+open Helpers (LinearlyOrderedCommRing→CommRing ℤLinearlyOrderedCommRing)
+open Helpers (LinearlyOrderedCommRing→CommRing ℚLinearlyOrderedCommRing) using ()
   renaming (helper3 to helper3ℚ)
 
 private
@@ -141,5 +141,5 @@ archimedes q ε ε>0 = case-split (dec< q (zero ⋆ ε))
 
 -- The Archimedean property of ℚ
 
-isArchimedeanℚ : isArchimedean ℚStrictlyOrderedCommRing
+isArchimedeanℚ : isArchimedean ℚLinearlyOrderedCommRing
 isArchimedeanℚ = transport (λ i → (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] ⋆≡⋆' n ε i > q) archimedes

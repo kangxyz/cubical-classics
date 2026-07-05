@@ -19,9 +19,9 @@ open import Classical.Axioms
 open import Constructive.Preliminary.Nat
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
 
 private
@@ -46,7 +46,7 @@ private
 
 
 module Archimedes ⦃ 🤖 : Oracle ⦄
-  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
   where
 
   open Oracle 🤖
@@ -55,11 +55,11 @@ module Archimedes ⦃ 🤖 : Oracle ⦄
     K = 𝒦 .fst .fst .fst
 
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
   open Basics   𝒦
   open DedekindCut
 
-  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+  open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   module _  (a : 𝕂)(ε : K)(ε>0 : ε > 0r) where

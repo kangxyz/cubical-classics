@@ -18,7 +18,7 @@ open import Cubical.Algebra.OrderedCommRing
 open import Cubical.Relation.Nullary using (¬_)
 
 open import Constructive.Algebra.OrderedField
-open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals
+open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals
   using (ℚOrderedCommRing)
 
 

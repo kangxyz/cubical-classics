@@ -4,7 +4,7 @@ Facts about Integers
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int where
+module Constructive.Algebra.LinearlyOrderedCommRing.Instances.Int where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Algebra.CommRing
@@ -47,8 +47,8 @@ open import Cubical.Data.Unit
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Sum
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Base
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing.Base
   using (Trichotomy ; lt ; eq ; gt)
 
 private
@@ -70,14 +70,14 @@ trichotomyℤ x y with x ≟ℤ y
 
 {-
 
-  ℤ as a strictly ordered commutative ring
+  ℤ as a linearly ordered commutative ring
 
 -}
 
-ℤStrictlyOrderedCommRing : StrictlyOrderedCommRing _ _
-ℤStrictlyOrderedCommRing = ℤOrderedCommRing , strictorderstr trichotomyℤ
+ℤLinearlyOrderedCommRing : LinearlyOrderedCommRing _ _
+ℤLinearlyOrderedCommRing = ℤOrderedCommRing , linearorderstr trichotomyℤ
 
-open StrictlyOrderedCommRingStr ℤStrictlyOrderedCommRing
+open LinearlyOrderedCommRingStr ℤLinearlyOrderedCommRing
 
 ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n > 0
 ℕ₊₁→ℤ>0 n = helper n

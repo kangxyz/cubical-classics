@@ -23,19 +23,19 @@ import Cubical.Data.Rationals as ℚ
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals
-  using (ℚStrictlyOrderedCommRing)
-import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Rationals.Archimedes as ℚArch
-open import Constructive.Algebra.StrictlyOrderedField
-open import Constructive.Algebra.StrictlyOrderedField.Instances.Rationals
-  using (ℚStrictlyOrderedField)
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals
+  using (ℚLinearlyOrderedCommRing)
+import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Archimedes as ℚArch
+open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
+  using (ℚLinearlyOrderedField)
 
 
 private
-  module ℚSOR = StrictlyOrderedCommRingStr ℚStrictlyOrderedCommRing
-  module ℚOF = StrictlyOrderedFieldStr ℚStrictlyOrderedField
-  ℚCommRing = StrictlyOrderedCommRing→CommRing ℚStrictlyOrderedCommRing
+  module ℚLOR = LinearlyOrderedCommRingStr ℚLinearlyOrderedCommRing
+  module ℚOF = LinearlyOrderedFieldStr ℚLinearlyOrderedField
+  ℚCommRing = LinearlyOrderedCommRing→CommRing ℚLinearlyOrderedCommRing
 
   module RingSolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
     open CommRingStr (𝓡 .snd)
@@ -155,11 +155,11 @@ positive-sum {p = p} {q = q} 0<p 0<q =
 
 
 ≤-refl : (q : ℚ) → q ℚOrder.≤ q
-≤-refl q = ℚSOR.≤-refl {x = q} {y = q} refl
+≤-refl q = ℚLOR.≤-refl {x = q} {y = q} refl
 
 
 <→≤ : {p q : ℚ} → p ℚOrder.< q → p ℚOrder.≤ q
-<→≤ {p = p} {q = q} = ℚSOR.<-≤-weaken {x = p} {y = q}
+<→≤ {p = p} {q = q} = ℚLOR.<-≤-weaken {x = p} {y = q}
 
 
 ≤-trans :
@@ -168,7 +168,7 @@ positive-sum {p = p} {q = q} 0<p 0<q =
   q ℚOrder.≤ r →
   p ℚOrder.≤ r
 ≤-trans {p = p} {q = q} {r = r} =
-  ℚSOR.≤-trans {x = p} {y = q} {z = r}
+  ℚLOR.≤-trans {x = p} {y = q} {z = r}
 
 
 <≤-trans :
@@ -177,7 +177,7 @@ positive-sum {p = p} {q = q} 0<p 0<q =
   q ℚOrder.≤ r →
   p ℚOrder.< r
 <≤-trans {p = p} {q = q} {r = r} =
-  ℚSOR.<≤-trans {x = p} {y = q} {z = r}
+  ℚLOR.<≤-trans {x = p} {y = q} {z = r}
 
 
 ≤<-trans :
@@ -186,11 +186,11 @@ positive-sum {p = p} {q = q} 0<p 0<q =
   q ℚOrder.< r →
   p ℚOrder.< r
 ≤<-trans {p = p} {q = q} {r = r} =
-  ℚSOR.≤<-trans {x = p} {y = q} {z = r}
+  ℚLOR.≤<-trans {x = p} {y = q} {z = r}
 
 
 ≤-total : (p q : ℚ) → (p ℚOrder.≤ q) ⊎ (q ℚOrder.≤ p)
-≤-total = ℚSOR.≤-total
+≤-total = ℚLOR.≤-total
 
 
 +-rPres≤ :
@@ -1301,7 +1301,7 @@ max< {r = r} {s = s} {q = q} r<q s<q with r ℚOrder.≟ s
 
 
 natMul : ℕ → ℚ → ℚ
-natMul = ℚSOR._⋆_
+natMul = ℚLOR._⋆_
 
 
 archimedes :
@@ -1312,11 +1312,11 @@ archimedes = ℚArch.isArchimedeanℚ
 
 
 natMul-zero : (ε : ℚ) → natMul zero ε ≡ 0
-natMul-zero = ℚSOR.0⋆q≡0
+natMul-zero = ℚLOR.0⋆q≡0
 
 
 natMul-suc : (n : ℕ) (ε : ℚ) → natMul (suc n) ε ≡ natMul n ε ℚ.+ ε
-natMul-suc = ℚSOR.sucn⋆q≡n⋆q+q
+natMul-suc = ℚLOR.sucn⋆q≡n⋆q+q
 
 
 natMul-one : (ε : ℚ) → natMul (suc zero) ε ≡ ε
@@ -1361,14 +1361,14 @@ natMul-suc-positive :
   (n : ℕ) {ε : ℚ} →
   0 ℚOrder.< ε →
   0 ℚOrder.< natMul (suc n) ε
-natMul-suc-positive n 0<ε = ℚSOR.sucn⋆q>0 n _ 0<ε
+natMul-suc-positive n 0<ε = ℚLOR.sucn⋆q>0 n _ 0<ε
 
 
 natMul-nonnegative :
   (n : ℕ) {ε : ℚ} →
   0 ℚOrder.< ε →
   0 ℚOrder.≤ natMul n ε
-natMul-nonnegative n 0<ε = ℚSOR.n⋆q≥0 n _ 0<ε
+natMul-nonnegative n 0<ε = ℚLOR.n⋆q≥0 n _ 0<ε
 
 
 positive-half :

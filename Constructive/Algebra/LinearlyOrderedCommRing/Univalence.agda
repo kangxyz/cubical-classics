@@ -1,10 +1,10 @@
 {-
 
-SIP for strictly ordered commutative rings
+SIP for linearly ordered commutative rings
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Algebra.StrictlyOrderedCommRing.Univalence where
+module Constructive.Algebra.LinearlyOrderedCommRing.Univalence where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -14,38 +14,38 @@ open import Cubical.Algebra.CommRing
 
 open import Constructive.Algebra.OrderedCommRing.Morphism
 open import Constructive.Algebra.OrderedCommRing.Univalence
-open import Constructive.Algebra.StrictlyOrderedCommRing
-import Constructive.Algebra.StrictlyOrderedCommRing.Base as StrictBase
-open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
+open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
+import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
 
 private
   variable
     ℓ ℓ' ℓ'' ℓ''' : Level
-    𝓡  : StrictlyOrderedCommRing ℓ   ℓ'
-    𝓡' : StrictlyOrderedCommRing ℓ'' ℓ'''
+    𝓡  : LinearlyOrderedCommRing ℓ   ℓ'
+    𝓡' : LinearlyOrderedCommRing ℓ'' ℓ'''
 
 
 {-
 
-  Equivalence of strictly ordered commutative rings
+  Equivalence of linearly ordered commutative rings
 
 -}
 
 open OrderedCommRingHom
 
-isStrictlyOrderedCommRingEquiv : OrderedCommRingHom (𝓡 .fst) (𝓡' .fst) → Type _
-isStrictlyOrderedCommRingEquiv f = isEquiv (f .ring-hom .fst)
+isLinearlyOrderedCommRingEquiv : OrderedCommRingHom (𝓡 .fst) (𝓡' .fst) → Type _
+isLinearlyOrderedCommRingEquiv f = isEquiv (f .ring-hom .fst)
 
 
-isPropStrictOrderStrOnOrderedCommRing :
-  (𝓡ᶜ : OrderedCommRing ℓ ℓ') → isProp (StrictOrderStrOnOrderedCommRing 𝓡ᶜ)
-isPropStrictOrderStrOnOrderedCommRing 𝓡ᶜ s t i .StrictOrderStrOnOrderedCommRing.trichotomy =
-  isPropΠ2 (StrictBase.isPropTrichotomy 𝓡ᶜ) (s .StrictOrderStrOnOrderedCommRing.trichotomy) (t .StrictOrderStrOnOrderedCommRing.trichotomy) i
+isPropLinearOrderStrOnOrderedCommRing :
+  (𝓡ᶜ : OrderedCommRing ℓ ℓ') → isProp (LinearOrderStrOnOrderedCommRing 𝓡ᶜ)
+isPropLinearOrderStrOnOrderedCommRing 𝓡ᶜ s t i .LinearOrderStrOnOrderedCommRing.trichotomy =
+  isPropΠ2 (LinearBase.isPropTrichotomy 𝓡ᶜ) (s .LinearOrderStrOnOrderedCommRing.trichotomy) (t .LinearOrderStrOnOrderedCommRing.trichotomy) i
 
 
-module _ {𝓡 𝓡' : StrictlyOrderedCommRing ℓ ℓ'}
+module _ {𝓡 𝓡' : LinearlyOrderedCommRing ℓ ℓ'}
   {f : OrderedCommRingHom (𝓡 .fst) (𝓡' .fst)}
-  (isEquiv-f : isStrictlyOrderedCommRingEquiv {𝓡 = 𝓡} {𝓡' = 𝓡'} f) where
+  (isEquiv-f : isLinearlyOrderedCommRingEquiv {𝓡 = 𝓡} {𝓡' = 𝓡'} f) where
 
   private
     𝓡ᵒ  = 𝓡 .fst
@@ -55,7 +55,7 @@ module _ {𝓡 𝓡' : StrictlyOrderedCommRing ℓ ℓ'}
   module R' = OrderedCommRingStr (𝓡'ᵒ .snd)
 
   open OrderedCommRingHom f
-  open OrderedCommRingHomProperties {𝓡 = 𝓡} {𝓡' = 𝓡'} f
+  open LinearMorphism.OrderedCommRingHomProperties {𝓡 = 𝓡} {𝓡' = 𝓡'} f
   open IsCommRingHom (f .ring-hom .snd)
 
   orderedCommRingEquiv : OrderedCommRingEquiv 𝓡ᵒ 𝓡'ᵒ
@@ -73,7 +73,7 @@ module _ {𝓡 𝓡' : StrictlyOrderedCommRing ℓ ℓ'}
   path-orderedCommRing : 𝓡ᵒ ≡ 𝓡'ᵒ
   path-orderedCommRing = uaOrderedCommRing orderedCommRingEquiv
 
-  uaStrictlyOrderedCommRing : 𝓡 ≡ 𝓡'
-  uaStrictlyOrderedCommRing i .fst = path-orderedCommRing i
-  uaStrictlyOrderedCommRing i .snd =
-    isProp→PathP (λ i → isPropStrictOrderStrOnOrderedCommRing (path-orderedCommRing i)) (𝓡 .snd) (𝓡' .snd) i
+  uaLinearlyOrderedCommRing : 𝓡 ≡ 𝓡'
+  uaLinearlyOrderedCommRing i .fst = path-orderedCommRing i
+  uaLinearlyOrderedCommRing i .snd =
+    isProp→PathP (λ i → isPropLinearOrderStrOnOrderedCommRing (path-orderedCommRing i)) (𝓡 .snd) (𝓡' .snd) i

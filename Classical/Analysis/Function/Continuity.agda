@@ -24,10 +24,10 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-  using (StrictlyOrderedCommRing→CommRing ; Trichotomy ; lt ; eq ; gt)
-open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
+  using (LinearlyOrderedCommRing→CommRing ; Trichotomy ; lt ; eq ; gt)
+open import Constructive.Algebra.LinearlyOrderedCommRing.AbsoluteValue
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Analysis.Real.Base
@@ -51,7 +51,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   open Oracle 🤖
 
   open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
-  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open LinearlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open MacNeilleCompleteOrderedField (ℝMacNeilleCompleteOrderedField .fst)
 
 
@@ -148,7 +148,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
   findZero f f0<0 f1>0 = x₀ , x₀∈𝐈 , fx₀≡0
     where
 
-    open Helpers  (StrictlyOrderedCommRing→CommRing (ℝMacNeilleCompleteOrderedField .fst .fst))
+    open Helpers  (LinearlyOrderedCommRing→CommRing (ℝMacNeilleCompleteOrderedField .fst .fst))
 
     open Extremum (ℝMacNeilleCompleteOrderedField .fst)
     open Supremum

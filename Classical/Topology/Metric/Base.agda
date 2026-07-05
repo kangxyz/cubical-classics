@@ -29,9 +29,9 @@ open import Classical.Topology.Properties
 open import Classical.Topology.Neighbourhood
 open import Classical.Topology.Hausdorff
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing
   using (lt ; eq ; gt)
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Analysis.Real
 
 private
@@ -43,7 +43,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open Oracle 🤖
 
-  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open LinearlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open Topology
 
 

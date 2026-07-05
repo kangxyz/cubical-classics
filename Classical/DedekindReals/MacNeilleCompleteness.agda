@@ -35,8 +35,8 @@ open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 
 import Constructive.Algebra.OrderedField as WeakOF
-import Constructive.Algebra.StrictlyOrderedCommRing as StrictOCR
-import Constructive.Algebra.StrictlyOrderedField as StrictOF
+import Constructive.Algebra.LinearlyOrderedCommRing as LinearOCR
+import Constructive.Algebra.LinearlyOrderedField as LinearOF
 open import Constructive.DedekindReals
 open import Constructive.DedekindReals.Arithmetic
 open import Constructive.DedekindReals.Completeness
@@ -69,7 +69,7 @@ module ClassicalResize ⦃ 🤖 : Oracle ⦄ where
   ... | no ¬p = Empty.rec* p
 
 
-module StrictlyOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
+module LinearlyOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
   open Oracle 🤖
   module O = Order {ℓ}
   open Addition {ℓ}
@@ -81,31 +81,31 @@ module StrictlyOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
 
   trichotomy :
     (x y : DedekindReal ℓ) →
-    StrictOCR.Trichotomy OCR.DedekindOrderedCommRing x y
+    LinearOCR.Trichotomy OCR.DedekindOrderedCommRing x y
   trichotomy x y with decide (O.isProp< x y)
-  ... | yes x<y = StrictOCR.lt x<y
+  ... | yes x<y = LinearOCR.lt x<y
   ... | no ¬x<y with decide (O.isProp< y x)
-  ... | yes y<x = StrictOCR.gt y<x
+  ... | yes y<x = LinearOCR.gt y<x
   ... | no ¬y<x =
-    StrictOCR.eq
+    LinearOCR.eq
       (O.≤-antisym x y
         (O.¬>→≤ x y ¬y<x)
         (O.¬>→≤ y x ¬x<y))
 
-  DedekindStrictlyOrderedCommRing :
-    StrictOCR.StrictlyOrderedCommRing (ℓ-suc ℓ) ℓ
-  DedekindStrictlyOrderedCommRing =
+  DedekindLinearlyOrderedCommRing :
+    LinearOCR.LinearlyOrderedCommRing (ℓ-suc ℓ) ℓ
+  DedekindLinearlyOrderedCommRing =
     OCR.DedekindOrderedCommRing ,
-    StrictOCR.strictorderstr trichotomy
+    LinearOCR.linearorderstr trichotomy
 
   #from≠0 :
     (x : DedekindReal ℓ) →
     ¬ x ≡ 0𝔻 →
     O._#_ x 0𝔻
   #from≠0 x x≢0 with trichotomy x 0𝔻
-  ... | StrictOCR.lt x<0 = Sum.inl x<0
-  ... | StrictOCR.gt 0<x = Sum.inr 0<x
-  ... | StrictOCR.eq x≡0 = Empty.rec (x≢0 x≡0)
+  ... | LinearOCR.lt x<0 = Sum.inl x<0
+  ... | LinearOCR.gt 0<x = Sum.inr 0<x
+  ... | LinearOCR.eq x≡0 = Empty.rec (x≢0 x≡0)
 
   hasInverse :
     (x : DedekindReal ℓ) →
@@ -122,30 +122,30 @@ module StrictlyOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
     O.<-irrefl 0𝔻
       (subst (λ x → O._<_ 0𝔻 x) (sym 0≡1) 0𝔻<1𝔻)
 
-  DedekindIsFieldOnStrictlyOrderedCommRing :
-    StrictOF.IsFieldOnStrictlyOrderedCommRing DedekindStrictlyOrderedCommRing
-  DedekindIsFieldOnStrictlyOrderedCommRing =
+  DedekindIsFieldOnLinearlyOrderedCommRing :
+    LinearOF.IsFieldOnLinearlyOrderedCommRing DedekindLinearlyOrderedCommRing
+  DedekindIsFieldOnLinearlyOrderedCommRing =
     isfield
       (CommRingStr.isCommRing (CR.DedekindCommRing .snd))
       hasInverse
       0≢1
 
-  DedekindStrictlyOrderedField :
-    StrictOF.StrictlyOrderedField (ℓ-suc ℓ) ℓ
-  DedekindStrictlyOrderedField =
-    DedekindStrictlyOrderedCommRing ,
-    DedekindIsFieldOnStrictlyOrderedCommRing
+  DedekindLinearlyOrderedField :
+    LinearOF.LinearlyOrderedField (ℓ-suc ℓ) ℓ
+  DedekindLinearlyOrderedField =
+    DedekindLinearlyOrderedCommRing ,
+    DedekindIsFieldOnLinearlyOrderedCommRing
 
 
 module MacNeilleCompleteness ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
   open Oracle 🤖
   open ClassicalResize ⦃ 🤖 ⦄
-  module SOF = StrictlyOrderedFieldStructure ⦃ 🤖 ⦄ {ℓ}
+  module LOF = LinearlyOrderedFieldStructure ⦃ 🤖 ⦄ {ℓ}
   module O = Order {ℓ}
   module Arch = Archimedean {ℓ}
   open Addition {ℓ}
-  module M = MacNeilleCompleteOrderedField SOF.DedekindStrictlyOrderedField
-  module E = Extremum SOF.DedekindStrictlyOrderedField
+  module M = MacNeilleCompleteOrderedField LOF.DedekindLinearlyOrderedField
+  module E = Extremum LOF.DedekindLinearlyOrderedField
   open E.Supremum
 
   private
@@ -316,8 +316,8 @@ module MacNeilleCompleteness ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
     supremum A
 
 
-open StrictlyOrderedFieldStructure public
-  using (DedekindStrictlyOrderedField ; DedekindStrictlyOrderedCommRing)
+open LinearlyOrderedFieldStructure public
+  using (DedekindLinearlyOrderedField ; DedekindLinearlyOrderedCommRing)
 
 open MacNeilleCompleteness public
   using (isMacNeilleCompleteDedekindReal ; supremum)

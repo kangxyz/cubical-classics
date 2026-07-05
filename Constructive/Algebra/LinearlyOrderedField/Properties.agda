@@ -1,10 +1,10 @@
 {-
 
-Properties of strictly ordered fields
+Properties of linearly ordered fields
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Algebra.StrictlyOrderedField.Properties where
+module Constructive.Algebra.LinearlyOrderedField.Properties where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -23,8 +23,8 @@ open import Cubical.Algebra.Field as CubicalField
   using (Field→CommRing)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedField.Base
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedField.Base
 
 private
   variable
@@ -57,15 +57,15 @@ private
     field-helper1 _ _ _ _ = solve! 𝓡
 
 
-module StrictlyOrderedFieldStr (𝒦 : StrictlyOrderedField ℓ ℓ') where
+module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   private
-    𝒦ᶠ = StrictlyOrderedField→Field 𝒦
+    𝒦ᶠ = LinearlyOrderedField→Field 𝒦
 
   open CubicalField.FieldStr (𝒦ᶠ .snd) public
   open RingTheory  (CommRing→Ring (Field→CommRing 𝒦ᶠ)) public
   open Units       (Field→CommRing 𝒦ᶠ) public
-  open StrictlyOrderedCommRingStr (𝒦 .fst) public
+  open LinearlyOrderedCommRingStr (𝒦 .fst) public
 
   private
     K = 𝒦 .fst .fst .fst
@@ -73,7 +73,7 @@ module StrictlyOrderedFieldStr (𝒦 : StrictlyOrderedField ℓ ℓ') where
     variable
       p q x y z : K
 
-  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+  open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
   inv : ¬ x ≡ 0r → K
   inv {x = x} x≢0 = x [ x≢0 ]⁻¹
@@ -306,21 +306,21 @@ module StrictlyOrderedFieldStr (𝒦 : StrictlyOrderedField ℓ ℓ') where
 
 
 module OrderedFieldStr {ℓ ℓ' : Level} (𝒦 : OrderedField ℓ ℓ') =
-  StrictlyOrderedFieldStr 𝒦
+  LinearlyOrderedFieldStr 𝒦
 
 
 {-
 
-  The Archimedean Property of Strictly Ordered Fields
+  The Archimedean Property of Linearly Ordered Fields
 
 -}
 
 open import Constructive.Preliminary.Nat
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
 
-module _ (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
+module _ (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedes : isArchimedean (𝒦 .fst)) where
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
 
   private
     K = 𝒦 .fst .fst .fst

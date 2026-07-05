@@ -24,8 +24,8 @@ open import Cubical.Relation.Nullary
 open import Classical.Axioms
 open import Classical.Foundations.Powerset renaming ([_] to [[_]])
 
-open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing.AbsoluteValue
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Analysis.Real.Base
@@ -39,7 +39,7 @@ open import Classical.Topology.Metric
 module _ ⦃ 🤖 : Oracle ⦄ where
 
   open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
-  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open LinearlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open Topology
   open Metric
 

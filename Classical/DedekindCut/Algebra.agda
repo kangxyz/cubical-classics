@@ -19,9 +19,9 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
 open import Classical.DedekindCut.Archimedes
 
@@ -47,19 +47,19 @@ private
 
 
 module Algebra ⦃ 🤖 : Oracle ⦄
-  (𝒦 : StrictlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedesK : isArchimedean (𝒦 . fst))
   where
 
   private
     K = 𝒦 .fst .fst .fst
 
 
-  open StrictlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦
   open Basics      𝒦
   open Archimedes  𝒦 archimedesK
   open DedekindCut
 
-  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+  open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   {-

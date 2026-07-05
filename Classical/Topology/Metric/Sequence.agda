@@ -27,7 +27,7 @@ open import Cubical.HITs.PropositionalTruncation.Monad
 open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Nat
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Topology.Metric
 open import Classical.Analysis.Real.Base
 
@@ -41,7 +41,7 @@ module _ ⦃ 🤖 : Oracle ⦄
 
   open Oracle 🤖
 
-  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open LinearlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open Metric 𝓂
 
 

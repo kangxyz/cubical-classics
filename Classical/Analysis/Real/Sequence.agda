@@ -37,8 +37,8 @@ open import Classical.Axioms
 open import Classical.Foundations.Powerset
 open import Classical.Preliminary.Nat
 open import Classical.Preliminary.Logic
-open import Constructive.Algebra.StrictlyOrderedCommRing.AbsoluteValue
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing.AbsoluteValue
+open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 open import Classical.Topology.Metric
@@ -51,7 +51,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
   open Oracle 🤖
 
-  open StrictlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
+  open LinearlyOrderedFieldStr (ℝMacNeilleCompleteOrderedField .fst)
   open AbsoluteValue   (ℝMacNeilleCompleteOrderedField .fst .fst)
   open Metric   ℝMetric
 

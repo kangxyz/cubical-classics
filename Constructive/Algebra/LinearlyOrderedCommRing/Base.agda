@@ -1,10 +1,10 @@
 {-
 
-Strictly ordered commutative ring
+Linearly ordered commutative ring
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.StrictlyOrderedCommRing.Base where
+module Constructive.Algebra.LinearlyOrderedCommRing.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Empty as Empty
@@ -51,9 +51,9 @@ module _ (𝓡 : OrderedCommRing ℓ ℓ') where
     Empty.rec (is-irrefl x (subst (λ z → z < x) (sym x≡y) y<x))
 
 
-  record StrictOrderStrOnOrderedCommRing : Type (ℓ-suc (ℓ-max ℓ ℓ')) where
+  record LinearOrderStrOnOrderedCommRing : Type (ℓ-suc (ℓ-max ℓ ℓ')) where
 
-    constructor strictorderstr
+    constructor linearorderstr
     no-eta-equality
 
     field
@@ -61,11 +61,11 @@ module _ (𝓡 : OrderedCommRing ℓ ℓ') where
       trichotomy : (x y : R) → Trichotomy x y
 
 
-StrictlyOrderedCommRing : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-StrictlyOrderedCommRing ℓ ℓ' = Σ[ 𝓡 ∈ OrderedCommRing ℓ ℓ' ] StrictOrderStrOnOrderedCommRing 𝓡
+LinearlyOrderedCommRing : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
+LinearlyOrderedCommRing ℓ ℓ' = Σ[ 𝓡 ∈ OrderedCommRing ℓ ℓ' ] LinearOrderStrOnOrderedCommRing 𝓡
 
-StrictlyOrderedCommRing→OrderedCommRing : StrictlyOrderedCommRing ℓ ℓ' → OrderedCommRing ℓ ℓ'
-StrictlyOrderedCommRing→OrderedCommRing = fst
+LinearlyOrderedCommRing→OrderedCommRing : LinearlyOrderedCommRing ℓ ℓ' → OrderedCommRing ℓ ℓ'
+LinearlyOrderedCommRing→OrderedCommRing = fst
 
-StrictlyOrderedCommRing→CommRing : StrictlyOrderedCommRing ℓ ℓ' → CommRing ℓ
-StrictlyOrderedCommRing→CommRing 𝓡 = OrderedCommRing→CommRing (𝓡 .fst)
+LinearlyOrderedCommRing→CommRing : LinearlyOrderedCommRing ℓ ℓ' → CommRing ℓ
+LinearlyOrderedCommRing→CommRing 𝓡 = OrderedCommRing→CommRing (𝓡 .fst)

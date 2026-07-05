@@ -1,10 +1,10 @@
 {-
 
-Morphisms between strictly ordered fields
+Morphisms between linearly ordered fields
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Algebra.StrictlyOrderedField.Morphism where
+module Constructive.Algebra.LinearlyOrderedField.Morphism where
 
 open import Cubical.Foundations.Prelude hiding (lower)
 open import Cubical.Foundations.HLevels
@@ -23,17 +23,17 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Algebra.OrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedCommRing
-open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
-open import Constructive.Algebra.StrictlyOrderedCommRing.Univalence
-open import Constructive.Algebra.StrictlyOrderedCommRing.Archimedes
-open import Constructive.Algebra.StrictlyOrderedField
+open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
+open import Constructive.Algebra.LinearlyOrderedCommRing.Univalence
+open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.LinearlyOrderedField
 
 private
   variable
     ℓ ℓ' ℓ'' ℓ''' ℓ'''' : Level
-    𝒦  : StrictlyOrderedField ℓ   ℓ'
-    𝒦' : StrictlyOrderedField ℓ'' ℓ'''
+    𝒦  : LinearlyOrderedField ℓ   ℓ'
+    𝒦' : LinearlyOrderedField ℓ'' ℓ'''
 
 private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
@@ -68,59 +68,59 @@ private
     helper9 _ _ _ = solve! 𝓡
 
 
--- Strictly ordered-field homomorphisms are homomorphisms of the underlying Cubical
+-- Linearly ordered-field homomorphisms are homomorphisms of the underlying Cubical
 -- ordered commutative rings.
 
-StrictlyOrderedFieldHom : (𝒦 : StrictlyOrderedField ℓ ℓ')(𝒦' : StrictlyOrderedField ℓ'' ℓ''') → Type _
-StrictlyOrderedFieldHom 𝒦 𝒦' = OrderedCommRingHom (𝒦 .fst .fst) (𝒦' .fst .fst)
+LinearlyOrderedFieldHom : (𝒦 : LinearlyOrderedField ℓ ℓ')(𝒦' : LinearlyOrderedField ℓ'' ℓ''') → Type _
+LinearlyOrderedFieldHom 𝒦 𝒦' = OrderedCommRingHom (𝒦 .fst .fst) (𝒦' .fst .fst)
 
 
 {-
 
-  SIP for Strictly Ordered Fields
+  SIP for Linearly Ordered Fields
 
 -}
 
--- Equivalence of strictly ordered fields
+-- Equivalence of linearly ordered fields
 
-isStrictlyOrderedFieldEquiv : StrictlyOrderedFieldHom 𝒦 𝒦' → Type _
-isStrictlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} =
-  isStrictlyOrderedCommRingEquiv {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst}
+isLinearlyOrderedFieldEquiv : LinearlyOrderedFieldHom 𝒦 𝒦' → Type _
+isLinearlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} =
+  isLinearlyOrderedCommRingEquiv {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst}
 
 
-uaStrictlyOrderedField : {𝒦 𝒦' : StrictlyOrderedField ℓ ℓ'}
-  {f : StrictlyOrderedFieldHom 𝒦 𝒦'} → isStrictlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f → 𝒦 ≡ 𝒦'
-uaStrictlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f} is-equiv i .fst =
-  uaStrictlyOrderedCommRing {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} {f = f} is-equiv i
-uaStrictlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} is-equiv i .snd =
-  liftPathIsFieldOnStrictlyOrderedCommRing (λ i → uaStrictlyOrderedField is-equiv i .fst) (𝒦 .snd) (𝒦' .snd) i
+uaLinearlyOrderedField : {𝒦 𝒦' : LinearlyOrderedField ℓ ℓ'}
+  {f : LinearlyOrderedFieldHom 𝒦 𝒦'} → isLinearlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f → 𝒦 ≡ 𝒦'
+uaLinearlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f} is-equiv i .fst =
+  uaLinearlyOrderedCommRing {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} {f = f} is-equiv i
+uaLinearlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} is-equiv i .snd =
+  liftPathIsFieldOnLinearlyOrderedCommRing (λ i → uaLinearlyOrderedField is-equiv i .fst) (𝒦 .snd) (𝒦' .snd) i
 
 
 OrderedFieldHom : (𝒦 : OrderedField ℓ ℓ')(𝒦' : OrderedField ℓ'' ℓ''') → Type _
-OrderedFieldHom = StrictlyOrderedFieldHom
+OrderedFieldHom = LinearlyOrderedFieldHom
 
 
 isOrderedFieldEquiv : OrderedFieldHom 𝒦 𝒦' → Type _
 isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f =
-  isStrictlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
+  isLinearlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
 
 
 uaOrderedField : {𝒦 𝒦' : OrderedField ℓ ℓ'}
   {f : OrderedFieldHom 𝒦 𝒦'} → isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f → 𝒦 ≡ 𝒦'
 uaOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f} =
-  uaStrictlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f}
+  uaLinearlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f}
 
 
 {-
 
-  Properties of strictly ordered field homomorphisms
+  Properties of linearly ordered field homomorphisms
 
 -}
 
-module StrictlyOrderedFieldHomStr (f : StrictlyOrderedFieldHom 𝒦' 𝒦) where
+module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
 
-  open StrictlyOrderedFieldStr 𝒦
-  open StrictlyOrderedFieldStr 𝒦' using ()
+  open LinearlyOrderedFieldStr 𝒦
+  open LinearlyOrderedFieldStr 𝒦' using ()
     renaming ( 0r to 0r' ; 1r to 1r'
              ; -_ to -'_ ; _+_ to _+'_
              ; 1>0 to 1>'0
@@ -130,7 +130,7 @@ module StrictlyOrderedFieldHomStr (f : StrictlyOrderedFieldHom 𝒦' 𝒦) where
              ; _⋆_ to _⋆'_
              ; p>0→p⁻¹>0 to p>'0→p⁻¹>'0)
   open OrderedCommRingHom           f
-  open OrderedCommRingHomProperties {𝓡 = 𝒦' .fst} {𝓡' = 𝒦 .fst} f
+  open LinearMorphism.OrderedCommRingHomProperties {𝓡 = 𝒦' .fst} {𝓡' = 𝒦 .fst} f
   open IsCommRingHom (ring-hom .snd)
 
   private
@@ -281,7 +281,7 @@ module StrictlyOrderedFieldHomStr (f : StrictlyOrderedFieldHom 𝒦' 𝒦) where
         lower+0·ε<a = subst (_< a) (sym (+IdR (f-map lower))
           ∙ (λ i → f-map lower + 0⋆q≡0 (f-map ε) (~ i))) lower<a
 
-      open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+      open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
       ∃Pn : ∥ Σ[ n ∈ ℕ ] P n ∥₁
       ∃Pn =
@@ -348,7 +348,7 @@ module OrderedFieldHomStr
   {𝒦  : OrderedField ℓ ℓ'}
   {𝒦' : OrderedField ℓ'' ℓ'''}
   (f : OrderedFieldHom 𝒦' 𝒦) where
-  open StrictlyOrderedFieldHomStr {𝒦' = 𝒦'} {𝒦 = 𝒦} f public
+  open LinearlyOrderedFieldHomStr {𝒦' = 𝒦'} {𝒦 = 𝒦} f public
 
 
 {-
@@ -357,7 +357,7 @@ module OrderedFieldHomStr
 
 -}
 
-module InclusionFromℚ (𝒦 : StrictlyOrderedField ℓ ℓ') where
+module InclusionFromℚ (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   open import Cubical.Data.NatPlusOne
   open import Cubical.Data.Int
@@ -370,23 +370,22 @@ module InclusionFromℚ (𝒦 : StrictlyOrderedField ℓ ℓ') where
     using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
     renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_ ; -_ to -ℚ_)
 
-  open import Constructive.Algebra.StrictlyOrderedCommRing.Instances.Int
-    using    (ℤStrictlyOrderedCommRing)
-  open import Constructive.Algebra.StrictlyOrderedCommRing.Morphism
+  open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Int
+    using    (ℤLinearlyOrderedCommRing)
 
   open import Cubical.Algebra.CommRing.Instances.Rationals
-  open import Constructive.Algebra.StrictlyOrderedField.Instances.Rationals
+  open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
 
-  open StrictlyOrderedFieldStr 𝒦
-  open InclusionFromℤ (𝒦 .fst)
-  open StrictlyOrderedCommRingStr  ℤStrictlyOrderedCommRing using () renaming (_>_ to _>ℤ_)
-  module ℚSO = StrictlyOrderedCommRingStr (ℚStrictlyOrderedField .fst)
+  open LinearlyOrderedFieldStr 𝒦
+  open LinearMorphism.InclusionFromℤ (𝒦 .fst)
+  open LinearlyOrderedCommRingStr  ℤLinearlyOrderedCommRing using () renaming (_>_ to _>ℤ_)
+  module ℚLO = LinearlyOrderedCommRingStr (ℚLinearlyOrderedField .fst)
 
   private
     K = 𝒦 .fst .fst .fst
     isSetK = is-set
 
-  open Helpers (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
+  open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
 
   ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n >ℤ pos 0
@@ -415,7 +414,7 @@ module InclusionFromℚ (𝒦 : StrictlyOrderedField ℓ ℓ') where
       >0-helper' : a >ℤ 0 → map-helper > 0r
       >0-helper' a>0 = ·-Pres>0 (ℤ→R-Pres>0 _ a>0) (p>0→p⁻¹>0 (ℕ₊₁→R>0 b))
 
-      >0-helper : ℚSO._>0 [ a , b ] → map-helper >0
+      >0-helper : ℚLO._>0 [ a , b ] → map-helper >0
       >0-helper a/b>0 =
         >0-helper' (subst (_>ℤ pos 0) (Int.·IdR a) a/b>0)
 
@@ -473,7 +472,7 @@ module InclusionFromℚ (𝒦 : StrictlyOrderedField ℓ ℓ') where
   ℚ→K-Pres-· : (p q : ℚ) → ℚ→K (p ·ℚ q) ≡ ℚ→K p · ℚ→K q
   ℚ→K-Pres-· = elimProp2 (λ _ _ → isSetK _ _) ·-helper
 
-  ℚ→K-Pres>0 : (p : ℚ) → ℚSO._>0 p → ℚ→K p >0
+  ℚ→K-Pres>0 : (p : ℚ) → ℚLO._>0 p → ℚ→K p >0
   ℚ→K-Pres>0 = elimProp (λ _ → isPropΠ (λ _ → isProp>0 _)) >0-helper
 
 
@@ -483,42 +482,42 @@ module InclusionFromℚ (𝒦 : StrictlyOrderedField ℓ ℓ') where
 
   -}
 
-  isRingHomℚ→K : IsRingHom (CommRing→Ring ℚCommRing .snd) ℚ→K (CommRing→Ring (StrictlyOrderedCommRing→CommRing (𝒦 .fst)) .snd)
+  isRingHomℚ→K : IsRingHom (CommRing→Ring ℚCommRing .snd) ℚ→K (CommRing→Ring (LinearlyOrderedCommRing→CommRing (𝒦 .fst)) .snd)
   isRingHomℚ→K = makeIsRingHom ℚ→K-Pres-1 ℚ→K-Pres-+ ℚ→K-Pres-·
 
-  ℚ→KCommRingHom : CommRingHom ℚCommRing (StrictlyOrderedCommRing→CommRing (𝒦 .fst))
-  ℚ→KCommRingHom = _ , IsRingHom→IsCommRingHom ℚCommRing (StrictlyOrderedCommRing→CommRing (𝒦 .fst)) ℚ→K isRingHomℚ→K
+  ℚ→KCommRingHom : CommRingHom ℚCommRing (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
+  ℚ→KCommRingHom = _ , IsRingHom→IsCommRingHom ℚCommRing (LinearlyOrderedCommRing→CommRing (𝒦 .fst)) ℚ→K isRingHomℚ→K
 
   module ℚ→KHom = IsCommRingHom (ℚ→KCommRingHom .snd)
 
-  ℚ→K-Pres-- : (p q : ℚ) → ℚ→K ((ℚSO.Ord._-_) q p) ≡ ℚ→K q - ℚ→K p
+  ℚ→K-Pres-- : (p q : ℚ) → ℚ→K ((ℚLO.Ord._-_) q p) ≡ ℚ→K q - ℚ→K p
   ℚ→K-Pres-- p q =
-    ℚ→KHom.pres+ q ((ℚSO.Ord.-_) p)
+    ℚ→KHom.pres+ q ((ℚLO.Ord.-_) p)
     ∙ (λ i → ℚ→K q + ℚ→KHom.pres- p i)
 
-  ℚ→K-Pres< : (p q : ℚ) → ℚSO._<_ p q → ℚ→K p < ℚ→K q
+  ℚ→K-Pres< : (p q : ℚ) → ℚLO._<_ p q → ℚ→K p < ℚ→K q
   ℚ→K-Pres< p q p<q =
     Diff>0→< (subst (_>0) (ℚ→K-Pres-- p q)
-      (ℚ→K-Pres>0 ((ℚSO.Ord._-_) q p) (ℚSO.<→Diff>0 p<q)))
+      (ℚ→K-Pres>0 ((ℚLO.Ord._-_) q p) (ℚLO.<→Diff>0 p<q)))
 
-  ℚ→K-Pres≤ : (p q : ℚ) → ℚSO._≤_ p q → ℚ→K p ≤ ℚ→K q
+  ℚ→K-Pres≤ : (p q : ℚ) → ℚLO._≤_ p q → ℚ→K p ≤ ℚ→K q
   ℚ→K-Pres≤ p q p≤q =
-    invEq (≤≃¬> (ℚ→K p) (ℚ→K q)) (notGreater (ℚSO.trichotomy p q))
+    invEq (≤≃¬> (ℚ→K p) (ℚ→K q)) (notGreater (ℚLO.trichotomy p q))
     where
-    notGreater : Trichotomy (ℚStrictlyOrderedField .fst .fst) p q → ¬ ℚ→K q < ℚ→K p
+    notGreater : Trichotomy (ℚLinearlyOrderedField .fst .fst) p q → ¬ ℚ→K q < ℚ→K p
     notGreater (lt p<q) fq<fp = <-asym (ℚ→K-Pres< p q p<q) fq<fp
     notGreater (eq p≡q) fq<fp = <-arefl fq<fp (cong ℚ→K (sym p≡q))
-    notGreater (gt q<p) _ = equivFun (ℚSO.≤≃¬> p q) p≤q q<p
+    notGreater (gt q<p) _ = equivFun (ℚLO.≤≃¬> p q) p≤q q<p
 
   open OrderedCommRingHom
 
-  ℚ→KOrderedCommRingHom : OrderedCommRingHom (ℚStrictlyOrderedField .fst .fst) (𝒦 .fst .fst)
+  ℚ→KOrderedCommRingHom : OrderedCommRingHom (ℚLinearlyOrderedField .fst .fst) (𝒦 .fst .fst)
   ℚ→KOrderedCommRingHom .ring-hom = ℚ→KCommRingHom
   ℚ→KOrderedCommRingHom .pres<    = ℚ→K-Pres<
   ℚ→KOrderedCommRingHom .pres≤    = ℚ→K-Pres≤
 
-  ℚ→KStrictlyOrderedFieldHom : StrictlyOrderedFieldHom ℚStrictlyOrderedField 𝒦
-  ℚ→KStrictlyOrderedFieldHom = ℚ→KOrderedCommRingHom
+  ℚ→KLinearlyOrderedFieldHom : LinearlyOrderedFieldHom ℚLinearlyOrderedField 𝒦
+  ℚ→KLinearlyOrderedFieldHom = ℚ→KOrderedCommRingHom
 
   ℚ→KOrderedFieldHom : OrderedFieldHom ℚOrderedField 𝒦
-  ℚ→KOrderedFieldHom = ℚ→KStrictlyOrderedFieldHom
+  ℚ→KOrderedFieldHom = ℚ→KLinearlyOrderedFieldHom
