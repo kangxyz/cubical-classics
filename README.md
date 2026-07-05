@@ -10,6 +10,13 @@ MacNeille-complete real numbers, and some basic real analysis.
 
 We are open to advice and contributions!
 
+## AI Assistance
+
+This library began as hand-written Agda.  AI is now used for some routine work
+and for generating tedious proof details.
+The mathematical direction and the claims made here are still human work.
+All code has to type-check, fit the library, and survive human review.
+
 ## Highlights
 
 The library proves, among other things:
