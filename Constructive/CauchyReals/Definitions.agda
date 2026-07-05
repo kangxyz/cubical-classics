@@ -15,25 +15,25 @@ private
     ℓ ℓ' : Level
 
 
-IsCauchyApproximation : (ℚ⁺ → ℝᴴ) → Type₀
+IsCauchyApproximation : (ℚ⁺ → ℝᶜ) → Type₀
 IsCauchyApproximation x =
   (ε δ : ℚ⁺) → x ε ∼[ ε +⁺ δ ] x δ
 
 
-asFunction : CauchyApproximation → ℚ⁺ → ℝᴴ
+asFunction : CauchyApproximation → ℚ⁺ → ℝᶜ
 asFunction = approximate
 
 
 DependentCloseness :
-  (A : ℝᴴ → Type ℓ) → (ℓ' : Level) → Type (ℓ-max ℓ (ℓ-suc ℓ'))
+  (A : ℝᶜ → Type ℓ) → (ℓ' : Level) → Type (ℓ-max ℓ (ℓ-suc ℓ'))
 DependentCloseness A ℓ' =
-  (ε : ℚ⁺) {x y : ℝᴴ} →
+  (ε : ℚ⁺) {x y : ℝᶜ} →
   x ∼[ ε ] y →
   A x → A y → Type ℓ'
 
 
 IsDependentCauchyApproximation :
-  {A : ℝᴴ → Type ℓ} →
+  {A : ℝᶜ → Type ℓ} →
   (B : DependentCloseness A ℓ') →
   (x : CauchyApproximation) →
   ((ε : ℚ⁺) → A (approximate x ε)) →

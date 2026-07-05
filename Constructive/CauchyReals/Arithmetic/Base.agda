@@ -9,9 +9,9 @@ module Constructive.CauchyReals.Arithmetic.Base where
 open import Constructive.CauchyReals.Base
 
 
-0ᴴ : ℝᴴ
-0ᴴ = rational 0ℚ
+0ᶜ : ℝᶜ
+0ᶜ = rational 0ℚ
 
 
-1ᴴ : ℝᴴ
-1ᴴ = rational 1ℚ
+1ᶜ : ℝᶜ
+1ᶜ = rational 1ℚ

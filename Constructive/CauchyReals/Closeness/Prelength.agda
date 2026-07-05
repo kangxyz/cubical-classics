@@ -26,7 +26,7 @@ open import Constructive.CauchyReals.Base
 
 
 Predicate : Type₁
-Predicate = ℝᴴ → ℚ⁺ → Type₀
+Predicate = ℝᶜ → ℚ⁺ → Type₀
 
 
 PrecisionPredicate : Type₁
@@ -73,14 +73,14 @@ precisionRelation-sym rel η =
 
 Rounded : Predicate → Type₀
 Rounded P =
-  (u : ℝᴴ) (ε : ℚ⁺) →
+  (u : ℝᶜ) (ε : ℚ⁺) →
   (P u ε → ∥ Σ[ δ ∈ ℚ⁺ ] (δ <⁺ ε) × P u δ ∥₁) ×
   (∥ Σ[ δ ∈ ℚ⁺ ] (δ <⁺ ε) × P u δ ∥₁ → P u ε)
 
 
 MixedRight : Predicate → Type₀
 MixedRight P =
-  (u v : ℝᴴ) (ε η : ℚ⁺) →
+  (u v : ℝᶜ) (ε η : ℚ⁺) →
   u ∼[ ε ] v →
   P u η →
   P v (η +⁺ ε)
@@ -88,7 +88,7 @@ MixedRight P =
 
 MixedLeft : Predicate → Type₀
 MixedLeft P =
-  (u v : ℝᴴ) (ε η : ℚ⁺) →
+  (u v : ℝᶜ) (ε η : ℚ⁺) →
   u ∼[ ε ] v →
   P v η →
   P u (η +⁺ ε)
@@ -98,7 +98,7 @@ record PredicateStructure (P : Predicate) : Type₀ where
   no-eta-equality
 
   field
-    isPropP : (u : ℝᴴ) (ε : ℚ⁺) → isProp (P u ε)
+    isPropP : (u : ℝᶜ) (ε : ℚ⁺) → isProp (P u ε)
     rounded : Rounded P
     mixedRight : MixedRight P
     mixedLeft : MixedLeft P
@@ -114,7 +114,7 @@ bundlePredicate = fst
 
 Relation : PredicateBundle → PredicateBundle → ℚ⁺ → Type₀
 Relation P Q ε =
-  (u : ℝᴴ) (η : ℚ⁺) →
+  (u : ℝᶜ) (η : ℚ⁺) →
   (bundlePredicate P u η → bundlePredicate Q u (η +⁺ ε)) ×
   (bundlePredicate Q u η → bundlePredicate P u (η +⁺ ε))
 
@@ -396,7 +396,7 @@ bundle-separated P Q rel =
   module Q = PredicateStructure (Q .snd)
 
   to :
-    (u : ℝᴴ) (ε : ℚ⁺) →
+    (u : ℝᶜ) (ε : ℚ⁺) →
     bundlePredicate P u ε →
     bundlePredicate Q u ε
   to u ε p =
@@ -412,7 +412,7 @@ bundle-separated P Q rel =
         (fst (rel (ε ⊖ δ [ δ<ε ]) u δ) pδ)
 
   from :
-    (u : ℝᴴ) (ε : ℚ⁺) →
+    (u : ℝᶜ) (ε : ℚ⁺) →
     bundlePredicate Q u ε →
     bundlePredicate P u ε
   from u ε q =
@@ -451,7 +451,7 @@ precision-mono P {ε = ε} {δ = δ} ε<δ p =
 
 bundle-mono :
   (P : PredicateBundle) →
-  (u : ℝᴴ) →
+  (u : ℝᶜ) →
   {ε δ : ℚ⁺} →
   ε <⁺ δ →
   bundlePredicate P u ε →
@@ -852,7 +852,7 @@ sourceLimitForward :
   (ε δ : ℚ⁺) →
   (δ<ε : δ <⁺ ε) →
   Relation R (f δ) (ε ⊖ δ [ δ<ε ]) →
-  (u : ℝᴴ) (η : ℚ⁺) →
+  (u : ℝᶜ) (η : ℚ⁺) →
   bundlePredicate R u η →
   bundlePredicate (limitSourceBundle f) u (η +⁺ ε)
 sourceLimitForward R f ε δ δ<ε rel u η rη =
@@ -874,7 +874,7 @@ sourceLimitBackward :
   (ε δ : ℚ⁺) →
   (δ<ε : δ <⁺ ε) →
   Relation R (f δ) (ε ⊖ δ [ δ<ε ]) →
-  (u : ℝᴴ) (η : ℚ⁺) →
+  (u : ℝᶜ) (η : ℚ⁺) →
   bundlePredicate (limitSourceBundle f) u η →
   bundlePredicate R u (η +⁺ ε)
 sourceLimitBackward R f fCauchy ε δ δ<ε rel u η =
@@ -941,7 +941,7 @@ limitLimitSourceForward :
   (ε δ η : ℚ⁺) →
   (δ+η<ε : δ +⁺ η <⁺ ε) →
   Relation (f δ) (g η) (ε ⊖ (δ +⁺ η) [ δ+η<ε ]) →
-  (u : ℝᴴ) (θ : ℚ⁺) →
+  (u : ℝᶜ) (θ : ℚ⁺) →
   bundlePredicate (limitSourceBundle f) u θ →
   bundlePredicate (limitSourceBundle g) u (θ +⁺ ε)
 limitLimitSourceForward f g fCauchy ε δ η δ+η<ε rel u θ =

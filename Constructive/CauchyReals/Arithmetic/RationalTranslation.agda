@@ -20,7 +20,7 @@ open import Constructive.CauchyReals.Recursion
 
 private
   translationKit : ℚ → RecursionKit ℓ-zero ℓ-zero
-  translationKit s .RecursionKit.A = ℝᴴ
+  translationKit s .RecursionKit.A = ℝᶜ
   translationKit s .RecursionKit.B ε x y = x ∼[ ε ] y
   translationKit s .RecursionKit.isPropB ε x y = squash
   translationKit s .RecursionKit.separated x y = path x y
@@ -49,53 +49,53 @@ private
   module TranslationRecursion (s : ℚ) = Recursion (translationKit s)
 
 
-_+ᴴℚ_ : ℝᴴ → ℚ → ℝᴴ
-x +ᴴℚ s = TranslationRecursion.rec s x
+_+ᶜℚ_ : ℝᶜ → ℚ → ℝᶜ
+x +ᶜℚ s = TranslationRecursion.rec s x
 
-infixl 6 _+ᴴℚ_
+infixl 6 _+ᶜℚ_
 
 
-translate-rational : (q s : ℚ) → rational q +ᴴℚ s ≡ rational (q ℚ.+ s)
+translate-rational : (q s : ℚ) → rational q +ᶜℚ s ≡ rational (q ℚ.+ s)
 translate-rational q s = refl
 
 
 translate-close :
-  {x y : ℝᴴ} {ε : ℚ⁺} →
+  {x y : ℝᶜ} {ε : ℚ⁺} →
   (s : ℚ) →
   x ∼[ ε ] y →
-  (x +ᴴℚ s) ∼[ ε ] (y +ᴴℚ s)
+  (x +ᶜℚ s) ∼[ ε ] (y +ᶜℚ s)
 translate-close s =
   TranslationRecursion.rec-close s
 
 
-translate-nonexpanding : (s : ℚ) → IsNonexpanding (λ x → x +ᴴℚ s)
+translate-nonexpanding : (s : ℚ) → IsNonexpanding (λ x → x +ᶜℚ s)
 translate-nonexpanding s =
   translate-close s
 
 
-translate-lipschitz : (s : ℚ) → IsLipschitz (λ x → x +ᴴℚ s)
+translate-lipschitz : (s : ℚ) → IsLipschitz (λ x → x +ᶜℚ s)
 translate-lipschitz s =
   (λ ε → ε) , λ ε → translate-close s
 
 
-translate-continuous : (s : ℚ) → IsContinuous (λ x → x +ᴴℚ s)
+translate-continuous : (s : ℚ) → IsContinuous (λ x → x +ᶜℚ s)
 translate-continuous s =
   lipschitz→continuous (translate-lipschitz s)
 
 
 private
   translateZeroKit : PropInductionKit ℓ-zero
-  translateZeroKit .PropInductionKit.A x = x +ᴴℚ 0ℚ ≡ x
+  translateZeroKit .PropInductionKit.A x = x +ᶜℚ 0ℚ ≡ x
   translateZeroKit .PropInductionKit.isPropA x =
-    isSetℝᴴ (x +ᴴℚ 0ℚ) x
+    isSetℝᶜ (x +ᶜℚ 0ℚ) x
   translateZeroKit .PropInductionKit.rational* q =
     cong rational (ℚ.+IdR q)
   translateZeroKit .PropInductionKit.limit* x x+0≡x =
     path (limit (cauchy-approximation f fCauchy)) (limit x)
       closeAt
     where
-    f : ℚ⁺ → ℝᴴ
-    f ε = approximate x ε +ᴴℚ 0ℚ
+    f : ℚ⁺ → ℝᶜ
+    f ε = approximate x ε +ᶜℚ 0ℚ
 
     fCauchy : (ε δ : ℚ⁺) → f ε ∼[ ε +⁺ δ ] f δ
     fCauchy ε δ = translate-close 0ℚ (isRegular x ε δ)
@@ -123,7 +123,7 @@ private
   module TranslateZeroInduction = PropInduction translateZeroKit
 
 
-translate-zero : (x : ℝᴴ) → x +ᴴℚ 0ℚ ≡ x
+translate-zero : (x : ℝᶜ) → x +ᶜℚ 0ℚ ≡ x
 translate-zero =
   TranslateZeroInduction.ind
 
@@ -131,9 +131,9 @@ translate-zero =
 private
   translateCombineKit : (q s : ℚ) → PropInductionKit ℓ-zero
   translateCombineKit q s .PropInductionKit.A x =
-    (x +ᴴℚ q) +ᴴℚ s ≡ x +ᴴℚ (q ℚ.+ s)
+    (x +ᶜℚ q) +ᶜℚ s ≡ x +ᶜℚ (q ℚ.+ s)
   translateCombineKit q s .PropInductionKit.isPropA x =
-    isSetℝᴴ ((x +ᴴℚ q) +ᴴℚ s) (x +ᴴℚ (q ℚ.+ s))
+    isSetℝᶜ ((x +ᶜℚ q) +ᶜℚ s) (x +ᶜℚ (q ℚ.+ s))
   translateCombineKit q s .PropInductionKit.rational* r =
     cong rational (sym (ℚ.+Assoc r q s))
   translateCombineKit q s .PropInductionKit.limit* x assocAt =
@@ -142,9 +142,9 @@ private
       (limit (cauchy-approximation g gCauchy))
       closeAt
     where
-    f g : ℚ⁺ → ℝᴴ
-    f ε = (approximate x ε +ᴴℚ q) +ᴴℚ s
-    g ε = approximate x ε +ᴴℚ (q ℚ.+ s)
+    f g : ℚ⁺ → ℝᶜ
+    f ε = (approximate x ε +ᶜℚ q) +ᶜℚ s
+    g ε = approximate x ε +ᶜℚ (q ℚ.+ s)
 
     fCauchy : (ε δ : ℚ⁺) → f ε ∼[ ε +⁺ δ ] f δ
     fCauchy ε δ =
@@ -182,27 +182,27 @@ private
 
 translate-combine :
   (q s : ℚ) →
-  (x : ℝᴴ) →
-  (x +ᴴℚ q) +ᴴℚ s ≡ x +ᴴℚ (q ℚ.+ s)
+  (x : ℝᶜ) →
+  (x +ᶜℚ q) +ᶜℚ s ≡ x +ᶜℚ (q ℚ.+ s)
 translate-combine q s =
   TranslateCombineInduction.ind q s
 
 
 translate-cancelR :
   (q : ℚ) →
-  (x : ℝᴴ) →
-  (x +ᴴℚ q) +ᴴℚ (ℚ.- q) ≡ x
+  (x : ℝᶜ) →
+  (x +ᶜℚ q) +ᶜℚ (ℚ.- q) ≡ x
 translate-cancelR q x =
   translate-combine q (ℚ.- q) x ∙
-  cong (λ r → x +ᴴℚ r) (ℚ.+InvR q) ∙
+  cong (λ r → x +ᶜℚ r) (ℚ.+InvR q) ∙
   translate-zero x
 
 
 translate-cancelL :
   (q : ℚ) →
-  (x : ℝᴴ) →
-  (x +ᴴℚ (ℚ.- q)) +ᴴℚ q ≡ x
+  (x : ℝᶜ) →
+  (x +ᶜℚ (ℚ.- q)) +ᶜℚ q ≡ x
 translate-cancelL q x =
   translate-combine (ℚ.- q) q x ∙
-  cong (λ r → x +ᴴℚ r) (ℚ.+InvL q) ∙
+  cong (λ r → x +ᶜℚ r) (ℚ.+InvL q) ∙
   translate-zero x

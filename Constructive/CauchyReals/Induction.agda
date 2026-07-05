@@ -24,7 +24,7 @@ record InductionKit (ℓ ℓ' : Level) : Type (ℓ-suc (ℓ-max ℓ ℓ')) where
   no-eta-equality
 
   field
-    A : ℝᴴ → Type ℓ
+    A : ℝᶜ → Type ℓ
     B : DependentCloseness A ℓ'
 
     rational* : (q : ℚ) → A (rational q)
@@ -35,7 +35,7 @@ record InductionKit (ℓ ℓ' : Level) : Type (ℓ-suc (ℓ-max ℓ ℓ')) where
       A (limit x)
 
     path* :
-      (x y : ℝᴴ) →
+      (x y : ℝᶜ) →
       (x∼y : (ε : ℚ⁺) → x ∼[ ε ] y) →
       (a : A x) →
       (b : A y) →
@@ -92,7 +92,7 @@ record InductionKit (ℓ ℓ' : Level) : Type (ℓ-suc (ℓ-max ℓ ℓ')) where
         (limit* y b bCauchy)
 
     squash* :
-      {x y : ℝᴴ} {ε : ℚ⁺} →
+      {x y : ℝᶜ} {ε : ℚ⁺} →
       (p : x ∼[ ε ] y) →
       (a : A x) →
       (b : A y) →
@@ -103,7 +103,7 @@ module Induction (kit : InductionKit ℓ ℓ') where
   open InductionKit kit
 
   mutual
-    ind : (x : ℝᴴ) → A x
+    ind : (x : ℝᶜ) → A x
     ind (rational q) = rational* q
     ind (limit x) =
       limit* x
@@ -113,7 +113,7 @@ module Induction (kit : InductionKit ℓ ℓ') where
       path* x y x∼y (ind x) (ind y) (λ ε → ind-close (x∼y ε)) i
 
     ind-close :
-      {x y : ℝᴴ} {ε : ℚ⁺} →
+      {x y : ℝᶜ} {ε : ℚ⁺} →
       (x∼y : x ∼[ ε ] y) →
       B ε x∼y (ind x) (ind y)
     ind-close (rational-rational-close q r ε q∼r) =
@@ -152,8 +152,8 @@ record PropInductionKit (ℓ : Level) : Type (ℓ-suc ℓ) where
   no-eta-equality
 
   field
-    A : ℝᴴ → Type ℓ
-    isPropA : (x : ℝᴴ) → isProp (A x)
+    A : ℝᶜ → Type ℓ
+    isPropA : (x : ℝᶜ) → isProp (A x)
 
     rational* : (q : ℚ) → A (rational q)
     limit* :
@@ -184,5 +184,5 @@ module PropInduction (kit : PropInductionKit ℓ) where
 
     module Ind = Induction propKit
 
-  ind : (x : ℝᴴ) → A x
+  ind : (x : ℝᶜ) → A x
   ind = Ind.ind

@@ -16,7 +16,7 @@ open import Constructive.CauchyReals.Base
 
 
 close-rounded :
-  {x y : ℝᴴ} {ε : ℚ⁺} →
+  {x y : ℝᶜ} {ε : ℚ⁺} →
   x ∼[ ε ] y →
   ∥ Σ[ δ ∈ ℚ⁺ ] (δ <⁺ ε) × (x ∼[ δ ] y) ∥₁
 close-rounded (rational-rational-close q r ε q∼r) =

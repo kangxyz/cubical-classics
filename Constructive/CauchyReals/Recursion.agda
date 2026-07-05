@@ -74,7 +74,7 @@ module Recursion (kit : RecursionKit ℓ ℓ') where
   open RecursionKit kit
 
   mutual
-    rec : ℝᴴ → A
+    rec : ℝᶜ → A
     rec (rational q) = rational* q
     rec (limit x) =
       limit* x
@@ -83,7 +83,7 @@ module Recursion (kit : RecursionKit ℓ ℓ') where
     rec (path x y x∼y i) =
       separated (rec x) (rec y) (λ ε → rec-close (x∼y ε)) i
 
-    rec-close : {x y : ℝᴴ} {ε : ℚ⁺} → x ∼[ ε ] y → B ε (rec x) (rec y)
+    rec-close : {x y : ℝᶜ} {ε : ℚ⁺} → x ∼[ ε ] y → B ε (rec x) (rec y)
     rec-close (rational-rational-close q r ε q∼r) =
       rational-rational* q r ε q∼r
     rec-close (rational-limit-close q ε δ δ<ε y q∼yδ) =

@@ -16,8 +16,8 @@ open import Cubical.Data.Rationals as ℚ using (ℚ ; [_/_])
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma
 
-open import Constructive.Rationals as Rational
-  using (1/2 ; 0<1/2 ; double-half)
+import Constructive.Rationals as Rational
+open Rational using (1/2 ; 0<1/2 ; double-half)
 
 
 0ℚ : ℚ
@@ -111,6 +111,27 @@ summand-left<sum ε δ =
     (ℚOrder.<-o+ 0ℚ (radius δ) (radius ε) (δ .snd))
 
 
+min⁺ : ℚ⁺ → ℚ⁺ → ℚ⁺
+min⁺ ε δ =
+  ℚ.min (radius ε) (radius δ) ,
+  Rational.<min
+    {q = 0ℚ}
+    {r = radius ε}
+    {s = radius δ}
+    (ε .snd)
+    (δ .snd)
+
+
+min⁺≤left : (ε δ : ℚ⁺) → radius (min⁺ ε δ) ℚOrder.≤ radius ε
+min⁺≤left ε δ =
+  ℚOrder.min≤ (radius ε) (radius δ)
+
+
+min⁺≤right : (ε δ : ℚ⁺) → radius (min⁺ ε δ) ℚOrder.≤ radius δ
+min⁺≤right ε δ =
+  Rational.min≤r (radius ε) (radius δ)
+
+
 summand-right<sum : (ε δ : ℚ⁺) → δ <⁺ ε +⁺ δ
 summand-right<sum ε δ =
   subst
@@ -185,6 +206,11 @@ half+half≡ q =
   sym (ℚ.·DistR+ q q 1/2) ∙ double-half q
 
 
+half⁺+half⁺≡ : (ε : ℚ⁺) → half⁺ ε +⁺ half⁺ ε ≡ ε
+half⁺+half⁺≡ ε =
+  ℚ⁺Path (half+half≡ (radius ε))
+
+
 half< : (ε : ℚ⁺) → half⁺ ε <⁺ ε
 half< ε =
   subst2
@@ -195,8 +221,38 @@ half< ε =
       (half⁺ ε .snd))
 
 
+half-min⁺<left : (ε δ : ℚ⁺) → half⁺ (min⁺ ε δ) <⁺ ε
+half-min⁺<left ε δ =
+  ℚOrder.isTrans<≤
+    (radius (half⁺ (min⁺ ε δ)))
+    (radius (min⁺ ε δ))
+    (radius ε)
+    (half< (min⁺ ε δ))
+    (min⁺≤left ε δ)
+
+
+half-min⁺<right : (ε δ : ℚ⁺) → half⁺ (min⁺ ε δ) <⁺ δ
+half-min⁺<right ε δ =
+  ℚOrder.isTrans<≤
+    (radius (half⁺ (min⁺ ε δ)))
+    (radius (min⁺ ε δ))
+    (radius δ)
+    (half< (min⁺ ε δ))
+    (min⁺≤right ε δ)
+
+
 quarter⁺ : ℚ⁺ → ℚ⁺
 quarter⁺ ε = half⁺ (half⁺ ε)
+
+
+quarter< : (ε : ℚ⁺) → quarter⁺ ε <⁺ ε
+quarter< ε =
+  <⁺-trans
+    {ε = quarter⁺ ε}
+    {δ = half⁺ ε}
+    {η = ε}
+    (half< (half⁺ ε))
+    (half< ε)
 
 
 quarter-sum≡half : (ε : ℚ⁺) → radius (quarter⁺ ε +⁺ quarter⁺ ε) ≡ radius (half⁺ ε)
@@ -228,3 +284,24 @@ quarter-sum-difference≡ ε p =
     (cong (λ q → radius ε ℚ.- q) (quarter-sum≡half ε) ∙
      half-difference≡half (radius ε) ∙
      sym (quarter-sum≡half ε))
+
+
+three-quarter< :
+  (ε : ℚ⁺) →
+  (quarter⁺ ε +⁺ quarter⁺ ε) +⁺ quarter⁺ ε <⁺ ε
+three-quarter< ε =
+  sum<from-difference ε δ κ δ<ε κ<ε-δ
+  where
+  δ κ : ℚ⁺
+  δ = quarter⁺ ε +⁺ quarter⁺ ε
+  κ = quarter⁺ ε
+
+  δ<ε : δ <⁺ ε
+  δ<ε = quarter-sum< ε
+
+  κ<ε-δ : κ <⁺ ε ⊖ δ [ δ<ε ]
+  κ<ε-δ =
+    subst
+      (λ ρ → κ <⁺ ρ)
+      (sym (quarter-sum-difference≡ ε δ<ε))
+      (summand-left<sum (quarter⁺ ε) (quarter⁺ ε))

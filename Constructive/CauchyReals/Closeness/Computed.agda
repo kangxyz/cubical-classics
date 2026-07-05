@@ -82,13 +82,13 @@ rationalSourceBundle q .snd .PredicateStructure.mixedLeft u v ε η u∼v =
   snd (RationalTarget.rec-close q u∼v η)
 
 
-ComputedRationalClose : ℚ → ℝᴴ → ℚ⁺ → Type₀
+ComputedRationalClose : ℚ → ℝᶜ → ℚ⁺ → Type₀
 ComputedRationalClose q u ε =
   bundlePredicate (rationalSourceBundle q) u ε
 
 
 computedRational→close :
-  (q : ℚ) (u : ℝᴴ) (ε : ℚ⁺) →
+  (q : ℚ) (u : ℝᶜ) (ε : ℚ⁺) →
   ComputedRationalClose q u ε →
   rational q ∼[ ε ] u
 computedRational→close q =
@@ -199,25 +199,25 @@ private
   module Source = Recursion sourceKit
 
 
-computedBundle : ℝᴴ → PredicateBundle
+computedBundle : ℝᶜ → PredicateBundle
 computedBundle =
   Source.rec
 
 
-ComputedClose : ℚ⁺ → ℝᴴ → ℝᴴ → Type₀
+ComputedClose : ℚ⁺ → ℝᶜ → ℝᶜ → Type₀
 ComputedClose ε x y =
   bundlePredicate (computedBundle x) y ε
 
 
 isPropComputedClose :
-  (x y : ℝᴴ) (ε : ℚ⁺) →
+  (x y : ℝᶜ) (ε : ℚ⁺) →
   isProp (ComputedClose ε x y)
 isPropComputedClose x y ε =
   PredicateStructure.isPropP (computedBundle x .snd) y ε
 
 
 computedRelation :
-  {x y : ℝᴴ} {ε : ℚ⁺} →
+  {x y : ℝᶜ} {ε : ℚ⁺} →
   x ∼[ ε ] y →
   Relation (computedBundle x) (computedBundle y) ε
 computedRelation =
@@ -225,7 +225,7 @@ computedRelation =
 
 
 targetLimitIntro :
-  (x : ℝᴴ) (y : CauchyApproximation) (ε η : ℚ⁺) →
+  (x : ℝᶜ) (y : CauchyApproximation) (ε η : ℚ⁺) →
   (η<ε : η <⁺ ε) →
   ComputedClose (ε ⊖ η [ η<ε ]) x (approximate y η) →
   ComputedClose ε x (limit y)
@@ -290,7 +290,7 @@ targetLimitIntro =
 
 
 targetLimitElim :
-  (x : ℝᴴ) (y : CauchyApproximation) (ε : ℚ⁺) →
+  (x : ℝᶜ) (y : CauchyApproximation) (ε : ℚ⁺) →
   ComputedClose ε x (limit y) →
   ∥ Σ[ η ∈ ℚ⁺ ]
       Σ[ η<ε ∈ η <⁺ ε ]
@@ -420,7 +420,7 @@ private
 
 
 close→computed :
-  {x y : ℝᴴ} {ε : ℚ⁺} →
+  {x y : ℝᶜ} {ε : ℚ⁺} →
   x ∼[ ε ] y →
   ComputedClose ε x y
 close→computed =
@@ -428,7 +428,7 @@ close→computed =
 
 
 computed→close :
-  (x y : ℝᴴ) (ε : ℚ⁺) →
+  (x y : ℝᶜ) (ε : ℚ⁺) →
   ComputedClose ε x y →
   x ∼[ ε ] y
 computed→close =
@@ -436,7 +436,7 @@ computed→close =
   where
   kit : PropInductionKit ℓ-zero
   kit .PropInductionKit.A x =
-    (y : ℝᴴ) (ε : ℚ⁺) →
+    (y : ℝᶜ) (ε : ℚ⁺) →
     ComputedClose ε x y →
     x ∼[ ε ] y
   kit .PropInductionKit.isPropA x =
@@ -505,7 +505,7 @@ computed→close =
 
 
 close-triangle :
-  {x y z : ℝᴴ} {η ε : ℚ⁺} →
+  {x y z : ℝᶜ} {η ε : ℚ⁺} →
   x ∼[ η ] y →
   y ∼[ ε ] z →
   x ∼[ η +⁺ ε ] z
@@ -518,7 +518,7 @@ close-triangle {x = x} {y = y} {z = z} {η = η} {ε = ε} x∼y y∼z =
 
 
 rationalConstructorTriangle :
-  (q r : ℚ) {u : ℝᴴ} {η ε : ℚ⁺} →
+  (q r : ℚ) {u : ℝᶜ} {η ε : ℚ⁺} →
   Closeℚ q η r →
   rational r ∼[ ε ] u →
   rational q ∼[ η +⁺ ε ] u

@@ -122,7 +122,8 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/CauchyReals/` contains the HoTT-style Cauchy-real
   construction as a higher inductive-inductive type with a rational-indexed
   closeness relation, packaged induction and recursion principles, basic
-  closeness lemmas, continuity predicates, and initial arithmetic operations.
+  closeness lemmas, continuity predicates, additive group laws, and lattice
+  operations.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,

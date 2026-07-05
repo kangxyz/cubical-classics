@@ -22,7 +22,7 @@ open import Constructive.CauchyReals.Recursion public
 
 
 close-limit-intro :
-  (x : ℝᴴ) (y : CauchyApproximation) (ε δ : ℚ⁺) →
+  (x : ℝᶜ) (y : CauchyApproximation) (ε δ : ℚ⁺) →
   (δ<ε : δ <⁺ ε) →
   x ∼[ ε ⊖ δ [ δ<ε ] ] approximate y δ →
   x ∼[ ε ] limit y
@@ -32,7 +32,7 @@ close-limit-intro x y ε δ δ<ε x∼yδ =
 
 
 limit-close-intro :
-  (x : CauchyApproximation) (y : ℝᴴ) (ε δ : ℚ⁺) →
+  (x : CauchyApproximation) (y : ℝᶜ) (ε δ : ℚ⁺) →
   (δ<ε : δ <⁺ ε) →
   approximate x δ ∼[ ε ⊖ δ [ δ<ε ] ] y →
   limit x ∼[ ε ] y
@@ -49,18 +49,32 @@ limit-limit-intro =
   limit-limit-close
 
 
-IsRationalNonexpanding : (ℚ → ℝᴴ) → Type₀
+limit-approx-close :
+  (x : CauchyApproximation) (ε : ℚ⁺) →
+  limit x ∼[ ε ] approximate x (quarter⁺ ε)
+limit-approx-close x ε =
+  limit-close-intro x (approximate x δ) ε δ δ<ε
+    (close-refl (approximate x δ) (ε ⊖ δ [ δ<ε ]))
+  where
+  δ : ℚ⁺
+  δ = quarter⁺ ε
+
+  δ<ε : δ <⁺ ε
+  δ<ε = quarter< ε
+
+
+IsRationalNonexpanding : (ℚ → ℝᶜ) → Type₀
 IsRationalNonexpanding f =
   (q r : ℚ) (ε : ℚ⁺) →
   Closeℚ q ε r →
   f q ∼[ ε ] f r
 
 
-module _ (f : ℚ → ℝᴴ) (f-ne : IsRationalNonexpanding f) where
+module _ (f : ℚ → ℝᶜ) (f-ne : IsRationalNonexpanding f) where
   private
     extensionKit : RecursionKit ℓ-zero ℓ-zero
     extensionKit .RecursionKit.A =
-      ℝᴴ
+      ℝᶜ
     extensionKit .RecursionKit.B ε x y =
       x ∼[ ε ] y
     extensionKit .RecursionKit.isPropB ε x y =
@@ -94,7 +108,7 @@ module _ (f : ℚ → ℝᴴ) (f-ne : IsRationalNonexpanding f) where
 
     module ExtensionRecursion = Recursion extensionKit
 
-  extendNonexpanding : ℝᴴ → ℝᴴ
+  extendNonexpanding : ℝᶜ → ℝᶜ
   extendNonexpanding =
     ExtensionRecursion.rec
 
@@ -105,7 +119,7 @@ module _ (f : ℚ → ℝᴴ) (f-ne : IsRationalNonexpanding f) where
     refl
 
   extendNonexpanding-close :
-    {x y : ℝᴴ} {ε : ℚ⁺} →
+    {x y : ℝᶜ} {ε : ℚ⁺} →
     x ∼[ ε ] y →
     extendNonexpanding x ∼[ ε ] extendNonexpanding y
   extendNonexpanding-close =
@@ -123,11 +137,11 @@ module _ (f : ℚ → ℝᴴ) (f-ne : IsRationalNonexpanding f) where
 
 
 extensions-close :
-  {f g : ℚ → ℝᴴ} →
+  {f g : ℚ → ℝᶜ} →
   (f-ne : IsRationalNonexpanding f) →
   (g-ne : IsRationalNonexpanding g) →
   ((q : ℚ) (ε : ℚ⁺) → f q ∼[ ε ] g q) →
-  (x : ℝᴴ) (ε : ℚ⁺) →
+  (x : ℝᶜ) (ε : ℚ⁺) →
   extendNonexpanding f f-ne x ∼[ ε ] extendNonexpanding g g-ne x
 extensions-close {f = f} {g = g} f-ne g-ne f∼g =
   PropInduction.ind kit
@@ -160,11 +174,11 @@ extensions-close {f = f} {g = g} f-ne g-ne f∼g =
 
 
 extensions-equal :
-  {f g : ℚ → ℝᴴ} →
+  {f g : ℚ → ℝᶜ} →
   (f-ne : IsRationalNonexpanding f) →
   (g-ne : IsRationalNonexpanding g) →
   ((q : ℚ) → f q ≡ g q) →
-  (x : ℝᴴ) →
+  (x : ℝᶜ) →
   extendNonexpanding f f-ne x ≡ extendNonexpanding g g-ne x
 extensions-equal {f = f} {g = g} f-ne g-ne f≡g x =
   path
@@ -183,26 +197,206 @@ extensions-equal {f = f} {g = g} f-ne g-ne f≡g x =
       (close-refl (f q) ε)
 
 
-IsBinaryRationalNonexpandingLeft : (ℚ → ℚ → ℝᴴ) → Type₀
+nonexpanding-equal :
+  (f g : ℝᶜ → ℝᶜ) →
+  IsNonexpanding f →
+  IsNonexpanding g →
+  ((q : ℚ) → f (rational q) ≡ g (rational q)) →
+  (x : ℝᶜ) →
+  f x ≡ g x
+nonexpanding-equal f g f-ne g-ne rational-path =
+  PropInduction.ind kit
+  where
+  kit : PropInductionKit ℓ-zero
+  kit .PropInductionKit.A x =
+    f x ≡ g x
+  kit .PropInductionKit.isPropA x =
+    isSetℝᶜ (f x) (g x)
+  kit .PropInductionKit.rational* =
+    rational-path
+  kit .PropInductionKit.limit* x pointwise =
+    path (f (limit x)) (g (limit x)) closeAt
+    where
+    closeAt : (ε : ℚ⁺) → f (limit x) ∼[ ε ] g (limit x)
+    closeAt ε =
+      close-mono {ε = (α +⁺ α) +⁺ α} {δ = ε}
+        (three-quarter< ε)
+        (close-triangle
+          (close-triangle f-lim∼approx f-approx∼g-approx)
+          g-approx∼lim)
+      where
+      α : ℚ⁺
+      α = quarter⁺ ε
+
+      δ : ℚ⁺
+      δ = quarter⁺ α
+
+      lim∼approx : limit x ∼[ α ] approximate x δ
+      lim∼approx =
+        limit-approx-close x α
+
+      f-lim∼approx : f (limit x) ∼[ α ] f (approximate x δ)
+      f-lim∼approx =
+        f-ne lim∼approx
+
+      f-approx∼g-approx : f (approximate x δ) ∼[ α ] g (approximate x δ)
+      f-approx∼g-approx =
+        subst
+          (λ y → f (approximate x δ) ∼[ α ] y)
+          (pointwise δ)
+          (close-refl (f (approximate x δ)) α)
+
+      g-approx∼lim : g (approximate x δ) ∼[ α ] g (limit x)
+      g-approx∼lim =
+        g-ne (close-sym lim∼approx)
+
+
+continuous-equal :
+  (f g : ℝᶜ → ℝᶜ) →
+  IsContinuous f →
+  IsContinuous g →
+  ((q : ℚ) → f (rational q) ≡ g (rational q)) →
+  (x : ℝᶜ) →
+  f x ≡ g x
+continuous-equal f g f-cont g-cont rational-path =
+  PropInduction.ind kit
+  where
+  kit : PropInductionKit ℓ-zero
+  kit .PropInductionKit.A x =
+    f x ≡ g x
+  kit .PropInductionKit.isPropA x =
+    isSetℝᶜ (f x) (g x)
+  kit .PropInductionKit.rational* =
+    rational-path
+  kit .PropInductionKit.limit* x pointwise =
+    path (f (limit x)) (g (limit x)) closeAt
+    where
+    closeAt : (ε : ℚ⁺) → f (limit x) ∼[ ε ] g (limit x)
+    closeAt ε =
+      close-mono {ε = (α +⁺ α) +⁺ α} {δ = ε}
+        (three-quarter< ε)
+        (close-triangle
+          (close-triangle f-lim∼approx f-approx∼g-approx)
+          g-approx∼lim)
+      where
+      α : ℚ⁺
+      α = quarter⁺ ε
+
+      μf μg : ℚ⁺
+      μf = fst (f-cont α)
+      μg = fst (g-cont α)
+
+      μ : ℚ⁺
+      μ = min⁺ μf μg
+
+      β : ℚ⁺
+      β = half⁺ μ
+
+      δ : ℚ⁺
+      δ = quarter⁺ β
+
+      lim∼approx : limit x ∼[ β ] approximate x δ
+      lim∼approx =
+        limit-approx-close x β
+
+      lim∼approx-f : limit x ∼[ μf ] approximate x δ
+      lim∼approx-f =
+        close-mono (half-min⁺<left μf μg) lim∼approx
+
+      lim∼approx-g : limit x ∼[ μg ] approximate x δ
+      lim∼approx-g =
+        close-mono (half-min⁺<right μf μg) lim∼approx
+
+      f-lim∼approx : f (limit x) ∼[ α ] f (approximate x δ)
+      f-lim∼approx =
+        snd (f-cont α) lim∼approx-f
+
+      f-approx∼g-approx : f (approximate x δ) ∼[ α ] g (approximate x δ)
+      f-approx∼g-approx =
+        subst
+          (λ y → f (approximate x δ) ∼[ α ] y)
+          (pointwise δ)
+          (close-refl (f (approximate x δ)) α)
+
+      g-approx∼lim : g (approximate x δ) ∼[ α ] g (limit x)
+      g-approx∼lim =
+        snd (g-cont α) (close-sym lim∼approx-g)
+
+
+continuous-constant-equal :
+  (f : ℝᶜ → ℝᶜ) →
+  (c : ℝᶜ) →
+  IsContinuous f →
+  ((q : ℚ) → f (rational q) ≡ c) →
+  (x : ℝᶜ) →
+  f x ≡ c
+continuous-constant-equal f c f-cont rational-path =
+  PropInduction.ind kit
+  where
+  kit : PropInductionKit ℓ-zero
+  kit .PropInductionKit.A x =
+    f x ≡ c
+  kit .PropInductionKit.isPropA x =
+    isSetℝᶜ (f x) c
+  kit .PropInductionKit.rational* =
+    rational-path
+  kit .PropInductionKit.limit* x pointwise =
+    path (f (limit x)) c closeAt
+    where
+    closeAt : (ε : ℚ⁺) → f (limit x) ∼[ ε ] c
+    closeAt ε =
+      close-mono {ε = α +⁺ α} {δ = ε}
+        (quarter-sum< ε)
+        (close-triangle f-lim∼approx f-approx∼c)
+      where
+      α : ℚ⁺
+      α = quarter⁺ ε
+
+      μ : ℚ⁺
+      μ = fst (f-cont α)
+
+      f-close : {x y : ℝᶜ} → x ∼[ μ ] y → f x ∼[ α ] f y
+      f-close = snd (f-cont α)
+
+      δ : ℚ⁺
+      δ = quarter⁺ μ
+
+      lim∼approx : limit x ∼[ μ ] approximate x δ
+      lim∼approx =
+        limit-approx-close x μ
+
+      f-lim∼approx : f (limit x) ∼[ α ] f (approximate x δ)
+      f-lim∼approx =
+        f-close lim∼approx
+
+      f-approx∼c : f (approximate x δ) ∼[ α ] c
+      f-approx∼c =
+        subst
+          (λ y → f (approximate x δ) ∼[ α ] y)
+          (pointwise δ)
+          (close-refl (f (approximate x δ)) α)
+
+
+IsBinaryRationalNonexpandingLeft : (ℚ → ℚ → ℝᶜ) → Type₀
 IsBinaryRationalNonexpandingLeft f =
   (q r s : ℚ) (ε : ℚ⁺) →
   Closeℚ q ε r →
   f q s ∼[ ε ] f r s
 
 
-IsBinaryRationalNonexpandingRight : (ℚ → ℚ → ℝᴴ) → Type₀
+IsBinaryRationalNonexpandingRight : (ℚ → ℚ → ℝᶜ) → Type₀
 IsBinaryRationalNonexpandingRight f =
   (q : ℚ) → IsRationalNonexpanding (f q)
 
 
 module _
-  (f : ℚ → ℚ → ℝᴴ)
+  (f : ℚ → ℚ → ℝᶜ)
   (left-ne : IsBinaryRationalNonexpandingLeft f)
   (right-ne : IsBinaryRationalNonexpandingRight f)
   where
 
   private
-    rightExtension : ℚ → ℝᴴ → ℝᴴ
+    rightExtension : ℚ → ℝᶜ → ℝᶜ
     rightExtension q =
       extendNonexpanding (f q) (right-ne q)
 
@@ -264,7 +458,7 @@ module _
         difference-from-sum< ε δ+δ ζ δδ+ζ<ε
 
     rightExtension-left-close :
-      (q r : ℚ) (y : ℝᴴ) (ε : ℚ⁺) →
+      (q r : ℚ) (y : ℝᶜ) (ε : ℚ⁺) →
       Closeℚ q ε r →
       rightExtension q y ∼[ ε ] rightExtension r y
     rightExtension-left-close q r =
@@ -294,7 +488,7 @@ module _
               ε δ δ δ+δ<ε
               (close-mono ζ<ε-δδ (closeAt δ ζ q∼rζ))
 
-  extendBinaryNonexpanding : ℝᴴ → ℝᴴ → ℝᴴ
+  extendBinaryNonexpanding : ℝᶜ → ℝᶜ → ℝᶜ
   extendBinaryNonexpanding x y =
     extendNonexpanding
       (λ q → rightExtension q y)
@@ -302,7 +496,7 @@ module _
       x
 
   extendBinaryNonexpanding-rational-left :
-    (q : ℚ) (y : ℝᴴ) →
+    (q : ℚ) (y : ℝᶜ) →
     extendBinaryNonexpanding (rational q) y ≡
     extendNonexpanding (f q) (right-ne q) y
   extendBinaryNonexpanding-rational-left q y =
@@ -315,7 +509,7 @@ module _
     refl
 
   extendBinaryNonexpanding-rational-right :
-    (x : ℝᴴ) (r : ℚ) →
+    (x : ℝᶜ) (r : ℚ) →
     extendBinaryNonexpanding x (rational r) ≡
     extendNonexpanding
       (λ q → f q r)
@@ -329,9 +523,9 @@ module _
       x
 
   extendBinaryNonexpanding-close-left :
-    {x y : ℝᴴ} {ε : ℚ⁺} →
+    {x y : ℝᶜ} {ε : ℚ⁺} →
     x ∼[ ε ] y →
-    (z : ℝᴴ) →
+    (z : ℝᶜ) →
     extendBinaryNonexpanding x z ∼[ ε ] extendBinaryNonexpanding y z
   extendBinaryNonexpanding-close-left {ε = ε} x∼y z =
     extendNonexpanding-close
@@ -342,7 +536,7 @@ module _
   private
     binary-left-approx :
       CauchyApproximation →
-      ℝᴴ →
+      ℝᶜ →
       CauchyApproximation
     binary-left-approx x y =
       cauchy-approximation
@@ -350,8 +544,8 @@ module _
         (λ δ η → extendBinaryNonexpanding-close-left (isRegular x δ η) y)
 
   extendBinaryNonexpanding-close-right :
-    (x : ℝᴴ) →
-    {y z : ℝᴴ} {ε : ℚ⁺} →
+    (x : ℝᶜ) →
+    {y z : ℝᶜ} {ε : ℚ⁺} →
     y ∼[ ε ] z →
     extendBinaryNonexpanding x y ∼[ ε ] extendBinaryNonexpanding x z
   extendBinaryNonexpanding-close-right =
@@ -359,7 +553,7 @@ module _
     where
     kit : PropInductionKit ℓ-zero
     kit .PropInductionKit.A x =
-      {y z : ℝᴴ} {ε : ℚ⁺} →
+      {y z : ℝᶜ} {ε : ℚ⁺} →
       y ∼[ ε ] z →
       extendBinaryNonexpanding x y ∼[ ε ] extendBinaryNonexpanding x z
     kit .PropInductionKit.isPropA x =
@@ -385,7 +579,7 @@ module _
             (close-mono ζ<ε-δδ (closeAt δ y∼zζ))
 
   extendBinaryNonexpanding-close :
-    {x y z w : ℝᴴ} {η ε : ℚ⁺} →
+    {x y z w : ℝᶜ} {η ε : ℚ⁺} →
     x ∼[ η ] y →
     z ∼[ ε ] w →
     extendBinaryNonexpanding x z ∼[ η +⁺ ε ] extendBinaryNonexpanding y w

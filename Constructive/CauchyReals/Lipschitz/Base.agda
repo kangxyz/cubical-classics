@@ -17,16 +17,16 @@ PrecisionModulus = ℚ⁺ → ℚ⁺
 
 IsLipschitzWith :
   PrecisionModulus →
-  (ℝᴴ → ℝᴴ) →
+  (ℝᶜ → ℝᶜ) →
   Type₀
 IsLipschitzWith μ f =
   (ε : ℚ⁺) →
-  {x y : ℝᴴ} →
+  {x y : ℝᶜ} →
   x ∼[ μ ε ] y →
   f x ∼[ ε ] f y
 
 
-IsLipschitz : (ℝᴴ → ℝᴴ) → Type₀
+IsLipschitz : (ℝᶜ → ℝᶜ) → Type₀
 IsLipschitz f = Σ[ μ ∈ PrecisionModulus ] IsLipschitzWith μ f
 
 
@@ -36,7 +36,7 @@ id-lipschitz =
 
 
 comp-lipschitz :
-  {f g : ℝᴴ → ℝᴴ} →
+  {f g : ℝᶜ → ℝᶜ} →
   IsLipschitz f →
   IsLipschitz g →
   IsLipschitz (λ x → f (g x))

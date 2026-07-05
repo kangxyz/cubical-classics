@@ -17,15 +17,15 @@ import Cubical.Relation.Binary.Properties as BinaryProperties
 open import Constructive.CauchyReals.Base
 
 
-separated : (x y : ℝᴴ) → ((ε : ℚ⁺) → x ∼[ ε ] y) → x ≡ y
+separated : (x y : ℝᶜ) → ((ε : ℚ⁺) → x ∼[ ε ] y) → x ≡ y
 separated = path
 
 
-isPropClose : {x y : ℝᴴ} {ε : ℚ⁺} → isProp (x ∼[ ε ] y)
+isPropClose : {x y : ℝᶜ} {ε : ℚ⁺} → isProp (x ∼[ ε ] y)
 isPropClose = squash
 
 
-close-refl : (x : ℝᴴ) (ε : ℚ⁺) → x ∼[ ε ] x
+close-refl : (x : ℝᶜ) (ε : ℚ⁺) → x ∼[ ε ] x
 close-refl (rational q) ε =
   rational-rational-close q q ε (rational-close-refl q ε)
 close-refl (limit x) ε =
@@ -48,17 +48,17 @@ close-refl (path x y x∼y i) ε =
     i
 
 
-ArbitrarilyClose : ℝᴴ → ℝᴴ → Type₀
+ArbitrarilyClose : ℝᶜ → ℝᶜ → Type₀
 ArbitrarilyClose x y = (ε : ℚ⁺) → x ∼[ ε ] y
 
 
-isPropArbitrarilyClose : (x y : ℝᴴ) → isProp (ArbitrarilyClose x y)
+isPropArbitrarilyClose : (x y : ℝᶜ) → isProp (ArbitrarilyClose x y)
 isPropArbitrarilyClose x y =
   isPropΠ λ ε → squash
 
 
-isSetℝᴴ : isSet ℝᴴ
-isSetℝᴴ =
+isSetℝᶜ : isSet ℝᶜ
+isSetℝᶜ =
   BinaryProperties.reflPropRelImpliesIdentity→isSet ArbitrarilyClose
     close-refl
     isPropArbitrarilyClose
@@ -86,7 +86,7 @@ private
     ℚ⁺Path (cong (λ q → radius ε ℚ.- q) (ℚ.+Comm (radius δ) (radius η)))
 
 
-close-sym : {x y : ℝᴴ} {ε : ℚ⁺} → x ∼[ ε ] y → y ∼[ ε ] x
+close-sym : {x y : ℝᶜ} {ε : ℚ⁺} → x ∼[ ε ] y → y ∼[ ε ] x
 close-sym (rational-rational-close q r ε q∼r) =
   rational-rational-close r q ε (rational-close-sym q r ε q∼r)
 close-sym (rational-limit-close q ε δ δ<ε y q∼yδ) =
@@ -107,7 +107,7 @@ close-sym (squash p q i) =
 
 
 close-mono :
-  {x y : ℝᴴ} {ε δ : ℚ⁺} →
+  {x y : ℝᶜ} {ε δ : ℚ⁺} →
   ε <⁺ δ →
   x ∼[ ε ] y →
   x ∼[ δ ] y

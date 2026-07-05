@@ -20,7 +20,7 @@ open import Constructive.CauchyReals.Recursion
 
 private
   negationKit : RecursionKit ℓ-zero ℓ-zero
-  negationKit .RecursionKit.A = ℝᴴ
+  negationKit .RecursionKit.A = ℝᶜ
   negationKit .RecursionKit.B ε x y = x ∼[ ε ] y
   negationKit .RecursionKit.isPropB ε x y = squash
   negationKit .RecursionKit.separated x y = path x y
@@ -49,44 +49,44 @@ private
   module NegationRecursion = Recursion negationKit
 
 
--ᴴ_ : ℝᴴ → ℝᴴ
--ᴴ_ = NegationRecursion.rec
+-ᶜ_ : ℝᶜ → ℝᶜ
+-ᶜ_ = NegationRecursion.rec
 
 
-neg-rational : (q : ℚ) → -ᴴ rational q ≡ rational (ℚ.- q)
+neg-rational : (q : ℚ) → -ᶜ rational q ≡ rational (ℚ.- q)
 neg-rational q = refl
 
 
-neg-close : {x y : ℝᴴ} {ε : ℚ⁺} → x ∼[ ε ] y → (-ᴴ x) ∼[ ε ] (-ᴴ y)
+neg-close : {x y : ℝᶜ} {ε : ℚ⁺} → x ∼[ ε ] y → (-ᶜ x) ∼[ ε ] (-ᶜ y)
 neg-close = NegationRecursion.rec-close
 
 
-neg-nonexpanding : IsNonexpanding -ᴴ_
+neg-nonexpanding : IsNonexpanding -ᶜ_
 neg-nonexpanding = neg-close
 
 
-neg-lipschitz : IsLipschitz -ᴴ_
+neg-lipschitz : IsLipschitz -ᶜ_
 neg-lipschitz =
   (λ ε → ε) , λ ε → neg-close
 
 
-neg-continuous : IsContinuous -ᴴ_
+neg-continuous : IsContinuous -ᶜ_
 neg-continuous =
   lipschitz→continuous neg-lipschitz
 
 
 private
   negInvolutiveKit : PropInductionKit ℓ-zero
-  negInvolutiveKit .PropInductionKit.A x = -ᴴ (-ᴴ x) ≡ x
+  negInvolutiveKit .PropInductionKit.A x = -ᶜ (-ᶜ x) ≡ x
   negInvolutiveKit .PropInductionKit.isPropA x =
-    isSetℝᴴ (-ᴴ (-ᴴ x)) x
+    isSetℝᶜ (-ᶜ (-ᶜ x)) x
   negInvolutiveKit .PropInductionKit.rational* q =
     cong rational (ℚ.-Invol q)
   negInvolutiveKit .PropInductionKit.limit* x negneg≡id =
     path (limit (cauchy-approximation f fCauchy)) (limit x) closeAt
     where
-    f : ℚ⁺ → ℝᴴ
-    f ε = -ᴴ (-ᴴ approximate x ε)
+    f : ℚ⁺ → ℝᶜ
+    f ε = -ᶜ (-ᶜ approximate x ε)
 
     fCauchy : (ε δ : ℚ⁺) → f ε ∼[ ε +⁺ δ ] f δ
     fCauchy ε δ =
@@ -115,6 +115,6 @@ private
   module NegInvolutiveInduction = PropInduction negInvolutiveKit
 
 
-neg-involutive : (x : ℝᴴ) → -ᴴ (-ᴴ x) ≡ x
+neg-involutive : (x : ℝᶜ) → -ᶜ (-ᶜ x) ≡ x
 neg-involutive =
   NegInvolutiveInduction.ind
