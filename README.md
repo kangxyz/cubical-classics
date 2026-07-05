@@ -80,10 +80,11 @@ The code is split by whether it uses the library's classical `Oracle`.
   absolute value, Archimedean structures, morphisms, univalence,
   and the `ℤ` and `ℚ` instances.
 - `Constructive/Algebra/OrderedField/` contains ordered fields as ordered
-  commutative rings whose underlying Cubical ring is a field.
+  commutative rings whose underlying Cubical ring is a field, together with
+  field-theoretic lemmas and the rational embedding as a ring homomorphism.
 - `Constructive/Algebra/LinearlyOrderedField/` contains the trichotomous
   ordered-field interface, lemmas that use trichotomy, the rational ordered
-  field, and the canonical inclusion of `ℚ` into any ordered field.
+  field, and the order-preserving part of the canonical inclusion of `ℚ`.
 - `Constructive/DedekindReals/` contains the LEM-free constructive Dedekind
   reals over `ℚ`, their lower/upper cut presentation, ordered arithmetic,
   apartness-field structure, and constructive Dedekind completeness.

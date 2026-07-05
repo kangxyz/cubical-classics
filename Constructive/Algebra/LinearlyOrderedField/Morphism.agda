@@ -23,6 +23,7 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Algebra.OrderedCommRing.Morphism
+import Constructive.Algebra.OrderedField.Morphism as OrderedFieldMorphism
 open import Constructive.Algebra.OrderedField.Morphism public
   using (OrderedFieldHom)
 open import Constructive.Algebra.LinearlyOrderedCommRing
@@ -41,33 +42,17 @@ private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
     open CommRingStr (𝓡 .snd)
 
-    helper1 : (a b c d b⁻¹ d⁻¹ : 𝓡 .fst)
-      → (a · d + c · b) · (b⁻¹ · d⁻¹) ≡ (a · b⁻¹) · (d · d⁻¹) + (c · d⁻¹) · (b · b⁻¹)
-    helper1 _ _ _ _ _ _ = solve! 𝓡
+    helper1 : (p q : 𝓡 .fst) → p + (q - p) ≡ q
+    helper1 _ _ = solve! 𝓡
 
-    helper2 : (a c b⁻¹ d⁻¹ : 𝓡 .fst) → (a · b⁻¹) · 1r + (c · d⁻¹) · 1r ≡ a · b⁻¹ + c · d⁻¹
-    helper2 _ _ _ _ = solve! 𝓡
+    helper2 : (p ε x : 𝓡 .fst) → (p + (x + ε)) - (p + x) ≡ ε
+    helper2 _ _ _ = solve! 𝓡
 
-    helper3 : (a c b⁻¹ d⁻¹ : 𝓡 .fst) → (a · c) · (b⁻¹ · d⁻¹) ≡ (a · b⁻¹) · (c · d⁻¹)
-    helper3 _ _ _ _ = solve! 𝓡
+    helper3 : (x y a : 𝓡 .fst) → ((x - y) + a) - x ≡ a - y
+    helper3 _ _ _ = solve! 𝓡
 
-    helper4 : (a d b⁻¹ d⁻¹ : 𝓡 .fst) → (a · b⁻¹) · (d · d⁻¹) ≡ ((a · d) · b⁻¹) · d⁻¹
-    helper4 _ _ _ _ = solve! 𝓡
-
-    helper5 : (c b b⁻¹ d⁻¹ : 𝓡 .fst) → ((c · b) · b⁻¹) · d⁻¹ ≡ (c · d⁻¹) · (b · b⁻¹)
-    helper5 _ _ _ _ = solve! 𝓡
-
-    helper6 : (p q : 𝓡 .fst) → p + (q - p) ≡ q
-    helper6 _ _ = solve! 𝓡
-
-    helper7 : (p ε x : 𝓡 .fst) → (p + (x + ε)) - (p + x) ≡ ε
-    helper7 _ _ _ = solve! 𝓡
-
-    helper8 : (x y a : 𝓡 .fst) → ((x - y) + a) - x ≡ a - y
-    helper8 _ _ _ = solve! 𝓡
-
-    helper9 : (x a b : 𝓡 .fst) → ((b - a) + a) - x ≡ b - x
-    helper9 _ _ _ = solve! 𝓡
+    helper4 : (x a b : 𝓡 .fst) → ((b - a) + a) - x ≡ b - x
+    helper4 _ _ _ = solve! 𝓡
 
 
 -- Linearly ordered-field homomorphisms are homomorphisms of the underlying Cubical
@@ -276,7 +261,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
               archimedes (a - f-map lower) (f-map ε) fε>0
             lower+n·ε>a : step n > a
             lower+n·ε>a = subst (step n >_)
-              (helper6 (f-map lower) a) (+-lPres< n·ε>a-lower)
+              (helper1 (f-map lower) a) (+-lPres< n·ε>a-lower)
         in  ∣ n , lower+n·ε>a ∣₁
 
       interval : Σ[ n ∈ ℕ ] (¬ P n) × P (suc n)
@@ -288,10 +273,10 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
       lower+sucn⋆ε>a = interval .snd .snd
 
       diff-path : (p ε : K)(n : ℕ) → (p + (suc n) ⋆ ε) - (p + n ⋆ ε) ≡ ε
-      diff-path p ε n = (λ i → (p + sucn⋆q≡n⋆q+q n ε i) - (p + n ⋆ ε)) ∙ helper7 _ _ _
+      diff-path p ε n = (λ i → (p + sucn⋆q≡n⋆q+q n ε i) - (p + n ⋆ ε)) ∙ helper2 _ _ _
 
       b-sucn>a-n : b - step (suc n₀) > a - step n₀
-      b-sucn>a-n = transport (λ i → helper8 (step (suc n₀)) (step n₀) a i < helper9 (step (suc n₀)) a b i) -<-
+      b-sucn>a-n = transport (λ i → helper3 (step (suc n₀)) (step n₀) a i < helper4 (step (suc n₀)) a b i) -<-
         where
         diff>b-a : step (suc n₀) - step n₀ < b - a
         diff>b-a = subst (_< b - a) (sym (diff-path _ _ _)) fε<δ
@@ -339,116 +324,33 @@ module InclusionFromℚ (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   open import Cubical.Data.NatPlusOne
   open import Cubical.Data.Int
-    using    (ℤ ; pos ; pos·pos)
-    renaming (_+_ to _+ℤ_ ; _·_ to _·ℤ_)
+    using    (ℤ ; pos)
   import Cubical.Data.Int as Int
-  open import Cubical.Data.Int.Order
-    using    (zero-<sucPos)
   open import Cubical.Data.Rationals
-    using    (ℚ ; ℕ₊₁→ℤ ; _∼_)
-    renaming (_+_ to _+ℚ_ ; _·_ to _·ℚ_ ; -_ to -ℚ_)
+    using    (ℚ)
 
   open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Int
     using    (ℤLinearlyOrderedCommRing)
 
-  open import Cubical.Algebra.CommRing.Instances.Rationals
   open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
 
   open LinearlyOrderedFieldStr 𝒦
   open LinearMorphism.InclusionFromℤ (𝒦 .fst)
   open LinearlyOrderedCommRingStr  ℤLinearlyOrderedCommRing using () renaming (_>_ to _>ℤ_)
   module ℚLO = LinearlyOrderedCommRingStr (ℚLinearlyOrderedField .fst)
-
-  private
-    K = 𝒦 .fst .fst .fst
-    isSetK = is-set
-
-  open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
-
-
-  ℕ₊₁→ℤ>0 : (n : ℕ₊₁) → ℕ₊₁→ℤ n >ℤ pos 0
-  ℕ₊₁→ℤ>0 (1+ n) = zero-<sucPos
-
-  ℕ₊₁→R : ℕ₊₁ → K
-  ℕ₊₁→R n = ℤ→R (ℕ₊₁→ℤ n)
-
-  ℕ₊₁→R>0 : (n : ℕ₊₁) → ℕ₊₁→R n > 0r
-  ℕ₊₁→R>0 n = ℤ→R-Pres>0 (ℕ₊₁→ℤ n) (ℕ₊₁→ℤ>0 n)
-
-  ℕ₊₁→R≢0 : (n : ℕ₊₁) → ¬ ℕ₊₁→R n ≡ 0r
-  ℕ₊₁→R≢0 n = >-arefl (ℕ₊₁→R>0 n)
-
-  ℕ₊₁→ℤ-·₊₁-comm : (m n : ℕ₊₁) → ℕ₊₁→ℤ (m ·₊₁ n) ≡ (ℕ₊₁→ℤ m) ·ℤ (ℕ₊₁→ℤ n)
-  ℕ₊₁→ℤ-·₊₁-comm (1+ m) (1+ n) = pos·pos (suc m) (suc n)
+  open OrderedFieldMorphism.InclusionFromℚ (LinearlyOrderedField→OrderedField 𝒦) public
 
 
   private
 
     module _ ((a , b) : ℤ × ℕ₊₁) where
 
-      map-helper : K
-      map-helper = ℤ→R a · inv (ℕ₊₁→R≢0 b)
-
-      >0-helper' : a >ℤ 0 → map-helper > 0r
+      >0-helper' : a >ℤ 0 → ℤ→R a · inv (ℕ₊₁→R≢0 b) > 0r
       >0-helper' a>0 = ·-Pres>0 (ℤ→R-Pres>0 _ a>0) (p>0→p⁻¹>0 (ℕ₊₁→R>0 b))
 
-      >0-helper : ℚLO._>0 [ a , b ] → map-helper >0
+      >0-helper : ℚLO._>0 [ a , b ] → ℚ→K [ a , b ] >0
       >0-helper a/b>0 =
         >0-helper' (subst (_>ℤ pos 0) (Int.·IdR a) a/b>0)
-
-
-    module _ ((a , b)(c , d) : ℤ × ℕ₊₁) where
-
-      b≢0 = ℕ₊₁→R≢0 b
-      d≢0 = ℕ₊₁→R≢0 d
-      bd≢0 = ℕ₊₁→R≢0 (b ·₊₁ d)
-      b⁻¹ = inv b≢0
-      d⁻¹ = inv d≢0
-
-      eq-helper : (r : (a , b) ∼ (c , d)) → map-helper (a , b) ≡ map-helper (c , d)
-      eq-helper r = sym (·IdR _)
-        ∙ (λ i → (ℤ→R a · b⁻¹) · ·-rInv d≢0 (~ i))
-        ∙ helper4 _ _ _ _
-        ∙ (λ i → (ℤ→R-Pres-· a (ℕ₊₁→ℤ d) (~ i) · b⁻¹) · d⁻¹)
-        ∙ (λ i → (ℤ→R (r i) · b⁻¹) · d⁻¹)
-        ∙ (λ i → (ℤ→R-Pres-· c (ℕ₊₁→ℤ b) i · b⁻¹) · d⁻¹)
-        ∙ helper5 _ _ _ _
-        ∙ (λ i → (ℤ→R c · d⁻¹) · ·-rInv b≢0 i)
-        ∙ ·IdR _
-
-      inv-path : inv (ℕ₊₁→R≢0 (b ·₊₁ d)) ≡ inv (·-≢0 b≢0 d≢0)
-      inv-path i = invUniq {x≢0 = ℕ₊₁→R≢0 (b ·₊₁ d)} {y≢0 = ·-≢0 b≢0 d≢0}
-        (cong ℤ→R (ℕ₊₁→ℤ-·₊₁-comm b d) ∙ ℤ→R-Pres-· _ _) i
-
-      hom-helper : (a b c d : ℤ) → ℤ→R (a ·ℤ d +ℤ c ·ℤ b) ≡ ℤ→R a · ℤ→R d + ℤ→R c · ℤ→R b
-      hom-helper a b c d = ℤ→R-Pres-+ _ _ ∙ (λ i → ℤ→R-Pres-· a d i + ℤ→R-Pres-· c b i)
-
-      +-helper : map-helper (a ·ℤ ℕ₊₁→ℤ d +ℤ c ·ℤ ℕ₊₁→ℤ b , b ·₊₁ d) ≡ map-helper (a , b) + map-helper (c , d)
-      +-helper = (λ i → hom-helper a (ℕ₊₁→ℤ b) c (ℕ₊₁→ℤ d) i · inv bd≢0)
-        ∙ (λ i → (ℤ→R a · ℕ₊₁→R d + ℤ→R c · ℕ₊₁→R b) · inv-path i)
-        ∙ (λ i → (ℤ→R a · ℕ₊₁→R d + ℤ→R c · ℕ₊₁→R b) · ·-Inv b≢0 d≢0 (~ i))
-        ∙ helper1 _ _ _ _ _ _
-        ∙ (λ i → (ℤ→R a · b⁻¹) · ·-rInv d≢0 i + (ℤ→R c · d⁻¹) · ·-rInv b≢0 i)
-        ∙ helper2 _ _ _ _
-
-      ·-helper : map-helper (a ·ℤ c , b ·₊₁ d) ≡ map-helper (a , b) · map-helper (c , d)
-      ·-helper = (λ i → ℤ→R-Pres-· a c i · inv bd≢0)
-        ∙ (λ i → (ℤ→R a · ℤ→R c) · inv-path i)
-        ∙ (λ i → (ℤ→R a · ℤ→R c) · ·-Inv b≢0 d≢0 (~ i))
-        ∙ helper3 _ _ _ _
-
-
-  ℚ→K : ℚ → K
-  ℚ→K =  SetQuot.elim (λ _ → isSetK) map-helper eq-helper
-
-  ℚ→K-Pres-1 : ℚ→K 1 ≡ 1r
-  ℚ→K-Pres-1 = ·-rInv _
-
-  ℚ→K-Pres-+ : (p q : ℚ) → ℚ→K (p +ℚ q) ≡ ℚ→K p + ℚ→K q
-  ℚ→K-Pres-+ = elimProp2 (λ _ _ → isSetK _ _) +-helper
-
-  ℚ→K-Pres-· : (p q : ℚ) → ℚ→K (p ·ℚ q) ≡ ℚ→K p · ℚ→K q
-  ℚ→K-Pres-· = elimProp2 (λ _ _ → isSetK _ _) ·-helper
 
   ℚ→K-Pres>0 : (p : ℚ) → ℚLO._>0 p → ℚ→K p >0
   ℚ→K-Pres>0 = elimProp (λ _ → isPropΠ (λ _ → isProp>0 _)) >0-helper
@@ -459,19 +361,6 @@ module InclusionFromℚ (𝒦 : LinearlyOrderedField ℓ ℓ') where
     (Ordered) Ring Homomorphism Instance
 
   -}
-
-  isRingHomℚ→K : IsRingHom (CommRing→Ring ℚCommRing .snd) ℚ→K (CommRing→Ring (LinearlyOrderedCommRing→CommRing (𝒦 .fst)) .snd)
-  isRingHomℚ→K = makeIsRingHom ℚ→K-Pres-1 ℚ→K-Pres-+ ℚ→K-Pres-·
-
-  ℚ→KCommRingHom : CommRingHom ℚCommRing (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
-  ℚ→KCommRingHom = _ , IsRingHom→IsCommRingHom ℚCommRing (LinearlyOrderedCommRing→CommRing (𝒦 .fst)) ℚ→K isRingHomℚ→K
-
-  module ℚ→KHom = IsCommRingHom (ℚ→KCommRingHom .snd)
-
-  ℚ→K-Pres-- : (p q : ℚ) → ℚ→K ((ℚLO.Ord._-_) q p) ≡ ℚ→K q - ℚ→K p
-  ℚ→K-Pres-- p q =
-    ℚ→KHom.pres+ q ((ℚLO.Ord.-_) p)
-    ∙ (λ i → ℚ→K q + ℚ→KHom.pres- p i)
 
   ℚ→K-Pres< : (p q : ℚ) → ℚLO._<_ p q → ℚ→K p < ℚ→K q
   ℚ→K-Pres< p q p<q =

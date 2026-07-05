@@ -46,6 +46,12 @@ private
     helper1 : (x y z w : 𝓡 .fst) → (x · y) · (z · w) ≡ (x · z) · (y · w)
     helper1 _ _ _ _ = solve! 𝓡
 
+    helper2 : (p q : 𝓡 .fst) → ((p + q) + (1r + 1r) · (- p)) ≡ q - p
+    helper2 _ _ = solve! 𝓡
+
+    helper3 : (x : 𝓡 .fst) → x + x ≡ (1r + 1r) · x
+    helper3 _ = solve! 𝓡
+
 
 IsFieldOnOrderedCommRing : OrderedCommRing ℓ ℓ' → Type ℓ
 IsFieldOnOrderedCommRing 𝓡 = CubicalField.IsField 0r 1r _+_ _·_ (-_)
@@ -170,6 +176,28 @@ module OrderedFieldStr (𝒦 : OrderedField ℓ ℓ') where
 
   ·-lInv₊ : (x>0 : x > 0r) → inv₊ x>0 · x ≡ 1r
   ·-lInv₊ x>0 = ·Comm _ _ ∙ ·-rInv₊ x>0
+
+  middle : (p q : K) → K
+  middle p q = (p + q) / 2
+
+  middle-sym : (p q : K) → middle p q ≡ middle q p
+  middle-sym p q i = (+Comm p q i) / 2
+
+  2·middle : (p q : K) → 2r · middle p q ≡ p + q
+  2·middle p q = ·-/-lInv (p + q) 2
+
+  x/2+x/2≡x : (x : K) → middle 0r x + middle 0r x ≡ x
+  x/2+x/2≡x x = helper3 _ ∙ 2·middle 0r x ∙ +IdL x
+
+  middle-l : (p q : K) → 2r · (middle p q - p) ≡ q - p
+  middle-l p q =
+    ·DistR+ 2r (middle p q) _
+    ∙ (λ i → 2·middle p q i + 2r · (- p))
+    ∙ helper2 p q
+
+  middle-r : (p q : K) → 2r · (middle p q - q) ≡ p - q
+  middle-r p q =
+    (λ i → 2r · (middle-sym p q i - q)) ∙ middle-l q p
 
   #→≢0 : (x : K) → x # 0r → ¬ x ≡ 0r
   #→≢0 x (inl x<0) x≡0 = <-arefl x<0 x≡0

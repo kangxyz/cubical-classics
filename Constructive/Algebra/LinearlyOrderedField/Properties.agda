@@ -36,23 +36,17 @@ private
   module Helpers {ℓ : Level}(𝓡 : CommRing ℓ) where
     open CommRingStr (𝓡 .snd)
 
-    helper1 : (p q : 𝓡 .fst) → ((p + q) + (1r + 1r) · (- p)) ≡ q - p
-    helper1 _ _ = solve! 𝓡
+    helper1 : (p p⁻¹ q⁻¹ : 𝓡 .fst) → p · (p⁻¹ · q⁻¹) ≡ (p · p⁻¹) · q⁻¹
+    helper1 _ _ _ = solve! 𝓡
 
-    helper2 : (p p⁻¹ q⁻¹ : 𝓡 .fst) → p · (p⁻¹ · q⁻¹) ≡ (p · p⁻¹) · q⁻¹
+    helper2 : (q p⁻¹ q⁻¹ : 𝓡 .fst) → q · (p⁻¹ · q⁻¹) ≡ (q · q⁻¹) · p⁻¹
     helper2 _ _ _ = solve! 𝓡
 
-    helper3 : (q p⁻¹ q⁻¹ : 𝓡 .fst) → q · (p⁻¹ · q⁻¹) ≡ (q · q⁻¹) · p⁻¹
-    helper3 _ _ _ = solve! 𝓡
+    helper3 : (y z : 𝓡 .fst) → y + (z - y) ≡ z
+    helper3 _ _ = solve! 𝓡
 
-    helper4 : (y z : 𝓡 .fst) → y + (z - y) ≡ z
-    helper4 _ _ = solve! 𝓡
-
-    helper5 : (x y z : 𝓡 .fst) → x · (y · z) ≡ (y · x) · z
-    helper5 _ _ _ = solve! 𝓡
-
-    helper6 : (x : 𝓡 .fst) → x + x ≡ (1r + 1r) · x
-    helper6 _ = solve! 𝓡
+    helper4 : (x y z : 𝓡 .fst) → x · (y · z) ≡ (y · x) · z
+    helper4 _ _ _ = solve! 𝓡
 
 
 module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
@@ -69,6 +63,8 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
     using ( inv ; ·-rInv ; ·-lInv ; inv-≢0 ; invIdem ; invUniq
           ; ·-≢0 ; ·-Inv
           ; 1/_ ; 1/n·n≡1 ; _/_ ; ·-/-rInv ; ·-/-lInv
+          ; middle ; middle-sym ; 2·middle ; x/2+x/2≡x
+          ; middle-l ; middle-r
           ; #→≢0 ; inv# ; ·-lInv# ; 0#1)
 
   private
@@ -111,24 +107,6 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   -}
 
-  middle : (p q : K) → K
-  middle p q = (p + q) / 2
-
-  middle-sym : (p q : K) → middle p q ≡ middle q p
-  middle-sym p q i = (+Comm p q i) / 2
-
-  2·middle : (p q : K) → 2r · middle p q ≡ p + q
-  2·middle p q = ·-/-lInv (p + q) 2
-
-  x/2+x/2≡x : (x : K) → middle 0r x + middle 0r x ≡ x
-  x/2+x/2≡x x = helper6 _ ∙ 2·middle 0r x ∙ +IdL x
-
-  middle-l : (p q : K) → 2r · (middle p q - p) ≡ q - p
-  middle-l p q = ·DistR+ 2r (middle p q) _ ∙ (λ i → 2·middle p q i + 2r · (- p)) ∙ helper1 p q
-
-  middle-r : (p q : K) → 2r · (middle p q - q) ≡ p - q
-  middle-r p q = (λ i → 2r · (middle-sym p q i - q)) ∙ middle-l q p
-
   middle>l : p < q → middle p q > p
   middle>l {p = p} {q = q} p<q =
     Diff>0→> {x = middle p q} {y = p} (·-rPosCancel>0 {x = 2r} {y = middle p q - p} 2>0
@@ -165,7 +143,7 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
     p⁻¹·q⁻¹>0 : p⁻¹ · q⁻¹ > 0r
     p⁻¹·q⁻¹>0 = ·-Pres>0 {x = p⁻¹} {y = q⁻¹} (p>0→p⁻¹>0 {p = p} p>0) (p>0→p⁻¹>0 {p = q} q>0)
     p·p⁻¹·q⁻¹>q·q⁻¹·p⁻¹ : (p · p⁻¹) · q⁻¹ > (q · q⁻¹) · p⁻¹
-    p·p⁻¹·q⁻¹>q·q⁻¹·p⁻¹ = transport (λ i → helper2 p p⁻¹ q⁻¹ i > helper3 q p⁻¹ q⁻¹ i)
+    p·p⁻¹·q⁻¹>q·q⁻¹·p⁻¹ = transport (λ i → helper1 p p⁻¹ q⁻¹ i > helper2 q p⁻¹ q⁻¹ i)
       (·-rPosPres< {x = p⁻¹ · q⁻¹} {y = q} {z = p} p⁻¹·q⁻¹>0 p>q)
     1·q⁻¹>1·p⁻¹ : 1r · q⁻¹ > 1r · p⁻¹
     1·q⁻¹>1·p⁻¹ = transport (λ i → ·-rInv₊ p>0 i · q⁻¹ > ·-rInv₊ q>0 i · p⁻¹) p·p⁻¹·q⁻¹>q·q⁻¹·p⁻¹
@@ -198,13 +176,13 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
   -}
 
   <-+-Decompose : (x y z : K) → x + y < z → Σ[ s ∈ K ] Σ[ t ∈ K ] (x < s) × (y < t) × (z ≡ s + t)
-  <-+-Decompose x y z x+y<z = mid , z - mid , mid>x , z-mid>y , sym (helper4 mid z)
+  <-+-Decompose x y z x+y<z = mid , z - mid , mid>x , z-mid>y , sym (helper3 mid z)
     where
     mid = middle x (z - y)
     x<z-y : x < z - y
     x<z-y = +-MoveLToR< x+y<z
     y+mid<z : y + mid < z
-    y+mid<z = subst (y + mid <_) (helper4 y z) (+-lPres< (middle<r x<z-y))
+    y+mid<z = subst (y + mid <_) (helper3 y z) (+-lPres< (middle<r x<z-y))
     mid>x = middle>l x<z-y
     z-mid>y : y < z - mid
     z-mid>y = +-MoveLToR< y+mid<z
@@ -212,7 +190,7 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   private
     ·inv-helper' : (x>0 : x > 0r) → x · (y · inv₊ x>0) ≡ y
-    ·inv-helper' {x = x} y>0 = helper5 _ _ _ ∙ ·inv-helper y>0
+    ·inv-helper' {x = x} y>0 = helper4 _ _ _ ∙ ·inv-helper y>0
 
   <-·-Decompose : (x y z : K) → x > 0r → y > 0r → x · y < z
     → Σ[ s ∈ K ] Σ[ t ∈ K ] (x < s) × (y < t) × (z ≡ s · t)
