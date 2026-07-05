@@ -1,17 +1,97 @@
 {-
 
-Constructive Dedekind reals over the rationals.
-
-This is the LEM-free rational-cut presentation.  The Oracle-based classical
-Dedekind-real completion by cuts remains in Classical.DedekindCut.
-
-This module is the public entry point.  The record definition itself lives in
-Constructive.DedekindReals.Base, and its basic properties and constructions
-live in Constructive.DedekindReals.Properties.
+The rational instance of constructive Dedekind completions
 
 -}
 {-# OPTIONS --safe #-}
 module Constructive.DedekindReals where
 
-open import Constructive.DedekindReals.Base public
-open import Constructive.DedekindReals.Properties public
+open import Cubical.Foundations.Prelude
+
+open import Cubical.Data.Rationals using (ℚ)
+
+open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
+  using (ℚLinearlyOrderedField ; ℚArchimedeanLinearlyOrderedField)
+import Constructive.DedekindCompletion.Approximation as CompletionApproximation
+import Constructive.DedekindCompletion.Arithmetic as CompletionArithmetic
+import Constructive.DedekindCompletion.Base as CompletionBase
+import Constructive.DedekindCompletion.Completeness as CompletionCompleteness
+import Constructive.DedekindCompletion.Order as CompletionOrder
+
+private
+  variable
+    ℓ : Level
+
+
+baseField = ℚLinearlyOrderedField
+
+archimedeanBaseField = ℚArchimedeanLinearlyOrderedField
+
+
+module Base = CompletionBase.CompletionBase baseField
+module Order = CompletionOrder.CompletionOrder baseField
+module ArithmeticBase = CompletionArithmetic.ArithmeticBase archimedeanBaseField
+
+
+ℝᴰ : (ℓ : Level) → Type (ℓ-suc ℓ)
+ℝᴰ = Base.DedekindCompletion
+
+DedekindReals : (ℓ : Level) → Type (ℓ-suc ℓ)
+DedekindReals = ℝᴰ
+
+
+ℚ→ℝᴰ : (ℓ : Level) → ℚ → ℝᴰ ℓ
+ℚ→ℝᴰ = Base.K→𝔻
+
+
+module Approximation {ℓ : Level} =
+  CompletionApproximation.CompletionApproximation archimedeanBaseField {ℓᴾ = ℓ}
+
+module Completeness {ℓ : Level} =
+  CompletionCompleteness.CompletionCompleteness archimedeanBaseField ℓ
+
+
+module Addition {ℓ : Level} =
+  ArithmeticBase.Addition {ℓ}
+
+module Negation {ℓ : Level} =
+  CompletionArithmetic.Negation archimedeanBaseField {ℓᴾ = ℓ}
+
+module AdditiveGroup {ℓ : Level} =
+  CompletionArithmetic.AdditiveGroup archimedeanBaseField {ℓᴾ = ℓ}
+
+module Difference {ℓ : Level} =
+  CompletionArithmetic.Difference archimedeanBaseField {ℓᴾ = ℓ}
+
+module NonNegativeMultiplication {ℓ : Level} =
+  CompletionArithmetic.NonNegativeMultiplication archimedeanBaseField {ℓᴾ = ℓ}
+
+module NonNegativeProperties {ℓ : Level} =
+  CompletionArithmetic.NonNegativeProperties archimedeanBaseField {ℓᴾ = ℓ}
+
+module Multiplication {ℓ : Level} =
+  CompletionArithmetic.Multiplication archimedeanBaseField {ℓᴾ = ℓ}
+
+module Unit {ℓ : Level} =
+  CompletionArithmetic.UnitProperties archimedeanBaseField {ℓᴾ = ℓ}
+
+module Distributivity {ℓ : Level} =
+  CompletionArithmetic.MultiplicationDistributivity archimedeanBaseField {ℓᴾ = ℓ}
+
+module Associativity {ℓ : Level} =
+  CompletionArithmetic.MultiplicationAssociativity archimedeanBaseField {ℓᴾ = ℓ}
+
+module CommRing {ℓ : Level} =
+  CompletionArithmetic.CommRingStructure archimedeanBaseField {ℓᴾ = ℓ}
+
+module OrderProperties {ℓ : Level} =
+  CompletionArithmetic.OrderProperties archimedeanBaseField {ℓᴾ = ℓ}
+
+module OrderedCommRing {ℓ : Level} =
+  CompletionArithmetic.OrderedCommRingStructure archimedeanBaseField {ℓᴾ = ℓ}
+
+module Inverse {ℓ : Level} =
+  CompletionArithmetic.Inverse archimedeanBaseField {ℓᴾ = ℓ}
+
+module OrderedHeytingField {ℓ : Level} =
+  CompletionArithmetic.OrderedHeytingFieldStructure archimedeanBaseField {ℓᴾ = ℓ}
