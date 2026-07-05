@@ -25,6 +25,7 @@ open import Constructive.DedekindCompletion.Arithmetic.NonNegative
 open import Constructive.DedekindCompletion.Arithmetic.Multiplication
 open import Constructive.DedekindCompletion.Arithmetic.Difference
 open import Constructive.DedekindCompletion.Arithmetic.Distributivity
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -66,7 +67,7 @@ module OrderProperties
 
   private
     K : Type ℓ
-    K = Carrier
+    K = orderedBaseField .fst .fst .fst
 
   K→<-pres :
     (p q : K) →

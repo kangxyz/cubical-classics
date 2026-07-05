@@ -12,7 +12,7 @@ The bounded form restricts to cuts whose two sides are inhabited
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Algebra.Order.MacNeille where
+module Constructive.Algebra.Order.MacNeilleCompleteness where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -21,13 +21,14 @@ open import Cubical.Data.Sigma
 open import Cubical.HITs.PropositionalTruncation
   using (∥_∥₁)
 open import Cubical.Relation.Binary.Order.Poset
+import Constructive.Foundations.Powerset as Powerset
 
 private
   variable
     ℓ ℓ' ℓᴸ ℓᵁ ℓᴾ : Level
 
 
-module MacNeille (P : Poset ℓ ℓ') where
+module MacNeilleCompleteness (P : Poset ℓ ℓ') where
 
   private
     Carrier : Type ℓ
@@ -41,26 +42,16 @@ module MacNeille (P : Poset ℓ ℓ') where
       ; is-trans to ≤-trans
       )
 
-  Pred : (ℓᴾ : Level) → Type (ℓ-max ℓ (ℓ-suc ℓᴾ))
-  Pred ℓᴾ = Carrier → hProp ℓᴾ
+  Pred : (ℓᴾ : Level) → Type _
+  Pred ℓᴾ = Powerset.Pred Carrier ℓᴾ
 
-  _∈_ : Carrier → Pred ℓᴾ → Type ℓᴾ
-  x ∈ A = A x .fst
-
-  infix 4 _∈_
-
-  isProp∈ : (A : Pred ℓᴾ) → (x : Carrier) → isProp (x ∈ A)
-  isProp∈ A x = A x .snd
-
-  _⇔ᵖ_ : Pred ℓᴸ → Pred ℓᵁ → Type (ℓ-max ℓ (ℓ-max ℓᴸ ℓᵁ))
-  A ⇔ᵖ B = (x : Carrier) → (x ∈ A → x ∈ B) × (x ∈ B → x ∈ A)
-
-  isProp⇔ᵖ : (A : Pred ℓᴸ) (B : Pred ℓᵁ) → isProp (A ⇔ᵖ B)
-  isProp⇔ᵖ A B =
-    isPropΠ λ x →
-      isProp×
-        (isPropΠ λ _ → isProp∈ B x)
-        (isPropΠ λ _ → isProp∈ A x)
+  open Powerset
+    using
+      ( _∈_
+      ; isProp∈
+      ; _⇔ᵖ_
+      ; isProp⇔ᵖ
+      )
 
   lowerBounds : Pred ℓᵁ → Pred (ℓ-max ℓ (ℓ-max ℓ' ℓᵁ))
   lowerBounds U x =

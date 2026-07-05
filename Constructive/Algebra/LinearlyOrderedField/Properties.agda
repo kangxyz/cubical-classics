@@ -309,9 +309,6 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
   [p-q]+q≡p : (p q : K) → (p - q) + q ≡ p
   [p-q]+q≡p = helper12
 
-  left-diff+ : (p q : K) → p + (q - p) ≡ q
-  left-diff+ = helper3
-
   mul-distrib-left :
     (a b c : K) →
     a · (b + c) ≡ (a · b) + (a · c)

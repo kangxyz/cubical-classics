@@ -21,6 +21,7 @@ open import Constructive.DedekindCompletion.Arithmetic.Negation
 open import Constructive.DedekindCompletion.Arithmetic.AdditiveGroup
 open import Constructive.DedekindCompletion.Arithmetic.NonNegative
 open import Constructive.DedekindCompletion.Arithmetic.Multiplication
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -55,7 +56,7 @@ module UnitProperties (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ 
 
   private
     K : Type ℓ
-    K = Carrier
+    K = baseField .fst .fst .fst
 
   abstract
     nnMul-idR-lower⊆ :

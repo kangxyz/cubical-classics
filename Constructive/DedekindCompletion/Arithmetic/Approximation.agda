@@ -21,6 +21,7 @@ open import Constructive.DedekindCompletion.Base
 open import Constructive.DedekindCompletion.Order
 open import Constructive.DedekindCompletion.Approximation
 open import Constructive.DedekindCompletion.Arithmetic.Base
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -45,7 +46,7 @@ module NonnegativeApproximation
 
   private
     K : Type ℓ
-    K = Carrier
+    K = baseField .fst .fst .fst
 
   upper-of-nonnegative>0 :
     (x : DedekindCompletion ℓᴾ) →

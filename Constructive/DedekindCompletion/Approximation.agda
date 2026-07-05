@@ -22,6 +22,7 @@ open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Algebra.LinearlyOrderedField.Archimedean
 open import Constructive.DedekindCompletion.Base
 open import Constructive.DedekindCompletion.Order
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -53,7 +54,7 @@ module CompletionApproximation
 
   private
     K : Type ℓ
-    K = CompletionBase.Carrier 𝒦
+    K = 𝒦 .fst .fst .fst
 
     module O = CompletionOrder 𝒦
 

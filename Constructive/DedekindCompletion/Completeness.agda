@@ -22,6 +22,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Constructive.Algebra.LinearlyOrderedField.Archimedean
 open import Constructive.DedekindCompletion.Base
 open import Constructive.DedekindCompletion.Order
+open import Constructive.Foundations.Powerset as Powerset hiding (Pred)
 
 private
   variable
@@ -35,19 +36,26 @@ module CompletionCompleteness
   private
     𝒦 = 𝒜 .fst
 
+    K : Type ℓ
+    K = 𝒦 .fst .fst .fst
+
   open CompletionBase 𝒦
   module Order = CompletionOrder 𝒦
 
 
-  CompletionPred : Type (ℓ-suc (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ)))
+  completionPredLevel : Level
+  completionPredLevel = ℓ-max ℓ (ℓ-max ℓ' ℓᴾ)
+
+
+  CompletionPred : Type _
   CompletionPred =
-    DedekindCompletion ℓᴾ → hProp (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
+    Powerset.Pred (DedekindCompletion ℓᴾ) completionPredLevel
 
   _∈𝔻_ :
     DedekindCompletion ℓᴾ →
     CompletionPred →
-    Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
-  x ∈𝔻 P = P x .fst
+    Type _
+  x ∈𝔻 P = Powerset._∈_ x P
 
   infix 4 _∈𝔻_
 
@@ -55,7 +63,7 @@ module CompletionCompleteness
     (P : CompletionPred) →
     (x : DedekindCompletion ℓᴾ) →
     isProp (x ∈𝔻 P)
-  isProp∈𝔻 P x = P x .snd
+  isProp∈𝔻 P x = Powerset.isProp∈ P x
 
 
   record IsCompletionValuedCut
@@ -141,7 +149,7 @@ module CompletionCompleteness
     where
     from-completion :
       Σ[ x ∈ DedekindCompletion ℓᴾ ] x ∈𝔻 completionLower C →
-      ∥ Σ[ q ∈ Carrier ] _∈_ {ℓᴾ = ℓᴾ} q (representingLower C) ∥₁
+      ∥ Σ[ q ∈ K ] q ∈ representingLower C ∥₁
     from-completion (x , x∈L) =
       Prop.rec squash₁
         (λ (q , q∈Lx) →
@@ -159,7 +167,7 @@ module CompletionCompleteness
     where
     from-completion :
       Σ[ x ∈ DedekindCompletion ℓᴾ ] x ∈𝔻 completionUpper C →
-      ∥ Σ[ q ∈ Carrier ] _∈_ {ℓᴾ = ℓᴾ} q (representingUpper C) ∥₁
+      ∥ Σ[ q ∈ K ] q ∈ representingUpper C ∥₁
     from-completion (x , x∈U) =
       Prop.rec squash₁
         (λ (q , q∈Ux) →

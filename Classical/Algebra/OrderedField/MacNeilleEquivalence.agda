@@ -28,8 +28,9 @@ import Classical.Foundations.Powerset as Powerset
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 
-import Constructive.Algebra.Order.MacNeille as ConstructiveMacNeille
+import Constructive.Algebra.Order.MacNeilleCompleteness as ConstructiveMacNeilleCompleteness
 open import Constructive.Algebra.LinearlyOrderedField
+import Constructive.Foundations.Powerset as CP
 
 private
   variable
@@ -63,7 +64,7 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
         (λ x y z → ≤-trans {x = x} {y = y} {z = z})
         (λ x y x≤y y≤x → ≤-asym {x = x} {y = y} x≤y y≤x))
 
-  module CM = ConstructiveMacNeille.MacNeille K≤Poset
+  module CM = ConstructiveMacNeilleCompleteness.MacNeilleCompleteness K≤Poset
 
 
   classical→boundedMacNeilleComplete :
@@ -86,7 +87,7 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
       Prop.map bound-from-upper upper-inhab
       where
       bound-from-upper :
-        Σ[ u ∈ K ] u CM.∈ CM.upper C →
+        Σ[ u ∈ K ] u CP.∈ CM.upper C →
         Σ[ u ∈ K ] ((x : K) → x ∈ℙ lower-sub → x ≤ u)
       bound-from-upper (u , u∈U) =
         u ,
@@ -100,11 +101,11 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
     s : K
     s = lower-sup .sup
 
-    lower→≤s : (x : K) → x CM.∈ CM.lower C → x ≤ s
+    lower→≤s : (x : K) → x CP.∈ CM.lower C → x ≤ s
     lower→≤s x x∈L =
       lower-sup .bound x (Inhab→∈ (CM.lower C) x∈L)
 
-    ≤s→lower : (x : K) → x ≤ s → x CM.∈ CM.lower C
+    ≤s→lower : (x : K) → x ≤ s → x CP.∈ CM.lower C
     ≤s→lower x x≤s =
       CM.MacNeilleCut.lower-is-lowerBounds C x .snd
         λ u u∈U →
@@ -115,14 +116,14 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
                 CM.MacNeilleCut.upper-is-upperBounds C u .fst u∈U l
                   (∈→Inhab (CM.lower C) l∈lower-sub))
 
-    upper→s≤ : (u : K) → u CM.∈ CM.upper C → s ≤ u
+    upper→s≤ : (u : K) → u CP.∈ CM.upper C → s ≤ u
     upper→s≤ u u∈U =
       lower-sup .least u
         λ l l∈lower-sub →
           CM.MacNeilleCut.upper-is-upperBounds C u .fst u∈U l
             (∈→Inhab (CM.lower C) l∈lower-sub)
 
-    s≤→upper : (u : K) → s ≤ u → u CM.∈ CM.upper C
+    s≤→upper : (u : K) → s ≤ u → u CP.∈ CM.upper C
     s≤→upper u s≤u =
       CM.MacNeilleCut.upper-is-upperBounds C u .snd
         λ l l∈L →
@@ -144,7 +145,7 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
 
   lowerHullPred : ℙ K → CM.Pred (ℓ-max ℓ ℓ')
   lowerHullPred A x =
-    ((u : K) → u CM.∈ upperBoundPred A → x ≤ u) ,
+    ((u : K) → u CP.∈ upperBoundPred A → x ≤ u) ,
     isPropΠ2 λ u _ → isProp≤ {x = x} {y = u}
 
   powersetMacNeilleCut : ℙ K → CM.MacNeilleCut (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
@@ -174,7 +175,7 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
     lower-inhab , upper-bounded
     where
     lower-inhab :
-      ∥ Σ[ x ∈ K ] x CM.∈ CM.lower (powersetMacNeilleCut A) ∥₁
+      ∥ Σ[ x ∈ K ] x CP.∈ CM.lower (powersetMacNeilleCut A) ∥₁
     lower-inhab =
       Prop.map
         (λ (a , a∈A) → a , λ u u∈upper → u∈upper a a∈A)
@@ -199,7 +200,7 @@ module MacNeilleEquivalence ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrderedField �
     represents : CM.RepresentsMacNeilleCut C s
     represents = principal .snd
 
-    A⊆lower : (x : K) → x ∈ℙ A → x CM.∈ CM.lower C
+    A⊆lower : (x : K) → x ∈ℙ A → x CP.∈ CM.lower C
     A⊆lower x x∈A u u∈upper =
       u∈upper x x∈A
 

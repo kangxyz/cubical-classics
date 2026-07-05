@@ -12,7 +12,6 @@ module Constructive.DedekindCompletion.Base where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
-open import Cubical.Foundations.Univalence using (hPropExt)
 
 open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Sigma
@@ -22,6 +21,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedField
+import Constructive.Foundations.Powerset as Powerset
 
 private
   variable
@@ -36,44 +36,25 @@ module CompletionBase (𝒦 : LinearlyOrderedField ℓ ℓ') where
     K : Type ℓ
     K = 𝒦 .fst .fst .fst
 
-  Carrier : Type ℓ
-  Carrier = K
+  private
+    predLevel : Level → Level
+    predLevel ℓᴾ = ℓ-max ℓ (ℓ-max ℓ' ℓᴾ)
 
 
-  Pred : (ℓᴾ : Level) → Type (ℓ-suc (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ)))
-  Pred ℓᴾ = K → hProp (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
+  Pred : (ℓᴾ : Level) → Type _
+  Pred ℓᴾ = Powerset.Pred K (predLevel ℓᴾ)
 
-  _∈_ : K → Pred ℓᴾ → Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
-  q ∈ P = P q .fst
-
-  infix 4 _∈_
-
-  isProp∈ : (P : Pred ℓᴾ) → (q : K) → isProp (q ∈ P)
-  isProp∈ P q = P q .snd
-
-  isSetPred : isSet (Pred ℓᴾ)
-  isSetPred = isSetΠ λ _ → isSetHProp
-
-
-  _⊆_ : Pred ℓᴾ → Pred ℓᴾ → Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
-  P ⊆ Q = (q : K) → q ∈ P → q ∈ Q
-
-  infix 4 _⊆_
-
-  isProp⊆ : (P Q : Pred ℓᴾ) → isProp (P ⊆ Q)
-  isProp⊆ P Q = isPropΠ2 λ q _ → isProp∈ Q q
-
-  ⊆-refl : (P : Pred ℓᴾ) → P ⊆ P
-  ⊆-refl P q q∈P = q∈P
-
-  ⊆-trans : (P Q R : Pred ℓᴾ) → P ⊆ Q → Q ⊆ R → P ⊆ R
-  ⊆-trans P Q R P⊆Q Q⊆R q q∈P = Q⊆R q (P⊆Q q q∈P)
-
-  predExt : (P Q : Pred ℓᴾ) → P ⊆ Q → Q ⊆ P → P ≡ Q
-  predExt P Q P⊆Q Q⊆P =
-    funExt λ q →
-      TypeOfHLevel≡ 1
-        (hPropExt (isProp∈ P q) (isProp∈ Q q) (P⊆Q q) (Q⊆P q))
+  open Powerset
+    using
+      ( _∈_
+      ; isProp∈
+      ; isSetPred
+      ; _⊆_
+      ; isProp⊆
+      ; ⊆-refl
+      ; ⊆-trans
+      ; predExt
+      )
 
 
   record IsDedekindCut (L U : Pred ℓᴾ) : Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ)) where

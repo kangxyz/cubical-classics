@@ -18,6 +18,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -35,7 +36,7 @@ module Negation (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ : Leve
 
   private
     K : Type ℓ
-    K = Carrier
+    K = 𝒦 .fst .fst .fst
 
   -𝔻_ : DedekindCompletion ℓᴾ → DedekindCompletion ℓᴾ
   (-𝔻 x) .lower q = (- q ∈ upper x) , isProp∈ (upper x) (- q)

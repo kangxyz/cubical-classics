@@ -22,6 +22,7 @@ import Cubical.Relation.Binary.Order.StrictOrder as StrictOrder
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion.Base
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable

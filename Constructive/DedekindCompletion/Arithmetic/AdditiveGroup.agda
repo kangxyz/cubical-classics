@@ -18,6 +18,7 @@ open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
 open import Constructive.DedekindCompletion.Arithmetic.Base
 open import Constructive.DedekindCompletion.Arithmetic.Negation
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable

@@ -52,9 +52,6 @@ module OrderedHeytingFieldStructure
   open Inverse 𝒜 {ℓᴾ} public
     using (inv#)
 
-  orderedCommRing : OrderedCommRing ℓ𝔻 ℓ≤
-  orderedCommRing = DedekindCompletionOrderedCommRing
-
   DedekindCompletionIsHeytingFieldOnOrderedCommRing :
     OrderedHeytingField.IsHeytingFieldOnOrderedCommRing DedekindCompletionOrderedCommRing
   DedekindCompletionIsHeytingFieldOnOrderedCommRing

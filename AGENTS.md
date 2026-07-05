@@ -23,6 +23,9 @@ documentation tone, and module style, follow `STYLE.md`.
 ## Proof Engineering
 
 - Reuse existing infrastructure before adding local helper APIs.
+- Do not add thin aliases that merely repeat an existing definition without
+  shortening code, clarifying a real boundary, or fixing a local universe or
+  implicit-argument policy.
 - Add shared lemmas only when they clarify a repeated pattern or real
   interface boundary.
 - Use solvers only for the fragments they cover; keep the remaining reasoning

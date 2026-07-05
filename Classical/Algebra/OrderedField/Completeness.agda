@@ -214,8 +214,6 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     private
       K  = 𝒦  .fst .fst .fst
       K' = 𝒦' .fst .fst .fst
-      isSetK  = is-set
-      isSetK' = is-set'
       f-map = ring-hom .fst
 
 
@@ -271,7 +269,7 @@ module _ ⦃ 🤖 : Oracle ⦄ where
 
 
     isEmbedding-f : isEmbedding f-map
-    isEmbedding-f = injEmbedding isSetK' (λ p → homRefl≡ _ _ p)
+    isEmbedding-f = injEmbedding is-set' (λ p → homRefl≡ _ _ p)
 
     isSurjection-f : isSurjection f-map
     isSurjection-f y = ∣ _ , fiber-path y ∣₁

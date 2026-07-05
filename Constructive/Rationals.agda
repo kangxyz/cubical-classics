@@ -521,14 +521,6 @@ mul-distrib-left :
 mul-distrib-left = ℚ.·DistL+
 
 
-left-diff+ :
-  (x m : ℚ) →
-  x ℚ.+ (m ℚ.- x) ≡ m
-left-diff+ x m =
-  ℚ.+Comm x (m ℚ.- x) ∙
-  [p-q]+q≡p m x
-
-
 mul-mono-positive-< :
   {a b c d : ℚ} →
   a ℚOrder.< c →

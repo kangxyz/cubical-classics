@@ -25,10 +25,7 @@ private
 
 module Difference (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ : Level} where
 
-  𝒦 : LinearlyOrderedField ℓ ℓ'
-  𝒦 = 𝒜 .fst
-
-  open CompletionBase 𝒦
+  open CompletionBase (𝒜 .fst)
   open ArithmeticBase 𝒜
   open Addition {ℓᴾ}
   open Negation 𝒜 {ℓᴾ}
@@ -38,12 +35,6 @@ module Difference (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ : Le
   x -𝔻 y = x +𝔻 (-𝔻 y)
 
   infixl 6 _-𝔻_
-
-  difference-neg-swap' :
-    (a b : DedekindCompletion ℓᴾ) →
-    a -𝔻 b ≡ -𝔻 (b -𝔻 a)
-  difference-neg-swap' = difference-neg-swap
-
 
 module DifferenceProperties
   (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ : Level} where

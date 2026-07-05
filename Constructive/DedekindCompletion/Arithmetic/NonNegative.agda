@@ -23,6 +23,7 @@ open import Constructive.DedekindCompletion
 open import Constructive.DedekindCompletion.Arithmetic.Base
 open import Constructive.DedekindCompletion.Arithmetic.Approximation
 open import Constructive.DedekindCompletion.Arithmetic.AdditiveGroup
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -58,7 +59,7 @@ module NonNegativeMultiplication
     module CutOrder = CompletionOrder 𝒦₀
 
     K : Type ℓ
-    K = Carrier
+    K = 𝒦₀ .fst .fst .fst
 
   _≥0 : DedekindCompletion ℓᴾ → Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
   x ≥0 = CutOrder._≤_ 0𝔻 x
@@ -1020,7 +1021,7 @@ module NonNegativeProperties
 
   private
     K : Type ℓ
-    K = Carrier
+    K = baseField .fst .fst .fst
 
   nnMul-lower-positive-product :
     (x y : DedekindCompletion ℓᴾ) →
@@ -1340,7 +1341,7 @@ module NonNegativeProperties
         q<split : q < ac + (m - ac)
         q<split =
           subst (λ v → q < v)
-            (sym (left-diff+ ac m))
+            (sym (p+[q-p]≡q ac m))
             q<m
 
     nonpos-nonpos-absurd :

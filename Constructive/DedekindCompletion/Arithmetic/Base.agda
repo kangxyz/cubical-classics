@@ -19,6 +19,7 @@ import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.DedekindCompletion
 open import Constructive.DedekindCompletion.Approximation
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -35,7 +36,7 @@ module ArithmeticBase (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') where
 
   private
     K : Type ℓ
-    K = CompletionBase.Carrier 𝒦
+    K = 𝒦 .fst .fst .fst
 
     module CutOrder = CompletionOrder 𝒦
 

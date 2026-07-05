@@ -136,7 +136,6 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
 
   private
     K = 𝒦 .fst .fst
-    isSetK = is-set
 
   open Helpers (OrderedField→CommRing 𝒦)
 
@@ -209,16 +208,16 @@ module InclusionFromℚ (𝒦 : OrderedField ℓ ℓ') where
 
 
   ℚ→K : ℚ → K
-  ℚ→K = SetQuot.elim (λ _ → isSetK) map-helper eq-helper
+  ℚ→K = SetQuot.elim (λ _ → is-set) map-helper eq-helper
 
   ℚ→K-Pres-1 : ℚ→K 1 ≡ 1r
   ℚ→K-Pres-1 = ·-rInv _
 
   ℚ→K-Pres-+ : (p q : ℚ) → ℚ→K (p +ℚ q) ≡ ℚ→K p + ℚ→K q
-  ℚ→K-Pres-+ = elimProp2 (λ _ _ → isSetK _ _) +-helper
+  ℚ→K-Pres-+ = elimProp2 (λ _ _ → is-set _ _) +-helper
 
   ℚ→K-Pres-· : (p q : ℚ) → ℚ→K (p ·ℚ q) ≡ ℚ→K p · ℚ→K q
-  ℚ→K-Pres-· = elimProp2 (λ _ _ → isSetK _ _) ·-helper
+  ℚ→K-Pres-· = elimProp2 (λ _ _ → is-set _ _) ·-helper
 
   isRingHomℚ→K : IsRingHom (CommRing→Ring ℚCommRing .snd) ℚ→K (CommRing→Ring (OrderedField→CommRing 𝒦) .snd)
   isRingHomℚ→K =

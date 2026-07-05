@@ -25,6 +25,7 @@ open import Constructive.DedekindCompletion.Arithmetic.Negation
 open import Constructive.DedekindCompletion.Arithmetic.NonNegative
 open import Constructive.DedekindCompletion.Arithmetic.Multiplication
 open import Constructive.DedekindCompletion.Arithmetic.Order
+open import Constructive.Foundations.Powerset hiding (Pred)
 
 private
   variable
@@ -66,7 +67,7 @@ module Inverse (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ : Level
 
   private
     K : Type ℓ
-    K = Carrier
+    K = inverseBaseField .fst .fst .fst
 
   InvLowerWitness : DedekindCompletion ℓᴾ → K → Type (ℓ-max ℓ (ℓ-max ℓ' ℓᴾ))
   InvLowerWitness x q =
