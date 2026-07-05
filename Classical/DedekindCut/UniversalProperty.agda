@@ -54,7 +54,7 @@ private
 
 
 module UniversalProperty ⦃ 🤖 : Oracle ⦄
-  (𝒦  : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 . fst)) where
+  (𝒦  : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst .fst)) where
 
   open Oracle 🤖
 

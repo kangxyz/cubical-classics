@@ -28,7 +28,8 @@ The library proves, among other things:
 - canonical ordered homomorphisms from `ℤ` and `ℚ` into ordered targets;
 - LEM-free constructive Dedekind completions over Archimedean linearly ordered
   fields, with ordered arithmetic, ordered Heyting-field structure, and
-  same-universe Dedekind completeness;
+  same-universe Dedekind completeness, plus the truncated Archimedean
+  property;
 - a constructive formulation of MacNeille completeness for posets, plus its
   classical comparison with the powerset supremum principle for ordered fields;
 - a predicative constructive powerset interface used by constructive cuts and
@@ -94,7 +95,7 @@ The code is split by whether it uses the library's classical `Oracle`.
   including `Powerset`, the constructive predicate API used by constructive
   Dedekind cuts and MacNeille completeness.
 - `Constructive/Algebra/OrderedCommRing/` builds on Cubical's ordered
-  commutative rings, with morphisms and univalence.
+  commutative rings, with Archimedean properties, morphisms, and univalence.
 - `Constructive/Algebra/Order/` contains constructive order-completeness
   notions, including `MacNeilleCompleteness` for posets.
 - `Constructive/Algebra/LinearlyOrderedCommRing/` adds trichotomy,
@@ -112,7 +113,8 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/DedekindCompletion/` contains the parameterized two-sided
   Dedekind-cut construction over a linearly ordered field, principal cuts,
   order lemmas, ordered arithmetic, ordered Heyting-field structure, generic
-  Dedekind completeness, and the rational Archimedean base-field instance.
+  Dedekind completeness, the truncated Archimedean property, and the rational
+  Archimedean base-field instance.
 - `Constructive/DedekindReals` contains the `ℚ` instance of the LEM-free
   constructive Dedekind completion, preserving the rational Dedekind-real API.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,

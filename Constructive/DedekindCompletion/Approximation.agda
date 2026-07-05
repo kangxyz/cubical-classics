@@ -49,7 +49,7 @@ module CompletionApproximation
   𝒦 : LinearlyOrderedField ℓ ℓ'
   𝒦 = 𝒜 .fst
 
-  archimedean : isArchimedean (𝒦 .fst)
+  archimedean : isArchimedean (𝒦 .fst .fst)
   archimedean = 𝒜 .snd
 
   private

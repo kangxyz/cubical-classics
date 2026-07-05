@@ -855,7 +855,7 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 open import Constructive.Preliminary.Nat
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 
-module _ (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst)) where
+module _ (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst .fst)) where
 
   open LinearlyOrderedFieldStr 𝒦
 

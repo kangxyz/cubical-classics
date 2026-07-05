@@ -19,4 +19,4 @@ private
 
 ArchimedeanLinearlyOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
 ArchimedeanLinearlyOrderedField ℓ ℓ' =
-  Σ[ 𝒦 ∈ LinearlyOrderedField ℓ ℓ' ] isArchimedean (𝒦 .fst)
+  Σ[ 𝒦 ∈ LinearlyOrderedField ℓ ℓ' ] isArchimedean (𝒦 .fst .fst)

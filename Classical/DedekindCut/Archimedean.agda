@@ -46,7 +46,7 @@ private
 
 
 module Archimedean ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedeanK : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedeanK : isArchimedean (𝒦 .fst .fst))
   where
 
   open Oracle 🤖

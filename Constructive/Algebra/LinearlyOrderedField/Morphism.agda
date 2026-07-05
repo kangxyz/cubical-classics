@@ -149,7 +149,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
   isDense = {x y : K} → x < y → ∥ Σ[ r ∈ K' ] (x < f-map r) × (f-map r < y) ∥₁
 
 
-  isArchimedean→isUnboundedΣ : isArchimedean (𝒦 .fst) → isUnboundedΣ
+  isArchimedean→isUnboundedΣ : isArchimedean (𝒦 .fst .fst) → isUnboundedΣ
   isArchimedean→isUnboundedΣ archimedean x =
     (helper .fst) ⋆' 1r' , subst (_> x) (sym (homPres⋆ _ _)) (helper .snd)
     where
@@ -157,7 +157,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
     helper = archimedean x (f-map 1r') (homPres>0 _ 1>'0)
 
 
-  isArchimedean→isUnbounded : isArchimedean (𝒦 .fst) → isUnbounded
+  isArchimedean→isUnbounded : isArchimedean (𝒦 .fst .fst) → isUnbounded
   isArchimedean→isUnbounded archimedean x = ∣ isArchimedean→isUnboundedΣ archimedean x ∣₁
 
 
@@ -227,7 +227,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
   private
 
     module _
-      (archimedean : isArchimedean (𝒦 .fst))
+      (archimedean : isArchimedean (𝒦 .fst .fst))
       (a b : K)(ε : K')
       (fε>0 : f-map ε > 0r)(fε<δ : f-map ε < b - a)
       (lower : K')(lower<a : f-map lower < a) where
@@ -303,7 +303,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
         subst (_< b) (in-the-image (suc n₀)) b>sucn
 
 
-  isArchimedean→isDenseΣ : isArchimedean (𝒦 .fst) → isDenseΣ
+  isArchimedean→isDenseΣ : isArchimedean (𝒦 .fst .fst) → isDenseΣ
   isArchimedean→isDenseΣ archimedean {x = x} {y = y} x<y =
     let (lower , lower<a) =
           isUnboundedΣ→isLowerUnboundedΣ (isArchimedean→isUnboundedΣ archimedean) x
@@ -311,7 +311,7 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
           isUnboundedΣ→isArbitrarilySmallΣ (isArchimedean→isUnboundedΣ archimedean) (y - x) (>→Diff>0 x<y)
     in among-them archimedean x y ε fε>0 fε<δ lower lower<a
 
-  isArchimedean→isDense : isArchimedean (𝒦 .fst) → isDense
+  isArchimedean→isDense : isArchimedean (𝒦 .fst .fst) → isDense
   isArchimedean→isDense archimedean x<y = ∣ isArchimedean→isDenseΣ archimedean x<y ∣₁
 
 {-

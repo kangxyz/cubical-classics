@@ -44,7 +44,7 @@ private
 
 
 module Multiplication ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 . fst))
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst .fst))
   where
 
   private

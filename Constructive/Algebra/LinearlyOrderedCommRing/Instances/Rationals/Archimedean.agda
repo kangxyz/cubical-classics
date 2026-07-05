@@ -141,5 +141,5 @@ archimedean q ε ε>0 = case-split (dec< q (zero ⋆ ε))
 
 -- The Archimedean property of ℚ
 
-isArchimedeanℚ : isArchimedean ℚLinearlyOrderedCommRing
+isArchimedeanℚ : isArchimedean (ℚLinearlyOrderedCommRing .fst)
 isArchimedeanℚ = transport (λ i → (q ε : ℚ) → ε > 0 → Σ[ n ∈ ℕ ] ⋆≡⋆' n ε i > q) archimedean

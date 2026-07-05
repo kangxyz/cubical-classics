@@ -29,7 +29,7 @@ private
 
 
 module Completion ⦃ 🤖 : Oracle ⦄
-  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst)) where
+  (𝒦 : LinearlyOrderedField ℓ ℓ')(archimedean : isArchimedean (𝒦 .fst .fst)) where
 
   open MacNeilleCompleteOrderedField
   open CompletenessOfCuts 𝒦

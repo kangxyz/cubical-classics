@@ -36,7 +36,7 @@ module NonNegativeMultiplication
   𝒦₀ : LinearlyOrderedField ℓ ℓ'
   𝒦₀ = 𝒜 .fst
 
-  arch : isArchimedean (𝒦₀ .fst)
+  arch : isArchimedean (𝒦₀ .fst .fst)
   arch = 𝒜 .snd
 
   open CompletionBase 𝒦₀

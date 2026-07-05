@@ -7,13 +7,12 @@
 module Constructive.Algebra.LinearlyOrderedCommRing.Archimedean where
 
 open import Cubical.Foundations.Prelude
-open import Cubical.Data.Nat using (ℕ ; zero ; suc)
-open import Cubical.HITs.PropositionalTruncation as Prop
-open import Cubical.Algebra.CommRing
+open import Cubical.Algebra.CommRing using (CommRingStr)
 open import Cubical.Relation.Nullary
 
 open import Constructive.Preliminary.Nat
 open import Constructive.Algebra.LinearlyOrderedCommRing
+open import Constructive.Algebra.OrderedCommRing.Archimedean public
 
 private
   variable
@@ -22,30 +21,14 @@ private
 
 module _ (𝓡 : LinearlyOrderedCommRing ℓ ℓ') where
 
-  private
-    R = 𝓡 .fst .fst
-
-  open CommRingStr   ((LinearlyOrderedCommRing→CommRing 𝓡) .snd)
+  open CommRingStr ((LinearlyOrderedCommRing→CommRing 𝓡) .snd) using (0r)
   open LinearlyOrderedCommRingStr 𝓡
 
+  -- Linearity turns the truncated ordered-ring property into an untruncated
+  -- witness.
 
-  -- We have two versions of the Archimedean property.
-  -- The untruncated version seems much stronger than the truncated version,
-  -- but they turn out to be equivalent.
-
-  isArchimedean : Type (ℓ-max ℓ ℓ')
-  isArchimedean = (q ε : R) → ε > 0r → Σ[ n ∈ ℕ ] n ⋆ ε > q
-
-  isArchimedean∥∥ : Type (ℓ-max ℓ ℓ')
-  isArchimedean∥∥ = (q ε : R) → ε > 0r → ∥ Σ[ n ∈ ℕ ] n ⋆ ε > q ∥₁
-
-
-  -- The equivalence; one side is trivial.
-
-  isArchimedean→isArchimedean∥∥ : isArchimedean → isArchimedean∥∥
-  isArchimedean→isArchimedean∥∥ archimedean q ε ε>0 = ∣ archimedean q ε ε>0 ∣₁
-
-  isArchimedean∥∥→isArchimedean : isArchimedean∥∥ → isArchimedean
+  isArchimedean∥∥→isArchimedean :
+    isArchimedean∥∥ (𝓡 .fst) → isArchimedean (𝓡 .fst)
   isArchimedean∥∥→isArchimedean ∥archimedean∥ q ε ε>0 = case-split (trichotomy q 0r)
     where
     case-split : Trichotomy (𝓡 .fst) q 0r → _

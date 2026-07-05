@@ -167,10 +167,10 @@ module MacNeilleCompleteOrderedField ⦃ 🤖 : Oracle ⦄ (𝒦 : LinearlyOrder
 
   -- A MacNeille complete ordered field is Archimedean.
 
-  isMacNeilleComplete→isArchimedean∥∥ : isMacNeilleComplete → isArchimedean∥∥ (𝒦 .fst)
+  isMacNeilleComplete→isArchimedean∥∥ : isMacNeilleComplete → isArchimedean∥∥ (𝒦 .fst .fst)
   isMacNeilleComplete→isArchimedean∥∥ getSup q ε ε>0 = ¬∀¬→∃ (no-way getSup q ε ε>0)
 
-  isMacNeilleComplete→isArchimedean : isMacNeilleComplete → isArchimedean (𝒦 .fst)
+  isMacNeilleComplete→isArchimedean : isMacNeilleComplete → isArchimedean (𝒦 .fst .fst)
   isMacNeilleComplete→isArchimedean getSup = isArchimedean∥∥→isArchimedean (𝒦 .fst) (isMacNeilleComplete→isArchimedean∥∥ getSup)
 
 
