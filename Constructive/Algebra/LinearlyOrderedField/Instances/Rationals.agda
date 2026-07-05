@@ -19,16 +19,15 @@ open import Constructive.Algebra.LinearlyOrderedCommRing.Instances.Rationals.Arc
   using (isArchimedeanℚ) public
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
 open import Constructive.Algebra.LinearlyOrderedField
+open import Constructive.Algebra.OrderedField.Instances.Rationals
+  using (ℚOrderedField) public
 
 
 -- ℚ is a linearly ordered field
 
 ℚLinearlyOrderedField : LinearlyOrderedField ℓ-zero ℓ-zero
 ℚLinearlyOrderedField =
-  ℚLinearlyOrderedCommRing , CubicalField.FieldStr.isField (ℚField .snd)
-
-ℚOrderedField : OrderedField ℓ-zero ℓ-zero
-ℚOrderedField = ℚLinearlyOrderedField
+  ℚLinearlyOrderedCommRing , ℚOrderedField .snd
 
 
 -- Inclusions from natural numbers.

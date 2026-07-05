@@ -23,6 +23,8 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Algebra.OrderedCommRing.Morphism
+open import Constructive.Algebra.OrderedField.Morphism public
+  using (OrderedFieldHom)
 open import Constructive.Algebra.LinearlyOrderedCommRing
 import Constructive.Algebra.LinearlyOrderedCommRing.Morphism as LinearMorphism
 open import Constructive.Algebra.LinearlyOrderedCommRing.Univalence
@@ -94,21 +96,6 @@ uaLinearlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f} is-equiv i .fst =
   uaLinearlyOrderedCommRing {𝓡 = 𝒦 .fst} {𝓡' = 𝒦' .fst} {f = f} is-equiv i
 uaLinearlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} is-equiv i .snd =
   liftPathIsFieldOnLinearlyOrderedCommRing (λ i → uaLinearlyOrderedField is-equiv i .fst) (𝒦 .snd) (𝒦' .snd) i
-
-
-OrderedFieldHom : (𝒦 : OrderedField ℓ ℓ')(𝒦' : OrderedField ℓ'' ℓ''') → Type _
-OrderedFieldHom = LinearlyOrderedFieldHom
-
-
-isOrderedFieldEquiv : OrderedFieldHom 𝒦 𝒦' → Type _
-isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f =
-  isLinearlyOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f
-
-
-uaOrderedField : {𝒦 𝒦' : OrderedField ℓ ℓ'}
-  {f : OrderedFieldHom 𝒦 𝒦'} → isOrderedFieldEquiv {𝒦 = 𝒦} {𝒦' = 𝒦'} f → 𝒦 ≡ 𝒦'
-uaOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f} =
-  uaLinearlyOrderedField {𝒦 = 𝒦} {𝒦' = 𝒦'} {f = f}
 
 
 {-
@@ -342,15 +329,6 @@ module LinearlyOrderedFieldHomStr (f : LinearlyOrderedFieldHom 𝒦' 𝒦) where
   isArchimedean→isDense : isArchimedean (𝒦 .fst) → isDense
   isArchimedean→isDense archimedes x<y = ∣ isArchimedean→isDenseΣ archimedes x<y ∣₁
 
-
-module OrderedFieldHomStr
-  {ℓ ℓ' ℓ'' ℓ''' : Level}
-  {𝒦  : OrderedField ℓ ℓ'}
-  {𝒦' : OrderedField ℓ'' ℓ'''}
-  (f : OrderedFieldHom 𝒦' 𝒦) where
-  open LinearlyOrderedFieldHomStr {𝒦' = 𝒦'} {𝒦 = 𝒦} f public
-
-
 {-
 
   The Canonical Map from ℚ
@@ -519,5 +497,5 @@ module InclusionFromℚ (𝒦 : LinearlyOrderedField ℓ ℓ') where
   ℚ→KLinearlyOrderedFieldHom : LinearlyOrderedFieldHom ℚLinearlyOrderedField 𝒦
   ℚ→KLinearlyOrderedFieldHom = ℚ→KOrderedCommRingHom
 
-  ℚ→KOrderedFieldHom : OrderedFieldHom ℚOrderedField 𝒦
-  ℚ→KOrderedFieldHom = ℚ→KLinearlyOrderedFieldHom
+  ℚ→KOrderedFieldHom : OrderedFieldHom ℚOrderedField (LinearlyOrderedField→OrderedField 𝒦)
+  ℚ→KOrderedFieldHom = ℚ→KOrderedCommRingHom

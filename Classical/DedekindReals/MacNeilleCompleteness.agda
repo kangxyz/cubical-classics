@@ -34,7 +34,6 @@ import Classical.Foundations.Powerset as Powerset
 open import Classical.Algebra.OrderedField.Extremum
 open import Classical.Algebra.OrderedField.Completeness
 
-import Constructive.Algebra.OrderedField as WeakOF
 import Constructive.Algebra.LinearlyOrderedCommRing as LinearOCR
 import Constructive.Algebra.LinearlyOrderedField as LinearOF
 open import Constructive.DedekindReals
@@ -112,10 +111,7 @@ module LinearlyOrderedFieldStructure ⦃ 🤖 : Oracle ⦄ {ℓ : Level} where
     ¬ x ≡ 0𝔻 →
     Σ[ y ∈ DedekindReal ℓ ] x * y ≡ 1𝔻
   hasInverse x x≢0 =
-    WeakOF.IsOrderedField.inv#
-      (OF.DedekindOrderedField .snd)
-      x
-      (#from≠0 x x≢0)
+    OF.inv# x (#from≠0 x x≢0)
 
   0≢1 : ¬ 0𝔻 ≡ 1𝔻
   0≢1 0≡1 =

@@ -24,6 +24,7 @@ open import Cubical.Algebra.Field as CubicalField
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Algebra.LinearlyOrderedCommRing
+import Constructive.Algebra.OrderedField.Base as OrderedFieldBase
 open import Constructive.Algebra.LinearlyOrderedField.Base
 
 private
@@ -53,9 +54,6 @@ private
     helper6 : (x : 𝓡 .fst) → x + x ≡ (1r + 1r) · x
     helper6 _ = solve! 𝓡
 
-    field-helper1 : (x y z w : 𝓡 .fst) → (x · y) · (z · w) ≡ (x · z) · (y · w)
-    field-helper1 _ _ _ _ = solve! 𝓡
-
 
 module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
@@ -66,6 +64,12 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
   open RingTheory  (CommRing→Ring (Field→CommRing 𝒦ᶠ)) public
   open Units       (Field→CommRing 𝒦ᶠ) public
   open LinearlyOrderedCommRingStr (𝒦 .fst) public
+  module OF = OrderedFieldBase.OrderedFieldStr (LinearlyOrderedField→OrderedField 𝒦)
+  open OF public
+    using ( inv ; ·-rInv ; ·-lInv ; inv-≢0 ; invIdem ; invUniq
+          ; ·-≢0 ; ·-Inv
+          ; 1/_ ; 1/n·n≡1 ; _/_ ; ·-/-rInv ; ·-/-lInv
+          ; #→≢0 ; inv# ; ·-lInv# ; 0#1)
 
   private
     K = 𝒦 .fst .fst .fst
@@ -75,50 +79,20 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
 
   open Helpers (LinearlyOrderedCommRing→CommRing (𝒦 .fst))
 
-  inv : ¬ x ≡ 0r → K
-  inv {x = x} x≢0 = x [ x≢0 ]⁻¹
+  {-
 
-  ·-rInv : (x≢0 : ¬ x ≡ 0r) → x · inv x≢0 ≡ 1r
-  ·-rInv {x = x} x≢0 = ·⁻¹≡1 x x≢0
+    Inverse of positive element
 
-  ·-lInv : (x≢0 : ¬ x ≡ 0r) → inv x≢0 · x ≡ 1r
-  ·-lInv x≢0 = ·Comm _ _ ∙ ·-rInv x≢0
+  -}
 
-  inv-≢0 : (x≢0 : ¬ x ≡ 0r) → ¬ inv x≢0 ≡ 0r
-  inv-≢0 {x = x} x≢0 x⁻¹≡0 = x≢0 (sym (·IdR _) ∙ (λ i → x · 1≡0 i) ∙ 0RightAnnihilates _)
-    where
-    1≡0 : 1r ≡ 0r
-    1≡0 = sym (·-rInv _) ∙ (λ i → x · x⁻¹≡0 i) ∙ 0RightAnnihilates _
+  inv₊ : q > 0r → K
+  inv₊ q>0 = OF.inv₊ q>0
 
-  invIdem : (x≢0 : ¬ x ≡ 0r) → inv (inv-≢0 x≢0) ≡ x
-  invIdem {x = x} x≢0 = sym (·IdL _)
-    ∙ (λ i → ·-rInv x≢0 (~ i) · inv (inv-≢0 x≢0))
-    ∙ sym (·Assoc _ _ _) ∙ (λ i →  x · ·-rInv (inv-≢0 x≢0) i) ∙ ·IdR _
+  ·-rInv₊ : (q>0 : q > 0r) → q · inv₊ q>0 ≡ 1r
+  ·-rInv₊ q>0 = OF.·-rInv₊ q>0
 
-  invUniq : {x≢0 : ¬ x ≡ 0r}{y≢0 : ¬ y ≡ 0r} → x ≡ y → inv x≢0 ≡ inv y≢0
-  invUniq {x≢0 = x≢0} {y≢0 = y≢0} x≡y i = inv (x≢0≡y≢0 i)
-    where
-    x≢0≡y≢0 : PathP (λ i → ¬ (x≡y i) ≡ 0r) x≢0 y≢0
-    x≢0≡y≢0 = isProp→PathP (λ i → isPropΠ (λ _ → isProp⊥)) x≢0 y≢0
-
-  ·-≢0 : (x≢0 : ¬ x ≡ 0r)(y≢0 : ¬ y ≡ 0r) → ¬ x · y ≡ 0r
-  ·-≢0 {y = y} x≢0 y≢0 xy≡0 = y≢0 y≡0
-    where
-    y≡0 : y ≡ 0r
-    y≡0 = sym (·IdL _)
-      ∙ (λ i → ·-lInv x≢0 (~ i) · y)
-      ∙ sym (·Assoc _ _ _)
-      ∙ (λ i → inv x≢0 · xy≡0 i)
-      ∙ 0RightAnnihilates _
-
-  ·-Inv : (x≢0 : ¬ x ≡ 0r)(y≢0 : ¬ y ≡ 0r) → inv x≢0 · inv y≢0 ≡ inv (·-≢0 x≢0 y≢0)
-  ·-Inv {x = x} {y = y} x≢0 y≢0 = sym (·IdR _)
-    ∙ (λ i → (inv x≢0 · inv y≢0) · ·-rInv (·-≢0 x≢0 y≢0) (~ i))
-    ∙ ·Assoc _ _ _ ∙ (λ i → x⁻¹y⁻¹xy≡1 i · inv (·-≢0 x≢0 y≢0)) ∙ ·IdL _
-    where
-    x⁻¹y⁻¹xy≡1 : (inv x≢0 · inv y≢0) · (x · y) ≡ 1r
-    x⁻¹y⁻¹xy≡1 = field-helper1 (inv x≢0) (inv y≢0) x y
-      ∙ (λ i → ·-lInv x≢0 i · ·-lInv y≢0 i) ∙ ·IdL _
+  ·-lInv₊ : (q>0 : q > 0r) → inv₊ q>0 · q ≡ 1r
+  ·-lInv₊ q>0 = OF.·-lInv₊ q>0
 
 
   {-
@@ -126,21 +100,6 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
     Division by non-zero natural numbers
 
   -}
-
-  1/_ : ℕ₊₁ → K
-  1/ (1+ n) = inv {x = ℕ→R-Pos (suc n)} (>-arefl (ℕ→R-PosSuc>0 n))
-
-  1/n·n≡1 : (n : ℕ₊₁) →  1/ n · ℕ→R-Pos (ℕ₊₁→ℕ n) ≡ 1r
-  1/n·n≡1 (1+ n) = ·-lInv (>-arefl (ℕ→R-PosSuc>0 n))
-
-  _/_ : K → ℕ₊₁ → K
-  q / n = q · 1/ n
-
-  ·-/-rInv : (q : K)(n : ℕ₊₁) → (q / n) · (ℕ→R-Pos (ℕ₊₁→ℕ n)) ≡ q
-  ·-/-rInv q n = sym (·Assoc q _ _) ∙ (λ i → q · 1/n·n≡1 n i) ∙ ·IdR q
-
-  ·-/-lInv : (q : K)(n : ℕ₊₁) → (ℕ→R-Pos (ℕ₊₁→ℕ n)) · (q / n) ≡ q
-  ·-/-lInv q n = ·Comm _ (q / n) ∙ ·-/-rInv q n
 
   1/n>0 : (n : ℕ₊₁) →  1/ n > 0r
   1/n>0 (1+ n) = ·-lPosCancel>0 (ℕ→R-PosSuc>0 n) (subst (_> 0r) (sym (1/n·n≡1 (1+ n))) 1>0)
@@ -164,7 +123,6 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
   x/2+x/2≡x : (x : K) → middle 0r x + middle 0r x ≡ x
   x/2+x/2≡x x = helper6 _ ∙ 2·middle 0r x ∙ +IdL x
 
-
   middle-l : (p q : K) → 2r · (middle p q - p) ≡ q - p
   middle-l p q = ·DistR+ 2r (middle p q) _ ∙ (λ i → 2·middle p q i + 2r · (- p)) ∙ helper1 p q
 
@@ -180,22 +138,6 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
   middle<r {p = p} {q = q} p<q =
     Diff<0→< {x = middle p q} {y = q} (·-rPosCancel<0 {x = 2r} {y = middle p q - q} 2>0
       (subst (_< 0r) (sym (middle-r p q)) (<→Diff<0 {x = p} {y = q} p<q)))
-
-
-  {-
-
-    Inverse of positive element
-
-  -}
-
-  inv₊ : q > 0r → K
-  inv₊ q>0 = inv (>-arefl q>0)
-
-  ·-rInv₊ : (q>0 : q > 0r) → q · inv₊ q>0 ≡ 1r
-  ·-rInv₊ q>0 = ·-rInv (>-arefl q>0)
-
-  ·-lInv₊ : (q>0 : q > 0r) → inv₊ q>0 · q ≡ 1r
-  ·-lInv₊ q>0 = ·Comm _ _ ∙ ·-rInv₊ q>0
 
 
   {-
@@ -303,11 +245,6 @@ module LinearlyOrderedFieldStr (𝒦 : LinearlyOrderedField ℓ ℓ') where
     case-split (gt x>y) = middle 0r y , middle>l y>0 , <-trans (middle<r y>0) x>y , middle<r y>0
     case-split (eq x≡y) =
       middle 0r x , middle>l x>0 , middle<r x>0 , subst (middle 0r x <_) x≡y (middle<r x>0)
-
-
-module OrderedFieldStr {ℓ ℓ' : Level} (𝒦 : OrderedField ℓ ℓ') =
-  LinearlyOrderedFieldStr 𝒦
-
 
 {-
 

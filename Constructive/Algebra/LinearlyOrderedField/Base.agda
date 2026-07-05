@@ -9,8 +9,10 @@ module Constructive.Algebra.LinearlyOrderedField.Base where
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
 open import Cubical.Data.Sigma
-open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.Field
+open import Cubical.Algebra.OrderedCommRing
+  using (OrderedCommRing)
+open import Constructive.Algebra.OrderedField.Base
 open import Constructive.Algebra.LinearlyOrderedCommRing
 
 private
@@ -19,31 +21,26 @@ private
 
 
 IsFieldOnLinearlyOrderedCommRing : LinearlyOrderedCommRing ℓ ℓ' → Type ℓ
-IsFieldOnLinearlyOrderedCommRing 𝓡 = IsField 0r 1r _+_ _·_ (-_)
-  where
-  open CommRingStr ((LinearlyOrderedCommRing→CommRing 𝓡) .snd)
+IsFieldOnLinearlyOrderedCommRing 𝓡 =
+  IsFieldOnOrderedCommRing (LinearlyOrderedCommRing→OrderedCommRing 𝓡)
 
 LinearlyOrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
 LinearlyOrderedField ℓ ℓ' =
   Σ[ 𝒦 ∈ LinearlyOrderedCommRing ℓ ℓ' ] IsFieldOnLinearlyOrderedCommRing 𝒦
 
 
+LinearlyOrderedField→OrderedField : LinearlyOrderedField ℓ ℓ' → OrderedField ℓ ℓ'
+LinearlyOrderedField→OrderedField 𝒦 =
+  LinearlyOrderedCommRing→OrderedCommRing (𝒦 .fst) , 𝒦 .snd
+
+
 LinearlyOrderedField→Field : LinearlyOrderedField ℓ ℓ' → Field ℓ
-LinearlyOrderedField→Field 𝒦 .fst = 𝒦 .fst .fst .fst
-LinearlyOrderedField→Field 𝒦 .snd = fieldstr _ _ _ _ _ (𝒦 .snd)
-
-
-OrderedField : (ℓ ℓ' : Level) → Type (ℓ-suc (ℓ-max ℓ ℓ'))
-OrderedField = LinearlyOrderedField
-
-
-OrderedField→Field : OrderedField ℓ ℓ' → Field ℓ
-OrderedField→Field = LinearlyOrderedField→Field
+LinearlyOrderedField→Field 𝒦 =
+  OrderedField→Field (LinearlyOrderedField→OrderedField 𝒦)
 
 isPropIsFieldOnLinearlyOrderedCommRing : (𝓡 : LinearlyOrderedCommRing ℓ ℓ') → isProp (IsFieldOnLinearlyOrderedCommRing 𝓡)
-isPropIsFieldOnLinearlyOrderedCommRing 𝓡 = isPropIsField 0r 1r _+_ _·_ (-_)
-  where
-  open CommRingStr ((LinearlyOrderedCommRing→CommRing 𝓡) .snd)
+isPropIsFieldOnLinearlyOrderedCommRing 𝓡 =
+  isPropIsFieldOnOrderedCommRing (LinearlyOrderedCommRing→OrderedCommRing 𝓡)
 
 liftPathIsFieldOnLinearlyOrderedCommRing :
   {𝓡 𝓡' : LinearlyOrderedCommRing ℓ ℓ'}(p : 𝓡 ≡ 𝓡')

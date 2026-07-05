@@ -72,7 +72,10 @@ module _ ⦃ 🤖 : Oracle ⦄ where
     ℚ→ℝLinearlyOrderedFieldHom : LinearlyOrderedFieldHom ℚLinearlyOrderedField (ℝMacNeilleCompleteOrderedField .fst)
     ℚ→ℝLinearlyOrderedFieldHom = ℚ→KLinearlyOrderedFieldHom (ℝMacNeilleCompleteOrderedField .fst)
 
-    ℚ→ℝOrderedFieldHom : OrderedFieldHom ℚOrderedField (ℝMacNeilleCompleteOrderedField .fst)
+    ℚ→ℝOrderedFieldHom :
+      OrderedFieldHom
+        ℚOrderedField
+        (LinearlyOrderedField→OrderedField (ℝMacNeilleCompleteOrderedField .fst))
     ℚ→ℝOrderedFieldHom = ℚ→ℝLinearlyOrderedFieldHom
 
 

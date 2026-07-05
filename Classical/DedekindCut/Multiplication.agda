@@ -30,6 +30,8 @@ open import Classical.Foundations.Powerset
 open import Constructive.Algebra.LinearlyOrderedCommRing
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedes
+open import Constructive.Algebra.OrderedField.Base
+  using (OrderedField)
 open import Constructive.Algebra.LinearlyOrderedField
 open import Classical.DedekindCut.Base
 open import Classical.DedekindCut.Algebra
@@ -604,4 +606,4 @@ module Multiplication ⦃ 🤖 : Oracle ⦄
   𝕂LinearlyOrderedField = 𝕂LinearlyOrderedCommRing , IsField𝕂
 
   𝕂OrderedField : OrderedField (ℓ-max ℓ ℓ') (ℓ-max ℓ ℓ')
-  𝕂OrderedField = 𝕂LinearlyOrderedField
+  𝕂OrderedField = LinearlyOrderedField→OrderedField 𝕂LinearlyOrderedField

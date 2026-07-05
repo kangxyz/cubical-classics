@@ -4,8 +4,7 @@ Constructive apartness-field structure for Dedekind reals
 
 Cubical's `Field` record asks for inverses from mere inequality `x != 0`.
 Constructively, Dedekind reals provide inverses from apartness `x # 0`
-instead.  The structure below packages that LEM-free field content with the
-ordered commutative ring structure.
+instead.
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
@@ -17,7 +16,6 @@ open import Cubical.Data.Sigma
 open import Cubical.Data.Sum as Sum using (_⊎_)
 open import Cubical.Algebra.OrderedCommRing
 
-open import Constructive.Algebra.OrderedField
 open import Constructive.DedekindReals
 open import Constructive.DedekindReals.Arithmetic.Base
 open import Constructive.DedekindReals.Arithmetic.OrderedCommRing
@@ -29,7 +27,8 @@ module OrderedFieldStructure {ℓ : Level} where
   open Addition {ℓ}
   open Multiplication {ℓ}
   open OrderedCommRingStructure {ℓ}
-  open Inverse {ℓ}
+  open Inverse {ℓ} public
+    using (inv#)
 
   orderedCommRing : OrderedCommRing (ℓ-suc ℓ) ℓ
   orderedCommRing = DedekindOrderedCommRing
@@ -49,13 +48,3 @@ module OrderedFieldStructure {ℓ : Level} where
 
   0#1 : 0𝔻 # 1𝔻
   0#1 = Sum.inl 0𝔻<1𝔻
-
-  DedekindIsOrderedField : IsOrderedField DedekindOrderedCommRing
-  DedekindIsOrderedField .IsOrderedField.inv# =
-    inv#
-  DedekindIsOrderedField .IsOrderedField.0#1 =
-    0#1
-
-  DedekindOrderedField : OrderedField (ℓ-suc ℓ) ℓ
-  DedekindOrderedField =
-    DedekindOrderedCommRing , DedekindIsOrderedField

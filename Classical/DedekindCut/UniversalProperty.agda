@@ -431,5 +431,8 @@ module UniversalProperty ⦃ 🤖 : Oracle ⦄
     extendedLinearlyOrderedFieldHom : LinearlyOrderedFieldHom 𝕂LinearlyOrderedField (𝒦' .fst)
     extendedLinearlyOrderedFieldHom = extendedOrderedCommRingHom
 
-    extendedOrderedFieldHom : OrderedFieldHom 𝕂OrderedField (𝒦' .fst)
-    extendedOrderedFieldHom = extendedLinearlyOrderedFieldHom
+    extendedOrderedFieldHom :
+      OrderedFieldHom
+        𝕂OrderedField
+        (LinearlyOrderedField→OrderedField (𝒦' .fst))
+    extendedOrderedFieldHom = extendedOrderedCommRingHom

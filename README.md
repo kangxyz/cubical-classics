@@ -79,12 +79,11 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Algebra/LinearlyOrderedCommRing/` adds trichotomy,
   absolute value, Archimedean structures, morphisms, univalence,
   and the `ℤ` and `ℚ` instances.
-- `Constructive/Algebra/OrderedField/` contains the weak ordered-field
-  interface used constructively: order is inherited from ordered commutative
-  rings, and inverses are required from apartness.
+- `Constructive/Algebra/OrderedField/` contains ordered fields as ordered
+  commutative rings whose underlying Cubical ring is a field.
 - `Constructive/Algebra/LinearlyOrderedField/` contains the trichotomous
-  ordered-field interface, ordered-field lemmas, the rational ordered field,
-  and the canonical inclusion of `ℚ` into any ordered field.
+  ordered-field interface, lemmas that use trichotomy, the rational ordered
+  field, and the canonical inclusion of `ℚ` into any ordered field.
 - `Constructive/DedekindReals/` contains the LEM-free constructive Dedekind
   reals over `ℚ`, their lower/upper cut presentation, ordered arithmetic,
   apartness-field structure, and constructive Dedekind completeness.
