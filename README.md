@@ -121,7 +121,8 @@ The code is split by whether it uses the library's classical `Oracle`.
   constructive Dedekind completion, preserving the rational Dedekind-real API.
 - `Constructive/CauchyReals/` contains the HoTT-style Cauchy-real
   construction as a higher inductive-inductive type with a rational-indexed
-  closeness relation.
+  closeness relation, packaged induction and recursion principles, basic
+  closeness lemmas, continuity predicates, and initial arithmetic operations.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,
