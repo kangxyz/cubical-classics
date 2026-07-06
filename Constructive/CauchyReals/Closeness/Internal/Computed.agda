@@ -4,7 +4,7 @@ Computed alternative closeness, rational source case
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.CauchyReals.Closeness.Computed where
+module Constructive.CauchyReals.Closeness.Internal.Computed where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -15,7 +15,7 @@ open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.HITs.PropositionalTruncation as Prop
 
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Prelength
+open import Constructive.CauchyReals.Closeness.Internal.Prelength
 open import Constructive.CauchyReals.Induction
 open import Constructive.CauchyReals.Recursion
 

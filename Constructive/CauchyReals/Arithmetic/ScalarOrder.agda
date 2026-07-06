@@ -15,10 +15,10 @@ open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Base
 open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Extension.Properties
+open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Base
-open import Constructive.CauchyReals.PositiveRationals
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
 
 
 private

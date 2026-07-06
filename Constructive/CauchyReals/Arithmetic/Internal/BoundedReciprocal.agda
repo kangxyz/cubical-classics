@@ -4,7 +4,7 @@ First reciprocal interfaces for HoTT Cauchy reals
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.CauchyReals.Arithmetic.BoundedReciprocal where
+module Constructive.CauchyReals.Arithmetic.Internal.BoundedReciprocal where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -20,21 +20,30 @@ open import Cubical.Relation.Nullary
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.CauchyReals.Arithmetic.Base
-open import Constructive.CauchyReals.Arithmetic.BoundedMultiplication
+open import Constructive.CauchyReals.Arithmetic.Internal.BoundedMultiplication
 open import Constructive.CauchyReals.Arithmetic.Multiplication
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Continuity
 open import Constructive.CauchyReals.Lipschitz.Base
+open import Constructive.CauchyReals.Lipschitz.RationalExtension
+  using
+    ( IsRationalLipschitzWithᶜ
+    ; extendRationalLipschitzWithᶜ
+    ; extendRationalLipschitzWithᶜ-rational
+    ; extendRationalLipschitzWithᶜ-lipschitz
+    ; extendRationalLipschitzWithᶜ-continuous
+    )
+open import Constructive.CauchyReals.Order.Bounded
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.CauchyReals.Order.Bounds
 open import Constructive.CauchyReals.Order.Density
 open import Constructive.CauchyReals.Order.Rational
 open import Constructive.CauchyReals.Order.StrictPositive
-open import Constructive.CauchyReals.PositiveRationals
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
 
 
 private

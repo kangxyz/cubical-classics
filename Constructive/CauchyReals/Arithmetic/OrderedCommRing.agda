@@ -22,7 +22,7 @@ open import Cubical.Relation.Nullary
 open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.CauchyReals.Arithmetic.Base
-open import Constructive.CauchyReals.Arithmetic.BoundedMultiplication
+open import Constructive.CauchyReals.Arithmetic.Internal.BoundedMultiplication
 open import Constructive.CauchyReals.Arithmetic.CommRing
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Arithmetic.Multiplication
@@ -31,14 +31,15 @@ open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Arithmetic.ScalarOrder
 open import Constructive.CauchyReals.Base
 open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Extension.Properties
+open import Constructive.CauchyReals.Extension
+open import Constructive.CauchyReals.Order.Bounded
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.CauchyReals.Order.Properties
 open import Constructive.CauchyReals.Order.StrictPositive
 open import Constructive.CauchyReals.Order.Tightness
 open import Constructive.CauchyReals.Order.WeakLinear
-open import Constructive.CauchyReals.PositiveRationals
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
 
 
 private

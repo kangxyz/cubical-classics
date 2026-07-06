@@ -11,11 +11,11 @@ open import Constructive.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Extension.Properties
+open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Base
-open import Constructive.CauchyReals.PositiveRationals
+open import Constructive.Data.PositiveRationals
 
 
 private

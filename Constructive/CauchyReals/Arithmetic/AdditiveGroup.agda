@@ -15,7 +15,7 @@ open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 
 
 CauchyRealsAbGroup : AbGroup ℓ-zero

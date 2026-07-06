@@ -18,13 +18,13 @@ open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.CauchyReals.Order.Bounds
 open import Constructive.CauchyReals.Order.Density
 open import Constructive.CauchyReals.Order.Rational
 open import Constructive.CauchyReals.Order.StrictPositive
-open import Constructive.CauchyReals.PositiveRationals
+open import Constructive.Data.PositiveRationals
 
 
 ≤∨<ℚ :

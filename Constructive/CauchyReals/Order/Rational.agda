@@ -11,11 +11,11 @@ open import Cubical.Relation.Nullary
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Order.Base
-open import Constructive.CauchyReals.PositiveRationals
-open import Constructive.CauchyReals.RationalCloseness
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+open import Constructive.Data.Rationals.Closeness
+import Constructive.Data.Rationals as Rational
 
 
 private

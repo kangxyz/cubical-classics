@@ -4,6 +4,7 @@ module Constructive.CauchyReals.Order where
 
 open import Constructive.CauchyReals.Order.Base public
 open import Constructive.CauchyReals.Order.Bounds public
+open import Constructive.CauchyReals.Order.Bounded public
 open import Constructive.CauchyReals.Order.Density public
 open import Constructive.CauchyReals.Order.Rational public
 open import Constructive.CauchyReals.Order.StrictPositive public

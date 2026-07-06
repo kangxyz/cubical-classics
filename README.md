@@ -102,6 +102,10 @@ for precision-indexed approximations.  This is not the quotient of rational
 Cauchy sequences and does not assert completeness for arbitrary unmodulated
 `ℕ`-indexed Cauchy sequences.
 
+Shared rational support for this development lives under
+`Constructive.Data.Rationals`, `Constructive.Data.PositiveRationals`, and
+`Constructive.Data.Rationals.Closeness`.
+
 ## Layout
 
 The code is split by whether it uses the library's classical `Oracle`.
@@ -111,6 +115,9 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Foundations/` contains predicative foundational interfaces,
   including `Powerset`, the constructive predicate API used by constructive
   Dedekind cuts and MacNeille completeness.
+- `Constructive/Data/` contains constructive data-level support, including
+  rational order/arithmetic lemmas, positive rationals, rational scalar bounds,
+  and rational closeness.
 - `Constructive/Algebra/OrderedCommRing/` builds on Cubical's ordered
   commutative rings, with Archimedean properties, morphisms, and univalence.
 - `Constructive/Algebra/Order/` contains constructive order-completeness
@@ -138,11 +145,14 @@ The code is split by whether it uses the library's classical `Oracle`.
   construction as a higher inductive-inductive type with a rational-indexed
   closeness relation, packaged induction and recursion principles, basic
   closeness lemmas, continuity predicates, Cauchy completeness, additive group
-  laws, rational scalar, scalar-order, bounded-multiplication, global
+  laws, rational scalar, scalar-order, order-boundedness, global
   multiplication, commutative-ring and ordered-commutative-ring structures,
   lattice operations, rational-separated strict order, apartness,
   magnitude/distance lemmas, and an ordered-Heyting-field instance built from
   bounded-away reciprocal laws.
+- Internal Cauchy-real submodules contain computed-closeness, bounded
+  multiplication, and bounded-reciprocal proof machinery used by the public
+  interfaces.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,

@@ -4,7 +4,7 @@ Closeness of rational approximants
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.CauchyReals.RationalCloseness where
+module Constructive.Data.Rationals.Closeness where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -15,8 +15,8 @@ open import Cubical.Data.Sigma
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁)
 
-open import Constructive.CauchyReals.PositiveRationals
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
 
 private
   negative-sum :

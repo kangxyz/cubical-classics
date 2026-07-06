@@ -9,8 +9,8 @@ module Constructive.CauchyReals.Completeness where
 open import Cubical.Foundations.Prelude
 
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
-open import Constructive.CauchyReals.Extension.Properties
+open import Constructive.CauchyReals.Closeness
+open import Constructive.CauchyReals.Extension
 
 private
   variable

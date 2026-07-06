@@ -13,9 +13,9 @@ open import Cubical.Data.Rationals as ℚ using (ℚ)
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Extension.Properties
+open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Induction
 
 

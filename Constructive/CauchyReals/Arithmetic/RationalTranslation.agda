@@ -11,7 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Continuity
 open import Constructive.CauchyReals.Induction
 open import Constructive.CauchyReals.Lipschitz.Base

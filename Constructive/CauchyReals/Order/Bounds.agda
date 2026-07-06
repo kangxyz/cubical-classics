@@ -15,14 +15,14 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
-open import Constructive.CauchyReals.Extension.Properties
+open import Constructive.CauchyReals.Closeness
+open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Induction
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.CauchyReals.Order.Rational
-open import Constructive.CauchyReals.PositiveRationals
-open import Constructive.CauchyReals.RationalCloseness
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+open import Constructive.Data.Rationals.Closeness
+import Constructive.Data.Rationals as Rational
 
 
 private

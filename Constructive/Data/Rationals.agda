@@ -2,11 +2,11 @@
 
 Constructive order lemmas for Cubical's quotient rationals
 
-Prerequisites for the Dedekind-real embedding and algebra.
+Shared support for ordered algebra and constructive real constructions.
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Rationals where
+module Constructive.Data.Rationals where
 
 open import Cubical.Foundations.Prelude
 

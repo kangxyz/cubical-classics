@@ -17,14 +17,14 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; squash₁)
 
 open import Constructive.CauchyReals.Arithmetic.Base
-open import Constructive.CauchyReals.Arithmetic.BoundedReciprocal
+open import Constructive.CauchyReals.Arithmetic.Internal.BoundedReciprocal
 open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.Multiplication
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Order.StrictPositive
-import Constructive.Rationals as Rational
+import Constructive.Data.Rationals as Rational
 
 
 HasRightInverseᶜ : ℝᶜ → Type₀

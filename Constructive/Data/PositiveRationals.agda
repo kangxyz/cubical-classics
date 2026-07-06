@@ -4,7 +4,7 @@ Positive rational precisions
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.CauchyReals.PositiveRationals where
+module Constructive.Data.PositiveRationals where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -15,8 +15,9 @@ open import Cubical.Data.NatPlusOne using (1+_)
 open import Cubical.Data.Rationals as ℚ using (ℚ ; [_/_])
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma
+open import Cubical.Data.Sum using (inl ; inr)
 
-import Constructive.Rationals as Rational
+import Constructive.Data.Rationals as Rational
 open Rational using (1/2 ; 0<1/2 ; double-half)
 
 
@@ -54,6 +55,83 @@ Q+ = ℚ⁺
 
 radius : ℚ⁺ → ℚ
 radius ε = ε .fst
+
+
+nonnegative-positive-sum :
+  {p q : ℚ} →
+  0ℚ ℚOrder.≤ p →
+  0ℚ ℚOrder.< q →
+  0ℚ ℚOrder.< p ℚ.+ q
+nonnegative-positive-sum {p = p} {q = q} 0≤p 0<q =
+  Rational.<≤-trans
+    {p = 0ℚ}
+    {q = q}
+    {r = p ℚ.+ q}
+    0<q
+    q≤p+q
+  where
+  q≤p+q : q ℚOrder.≤ p ℚ.+ q
+  q≤p+q =
+    subst
+      (λ r → r ℚOrder.≤ p ℚ.+ q)
+      (ℚ.+IdL q)
+      (ℚOrder.≤-+o 0ℚ p q 0≤p)
+
+
+scalar-bound : ℚ → ℚ⁺
+scalar-bound a =
+  (ℚ.max a (ℚ.- a)) ℚ.+ 1ℚ ,
+  nonnegative-positive-sum {p = absish} {q = 1ℚ} abs≥0 Rational.0<1
+  where
+  absish : ℚ
+  absish = ℚ.max a (ℚ.- a)
+
+  abs≥0 : 0ℚ ℚOrder.≤ absish
+  abs≥0 with Rational.negative-or-nonnegative a
+  ... | inl a<0 =
+    Rational.≤-trans
+      {p = 0ℚ}
+      {q = ℚ.- a}
+      {r = absish}
+      (ℚOrder.<Weaken≤ 0ℚ (ℚ.- a) (Rational.neg-positive {q = a} a<0))
+      (Rational.≤max-r a (ℚ.- a))
+  ... | inr 0≤a =
+    Rational.≤-trans
+      {p = 0ℚ}
+      {q = a}
+      {r = absish}
+      0≤a
+      (ℚOrder.≤max a (ℚ.- a))
+
+
+scalar-bound-upper :
+  (a : ℚ) →
+  a ℚOrder.< radius (scalar-bound a)
+scalar-bound-upper a =
+  Rational.≤<-trans
+    {p = a}
+    {q = absish}
+    {r = absish ℚ.+ 1ℚ}
+    (ℚOrder.≤max a (ℚ.- a))
+    (Rational.q<q+positive absish 1ℚ Rational.0<1)
+  where
+  absish : ℚ
+  absish = ℚ.max a (ℚ.- a)
+
+
+scalar-bound-lower :
+  (a : ℚ) →
+  ℚ.- a ℚOrder.< radius (scalar-bound a)
+scalar-bound-lower a =
+  Rational.≤<-trans
+    {p = ℚ.- a}
+    {q = absish}
+    {r = absish ℚ.+ 1ℚ}
+    (Rational.≤max-r a (ℚ.- a))
+    (Rational.q<q+positive absish 1ℚ Rational.0<1)
+  where
+  absish : ℚ
+  absish = ℚ.max a (ℚ.- a)
 
 
 isPropPositive : (q : ℚ) → isProp (0ℚ ℚOrder.< q)

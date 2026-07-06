@@ -12,10 +12,10 @@ open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Extension.Properties
-import Constructive.Rationals as Rational
+open import Constructive.CauchyReals.Extension
+import Constructive.Data.Rationals as Rational
 
 
 private

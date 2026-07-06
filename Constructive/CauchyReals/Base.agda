@@ -14,8 +14,8 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Rationals using (ℚ)
 
-open import Constructive.CauchyReals.PositiveRationals public
-open import Constructive.CauchyReals.RationalCloseness public
+open import Constructive.Data.PositiveRationals public
+open import Constructive.Data.Rationals.Closeness public
 
 
 mutual

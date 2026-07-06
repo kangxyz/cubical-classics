@@ -24,8 +24,8 @@ open import Constructive.CauchyReals.Order.Bounds
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.CauchyReals.Order.Properties
 open import Constructive.CauchyReals.Order.Rational
-open import Constructive.CauchyReals.PositiveRationals
-import Constructive.Rationals as Rational
+open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
 
 
 infix 4 _<ᶜ_ _>ᶜ_ _#ᶜ_

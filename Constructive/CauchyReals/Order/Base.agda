@@ -10,7 +10,7 @@ open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Constructive.CauchyReals.Base
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Lattice
-open import Constructive.CauchyReals.Closeness.Properties
+open import Constructive.CauchyReals.Closeness
 
 infix 4 _≤ᶜ_ _≥ᶜ_
 
