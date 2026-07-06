@@ -108,10 +108,12 @@ closeness relation.
 
 The current development proves the metric-style closeness laws, extension
 principles, ordered arithmetic, an ordered-commutative-ring structure, an
-ordered Heyting-field instance using order-apartness, and Cauchy completeness
-for precision-indexed approximations.  This is not the quotient of rational
-Cauchy sequences and does not assert completeness for arbitrary unmodulated
-`ℕ`-indexed Cauchy sequences.
+ordered Heyting-field instance using order-apartness, Cauchy completeness for
+precision-indexed approximations, and a modulated `ℕ`-sequence API for limits,
+Cauchy criteria, subsequences, uniformly continuous maps, algebraic limit laws,
+and eventual order data.  This is not the quotient of rational Cauchy sequences
+and does not assert completeness for arbitrary unmodulated `ℕ`-indexed Cauchy
+sequences.
 
 Shared rational support for this development lives under
 `Constructive.Data.Rationals`, `Constructive.Data.PositiveRationals`, and
@@ -160,6 +162,9 @@ The code is split by whether it uses the library's classical `Oracle`.
   lattice operations, rational-separated strict order, apartness,
   magnitude/distance lemmas, and an ordered-Heyting-field instance built from
   bounded-away reciprocal laws.
+- `Constructive/Analysis/Reals/Sequences/` contains modulated Cauchy-real
+  sequence convergence, Cauchy completeness, subsequences, uniformly continuous
+  maps, algebraic limit laws, and eventual order lemmas.
 - Generic Cauchy-completion, closeness, induction, recursion, completeness,
   nonexpanding, Lipschitz, and uniformly-continuous interfaces live under
   `Constructive/Analysis/`; the Cauchy-real aggregate reexports the generic

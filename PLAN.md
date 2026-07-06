@@ -113,9 +113,9 @@ Expected public theorem:
 
 Create:
 
-- `Constructive/Analysis/Real/Sequence.agda`
-- `Constructive/Analysis/Real/Sequence/Algebra.agda`
-- `Constructive/Analysis/Real/Sequence/Order.agda`
+- `Constructive/Analysis/Reals/Sequences.agda`
+- `Constructive/Analysis/Reals/Sequences/Algebra.agda`
+- `Constructive/Analysis/Reals/Sequences/Order.agda`
 
 Use `ℕ -> ℝᶜ` for ordinary sequences, but require moduli for constructive
 theorems:
