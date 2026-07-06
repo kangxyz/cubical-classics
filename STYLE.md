@@ -14,6 +14,8 @@ Repository-wide style and naming conventions.
 ## Modules And Imports
 
 - Use descriptive module names that match the mathematical object or structure.
+- Prefer noun-based file and module names unless the noun phrase would be too
+  long or unclear.
 - Keep aggregate modules as the public entry points for larger topics.
 - When moving a module, update imports, aggregate modules, and documentation in
   the same change.

@@ -40,6 +40,8 @@ For repository navigation, proof boundaries, and verification commands, use
 
 - Type-check the module you touched and the nearest aggregate module when
   practical.
+- If a file-level check is too slow, add `--lossy-unification` to that
+  module's `{-# OPTIONS --safe #-}` pragma and report that the flag was added.
 - Run broader checks when changing shared interfaces, module paths, or
   foundational definitions.
 - Always run whitespace/diff checks before reporting completion.
@@ -53,5 +55,7 @@ For repository navigation, proof boundaries, and verification commands, use
   commit unrelated work.
 - Stage explicit paths or hunks. Be especially careful with files that contain
   both your changes and pre-existing changes.
+- Do not leave empty directories behind after moving or deleting files. Clean
+  them up when they are part of your change.
 - Do not run destructive cleanup commands unless the user explicitly asks for
   them.
