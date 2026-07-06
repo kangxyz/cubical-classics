@@ -17,4 +17,6 @@ open import Constructive.CauchyReals.Continuity public
 open import Constructive.CauchyReals.Nonexpanding public
 open import Constructive.CauchyReals.Lipschitz public
 open import Constructive.CauchyReals.Extension public
+open import Constructive.CauchyReals.Completeness public
 open import Constructive.CauchyReals.Arithmetic public
+open import Constructive.CauchyReals.Order public

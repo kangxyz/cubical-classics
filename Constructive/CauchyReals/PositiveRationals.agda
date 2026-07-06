@@ -48,6 +48,10 @@ Q+ : Type₀
 Q+ = ℚ⁺
 
 
+1⁺ : ℚ⁺
+1⁺ = 1ℚ , Rational.0<1
+
+
 radius : ℚ⁺ → ℚ
 radius ε = ε .fst
 
@@ -61,6 +65,7 @@ isPropPositive q = ℚOrder.isProp< 0ℚ q
 
 
 infixl 6 _+⁺_
+infixl 7 _*⁺_
 infix 4 _<⁺_
 
 _+⁺_ : ℚ⁺ → ℚ⁺ → ℚ⁺
@@ -77,6 +82,55 @@ _+⁺_ : ℚ⁺ → ℚ⁺ → ℚ⁺
 +⁺-assoc : (ε δ η : ℚ⁺) → (ε +⁺ δ) +⁺ η ≡ ε +⁺ (δ +⁺ η)
 +⁺-assoc ε δ η =
   ℚ⁺Path (sym (ℚ.+Assoc (radius ε) (radius δ) (radius η)))
+
+
+_*⁺_ : ℚ⁺ → ℚ⁺ → ℚ⁺
+ε *⁺ δ =
+  radius ε ℚ.· radius δ ,
+  Rational.mul-positive {a = radius ε} {b = radius δ} (ε .snd) (δ .snd)
+
+
+*⁺-comm : (ε δ : ℚ⁺) → ε *⁺ δ ≡ δ *⁺ ε
+*⁺-comm ε δ =
+  ℚ⁺Path (ℚ.·Comm (radius ε) (radius δ))
+
+
+*⁺-assoc : (ε δ η : ℚ⁺) → (ε *⁺ δ) *⁺ η ≡ ε *⁺ (δ *⁺ η)
+*⁺-assoc ε δ η =
+  ℚ⁺Path (sym (ℚ.·Assoc (radius ε) (radius δ) (radius η)))
+
+
+*⁺-distrib-left :
+  (ε δ η : ℚ⁺) →
+  ε *⁺ (δ +⁺ η) ≡ (ε *⁺ δ) +⁺ (ε *⁺ η)
+*⁺-distrib-left ε δ η =
+  ℚ⁺Path (ℚ.·DistL+ (radius ε) (radius δ) (radius η))
+
+
+*⁺-identity-left : (ε : ℚ⁺) → 1⁺ *⁺ ε ≡ ε
+*⁺-identity-left ε =
+  ℚ⁺Path (ℚ.·IdL (radius ε))
+
+
+*⁺-identity-right : (ε : ℚ⁺) → ε *⁺ 1⁺ ≡ ε
+*⁺-identity-right ε =
+  ℚ⁺Path (ℚ.·IdR (radius ε))
+
+
+posInv⁺ : ℚ⁺ → ℚ⁺
+posInv⁺ ε =
+  Rational.posInv (radius ε) (ε .snd) ,
+  Rational.posInv-positive {q = radius ε} (ε .snd)
+
+
+*⁺-posInv-right : (ε : ℚ⁺) → ε *⁺ posInv⁺ ε ≡ 1⁺
+*⁺-posInv-right ε =
+  ℚ⁺Path (Rational.posInv-right (radius ε) (ε .snd))
+
+
+*⁺-posInv-left : (ε : ℚ⁺) → posInv⁺ ε *⁺ ε ≡ 1⁺
+*⁺-posInv-left ε =
+  ℚ⁺Path (Rational.posInv-left (radius ε) (ε .snd))
 
 
 _<⁺_ : ℚ⁺ → ℚ⁺ → Type₀
