@@ -4,7 +4,7 @@ Sampling located functions on finite interval grids
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Reals.IVT.Sampling where
+module Constructive.Analysis.Reals.IVT.Approximate.Sampling where
 
 open import Cubical.Foundations.Prelude
 

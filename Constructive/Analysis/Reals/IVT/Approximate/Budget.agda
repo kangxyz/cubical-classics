@@ -4,7 +4,7 @@ Explicit error budgets for untruncated approximate IVT
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Reals.IVT.Budget where
+module Constructive.Analysis.Reals.IVT.Approximate.Budget where
 
 open import Cubical.Foundations.Prelude
 

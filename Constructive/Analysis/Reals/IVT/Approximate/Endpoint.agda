@@ -4,7 +4,7 @@ Endpoint margin data for untruncated IVT grid search
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Reals.IVT.Endpoint where
+module Constructive.Analysis.Reals.IVT.Approximate.Endpoint where
 
 open import Cubical.Foundations.Prelude
 
@@ -30,7 +30,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
 open import Constructive.Analysis.Reals.Interval
 open import Constructive.Analysis.Reals.Interval.Grid
-open import Constructive.Analysis.Reals.IVT.Sampling
+open import Constructive.Analysis.Reals.IVT.Approximate.Sampling
 open import Constructive.Analysis.Reals.IVT.Uniform
 open import Constructive.Analysis.Reals.Locator.Base
 open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
