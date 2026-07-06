@@ -4,7 +4,7 @@ Classical Dedekind cuts
 
 This is the Oracle-based cut completion over an ordered field.  It is
 separate from the LEM-free constructive Dedekind reals in
-Constructive.DedekindReals.
+Constructive.Analysis.Reals.DedekindReals.
 -}
 {-# OPTIONS --safe #-}
 module Classical.DedekindCut.Base where

@@ -3,7 +3,7 @@
 Classical Dedekind-real completion by cuts
 
 Oracle-based classical cut construction and its main properties.  The LEM-free
-rational-cut presentation is Constructive.DedekindReals.
+rational-cut presentation is Constructive.Analysis.Reals.DedekindReals.
 
 -}
 {-# OPTIONS --safe #-}

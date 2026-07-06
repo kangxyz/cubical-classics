@@ -36,14 +36,14 @@ import Constructive.Algebra.LinearlyOrderedCommRing as LinearOCR
 import Constructive.Algebra.LinearlyOrderedField as LinearOF
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Algebra.LinearlyOrderedField.Archimedean
-open import Constructive.DedekindCompletion.Base
-open import Constructive.DedekindCompletion.Order
-open import Constructive.DedekindCompletion.Completeness
-open import Constructive.DedekindCompletion.Arithmetic.Base
-open import Constructive.DedekindCompletion.Arithmetic.Multiplication
-open import Constructive.DedekindCompletion.Arithmetic.CommRing
-open import Constructive.DedekindCompletion.Arithmetic.OrderedCommRing
-open import Constructive.DedekindCompletion.Arithmetic.OrderedHeytingField
+open import Constructive.Analysis.Completions.DedekindCompletion.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Order
+open import Constructive.Analysis.Completions.DedekindCompletion.Completeness
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Multiplication
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.CommRing
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedHeytingField
 
 private
   variable

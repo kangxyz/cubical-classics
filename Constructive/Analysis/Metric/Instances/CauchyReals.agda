@@ -9,8 +9,8 @@ module Constructive.Analysis.Metric.Instances.CauchyReals where
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy
 open import Constructive.Analysis.Metric.Instances.Rationals
-open import Constructive.Analysis.CauchyCompletion.Completeness
-open import Constructive.Analysis.CauchyCompletion.MetricSpace
+open import Constructive.Analysis.Completions.CauchyCompletion.Completeness
+open import Constructive.Analysis.Completions.CauchyCompletion.MetricSpace
 
 
 CauchyRealsMetricSpace : MetricSpace _ _
