@@ -1,6 +1,11 @@
 {-
 
-Bounded decidable search on natural numbers
+Bounded decidable search on natural numbers.
+
+This complements Constructive.Preliminary.Nat.  The search principles there
+split truncated global existence proofs for decidable predicates; here the
+input is a concrete bound N with P N, and the recursion searches only up to
+that bound.
 
 -}
 {-# OPTIONS --safe #-}
