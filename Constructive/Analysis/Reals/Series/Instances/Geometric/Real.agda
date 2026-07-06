@@ -15,14 +15,19 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax)
+open import Cubical.Data.Sigma using (Σ-syntax ; fst)
 import Cubical.Data.Sum as Sum
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
+  using (CauchyRealsCommRing)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Inverse
+  using (HasRightInverseᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
@@ -35,6 +40,7 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
+open import Constructive.Analysis.Reals.Series.Instances.Geometric.Algebra
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
@@ -89,6 +95,32 @@ realGeometricPowerTerms x =
     { term = realPower x
     ; firstTerm = refl
     }
+
+
+realGeometricFiniteIdentity :
+  (x : ℝᶜ) →
+  (n : ℕ) →
+  (1ᶜ +ᶜ (-ᶜ x)) ·ᶜ partialSum (realPower x) n ≡
+  1ᶜ +ᶜ (-ᶜ realPower x n)
+realGeometricFiniteIdentity x zero =
+  SolverHelpers.geometric-zero CauchyRealsCommRing x
+realGeometricFiniteIdentity x (suc n) =
+  cong
+    ((1ᶜ +ᶜ (-ᶜ x)) ·ᶜ_)
+    (partialSum-snoc (realPower x) n) ∙
+  SolverHelpers.geometric-distrib CauchyRealsCommRing x S p ∙
+  cong
+    (λ q → q +ᶜ ((1ᶜ +ᶜ (-ᶜ x)) ·ᶜ p))
+    (realGeometricFiniteIdentity x n) ∙
+  SolverHelpers.geometric-step CauchyRealsCommRing x p
+  where
+  S : ℝᶜ
+  S =
+    partialSum (realPower x) n
+
+  p : ℝᶜ
+  p =
+    realPower x n
 
 
 RealGeometricPowerTailBound :
@@ -182,6 +214,34 @@ realGeometricSeriesTailBoundFromPositiveData x terms bound majorant tailData =
     (PositiveGeometricTailData.modulusAntitone tailData)
 
 
+realGeometricSeriesTailBoundFromRatio :
+  (x : ℝᶜ) →
+  (terms : RealGeometricTerms x) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerMajorant x terms bound →
+  RealGeometricTailBound x terms
+    (λ ε →
+      positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound)
+        (half⁺ ε))
+realGeometricSeriesTailBoundFromRatio x terms bound majorant =
+  realGeometricSeriesTailBoundFromPositiveData
+    x
+    terms
+    bound
+    majorant
+    (positiveGeometricTailDataFromRatio ρ ρ<1)
+  where
+  ρ : ℚ⁺
+  ρ =
+    RealGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RealGeometricBound.ratioBound<1 bound
+
+
 realGeometricTailBoundFromRatio :
   (x : ℝᶜ) →
   (terms : RealGeometricTerms x) →
@@ -249,6 +309,29 @@ realGeometricSumFromPositiveData x terms bound majorant tailData =
     (PositiveGeometricTailData.modulusAntitone tailData)
 
 
+realGeometricSumFromRatio :
+  (x : ℝᶜ) →
+  (terms : RealGeometricTerms x) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerMajorant x terms bound →
+  ℝᶜ
+realGeometricSumFromRatio x terms bound majorant =
+  realGeometricSumFromPositiveData
+    x
+    terms
+    bound
+    majorant
+    (positiveGeometricTailDataFromRatio ρ ρ<1)
+  where
+  ρ : ℚ⁺
+  ρ =
+    RealGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RealGeometricBound.ratioBound<1 bound
+
+
 realGeometricConvergesFromPositiveData :
   (x : ℝᶜ) →
   (terms : RealGeometricTerms x) →
@@ -279,6 +362,39 @@ realGeometricConvergesFromPositiveData x terms bound majorant tailData =
       majorant
         (PositiveGeometricTailData.finiteTailBound tailData))
     (PositiveGeometricTailData.modulusAntitone tailData)
+
+
+realGeometricConvergesFromRatio :
+  (x : ℝᶜ) →
+  (terms : RealGeometricTerms x) →
+  (bound : RealGeometricBound x) →
+  (majorant : RealGeometricPowerMajorant x terms bound) →
+  MetricCauchy.ConvergesTo
+    (seriesCauchyApproximationFromFiniteTailBound
+      (RealGeometricTerms.term terms)
+      (positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound))
+      (realGeometricTailBoundFromRatio x terms bound majorant)
+      (positiveGeometricPowerModulus-antitone
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound)))
+    (realGeometricSumFromRatio x terms bound majorant)
+realGeometricConvergesFromRatio x terms bound majorant =
+  realGeometricConvergesFromPositiveData
+    x
+    terms
+    bound
+    majorant
+    (positiveGeometricTailDataFromRatio ρ ρ<1)
+  where
+  ρ : ℚ⁺
+  ρ =
+    RealGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RealGeometricBound.ratioBound<1 bound
 
 
 realGeometricTailBoundFromUpperData :
@@ -350,6 +466,104 @@ RealGeometricPowerMajorized x bound =
   RealGeometricPowerMajorant x (realGeometricPowerTerms x) bound
 
 
+record RealGeometricPowerBounds
+  (x : ℝᶜ)
+  (bound : RealGeometricBound x) : Type₀ where
+  no-eta-equality
+
+  field
+    powerBound :
+      (n : ℕ) →
+      BoundedByᶜ
+        (positivePower (RealGeometricBound.ratioBound bound) n)
+        (realPower x n)
+
+
+realGeometricPowerMajorantFromBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerBounds x bound →
+  RealGeometricPowerMajorized x bound
+realGeometricPowerMajorantFromBounds x bound powerBounds =
+  record
+    { termsMajorized =
+        record
+          { termMajorized = termMajorized
+          ; majorantNonnegative = majorantNonnegative
+          }
+    }
+  where
+  ρ : ℚ⁺
+  ρ =
+    RealGeometricBound.ratioBound bound
+
+  termMajorized :
+    (m n : ℕ) →
+    absᶜ (drop m (realPower x) n) ≤ᶜ
+    drop m (positiveGeometricTerm ρ) n
+  termMajorized m n =
+    subst2
+      (λ u v → absᶜ u ≤ᶜ v)
+      (sym (drop-index m (realPower x) n))
+      (sym (drop-index m (positiveGeometricTerm ρ) n))
+      (bounded-byᶜ-abs
+        (RealGeometricPowerBounds.powerBound powerBounds (m Nat.+ n)))
+
+  majorantNonnegative :
+    (m n : ℕ) →
+    0ᶜ ≤ᶜ drop m (positiveGeometricTerm ρ) n
+  majorantNonnegative m n =
+    subst
+      (λ v → 0ᶜ ≤ᶜ v)
+      (sym (drop-index m (positiveGeometricTerm ρ) n))
+      (positiveGeometricTerm-nonnegative ρ (m Nat.+ n))
+
+
+realGeometricPowerBound-one :
+  (x : ℝᶜ) →
+  BoundedByᶜ 1⁺ (realPower x zero)
+realGeometricPowerBound-one x =
+  rational-closed-bound→boundedᶜ
+    1⁺
+    Rational.1ℚ
+    (rational-closed-boundᶜ
+      (Rational.≤-refl Rational.1ℚ)
+      (Rational.<→≤
+        {p = Rational.-1ℚ}
+        {q = Rational.1ℚ}
+        (ℚOrder.isTrans<
+          Rational.-1ℚ
+          Rational.0ℚ
+          Rational.1ℚ
+          Rational.-1<0
+          Rational.0<1)))
+
+
+realGeometricPowerBoundsFromStep :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  ((n : ℕ) →
+    BoundedByᶜ
+      (positivePower (RealGeometricBound.ratioBound bound) n)
+      (realPower x n) →
+    BoundedByᶜ
+      (positivePower (RealGeometricBound.ratioBound bound) (suc n))
+      (realPower x (suc n))) →
+  RealGeometricPowerBounds x bound
+realGeometricPowerBoundsFromStep x bound step =
+  record { powerBound = powerBound }
+  where
+  powerBound :
+    (n : ℕ) →
+    BoundedByᶜ
+      (positivePower (RealGeometricBound.ratioBound bound) n)
+      (realPower x n)
+  powerBound zero =
+    realGeometricPowerBound-one x
+  powerBound (suc n) =
+    step n (powerBound n)
+
+
 realGeometricPowerSeriesTailBoundFromPositiveData :
   (x : ℝᶜ) →
   (bound : RealGeometricBound x) →
@@ -367,6 +581,24 @@ realGeometricPowerSeriesTailBoundFromPositiveData x bound majorant tailData =
     tailData
 
 
+realGeometricPowerSeriesTailBoundFromRatio :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerMajorized x bound →
+  RealGeometricPowerTailBound x
+    (λ ε →
+      positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound)
+        (half⁺ ε))
+realGeometricPowerSeriesTailBoundFromRatio x bound majorant =
+  realGeometricSeriesTailBoundFromRatio
+    x
+    (realGeometricPowerTerms x)
+    bound
+    majorant
+
+
 realGeometricPowerSumFromPositiveData :
   (x : ℝᶜ) →
   (bound : RealGeometricBound x) →
@@ -380,6 +612,19 @@ realGeometricPowerSumFromPositiveData x bound majorant tailData =
     bound
     majorant
     tailData
+
+
+realGeometricPowerSumFromRatio :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerMajorized x bound →
+  ℝᶜ
+realGeometricPowerSumFromRatio x bound majorant =
+  realGeometricSumFromRatio
+    x
+    (realGeometricPowerTerms x)
+    bound
+    majorant
 
 
 realGeometricPowerConvergesFromPositiveData :
@@ -407,6 +652,317 @@ realGeometricPowerConvergesFromPositiveData x bound majorant tailData =
     bound
     majorant
     tailData
+
+
+realGeometricPowerConvergesFromRatio :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  (majorant : RealGeometricPowerMajorized x bound) →
+  MetricCauchy.ConvergesTo
+    (seriesCauchyApproximationFromFiniteTailBound
+      (realPower x)
+      (positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound))
+      (realGeometricTailBoundFromRatio
+        x
+        (realGeometricPowerTerms x)
+        bound
+        majorant)
+      (positiveGeometricPowerModulus-antitone
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound)))
+    (realGeometricPowerSumFromRatio x bound majorant)
+realGeometricPowerConvergesFromRatio x bound majorant =
+  realGeometricConvergesFromRatio
+    x
+    (realGeometricPowerTerms x)
+    bound
+    majorant
+
+
+realGeometricPowerTailBoundFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerBounds x bound →
+  RealGeometricFiniteTailBound
+    x
+    (realGeometricPowerTerms x)
+    (positiveGeometricPowerModulus
+      (RealGeometricBound.ratioBound bound)
+      (RealGeometricBound.ratioBound<1 bound))
+realGeometricPowerTailBoundFromPowerBounds x bound powerBounds =
+  realGeometricTailBoundFromRatio
+    x
+    (realGeometricPowerTerms x)
+    bound
+    (realGeometricPowerMajorantFromBounds x bound powerBounds)
+
+
+realGeometricPowerSeriesTailBoundFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerBounds x bound →
+  RealGeometricPowerTailBound x
+    (λ ε →
+      positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound)
+        (half⁺ ε))
+realGeometricPowerSeriesTailBoundFromPowerBounds x bound powerBounds =
+  realGeometricPowerSeriesTailBoundFromRatio
+    x
+    bound
+    (realGeometricPowerMajorantFromBounds x bound powerBounds)
+
+
+realGeometricPowerSumFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerBounds x bound →
+  ℝᶜ
+realGeometricPowerSumFromPowerBounds x bound powerBounds =
+  realGeometricPowerSumFromRatio
+    x
+    bound
+    (realGeometricPowerMajorantFromBounds x bound powerBounds)
+
+
+realGeometricPowerConvergesFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  (powerBounds : RealGeometricPowerBounds x bound) →
+  MetricCauchy.ConvergesTo
+    (seriesCauchyApproximationFromFiniteTailBound
+      (realPower x)
+      (positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound))
+      (realGeometricPowerTailBoundFromPowerBounds x bound powerBounds)
+      (positiveGeometricPowerModulus-antitone
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound)))
+    (realGeometricPowerSumFromPowerBounds x bound powerBounds)
+realGeometricPowerConvergesFromPowerBounds x bound powerBounds =
+  realGeometricPowerConvergesFromRatio
+    x
+    bound
+    (realGeometricPowerMajorantFromBounds x bound powerBounds)
+
+
+realGeometricNeumannRightInverseFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  (powerBounds : RealGeometricPowerBounds x bound) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ (1ᶜ +ᶜ (-ᶜ x)) →
+  (1ᶜ +ᶜ (-ᶜ x)) ·ᶜ
+    seriesSumFromFiniteTailBound
+      (realPower x)
+      (positiveGeometricPowerModulus
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound))
+      (realGeometricPowerTailBoundFromPowerBounds x bound powerBounds)
+      (positiveGeometricPowerModulus-antitone
+        (RealGeometricBound.ratioBound bound)
+        (RealGeometricBound.ratioBound<1 bound))
+  ≡ 1ᶜ
+realGeometricNeumannRightInverseFromPowerBounds
+  x
+  bound
+  powerBounds
+  κ
+  factorBound =
+  MetricSpace.close-separated
+    CauchyRealsMetricSpace
+    product
+    1ᶜ
+    closeAt
+  where
+  ρ : ℚ⁺
+  ρ =
+    RealGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RealGeometricBound.ratioBound<1 bound
+
+  μ : ℚ⁺ → ℕ
+  μ =
+    positiveGeometricPowerModulus ρ ρ<1
+
+  μ-antitone : AntitoneTailModulus μ
+  μ-antitone =
+    positiveGeometricPowerModulus-antitone ρ ρ<1
+
+  tailBound : TailBound (realPower x) μ
+  tailBound =
+    realGeometricPowerTailBoundFromPowerBounds x bound powerBounds
+
+  factor : ℝᶜ
+  factor =
+    1ᶜ +ᶜ (-ᶜ x)
+
+  product : ℝᶜ
+  product =
+    factor ·ᶜ
+    seriesSumFromFiniteTailBound
+      (realPower x)
+      μ
+      tailBound
+      μ-antitone
+
+  closeAt :
+    (ε : ℚ⁺) →
+    product ∼[ ε ] 1ᶜ
+  closeAt ε =
+    subst
+      (λ precision → product ∼[ precision ] 1ᶜ)
+      (half⁺+half⁺≡ ε)
+      (MetricSpace.close-triangle
+        CauchyRealsMetricSpace
+        product∼partial
+        partial∼one)
+    where
+    η : ℚ⁺
+    η =
+      half⁺ ε
+
+    productPrecision : ℚ⁺
+    productPrecision =
+      quarter⁺
+        (half⁺
+          (fst (mulᶜ-continuous-right-with-bound κ factor factorBound) η))
+
+    tailPrecision : ℚ⁺
+    tailPrecision =
+      half⁺ η
+
+    productIndex : ℕ
+    productIndex =
+      μ productPrecision
+
+    tailIndex : ℕ
+    tailIndex =
+      μ tailPrecision
+
+    n : ℕ
+    n =
+      productIndex Nat.+ tailIndex
+
+    productIndex≤n : NatOrder._≤_ productIndex n
+    productIndex≤n =
+      tailIndex , Nat.+-comm tailIndex productIndex
+
+    tailIndex≤n : NatOrder._≤_ tailIndex n
+    tailIndex≤n =
+      productIndex , refl
+
+    product∼partial :
+      product ∼[ η ] factor ·ᶜ partialSum (realPower x) n
+    product∼partial =
+      seriesSumFromFiniteTailBound-mul-left-convergesAt
+        factor
+        κ
+        factorBound
+        (realPower x)
+        μ
+        tailBound
+        μ-antitone
+        η
+        n
+        productIndex≤n
+
+    powerTailBound :
+      BoundedByᶜ tailPrecision (tailSum (realPower x) n (suc zero))
+    powerTailBound =
+      tailBound tailPrecision n (suc zero) tailIndex≤n
+
+    powerBound :
+      BoundedByᶜ tailPrecision (realPower x n)
+    powerBound =
+      subst
+        (BoundedByᶜ tailPrecision)
+        (tailSum-one (realPower x) n)
+        powerTailBound
+
+    power∼zero :
+      realPower x n ∼[ η ] 0ᶜ
+    power∼zero =
+      bounded-byᶜ-close-zero
+        tailPrecision
+        η
+        (realPower x n)
+        powerBound
+        (half< η)
+
+    negPower∼zero :
+      (-ᶜ realPower x n) ∼[ η ] 0ᶜ
+    negPower∼zero =
+      subst
+        (λ z → (-ᶜ realPower x n) ∼[ η ] z)
+        neg-zeroᶜ
+        (neg-close power∼zero)
+
+    oneMinusPower∼one :
+      (1ᶜ +ᶜ (-ᶜ realPower x n)) ∼[ η ] 1ᶜ
+    oneMinusPower∼one =
+      subst
+        (λ z → (1ᶜ +ᶜ (-ᶜ realPower x n)) ∼[ η ] z)
+        (add-zero-right 1ᶜ)
+        (add-close-right 1ᶜ negPower∼zero)
+
+    partial∼one :
+      factor ·ᶜ partialSum (realPower x) n ∼[ η ] 1ᶜ
+    partial∼one =
+      subst
+        (λ z → z ∼[ η ] 1ᶜ)
+        (sym (realGeometricFiniteIdentity x n))
+        oneMinusPower∼one
+
+
+realGeometricPowerNeumannRightInverseFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  (powerBounds : RealGeometricPowerBounds x bound) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ (1ᶜ +ᶜ (-ᶜ x)) →
+  (1ᶜ +ᶜ (-ᶜ x)) ·ᶜ
+  realGeometricPowerSumFromPowerBounds x bound powerBounds ≡ 1ᶜ
+realGeometricPowerNeumannRightInverseFromPowerBounds
+  x
+  bound
+  powerBounds
+  κ
+  factorBound =
+  realGeometricNeumannRightInverseFromPowerBounds
+    x
+    bound
+    powerBounds
+    κ
+    factorBound
+
+
+realGeometricPowerNeumannHasRightInverseFromPowerBounds :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  (powerBounds : RealGeometricPowerBounds x bound) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ (1ᶜ +ᶜ (-ᶜ x)) →
+  HasRightInverseᶜ (1ᶜ +ᶜ (-ᶜ x))
+realGeometricPowerNeumannHasRightInverseFromPowerBounds
+  x
+  bound
+  powerBounds
+  κ
+  factorBound =
+  realGeometricPowerSumFromPowerBounds x bound powerBounds ,
+  realGeometricPowerNeumannRightInverseFromPowerBounds
+    x
+    bound
+    powerBounds
+    κ
+    factorBound
 
 
 realGeometricPowerSeriesTailBoundFromUpperData :

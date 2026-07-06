@@ -284,6 +284,30 @@ rationalGeometricSeriesTailBoundFromPositiveData r bound tailData =
     (PositiveGeometricTailData.modulusAntitone tailData)
 
 
+rationalGeometricSeriesTailBoundFromRatio :
+  (r : ℚ) →
+  (bound : RationalGeometricBound r) →
+  RationalGeometricTailBound r
+    (λ ε →
+      positiveGeometricPowerModulus
+        (RationalGeometricBound.ratioBound bound)
+        (RationalGeometricBound.ratioBound<1 bound)
+        (half⁺ ε))
+rationalGeometricSeriesTailBoundFromRatio r bound =
+  rationalGeometricSeriesTailBoundFromPositiveData
+    r
+    bound
+    (positiveGeometricTailDataFromRatio ρ ρ<1)
+  where
+  ρ : ℚ⁺
+  ρ =
+    RationalGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RationalGeometricBound.ratioBound<1 bound
+
+
 rationalGeometricSumFromMajorant :
   (r : ℚ) →
   (bound : RationalGeometricBound r) →
@@ -315,6 +339,25 @@ rationalGeometricSumFromPositiveData r bound tailData =
     (PositiveGeometricTailData.modulusAntitone tailData)
 
 
+rationalGeometricSumFromRatio :
+  (r : ℚ) →
+  (bound : RationalGeometricBound r) →
+  ℝᶜ
+rationalGeometricSumFromRatio r bound =
+  rationalGeometricSumFromPositiveData
+    r
+    bound
+    (positiveGeometricTailDataFromRatio ρ ρ<1)
+  where
+  ρ : ℚ⁺
+  ρ =
+    RationalGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RationalGeometricBound.ratioBound<1 bound
+
+
 rationalGeometricConvergesFromPositiveData :
   (r : ℚ) →
   (bound : RationalGeometricBound r) →
@@ -333,6 +376,35 @@ rationalGeometricConvergesFromPositiveData r bound tailData =
     (PositiveGeometricTailData.modulus tailData)
     (rationalGeometricTailBoundFromPositiveData r bound tailData)
     (PositiveGeometricTailData.modulusAntitone tailData)
+
+
+rationalGeometricConvergesFromRatio :
+  (r : ℚ) →
+  (bound : RationalGeometricBound r) →
+  MetricCauchy.ConvergesTo
+    (seriesCauchyApproximationFromFiniteTailBound
+      (rationalGeometricTerm r)
+      (positiveGeometricPowerModulus
+        (RationalGeometricBound.ratioBound bound)
+        (RationalGeometricBound.ratioBound<1 bound))
+      (rationalGeometricTailBoundFromRatio r bound)
+      (positiveGeometricPowerModulus-antitone
+        (RationalGeometricBound.ratioBound bound)
+        (RationalGeometricBound.ratioBound<1 bound)))
+    (rationalGeometricSumFromRatio r bound)
+rationalGeometricConvergesFromRatio r bound =
+  rationalGeometricConvergesFromPositiveData
+    r
+    bound
+    (positiveGeometricTailDataFromRatio ρ ρ<1)
+  where
+  ρ : ℚ⁺
+  ρ =
+    RationalGeometricBound.ratioBound bound
+
+  ρ<1 : radius ρ ℚOrder.< Rational.1ℚ
+  ρ<1 =
+    RationalGeometricBound.ratioBound<1 bound
 
 
 rationalGeometricTailBoundFromUpperData :

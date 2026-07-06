@@ -37,6 +37,7 @@ import Constructive.Data.Rationals as Rational
 
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Algebra
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
+open import Constructive.Analysis.Reals.Series.Instances.Geometric.Modulus public
 
 positivePower :
   ℚ⁺ →
@@ -124,21 +125,6 @@ PositiveGeometricSegmentUpperBound ρ μ =
   (m k : ℕ) →
   NatOrder._≤_ (μ ε) m →
   rationalGeometricSegmentSumℚ (radius ρ) m k ℚOrder.≤ radius ε
-
-
-positiveGeometricGap :
-  ℚ⁺ →
-  ℚ
-positiveGeometricGap ρ =
-  Rational.1ℚ ℚ.- radius ρ
-
-
-positiveGeometricGap-positive :
-  (ρ : ℚ⁺) →
-  radius ρ ℚOrder.< Rational.1ℚ →
-  Rational.0ℚ ℚOrder.< positiveGeometricGap ρ
-positiveGeometricGap-positive ρ ρ<1 =
-  Rational.diff-positive {p = radius ρ} {q = Rational.1ℚ} ρ<1
 
 
 positiveRationalPower-nonnegative :
@@ -301,48 +287,6 @@ positiveGeometricPower-linear-bound ρ ρ<1 (suc n) =
     SolverHelpers.power-linear-step ℚCommRing q p N gap
 
 
-positiveGeometricPowerStep :
-  (ρ : ℚ⁺) →
-  ℚ⁺ →
-  ℚ
-positiveGeometricPowerStep ρ ε =
-  (radius ε ℚ.· positiveGeometricGap ρ) ℚ.· positiveGeometricGap ρ
-
-
-positiveGeometricPowerStep-positive :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  (ε : ℚ⁺) →
-  Rational.0ℚ ℚOrder.< positiveGeometricPowerStep ρ ε
-positiveGeometricPowerStep-positive ρ ρ<1 ε =
-  Rational.mul-positive
-    {a = radius ε ℚ.· gap}
-    {b = gap}
-    (Rational.mul-positive {a = radius ε} {b = gap} (ε .snd) gap>0)
-    gap>0
-  where
-  gap : ℚ
-  gap =
-    positiveGeometricGap ρ
-
-  gap>0 : Rational.0ℚ ℚOrder.< gap
-  gap>0 =
-    positiveGeometricGap-positive ρ ρ<1
-
-
-positiveGeometricPowerModulus :
-  (ρ : ℚ⁺) →
-  radius ρ ℚOrder.< Rational.1ℚ →
-  ℚ⁺ →
-  ℕ
-positiveGeometricPowerModulus ρ ρ<1 ε =
-  Rational.archimedean
-    Rational.1ℚ
-    (positiveGeometricPowerStep ρ ε)
-    (positiveGeometricPowerStep-positive ρ ρ<1 ε)
-    .fst
-
-
 PositiveGeometricPowerScaledUpperBound :
   ℚ⁺ →
   (ℚ⁺ → ℕ) →
@@ -419,11 +363,7 @@ positiveGeometricPowerScaledUpperBoundFromRatio ρ ρ<1 ε m μ≤m =
 
   one<μstep : Rational.1ℚ ℚOrder.< Rational.natMul μ step
   one<μstep =
-    Rational.archimedean
-      Rational.1ℚ
-      step
-      step>0
-      .snd
+    positiveGeometricPowerModulus-large ρ ρ<1 ε
 
   one<mstep : Rational.1ℚ ℚOrder.< Rational.natMul m step
   one<mstep =
@@ -790,6 +730,61 @@ positiveGeometricTailDataFromPowerData ρ powerData =
   positiveGeometricTailDataFromSegmentData
     ρ
     (positiveGeometricSegmentUpperDataFromPowerData ρ powerData)
+
+
+positiveGeometricPowerScaledUpperDataFromRatio :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  PositiveGeometricPowerScaledUpperData ρ
+positiveGeometricPowerScaledUpperDataFromRatio ρ ρ<1 =
+  record
+    { ratioBound<1 = ρ<1
+    ; modulus = positiveGeometricPowerModulus ρ ρ<1
+    ; powerScaledUpperBound =
+        positiveGeometricPowerScaledUpperBoundFromRatio ρ ρ<1
+    ; modulusAntitone =
+        positiveGeometricPowerModulus-antitone ρ ρ<1
+    }
+
+
+positiveGeometricScaledSegmentUpperDataFromRatio :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  PositiveGeometricScaledSegmentUpperData ρ
+positiveGeometricScaledSegmentUpperDataFromRatio ρ ρ<1 =
+  positiveGeometricScaledSegmentUpperDataFromPowerData
+    ρ
+    (positiveGeometricPowerScaledUpperDataFromRatio ρ ρ<1)
+
+
+positiveGeometricSegmentUpperDataFromRatio :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  PositiveGeometricSegmentUpperData ρ
+positiveGeometricSegmentUpperDataFromRatio ρ ρ<1 =
+  positiveGeometricSegmentUpperDataFromPowerData
+    ρ
+    (positiveGeometricPowerScaledUpperDataFromRatio ρ ρ<1)
+
+
+positiveGeometricTailUpperDataFromRatio :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  PositiveGeometricTailUpperData ρ
+positiveGeometricTailUpperDataFromRatio ρ ρ<1 =
+  positiveGeometricTailUpperDataFromSegmentData
+    ρ
+    (positiveGeometricSegmentUpperDataFromRatio ρ ρ<1)
+
+
+positiveGeometricTailDataFromRatio :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  PositiveGeometricTailData ρ
+positiveGeometricTailDataFromRatio ρ ρ<1 =
+  positiveGeometricTailDataFromPowerData
+    ρ
+    (positiveGeometricPowerScaledUpperDataFromRatio ρ ρ<1)
 
 
 positiveGeometricSeriesTailBound :

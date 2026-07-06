@@ -138,6 +138,16 @@ tailSum-suc-start u m k =
     (cong (λ v → partialSum v k) (drop-suc m u))
 
 
+tailSum-one :
+  (u : ℕ → ℝᶜ) →
+  (n : ℕ) →
+  tailSum u n (suc zero) ≡ u n
+tailSum-one u n =
+  tailSum-suc-start u n zero ∙
+  cong (u n +ᶜ_) (tailSum-zero u (suc n)) ∙
+  add-zero-right (u n)
+
+
 partialSum-append :
   (u : ℕ → ℝᶜ) →
   (m n : ℕ) →
@@ -150,6 +160,21 @@ partialSum-append u (suc m) n =
     (u zero)
     (partialSum (λ k → u (suc k)) m)
     (tailSum u (suc m) n)
+
+
+partialSum-snoc :
+  (u : ℕ → ℝᶜ) →
+  (n : ℕ) →
+  partialSum u (suc n) ≡ partialSum u n +ᶜ u n
+partialSum-snoc u n =
+  cong (partialSum u) (sym n+1≡sucn) ∙
+  partialSum-append u n (suc zero) ∙
+  cong (partialSum u n +ᶜ_) (tailSum-one u n)
+  where
+  n+1≡sucn : n + suc zero ≡ suc n
+  n+1≡sucn =
+    Nat.+-suc n zero ∙
+    cong suc (Nat.+-zero n)
 
 
 partialSum-diff-right-tail≤ :

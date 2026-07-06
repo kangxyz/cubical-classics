@@ -15,7 +15,7 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc ; _+_)
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 open import Cubical.Data.Sum using (inl ; inr)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
@@ -26,6 +26,7 @@ open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
@@ -327,6 +328,56 @@ seriesSumFromFiniteTailBoundConvergesAt u μ tailBound μ-antitone ε n μθ≤n
         (partialSum u approxIndex +ᶜ (-ᶜ partialSum u n))
         approxDiffBound
         (half< η))
+
+
+seriesSumFromFiniteTailBound-mul-left-convergesAt :
+  (a : ℝᶜ) →
+  (κ : ℚ⁺) →
+  (a-bound : BoundedByᶜ κ a) →
+  (u : ℕ → ℝᶜ) →
+  (μ : ℚ⁺ → ℕ) →
+  (tailBound : TailBound u μ) →
+  (μ-antitone : AntitoneTailModulus μ) →
+  (ε : ℚ⁺) →
+  (n : ℕ) →
+  NatOrder._≤_
+    (μ (quarter⁺ (half⁺
+      (fst (mulᶜ-continuous-right-with-bound κ a a-bound) ε))))
+    n →
+  a ·ᶜ seriesSumFromFiniteTailBound u μ tailBound μ-antitone ∼[ ε ]
+  a ·ᶜ partialSum u n
+seriesSumFromFiniteTailBound-mul-left-convergesAt
+  a
+  κ
+  a-bound
+  u
+  μ
+  tailBound
+  μ-antitone
+  ε
+  n
+  μθ≤n =
+  snd cont ε series-close
+  where
+  cont =
+    mulᶜ-continuous-right-with-bound κ a a-bound
+
+  θ : ℚ⁺
+  θ =
+    fst cont ε
+
+  series-close :
+    seriesSumFromFiniteTailBound u μ tailBound μ-antitone ∼[ θ ]
+    partialSum u n
+  series-close =
+    seriesSumFromFiniteTailBoundConvergesAt
+      u
+      μ
+      tailBound
+      μ-antitone
+      θ
+      n
+      μθ≤n
 
 
 seriesSumFromFiniteTailBound-drop :
