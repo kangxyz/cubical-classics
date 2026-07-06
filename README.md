@@ -183,6 +183,9 @@ The code is split by whether it uses the library's classical `Oracle`.
   Cauchy-real metric instances, nonexpanding and uniformly continuous maps,
   Cauchy completeness, total boundedness by finite rational nets, located
   Cauchy-real approximation interfaces, closed intervals with finite grids,
+  interval order, Cauchy completeness, compactness assembly, and grid-cover
+  interfaces, plus approximate extrema for uniformly continuous maps, under
+  `Constructive/Analysis/Reals/Interval/`,
   approximate IVT results: an explicit witness theorem for located/evaluable
   data and a truncated-existence theorem from uniform continuity alone, with
   IVT proof support kept under `Constructive/Analysis/Reals/IVT/Approximate/`,

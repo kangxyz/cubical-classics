@@ -33,6 +33,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Properties
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
 open import Constructive.Analysis.Reals.Interval
+open import Constructive.Analysis.Reals.Interval.Order public using (gapᶜ)
 open import Constructive.Analysis.Reals.Interval.Grid
 open import Constructive.Analysis.Reals.Interval.Grid.Rational
 open import Constructive.Analysis.Reals.Locator.Base
@@ -43,11 +44,6 @@ import Constructive.Data.Rationals as Rational
 unit≤ᶜ : 0ᶜ ≤ᶜ 1ᶜ
 unit≤ᶜ =
   ≤ℚ→rational≤ᶜ (Rational.<→≤ Rational.0<1)
-
-
-gapᶜ : ℝᶜ → ℝᶜ → ℝᶜ
-gapᶜ a b =
-  b +ᶜ (-ᶜ a)
 
 
 locatedGapBound :
