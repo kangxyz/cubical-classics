@@ -39,6 +39,7 @@ Repository-wide style and naming conventions.
 ## Proof Names
 
 - Name lemmas after the mathematical relation they express.
+- Name predicates that express properties with an `is` or `has` prefix.
 - Prefer existing vocabulary from Cubical and nearby project modules.
 - Use helper names only for local, private proof plumbing.
 - Promote a helper to a meaningful name when it becomes shared or appears in a
