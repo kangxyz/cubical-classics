@@ -189,6 +189,11 @@ The code is split by whether it uses the library's classical `Oracle`.
   and Cauchy-real series
   with explicit tail data plus geometric instances under
   `Constructive/Analysis/Reals/Series/Instances/`.
+- `Constructive/Analysis/FixedPoint/` contains constructive fixed-point
+  results, starting with the Banach contraction principle for complete
+  precision-indexed metric spaces, explicit positive-rational contraction
+  rates, public contraction and Picard-seed interfaces, Picard iteration
+  bounds, and Cauchy-real corollaries.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,
