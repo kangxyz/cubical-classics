@@ -16,6 +16,8 @@ This library began as hand-written Agda.  AI is now used for some routine work
 and for generating tedious proof details.
 The mathematical direction and the claims made here are still human work.
 All code has to type-check, fit the library, and survive human review.
+For contributor and agent workflow details, see `AGENTS.md`,
+`STYLE.md`, and `docs/DEVELOPMENT.md`.
 
 ## Highlights
 
@@ -63,6 +65,13 @@ To type-check the library:
 ```sh
 agda --build-library
 ```
+
+## Documentation
+
+- `STYLE.md` records naming, comment, documentation, and module-style rules.
+- `AGENTS.md` records repository-wide operating rules for automated agents.
+- `docs/DEVELOPMENT.md` is the short navigation guide for proof boundaries,
+  public entry points, common pitfalls, and verification commands.
 
 ## Dedekind Reals
 
@@ -136,7 +145,7 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Algebra/LinearlyOrderedField/` contains the trichotomous
   ordered-field interface, lemmas that use trichotomy, the rational ordered
   field, and the order-preserving part of the canonical inclusion of `ℚ`.
-- `Constructive/Analysis/DedekindCompletion/` contains the parameterized
+- `Constructive/Analysis/Completions/DedekindCompletion/` contains the parameterized
   two-sided Dedekind-cut construction over a linearly ordered field, principal cuts,
   order lemmas, ordered arithmetic, ordered Heyting-field structure, generic
   Dedekind completeness, the truncated Archimedean property, and the rational
@@ -157,9 +166,9 @@ The code is split by whether it uses the library's classical `Oracle`.
   rational instance instead of the removed compatibility modules.
 - `Constructive/Analysis/Metric/Cauchy.agda` owns generic Cauchy
   approximations, convergence, and the `IsCauchyComplete` predicate.
-  `Constructive/Analysis/CauchyCompletion/MetricSpace.agda` packages a
+  `Constructive/Analysis/Completions/CauchyCompletion/MetricSpace.agda` packages a
   completion as a metric space, and
-  `Constructive/Analysis/CauchyCompletion/Completeness.agda` proves that this
+  `Constructive/Analysis/Completions/CauchyCompletion/Completeness.agda` proves that this
   metric space is complete.  Cauchy-real completeness is exported from the
   rational metric-space instance, not a separate `Metric.Complete` wrapper.
 - Internal Cauchy-real submodules contain bounded multiplication and

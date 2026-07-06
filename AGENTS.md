@@ -4,6 +4,8 @@ DO NOT send optional commentary
 
 Repository-wide operating rules for agents. For naming, comments,
 documentation tone, and module style, follow `STYLE.md`.
+For repository navigation, proof boundaries, and verification commands, use
+`docs/DEVELOPMENT.md`.
 
 ## Working Principles
 
