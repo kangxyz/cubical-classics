@@ -550,7 +550,7 @@ rational-right-multiplier-closedᶜ κ q bound r s ε r∼s =
     (λ a b → rational a ∼[ κ *⁺ ε ] rational b)
     (ℚ.·Comm q r)
     (ℚ.·Comm q s)
-    (rational-rational-close
+    (point-point-close
       (q ℚ.· r)
       (q ℚ.· s)
       (κ *⁺ ε)

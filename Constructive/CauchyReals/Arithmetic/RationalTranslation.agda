@@ -24,18 +24,18 @@ private
   translationKit s .RecursionKit.B ε x y = x ∼[ ε ] y
   translationKit s .RecursionKit.isPropB ε x y = squash
   translationKit s .RecursionKit.separated x y = path x y
-  translationKit s .RecursionKit.rational* q = rational (q ℚ.+ s)
+  translationKit s .RecursionKit.point* q = rational (q ℚ.+ s)
   translationKit s .RecursionKit.limit* x f fCauchy =
     limit (cauchy-approximation f fCauchy)
-  translationKit s .RecursionKit.rational-rational* q r ε q∼r =
-    rational-rational-close (q ℚ.+ s) (r ℚ.+ s) ε
+  translationKit s .RecursionKit.point-point* q r ε q∼r =
+    point-point-close (q ℚ.+ s) (r ℚ.+ s) ε
       (rational-close-translate q r s ε q∼r)
-  translationKit s .RecursionKit.rational-limit* q ε δ δ<ε y g gCauchy q∼gδ =
-    rational-limit-close (q ℚ.+ s) ε δ δ<ε
+  translationKit s .RecursionKit.point-limit* q ε δ δ<ε y g gCauchy q∼gδ =
+    point-limit-close (q ℚ.+ s) ε δ δ<ε
       (cauchy-approximation g gCauchy)
       q∼gδ
-  translationKit s .RecursionKit.limit-rational* x f fCauchy r ε δ δ<ε fδ∼r =
-    limit-rational-close
+  translationKit s .RecursionKit.limit-point* x f fCauchy r ε δ δ<ε fδ∼r =
+    limit-point-close
       (cauchy-approximation f fCauchy)
       (r ℚ.+ s) ε δ δ<ε
       fδ∼r
@@ -88,7 +88,7 @@ private
   translateZeroKit .PropInductionKit.A x = x +ᶜℚ 0ℚ ≡ x
   translateZeroKit .PropInductionKit.isPropA x =
     isSetℝᶜ (x +ᶜℚ 0ℚ) x
-  translateZeroKit .PropInductionKit.rational* q =
+  translateZeroKit .PropInductionKit.point* q =
     cong rational (ℚ.+IdR q)
   translateZeroKit .PropInductionKit.limit* x x+0≡x =
     path (limit (cauchy-approximation f fCauchy)) (limit x)
@@ -134,7 +134,7 @@ private
     (x +ᶜℚ q) +ᶜℚ s ≡ x +ᶜℚ (q ℚ.+ s)
   translateCombineKit q s .PropInductionKit.isPropA x =
     isSetℝᶜ ((x +ᶜℚ q) +ᶜℚ s) (x +ᶜℚ (q ℚ.+ s))
-  translateCombineKit q s .PropInductionKit.rational* r =
+  translateCombineKit q s .PropInductionKit.point* r =
     cong rational (sym (ℚ.+Assoc r q s))
   translateCombineKit q s .PropInductionKit.limit* x assocAt =
     path

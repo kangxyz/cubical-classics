@@ -27,7 +27,7 @@ rational-approximation =
     (ε : ℚ⁺) → ∥ Σ[ q ∈ ℚ ] x ∼[ ε ] rational q ∥₁
   kit .PropInductionKit.isPropA x =
     isPropΠ λ ε → squash₁
-  kit .PropInductionKit.rational* q ε =
+  kit .PropInductionKit.point* q ε =
     ∣ q , close-refl (rational q) ε ∣₁
   kit .PropInductionKit.limit* x approx* ε =
     Prop.rec squash₁ step (approx* δ β)

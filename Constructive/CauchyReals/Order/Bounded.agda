@@ -651,7 +651,7 @@ bounded-byᶜ-close-zero κ μ x bound κ<μ =
       θ+zeta<μ
       (close-triangle
         x∼q
-        (rational-rational-close q 0ℚ zeta q∼0))
+        (point-point-close q 0ℚ zeta q∼0))
     where
     q-φ≤x : rational (q ℚ.- radius φ) ≤ᶜ x
     q-φ≤x =

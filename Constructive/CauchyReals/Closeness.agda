@@ -13,6 +13,6 @@ open import Constructive.CauchyReals.Closeness.Internal.Computed public
     ; close→computed
     ; computed→close
     ; close-triangle
-    ; rationalConstructorTriangle
+    ; pointConstructorTriangle
     )
 open import Constructive.CauchyReals.Closeness.Rounded public

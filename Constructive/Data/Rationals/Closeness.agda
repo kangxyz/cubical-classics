@@ -9,6 +9,7 @@ module Constructive.Data.Rationals.Closeness where
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
 
+open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma
@@ -164,6 +165,41 @@ rational-close-rounded q r ε q∼r =
     , δ<ε
     , ℚOrder.isTrans≤< a lowerBound δ a≤lower lower<δ
     , ℚOrder.isTrans≤< b lowerBound δ b≤lower lower<δ
+
+
+rational-close-separated :
+  (q r : ℚ) →
+  ((ε : ℚ⁺) → Closeℚ q ε r) →
+  q ≡ r
+rational-close-separated q r closeAt with q ℚOrder.≟ r
+... | ℚOrder.lt q<r =
+  Empty.rec
+    (ℚOrder.isAsym<
+      (r ℚ.- q)
+      (radius (half⁺ gap))
+      (close .snd)
+      (half< gap))
+  where
+  gap : ℚ⁺
+  gap = r ℚ.- q , Rational.diff-positive {p = q} {q = r} q<r
+
+  close : Closeℚ q (half⁺ gap) r
+  close = closeAt (half⁺ gap)
+rational-close-separated q r closeAt | ℚOrder.eq q≡r =
+  q≡r
+rational-close-separated q r closeAt | ℚOrder.gt r<q =
+  Empty.rec
+    (ℚOrder.isAsym<
+      (q ℚ.- r)
+      (radius (half⁺ gap))
+      (close .fst)
+      (half< gap))
+  where
+  gap : ℚ⁺
+  gap = q ℚ.- r , Rational.diff-positive {p = r} {q = q} r<q
+
+  close : Closeℚ q (half⁺ gap) r
+  close = closeAt (half⁺ gap)
 
 
 rational-close-neg :

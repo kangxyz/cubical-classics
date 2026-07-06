@@ -8,9 +8,9 @@ module Constructive.CauchyReals.Completeness where
 
 open import Cubical.Foundations.Prelude
 
+import Constructive.Analysis.Metric.Complete as MetricComplete
+open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Extension
 
 private
   variable
@@ -70,11 +70,11 @@ instance
     x ∼[ ε ] y
 
 
-toCauchyApproximationᶜ :
+toMetricCauchyApproximationᶜ :
   CauchyApproximationIn CauchyReals →
-  CauchyApproximation
-toCauchyApproximationᶜ x =
-  cauchy-approximation
+  MetricComplete.CauchyApproximation CauchyRealsMetricSpace
+toMetricCauchyApproximationᶜ x =
+  MetricComplete.cauchy-approximation
     (CauchyApproximationIn.approximate x)
     (CauchyApproximationIn.isRegular x)
 
@@ -83,15 +83,17 @@ isCauchyComplete-CauchyReals :
   isCauchyComplete CauchyReals
 isCauchyComplete-CauchyReals x =
   cauchy-limit-in
-    (limit xᶜ)
-    λ ε δ δ<ε →
-      limit-close-intro xᶜ (approximate xᶜ δ) ε δ δ<ε
-        (close-refl
-          (approximate xᶜ δ)
-          (ε ⊖ δ [ δ<ε ]))
+    (MetricComplete.limitPoint metricLimit)
+    (MetricComplete.converges metricLimit)
   where
-  xᶜ : CauchyApproximation
-  xᶜ = toCauchyApproximationᶜ x
+  metricApproximation :
+    MetricComplete.CauchyApproximation CauchyRealsMetricSpace
+  metricApproximation =
+    toMetricCauchyApproximationᶜ x
+
+  metricLimit : MetricComplete.CauchyLimit metricApproximation
+  metricLimit =
+    MetricComplete.CauchyRealsIsComplete metricApproximation
 
 
 CauchyRealsIsCauchyComplete :

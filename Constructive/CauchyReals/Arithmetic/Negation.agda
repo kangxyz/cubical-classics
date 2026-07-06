@@ -24,18 +24,18 @@ private
   negationKit .RecursionKit.B ε x y = x ∼[ ε ] y
   negationKit .RecursionKit.isPropB ε x y = squash
   negationKit .RecursionKit.separated x y = path x y
-  negationKit .RecursionKit.rational* q = rational (ℚ.- q)
+  negationKit .RecursionKit.point* q = rational (ℚ.- q)
   negationKit .RecursionKit.limit* x f fCauchy =
     limit (cauchy-approximation f fCauchy)
-  negationKit .RecursionKit.rational-rational* q r ε q∼r =
-    rational-rational-close (ℚ.- q) (ℚ.- r) ε
+  negationKit .RecursionKit.point-point* q r ε q∼r =
+    point-point-close (ℚ.- q) (ℚ.- r) ε
       (rational-close-neg q r ε q∼r)
-  negationKit .RecursionKit.rational-limit* q ε δ δ<ε y g gCauchy q∼gδ =
-    rational-limit-close (ℚ.- q) ε δ δ<ε
+  negationKit .RecursionKit.point-limit* q ε δ δ<ε y g gCauchy q∼gδ =
+    point-limit-close (ℚ.- q) ε δ δ<ε
       (cauchy-approximation g gCauchy)
       q∼gδ
-  negationKit .RecursionKit.limit-rational* x f fCauchy r ε δ δ<ε fδ∼r =
-    limit-rational-close
+  negationKit .RecursionKit.limit-point* x f fCauchy r ε δ δ<ε fδ∼r =
+    limit-point-close
       (cauchy-approximation f fCauchy)
       (ℚ.- r) ε δ δ<ε
       fδ∼r
@@ -80,7 +80,7 @@ private
   negInvolutiveKit .PropInductionKit.A x = -ᶜ (-ᶜ x) ≡ x
   negInvolutiveKit .PropInductionKit.isPropA x =
     isSetℝᶜ (-ᶜ (-ᶜ x)) x
-  negInvolutiveKit .PropInductionKit.rational* q =
+  negInvolutiveKit .PropInductionKit.point* q =
     cong rational (ℚ.-Invol q)
   negInvolutiveKit .PropInductionKit.limit* x negneg≡id =
     path (limit (cauchy-approximation f fCauchy)) (limit x) closeAt

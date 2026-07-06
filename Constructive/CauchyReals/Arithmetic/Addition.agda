@@ -37,7 +37,7 @@ private
 
   add-left-ne : IsBinaryRationalNonexpandingLeft rational-add
   add-left-ne q r s ε q∼r =
-    rational-rational-close
+    point-point-close
       (q ℚ.+ s)
       (r ℚ.+ s)
       ε
@@ -45,7 +45,7 @@ private
 
   add-right-ne : IsBinaryRationalNonexpandingRight rational-add
   add-right-ne q r s ε r∼s =
-    rational-rational-close
+    point-point-close
       (q ℚ.+ r)
       (q ℚ.+ s)
       ε
@@ -158,7 +158,7 @@ private
     x +ᶜ 0ᶜ ≡ x
   addZeroRightKit .PropInductionKit.isPropA x =
     isSetℝᶜ (x +ᶜ 0ᶜ) x
-  addZeroRightKit .PropInductionKit.rational* q =
+  addZeroRightKit .PropInductionKit.point* q =
     cong rational (ℚ.+IdR q)
   addZeroRightKit .PropInductionKit.limit* x add0At =
     path
@@ -207,7 +207,7 @@ private
     0ᶜ +ᶜ x ≡ x
   addZeroLeftKit .PropInductionKit.isPropA x =
     isSetℝᶜ (0ᶜ +ᶜ x) x
-  addZeroLeftKit .PropInductionKit.rational* q =
+  addZeroLeftKit .PropInductionKit.point* q =
     cong rational (ℚ.+IdL q)
   addZeroLeftKit .PropInductionKit.limit* x add0At =
     path

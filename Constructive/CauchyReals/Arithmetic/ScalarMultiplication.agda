@@ -334,173 +334,11 @@ scale-rational-close :
   Closeℚ p ε q →
   rational (a ℚ.· p) ∼[ scalar-bound a *⁺ ε ] rational (a ℚ.· q)
 scale-rational-close a p q ε p∼q =
-  rational-rational-close
+  point-point-close
     (a ℚ.· p)
     (a ℚ.· q)
     (scalar-bound a *⁺ ε)
     (scale-close a p q ε p∼q)
-
-
-private
-  scaleKit :
-    (a : ℚ) (κ : ℚ⁺) →
-    a ℚOrder.< radius κ →
-    ℚ.- a ℚOrder.< radius κ →
-    RecursionKit ℓ-zero ℓ-zero
-  scaleKit a κ a<κ -a<κ .RecursionKit.A =
-    ℝᶜ
-  scaleKit a κ a<κ -a<κ .RecursionKit.B ε x y =
-    x ∼[ κ *⁺ ε ] y
-  scaleKit a κ a<κ -a<κ .RecursionKit.isPropB ε x y =
-    squash
-  scaleKit a κ a<κ -a<κ .RecursionKit.separated x y closeAt =
-    path x y λ ε →
-      subst
-        (λ ρ → x ∼[ ρ ] y)
-        (scale-precision-cancel κ ε)
-        (closeAt (posInv⁺ κ *⁺ ε))
-  scaleKit a κ a<κ -a<κ .RecursionKit.rational* q =
-    rational (a ℚ.· q)
-  scaleKit a κ a<κ -a<κ .RecursionKit.limit* x g gCauchy =
-    limit (scaledCauchyApproximation κ g gCauchy)
-  scaleKit a κ a<κ -a<κ .RecursionKit.rational-rational* q r ε q∼r =
-    rational-rational-close
-      (a ℚ.· q)
-      (a ℚ.· r)
-      (κ *⁺ ε)
-      (scale-close-bound a κ a<κ -a<κ q r ε q∼r)
-  scaleKit a κ a<κ -a<κ .RecursionKit.rational-limit* q ε δ δ<ε y g gCauchy q∼gδ =
-    rational-limit-close
-      (a ℚ.· q)
-      (κ *⁺ ε)
-      (κ *⁺ δ)
-      κδ<κε
-      (scaledCauchyApproximation κ g gCauchy)
-      q∼hκδ
-    where
-    κδ<κε : κ *⁺ δ <⁺ κ *⁺ ε
-    κδ<κε =
-      scale-precision-mono κ δ ε δ<ε
-
-    precisionPath :
-      (κ *⁺ ε) ⊖ (κ *⁺ δ) [ κδ<κε ] ≡
-      κ *⁺ (ε ⊖ δ [ δ<ε ])
-    precisionPath =
-      scale-precision-difference κ ε δ δ<ε κδ<κε
-
-    indexPath : posInv⁺ κ *⁺ (κ *⁺ δ) ≡ δ
-    indexPath =
-      scale-precision-cancel-left κ δ
-
-    q∼hκδ :
-      rational (a ℚ.· q)
-        ∼[ (κ *⁺ ε) ⊖ (κ *⁺ δ) [ κδ<κε ] ]
-      approximate (scaledCauchyApproximation κ g gCauchy) (κ *⁺ δ)
-    q∼hκδ =
-      subst2
-        (λ ρ θ → rational (a ℚ.· q) ∼[ ρ ] g θ)
-        (sym precisionPath)
-        (sym indexPath)
-        q∼gδ
-  scaleKit a κ a<κ -a<κ .RecursionKit.limit-rational* x f fCauchy r ε δ δ<ε fδ∼r =
-    limit-rational-close
-      (scaledCauchyApproximation κ f fCauchy)
-      (a ℚ.· r)
-      (κ *⁺ ε)
-      (κ *⁺ δ)
-      κδ<κε
-      hκδ∼r
-    where
-    κδ<κε : κ *⁺ δ <⁺ κ *⁺ ε
-    κδ<κε =
-      scale-precision-mono κ δ ε δ<ε
-
-    precisionPath :
-      (κ *⁺ ε) ⊖ (κ *⁺ δ) [ κδ<κε ] ≡
-      κ *⁺ (ε ⊖ δ [ δ<ε ])
-    precisionPath =
-      scale-precision-difference κ ε δ δ<ε κδ<κε
-
-    indexPath : posInv⁺ κ *⁺ (κ *⁺ δ) ≡ δ
-    indexPath =
-      scale-precision-cancel-left κ δ
-
-    hκδ∼r :
-      approximate (scaledCauchyApproximation κ f fCauchy) (κ *⁺ δ)
-        ∼[ (κ *⁺ ε) ⊖ (κ *⁺ δ) [ κδ<κε ] ]
-      rational (a ℚ.· r)
-    hκδ∼r =
-      subst2
-        (λ θ ρ → f θ ∼[ ρ ] rational (a ℚ.· r))
-        (sym indexPath)
-        (sym precisionPath)
-        fδ∼r
-  scaleKit a κ a<κ -a<κ .RecursionKit.limit-limit* x y f g fCauchy gCauchy ε δ η δ+η<ε fδ∼gη =
-    limit-limit-close
-      (scaledCauchyApproximation κ f fCauchy)
-      (scaledCauchyApproximation κ g gCauchy)
-      (κ *⁺ ε)
-      (κ *⁺ δ)
-      (κ *⁺ η)
-      κδη<κε
-      hκδ∼hκη
-    where
-    κδη<κε : (κ *⁺ δ) +⁺ (κ *⁺ η) <⁺ κ *⁺ ε
-    κδη<κε =
-      scale-precision-sum< κ ε δ η δ+η<ε
-
-    precisionPath :
-      (κ *⁺ ε) ⊖ ((κ *⁺ δ) +⁺ (κ *⁺ η)) [ κδη<κε ] ≡
-      κ *⁺ (ε ⊖ (δ +⁺ η) [ δ+η<ε ])
-    precisionPath =
-      scale-precision-sum-difference κ ε δ η δ+η<ε κδη<κε
-
-    δIndexPath : posInv⁺ κ *⁺ (κ *⁺ δ) ≡ δ
-    δIndexPath =
-      scale-precision-cancel-left κ δ
-
-    ηIndexPath : posInv⁺ κ *⁺ (κ *⁺ η) ≡ η
-    ηIndexPath =
-      scale-precision-cancel-left κ η
-
-    neededPrecision : ℚ⁺
-    neededPrecision =
-      (κ *⁺ ε) ⊖ ((κ *⁺ δ) +⁺ (κ *⁺ η)) [ κδη<κε ]
-
-    fδ∼gη-neededPrecision :
-      f δ ∼[ neededPrecision ] g η
-    fδ∼gη-neededPrecision =
-      subst
-        (λ ρ → f δ ∼[ ρ ] g η)
-        (sym precisionPath)
-        fδ∼gη
-
-    fδ∼hκη :
-      f δ ∼[ neededPrecision ]
-      approximate (scaledCauchyApproximation κ g gCauchy) (κ *⁺ η)
-    fδ∼hκη =
-      subst
-        (λ θ → f δ ∼[ neededPrecision ] g θ)
-        (sym ηIndexPath)
-        fδ∼gη-neededPrecision
-
-    hκδ∼hκη :
-      approximate (scaledCauchyApproximation κ f fCauchy) (κ *⁺ δ)
-        ∼[ neededPrecision ]
-      approximate (scaledCauchyApproximation κ g gCauchy) (κ *⁺ η)
-    hκδ∼hκη =
-      subst
-        (λ θ →
-          f θ ∼[ neededPrecision ]
-          approximate (scaledCauchyApproximation κ g gCauchy) (κ *⁺ η))
-        (sym δIndexPath)
-        fδ∼hκη
-
-  module ScaleRecursion
-    (a : ℚ) (κ : ℚ⁺)
-    (a<κ : a ℚOrder.< radius κ)
-    (-a<κ : ℚ.- a ℚOrder.< radius κ) =
-    Recursion (scaleKit a κ a<κ -a<κ)
 
 
 boundedScalarMulᶜ :
@@ -509,7 +347,14 @@ boundedScalarMulᶜ :
   ℚ.- a ℚOrder.< radius κ →
   ℝᶜ → ℝᶜ
 boundedScalarMulᶜ a κ a<κ -a<κ =
-  ScaleRecursion.rec a κ a<κ -a<κ
+  extendRationalLipschitzWithᶜ κ
+    (λ q → rational (a ℚ.· q))
+    (λ q r ε q∼r →
+      point-point-close
+        (a ℚ.· q)
+        (a ℚ.· r)
+        (κ *⁺ ε)
+        (scale-close-bound a κ a<κ -a<κ q r ε q∼r))
 
 
 boundedScalarMulᶜ-rational :
@@ -532,7 +377,14 @@ boundedScalarMulᶜ-close :
     ∼[ κ *⁺ ε ]
   boundedScalarMulᶜ a κ a<κ -a<κ y
 boundedScalarMulᶜ-close a κ a<κ -a<κ =
-  ScaleRecursion.rec-close a κ a<κ -a<κ
+  extendRationalLipschitzWithᶜ-close κ
+    (λ q → rational (a ℚ.· q))
+    (λ q r ε q∼r →
+      point-point-close
+        (a ℚ.· q)
+        (a ℚ.· r)
+        (κ *⁺ ε)
+        (scale-close-bound a κ a<κ -a<κ q r ε q∼r))
 
 
 boundedScalarMulᶜ-lipschitz :
@@ -541,14 +393,14 @@ boundedScalarMulᶜ-lipschitz :
   (-a<κ : ℚ.- a ℚOrder.< radius κ) →
   IsLipschitz (boundedScalarMulᶜ a κ a<κ -a<κ)
 boundedScalarMulᶜ-lipschitz a κ a<κ -a<κ =
-  (λ ε → posInv⁺ κ *⁺ ε) ,
-  λ ε {x = x} {y = y} x∼y →
-    subst
-      (λ ρ → boundedScalarMulᶜ a κ a<κ -a<κ x
-        ∼[ ρ ]
-        boundedScalarMulᶜ a κ a<κ -a<κ y)
-      (scale-precision-cancel κ ε)
-      (boundedScalarMulᶜ-close a κ a<κ -a<κ x∼y)
+  extendRationalLipschitzWithᶜ-lipschitz κ
+    (λ q → rational (a ℚ.· q))
+    (λ q r ε q∼r →
+      point-point-close
+        (a ℚ.· q)
+        (a ℚ.· r)
+        (κ *⁺ ε)
+        (scale-close-bound a κ a<κ -a<κ q r ε q∼r))
 
 
 boundedScalarMulᶜ-continuous :
@@ -718,12 +570,11 @@ scalarMulᶜ-lipschitz :
   (a : ℚ) →
   IsLipschitz (scalarMulᶜ a)
 scalarMulᶜ-lipschitz a =
-  (λ ε → posInv⁺ (scalar-bound a) *⁺ ε) ,
-  λ ε {x = x} {y = y} x∼y →
-    subst
-      (λ ρ → scalarMulᶜ a x ∼[ ρ ] scalarMulᶜ a y)
-      (scale-precision-cancel (scalar-bound a) ε)
-      (scalarMulᶜ-close a x∼y)
+  boundedScalarMulᶜ-lipschitz
+    a
+    (scalar-bound a)
+    (scalar-bound-upper a)
+    (scalar-bound-lower a)
 
 
 scalarMulᶜ-continuous :

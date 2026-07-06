@@ -182,7 +182,7 @@ private
 
   min-left-ne : IsBinaryRationalNonexpandingLeft rational-min
   min-left-ne q r s ε q∼r =
-    rational-rational-close
+    point-point-close
       (ℚ.min q s)
       (ℚ.min r s)
       ε
@@ -190,7 +190,7 @@ private
 
   min-right-ne : IsBinaryRationalNonexpandingRight rational-min
   min-right-ne q r s ε r∼s =
-    rational-rational-close
+    point-point-close
       (ℚ.min q r)
       (ℚ.min q s)
       ε
@@ -198,7 +198,7 @@ private
 
   max-left-ne : IsBinaryRationalNonexpandingLeft rational-max
   max-left-ne q r s ε q∼r =
-    rational-rational-close
+    point-point-close
       (ℚ.max q s)
       (ℚ.max r s)
       ε
@@ -206,7 +206,7 @@ private
 
   max-right-ne : IsBinaryRationalNonexpandingRight rational-max
   max-right-ne q r s ε r∼s =
-    rational-rational-close
+    point-point-close
       (ℚ.max q r)
       (ℚ.max q s)
       ε

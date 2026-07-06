@@ -141,7 +141,7 @@ close-rational-upper-bound =
     isPropΠ λ δ<ε →
     isPropΠ λ _ →
       isProp≤ᶜ x (rational (q ℚ.+ radius ε))
-  kit .PropInductionKit.rational* p q δ ε δ<ε p∼q =
+  kit .PropInductionKit.point* p q δ ε δ<ε p∼q =
     rational-close-upper-bound p q δ ε δ<ε (close→computed p∼q)
   kit .PropInductionKit.limit* x upperAt q δ ε δ<ε lim∼q =
     Prop.rec
@@ -256,7 +256,7 @@ close-rational-lower-bound =
     isPropΠ λ δ<ε →
     isPropΠ λ _ →
       isProp≤ᶜ (rational (q ℚ.- radius ε)) x
-  kit .PropInductionKit.rational* p q δ ε δ<ε p∼q =
+  kit .PropInductionKit.point* p q δ ε δ<ε p∼q =
     rational-close-lower-bound p q δ ε δ<ε (close→computed p∼q)
   kit .PropInductionKit.limit* x lowerAt q δ ε δ<ε lim∼q =
     Prop.rec

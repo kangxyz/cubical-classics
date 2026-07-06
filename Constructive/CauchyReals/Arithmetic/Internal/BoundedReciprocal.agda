@@ -755,7 +755,7 @@ clampedRationalInv₊ᶜ-lipschitz :
     (reciprocalLipschitzBound⁺ ε)
     (clampedRationalInv₊ᶜ ε)
 clampedRationalInv₊ᶜ-lipschitz ε p q δ p∼q =
-  rational-rational-close
+  point-point-close
     (Rational.posInv
       (clampLower ε p)
       (clampLower-positive ε p))

@@ -162,7 +162,7 @@ private
       precision<μ
       (close-triangle
         (min-close-right 0ᶜ x∼q)
-        (rational-rational-close
+        (point-point-close
           (ℚ.min 0ℚ q)
           0ℚ
           (η +⁺ η)
@@ -221,7 +221,7 @@ rational-min-zero-closeᶜ :
   ℚ.- radius η ℚOrder.≤ q →
   (rational (ℚ.min 0ℚ q)) ∼[ η +⁺ η ] 0ᶜ
 rational-min-zero-closeᶜ q η -η≤q =
-  rational-rational-close
+  point-point-close
     (ℚ.min 0ℚ q)
     0ℚ
     (η +⁺ η)
