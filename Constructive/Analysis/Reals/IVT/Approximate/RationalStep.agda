@@ -408,7 +408,7 @@ approximate-IVTΣ-rational-step-located-budget :
     ℝᶜ) →
   (located : LocatedMap f) →
   (uc :
-    UniformlyContinuousOnInterval
+    isUniformlyContinuousOnInterval
       (rational a)
       (rational (Rational.grid a (radius step) (suc n)))
       f) →
@@ -458,7 +458,7 @@ approximate-IVTΣ-rational-step-with-right-located-budget :
   (right-path : Rational.grid a (radius step) (suc n) ≡ b) →
   (f : [ rational a , rational b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval (rational a) (rational b) f) →
+  (uc : isUniformlyContinuousOnInterval (rational a) (rational b) f) →
   (targetPrecision : ℚ⁺) →
   (leftMargin rightMargin : ℚ⁺) →
   RationalStepIVTBudget
@@ -634,7 +634,7 @@ approximate-IVTΣ-rational-step-located-default-budget :
     ℝᶜ) →
   (located : LocatedMap f) →
   (uc :
-    UniformlyContinuousOnInterval
+    isUniformlyContinuousOnInterval
       (rational a)
       (rational (Rational.grid a (radius step) (suc n)))
       f) →
@@ -682,7 +682,7 @@ approximate-IVTΣ-rational-step-with-right-located-default-budget :
   (right-path : Rational.grid a (radius step) (suc n) ≡ b) →
   (f : [ rational a , rational b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval (rational a) (rational b) f) →
+  (uc : isUniformlyContinuousOnInterval (rational a) (rational b) f) →
   (targetPrecision : ℚ⁺) →
   (leftMargin rightMargin : ℚ⁺) →
   step +⁺ step <⁺
@@ -910,7 +910,7 @@ approximate-IVT∥∥-rational-step-located-strict :
     ℝᶜ) →
   (located : LocatedMap f) →
   (uc :
-    UniformlyContinuousOnInterval
+    isUniformlyContinuousOnInterval
       (rational a)
       (rational (Rational.grid a (radius step) (suc n)))
       f) →
@@ -958,7 +958,7 @@ approximate-IVTΣ-rational-step-with-right-located-strict :
   (right-path : Rational.grid a (radius step) (suc n) ≡ b) →
   (f : [ rational a , rational b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval (rational a) (rational b) f) →
+  (uc : isUniformlyContinuousOnInterval (rational a) (rational b) f) →
   (targetPrecision : ℚ⁺) →
   ((leftMargin rightMargin : ℚ⁺) →
     RationalStepIVTBudget

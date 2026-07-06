@@ -24,17 +24,17 @@ open import Constructive.Data.PositiveRationals
 open ClosenessOf RationalsMetricSpace
 
 
-UniformlyContinuousOnInterval :
+isUniformlyContinuousOnInterval :
   (a b : ℝᶜ) →
   ([ a , b ]ᶜ → ℝᶜ) →
   Type₀
-UniformlyContinuousOnInterval a b f =
+isUniformlyContinuousOnInterval a b f =
   IsUniformlyContinuous (IntervalMetric a b) CauchyRealsMetricSpace f
 
 
 uniformModulus :
   {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} →
-  UniformlyContinuousOnInterval a b f →
+  isUniformlyContinuousOnInterval a b f →
   PrecisionModulus
 uniformModulus (μ , _) =
   μ
@@ -42,7 +42,7 @@ uniformModulus (μ , _) =
 
 uniformClose :
   {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   (ε : ℚ⁺) →
   {x y : [ a , b ]ᶜ} →
   MetricSpace.Close
@@ -63,13 +63,13 @@ record IVTFunctionData
 
   field
     approxEvaluable : ApproxEvaluable f
-    uniformlyContinuous : UniformlyContinuousOnInterval a b f
+    uniformlyContinuous : isUniformlyContinuousOnInterval a b f
 
 
 locatedIVTFunctionData :
   {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} →
   LocatedMap f →
-  UniformlyContinuousOnInterval a b f →
+  isUniformlyContinuousOnInterval a b f →
   IVTFunctionData a b f
 locatedIVTFunctionData located uc .IVTFunctionData.approxEvaluable =
   locatedMap→ApproxEvaluable located

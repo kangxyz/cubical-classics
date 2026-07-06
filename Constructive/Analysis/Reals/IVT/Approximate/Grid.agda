@@ -180,7 +180,7 @@ approximate-IVTΣ-grid-located-margins :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
   (f : [ a , b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   {n : ℕ} →
   (G : Grid a b a≤b (suc n)) →
   (samplePrecision movementPrecision boundPrecision targetPrecision : ℚ⁺) →
@@ -262,11 +262,156 @@ approximate-IVTΣ-grid-budget f ivtData G targetPrecision
     IVTErrorBudget.boundPrecision budget
 
 
+approximate-IVT∥∥-grid-budget :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
+  (f : [ a , b ]ᶜ → ℝᶜ) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
+  {n : ℕ} →
+  (G : Grid a b a≤b (suc n)) →
+  (targetPrecision : ℚ⁺) →
+  (leftMargin rightMargin : ℚ⁺) →
+  (budget : IVTErrorBudget leftMargin rightMargin targetPrecision) →
+  AdjacentClose G
+    (uniformModulus {a = a} {b = b} {f = f}
+      uc
+      (IVTErrorBudget.movementPrecision budget)) →
+  NegativeMarginᶜ
+    leftMargin
+    (f (leftEndpoint {a = a} {b = b} a≤b)) →
+  PositiveMarginᶜ
+    rightMargin
+    (f (rightEndpoint {a = a} {b = b} a≤b)) →
+  ∥ Σ[ x ∈ [ a , b ]ᶜ ]
+      absᶜ (f x) <ᶜ rational (radius targetPrecision) ∥₁
+approximate-IVT∥∥-grid-budget {a = a} {b = b} {a≤b = a≤b}
+    f uc {n = n} G targetPrecision leftMargin rightMargin budget adjacentClose
+    leftMarginData rightMarginData =
+  Prop.rec squash₁ sampleStep
+    (gridApproxValues∥∥
+      {a = a}
+      {b = b}
+      {a≤b = a≤b}
+      {f = f}
+      {n = suc n}
+      G
+      sample)
+  where
+  sample movement bound small : ℚ⁺
+  sample =
+    IVTErrorBudget.samplePrecision budget
+  movement =
+    IVTErrorBudget.movementPrecision budget
+  bound =
+    IVTErrorBudget.boundPrecision budget
+  small =
+    (sample +⁺ movement) +⁺ sample
+
+  sampleStep :
+    ApproxValues (λ i → f (Grid.point G i)) sample →
+    ∥ Σ[ x ∈ [ a , b ]ᶜ ]
+        absᶜ (f x) <ᶜ rational (radius targetPrecision) ∥₁
+  sampleStep (values , valuesClose) =
+    ∣ Grid.point G nearIndex ,
+      sampleNonnegativeSmallAbsWithValues<
+        {a = a}
+        {b = b}
+        {a≤b = a≤b}
+        {f = f}
+        {n = suc n}
+        G
+        values
+        sample
+        bound
+        small
+        targetPrecision
+        (IVTErrorBudget.sample<bound budget)
+        (IVTErrorBudget.small+bound<target budget)
+        valuesClose
+        nearIndex
+        nearSmall
+    ∣₁
+    where
+    adjacentValues :
+      (i : Fin (suc n)) →
+      AdjacentValuesClose values small i
+    adjacentValues =
+      adjacentSampleValuesCloseWithValues
+        {a = a}
+        {b = b}
+        {a≤b = a≤b}
+        {f = f}
+        uc
+        {n = n}
+        G
+        sample
+        movement
+        adjacentClose
+        values
+        valuesClose
+
+    first<0 : values Fin.zero ℚOrder.< 0ℚ
+    first<0 =
+      leftEndpointSampleNegativeWithValues
+        {a = a}
+        {b = b}
+        {a≤b = a≤b}
+        {f = f}
+        {n = suc n}
+        G
+        values
+        sample
+        bound
+        leftMargin
+        (IVTErrorBudget.sample<bound budget)
+        (IVTErrorBudget.bound<left budget)
+        leftMarginData
+        valuesClose
+
+    0≤last : 0ℚ ℚOrder.≤ values (Fin.fromℕ (suc n))
+    0≤last =
+      rightEndpointSampleNonnegativeWithValues
+        {a = a}
+        {b = b}
+        {a≤b = a≤b}
+        {f = f}
+        {n = suc n}
+        G
+        values
+        sample
+        bound
+        rightMargin
+        (IVTErrorBudget.sample<bound budget)
+        (IVTErrorBudget.bound<right budget)
+        rightMarginData
+        valuesClose
+
+    near :
+      Σ[ i ∈ Fin (suc (suc n)) ]
+        NonnegativeSmall values small i
+    near =
+      gridNearZeroRight
+        n
+        values
+        small
+        adjacentValues
+        first<0
+        0≤last
+
+    nearIndex : Fin (suc (suc n))
+    nearIndex =
+      near .fst
+
+    nearSmall :
+      NonnegativeSmall values small nearIndex
+    nearSmall =
+      near .snd
+
+
 approximate-IVTΣ-grid-located-budget :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
   (f : [ a , b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   {n : ℕ} →
   (G : Grid a b a≤b (suc n)) →
   (targetPrecision : ℚ⁺) →
@@ -325,7 +470,7 @@ approximate-IVTΣ-grid-located-default-budget :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
   (f : [ a , b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   {n : ℕ} →
   (G : Grid a b a≤b (suc n)) →
   (targetPrecision : ℚ⁺) →
@@ -414,7 +559,7 @@ approximate-IVT∥∥-grid-located-strict :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
   (f : [ a , b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   {n : ℕ} →
   (G : Grid a b a≤b (suc n)) →
   (targetPrecision : ℚ⁺) →
@@ -441,7 +586,7 @@ approximate-IVTΣ-grid-located-strict :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
   (f : [ a , b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   {n : ℕ} →
   (G : Grid a b a≤b (suc n)) →
   (targetPrecision : ℚ⁺) →
@@ -540,7 +685,7 @@ approximate-IVT∥∥-grid-located-strict-default-budget :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} →
   (f : [ a , b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval a b f) →
+  (uc : isUniformlyContinuousOnInterval a b f) →
   {n : ℕ} →
   (G : Grid a b a≤b (suc n)) →
   (targetPrecision : ℚ⁺) →
@@ -558,4 +703,3 @@ approximate-IVT∥∥-grid-located-strict-default-budget f located uc =
   approximate-IVT∥∥-grid-strict-default-budget
     f
     (locatedIVTFunctionData located uc)
-

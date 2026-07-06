@@ -54,7 +54,7 @@ approximate-IVTΣ-rational-located-strict :
   (a<b : a ℚOrder.< b) →
   (f : [ rational a , rational b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval (rational a) (rational b) f) →
+  (uc : isUniformlyContinuousOnInterval (rational a) (rational b) f) →
   (targetPrecision : ℚ⁺) →
   f
     (leftEndpoint
@@ -237,7 +237,7 @@ approximate-IVT∥∥-rational-located-strict :
   (a<b : a ℚOrder.< b) →
   (f : [ rational a , rational b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval (rational a) (rational b) f) →
+  (uc : isUniformlyContinuousOnInterval (rational a) (rational b) f) →
   (targetPrecision : ℚ⁺) →
   f
     (leftEndpoint
@@ -274,7 +274,7 @@ approximate-IVT∥∥-rational-step-with-right-located-strict :
   (right-path : Rational.grid a (radius step) (suc n) ≡ b) →
   (f : [ rational a , rational b ]ᶜ → ℝᶜ) →
   (located : LocatedMap f) →
-  (uc : UniformlyContinuousOnInterval (rational a) (rational b) f) →
+  (uc : isUniformlyContinuousOnInterval (rational a) (rational b) f) →
   (targetPrecision : ℚ⁺) →
   ((leftMargin rightMargin : ℚ⁺) →
     RationalStepIVTBudget

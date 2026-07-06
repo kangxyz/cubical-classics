@@ -183,8 +183,10 @@ The code is split by whether it uses the library's classical `Oracle`.
   Cauchy-real metric instances, nonexpanding and uniformly continuous maps,
   Cauchy completeness, total boundedness by finite rational nets, located
   Cauchy-real approximation interfaces, closed intervals with finite grids,
-  an untruncated approximate IVT for located data, with IVT proof support kept
-  under `Constructive/Analysis/Reals/IVT/Approximate/`, and Cauchy-real series
+  approximate IVT results: an explicit witness theorem for located/evaluable
+  data and a truncated-existence theorem from uniform continuity alone, with
+  IVT proof support kept under `Constructive/Analysis/Reals/IVT/Approximate/`,
+  and Cauchy-real series
   with explicit tail data plus geometric instances under
   `Constructive/Analysis/Reals/Series/Instances/`.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,

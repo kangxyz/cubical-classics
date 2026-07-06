@@ -1,6 +1,6 @@
 {-
 
-Sampling located functions on finite interval grids
+Sampling functions on finite interval grids
 
 -}
 {-# OPTIONS --safe #-}
@@ -10,10 +10,12 @@ open import Cubical.Foundations.Prelude
 
 import Cubical.Data.FinData.Base as Fin
 open import Cubical.Data.FinData.Base using (Fin)
-open import Cubical.Data.Nat using (ℕ ; suc)
+open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax)
+open import Cubical.HITs.PropositionalTruncation as Prop
+  using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Completions.CauchyCompletion.MetricSpace
@@ -23,6 +25,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
+open import Constructive.Analysis.Reals.CauchyReals.Order.Density
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
@@ -203,6 +206,60 @@ gridSampleClose ivtData G ε i =
   sampleValueClose ivtData (Grid.point G i) ε
 
 
+ApproxValues :
+  {n : ℕ} →
+  (Fin n → ℝᶜ) →
+  ℚ⁺ →
+  Type₀
+ApproxValues {n = n} points ε =
+  Σ[ values ∈ (Fin n → ℚ) ]
+    ((i : Fin n) → points i ∼[ ε ] rational (values i))
+
+
+approxValues∥∥ :
+  {n : ℕ} →
+  (points : Fin n → ℝᶜ) →
+  (ε : ℚ⁺) →
+  ∥ ApproxValues points ε ∥₁
+approxValues∥∥ {n = zero} points ε =
+  ∣ (λ ()) , (λ ()) ∣₁
+approxValues∥∥ {n = suc n} points ε =
+  Prop.rec2 squash₁ combine
+    (rational-approximation (points Fin.zero) ε)
+    (approxValues∥∥ (λ i → points (Fin.suc i)) ε)
+  where
+  combine :
+    Σ[ q ∈ ℚ ] points Fin.zero ∼[ ε ] rational q →
+    ApproxValues (λ i → points (Fin.suc i)) ε →
+    ∥ ApproxValues points ε ∥₁
+  combine (q , point∼q) (tailValues , tailClose) =
+    ∣ values , valuesClose ∣₁
+    where
+    values : Fin (suc n) → ℚ
+    values Fin.zero =
+      q
+    values (Fin.suc i) =
+      tailValues i
+
+    valuesClose :
+      (i : Fin (suc n)) →
+      points i ∼[ ε ] rational (values i)
+    valuesClose Fin.zero =
+      point∼q
+    valuesClose (Fin.suc i) =
+      tailClose i
+
+
+gridApproxValues∥∥ :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
+  {n : ℕ} →
+  (G : Grid a b a≤b n) →
+  (ε : ℚ⁺) →
+  ∥ ApproxValues (λ i → f (Grid.point G i)) ε ∥₁
+gridApproxValues∥∥ {f = f} G ε =
+  approxValues∥∥ (λ i → f (Grid.point G i)) ε
+
+
 sampleNonnegativeSmallBounded :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
   (ivtData : IVTFunctionData a b f) →
@@ -270,6 +327,75 @@ sampleNonnegativeSmallAbs< {f = f} ivtData G samplePrecision boundPrecision smal
       small+bound<target)
 
 
+sampleNonnegativeSmallBoundedWithValues :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
+  {n : ℕ} →
+  (G : Grid a b a≤b n) →
+  (values : Fin (suc n) → ℚ) →
+  (samplePrecision boundPrecision smallPrecision : ℚ⁺) →
+  samplePrecision <⁺ boundPrecision →
+  ((i : Fin (suc n)) →
+    f (Grid.point G i) ∼[ samplePrecision ] rational (values i)) →
+  (i : Fin (suc n)) →
+  NonnegativeSmall values smallPrecision i →
+  BoundedByᶜ
+    (smallPrecision +⁺ boundPrecision)
+    (f (Grid.point G i))
+sampleNonnegativeSmallBoundedWithValues {f = f} G values
+    samplePrecision boundPrecision smallPrecision sample<bound valuesClose
+    i (0≤q , q<small) =
+  nonnegativeSmallCloseBounded
+    (f (Grid.point G i))
+    (values i)
+    samplePrecision
+    boundPrecision
+    smallPrecision
+    sample<bound
+    0≤q
+    q<small
+    (valuesClose i)
+
+
+sampleNonnegativeSmallAbsWithValues< :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
+  {n : ℕ} →
+  (G : Grid a b a≤b n) →
+  (values : Fin (suc n) → ℚ) →
+  (samplePrecision boundPrecision smallPrecision targetPrecision : ℚ⁺) →
+  samplePrecision <⁺ boundPrecision →
+  smallPrecision +⁺ boundPrecision <⁺ targetPrecision →
+  ((i : Fin (suc n)) →
+    f (Grid.point G i) ∼[ samplePrecision ] rational (values i)) →
+  (i : Fin (suc n)) →
+  NonnegativeSmall values smallPrecision i →
+  absᶜ (f (Grid.point G i)) <ᶜ rational (radius targetPrecision)
+sampleNonnegativeSmallAbsWithValues< {f = f} G values
+    samplePrecision boundPrecision smallPrecision targetPrecision
+    sample<bound small+bound<target valuesClose i smallAt =
+  ≤ᶜ-<ᶜ-trans
+    (absᶜ (f (Grid.point G i)))
+    (rational (radius (smallPrecision +⁺ boundPrecision)))
+    (rational (radius targetPrecision))
+    (bounded-byᶜ→abs≤
+      (smallPrecision +⁺ boundPrecision)
+      (f (Grid.point G i))
+      (sampleNonnegativeSmallBoundedWithValues
+        {f = f}
+        G
+        values
+        samplePrecision
+        boundPrecision
+        smallPrecision
+        sample<bound
+        valuesClose
+        i
+        smallAt))
+    (<ℚ→<ᶜ
+      {q = radius (smallPrecision +⁺ boundPrecision)}
+      {r = radius targetPrecision}
+      small+bound<target)
+
+
 adjacentSampleValuesClose :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
   (ivtData : IVTFunctionData a b f) →
@@ -324,6 +450,70 @@ adjacentSampleValuesClose {a = a} {b = b} {a≤b = a≤b} {f = f} ivtData {n = n
     rational (gridSampleValues ivtData G samplePrecision left)
       ∼[ (samplePrecision +⁺ movementPrecision) +⁺ samplePrecision ]
     rational (gridSampleValues ivtData G samplePrecision right)
+  cauchy-close =
+    close-triangle
+      (close-triangle (close-sym left-sample-close) movement-close)
+      right-sample-close
+
+
+adjacentSampleValuesCloseWithValues :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
+  (uc : isUniformlyContinuousOnInterval a b f) →
+  {n : ℕ} →
+  (G : Grid a b a≤b (suc n)) →
+  (samplePrecision movementPrecision : ℚ⁺) →
+  AdjacentClose G
+    (uniformModulus {a = a} {b = b} {f = f}
+      uc
+      movementPrecision) →
+  (values : Fin (suc (suc n)) → ℚ) →
+  ((i : Fin (suc (suc n))) →
+    f (Grid.point G i) ∼[ samplePrecision ] rational (values i)) →
+  (i : Fin (suc n)) →
+  AdjacentValuesClose
+    values
+    ((samplePrecision +⁺ movementPrecision) +⁺ samplePrecision)
+    i
+adjacentSampleValuesCloseWithValues {a = a} {b = b} {a≤b = a≤b} {f = f}
+    uc {n = n} G samplePrecision movementPrecision adjacentClose values
+    valuesClose i =
+  pointReflecting cauchy-close
+  where
+  left : Fin (suc (suc n))
+  left =
+    Fin.weakenFin i
+
+  right : Fin (suc (suc n))
+  right =
+    Fin.suc i
+
+  left-sample-close :
+    f (Grid.point G left) ∼[ samplePrecision ]
+    rational (values left)
+  left-sample-close =
+    valuesClose left
+
+  right-sample-close :
+    f (Grid.point G right) ∼[ samplePrecision ]
+    rational (values right)
+  right-sample-close =
+    valuesClose right
+
+  movement-close :
+    f (Grid.point G left) ∼[ movementPrecision ] f (Grid.point G right)
+  movement-close =
+    uniformClose
+      {a = a}
+      {b = b}
+      {f = f}
+      uc
+      movementPrecision
+      (adjacentClose i)
+
+  cauchy-close :
+    rational (values left)
+      ∼[ (samplePrecision +⁺ movementPrecision) +⁺ samplePrecision ]
+    rational (values right)
   cauchy-close =
     close-triangle
       (close-triangle (close-sym left-sample-close) movement-close)

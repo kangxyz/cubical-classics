@@ -1,6 +1,6 @@
 {-
 
-Endpoint margin data for untruncated IVT grid search
+Endpoint margin data for IVT grid search
 
 -}
 {-# OPTIONS --safe #-}
@@ -9,7 +9,8 @@ module Constructive.Analysis.Reals.IVT.Approximate.Endpoint where
 open import Cubical.Foundations.Prelude
 
 import Cubical.Data.FinData.Base as Fin
-open import Cubical.Data.Nat using (ℕ)
+open import Cubical.Data.FinData.Base using (Fin)
+open import Cubical.Data.Nat using (ℕ ; suc)
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; _×_)
@@ -755,6 +756,75 @@ rightEndpointSampleNonnegative {a = a} {b = b} {a≤b = a≤b} {f = f}
     cutoff<margin
     gridRightMargin
     (gridSampleClose ivtData G samplePrecision (Fin.fromℕ _))
+  where
+  gridRightMargin :
+    PositiveMarginᶜ margin (f (Grid.point G (Fin.fromℕ _)))
+  gridRightMargin =
+    subst
+      (λ u → PositiveMarginᶜ margin (f u))
+      (sym (gridRightEndpointPath G))
+      rightMargin
+
+
+leftEndpointSampleNegativeWithValues :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
+  {n : ℕ} →
+  (G : Grid a b a≤b n) →
+  (values : Fin (suc n) → ℚ) →
+  (samplePrecision cutoff margin : ℚ⁺) →
+  samplePrecision <⁺ cutoff →
+  cutoff <⁺ margin →
+  NegativeMarginᶜ margin (f (leftEndpoint {a = a} {b = b} a≤b)) →
+  ((i : Fin (suc n)) →
+    f (Grid.point G i) ∼[ samplePrecision ] rational (values i)) →
+  values Fin.zero ℚOrder.< 0ℚ
+leftEndpointSampleNegativeWithValues {a = a} {b = b} {a≤b = a≤b} {f = f}
+    G values samplePrecision cutoff margin sample<cutoff cutoff<margin
+    leftMargin valuesClose =
+  negativeMarginSample<0
+    (f (Grid.point G Fin.zero))
+    (values Fin.zero)
+    samplePrecision
+    cutoff
+    margin
+    sample<cutoff
+    cutoff<margin
+    gridLeftMargin
+    (valuesClose Fin.zero)
+  where
+  gridLeftMargin : NegativeMarginᶜ margin (f (Grid.point G Fin.zero))
+  gridLeftMargin =
+    subst
+      (λ u → NegativeMarginᶜ margin (f u))
+      (sym (gridLeftEndpointPath G))
+      leftMargin
+
+
+rightEndpointSampleNonnegativeWithValues :
+  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
+  {n : ℕ} →
+  (G : Grid a b a≤b n) →
+  (values : Fin (suc n) → ℚ) →
+  (samplePrecision cutoff margin : ℚ⁺) →
+  samplePrecision <⁺ cutoff →
+  cutoff <⁺ margin →
+  PositiveMarginᶜ margin (f (rightEndpoint {a = a} {b = b} a≤b)) →
+  ((i : Fin (suc n)) →
+    f (Grid.point G i) ∼[ samplePrecision ] rational (values i)) →
+  0ℚ ℚOrder.≤ values (Fin.fromℕ n)
+rightEndpointSampleNonnegativeWithValues {a = a} {b = b} {a≤b = a≤b} {f = f}
+    G values samplePrecision cutoff margin sample<cutoff cutoff<margin
+    rightMargin valuesClose =
+  positiveMarginSample0≤
+    (f (Grid.point G (Fin.fromℕ _)))
+    (values (Fin.fromℕ _))
+    samplePrecision
+    cutoff
+    margin
+    sample<cutoff
+    cutoff<margin
+    gridRightMargin
+    (valuesClose (Fin.fromℕ _))
   where
   gridRightMargin :
     PositiveMarginᶜ margin (f (Grid.point G (Fin.fromℕ _)))
