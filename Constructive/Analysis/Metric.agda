@@ -12,4 +12,3 @@ open import Constructive.Analysis.Metric.Cauchy public
 open import Constructive.Analysis.CauchyCompletion public
 open import Constructive.Analysis.Metric.Instances.Rationals public
 open import Constructive.Analysis.Metric.Instances.CauchyReals public
-open import Constructive.Analysis.Metric.Complete public

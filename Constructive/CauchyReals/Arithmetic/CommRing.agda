@@ -16,13 +16,17 @@ open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Multiplication
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 
 
 CauchyRealsCommRing : CommRing ℓ-zero
 CauchyRealsCommRing =
   makeCommRing 0ᶜ 1ᶜ _+ᶜ_ _·ᶜ_ -ᶜ_
-    isSetℝᶜ
+    isSetCompletion
     add-assoc
     add-zero-right
     add-inverse-right

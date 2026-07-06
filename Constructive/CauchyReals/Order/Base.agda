@@ -10,7 +10,11 @@ open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Constructive.CauchyReals.Base
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Lattice
-open import Constructive.CauchyReals.Closeness
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 
 infix 4 _≤ᶜ_ _≥ᶜ_
 
@@ -21,7 +25,7 @@ _≥ᶜ_ : ℝᶜ → ℝᶜ → Type₀
 x ≥ᶜ y = y ≤ᶜ x
 
 isProp≤ᶜ : (x y : ℝᶜ) → isProp (x ≤ᶜ y)
-isProp≤ᶜ x y = isSetℝᶜ (x ⊓ᶜ y) x
+isProp≤ᶜ x y = isSetCompletion (x ⊓ᶜ y) x
 
 ≤ᶜ-refl : (x : ℝᶜ) → x ≤ᶜ x
 ≤ᶜ-refl = min-idem
@@ -85,7 +89,7 @@ right≤ᶜ⊔ᶜ x y =
 CauchyReals≤Poset : Poset ℓ-zero ℓ-zero
 CauchyReals≤Poset =
   poset ℝᶜ _≤ᶜ_
-    (isposet isSetℝᶜ isProp≤ᶜ ≤ᶜ-refl
+    (isposet isSetCompletion isProp≤ᶜ ≤ᶜ-refl
       (λ x y z → ≤ᶜ-trans {x = x} {y = y} {z = z})
       (λ x y → ≤ᶜ-antisym {x = x} {y = y}))
 

@@ -11,7 +11,11 @@ open import Cubical.Relation.Nullary
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.Data.PositiveRationals
 open import Constructive.Data.Rationals.Closeness

@@ -10,6 +10,10 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.CauchyReals.Arithmetic.Base
@@ -17,13 +21,12 @@ open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Arithmetic.ScalarOrder
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
 open import Constructive.CauchyReals.Extension
-open import Constructive.CauchyReals.Lipschitz.Base
-open import Constructive.CauchyReals.Lipschitz.RationalExtension
 open import Constructive.CauchyReals.Order.Bounded
 open import Constructive.Data.PositiveRationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 
 
 private
@@ -111,7 +114,7 @@ scalarMulᶜ-close-rational-bound q κ bound {x = x} {y = y} x∼y =
 boundedMul-rational-leftᶜ-lipschitz :
   (κ : ℚ⁺) (q : ℚ) →
   (bound : RationalBoundᶜ κ q) →
-  IsLipschitz (boundedMul-rational-leftᶜ κ q bound)
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMul-rational-leftᶜ κ q bound)
 boundedMul-rational-leftᶜ-lipschitz κ q bound =
   boundedScalarMulᶜ-lipschitz q κ (upperℚ bound) (lowerℚ bound)
 
@@ -119,7 +122,7 @@ boundedMul-rational-leftᶜ-lipschitz κ q bound =
 boundedMul-rational-leftᶜ-continuous :
   (κ : ℚ⁺) (q : ℚ) →
   (bound : RationalBoundᶜ κ q) →
-  IsContinuous (boundedMul-rational-leftᶜ κ q bound)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMul-rational-leftᶜ κ q bound)
 boundedMul-rational-leftᶜ-continuous κ q bound =
   boundedScalarMulᶜ-continuous q κ (upperℚ bound) (lowerℚ bound)
 
@@ -279,7 +282,7 @@ boundedMul-leftᶜ-lipschitz :
   (κ : ℚ⁺) (x : ℝᶜ)
   (x-bound : BoundedByᶜ κ x)
   (x-lip : RationalRightMultiplierᶜ κ x) →
-  IsLipschitz (boundedMul-leftᶜ κ x x-bound x-lip)
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMul-leftᶜ κ x x-bound x-lip)
 boundedMul-leftᶜ-lipschitz κ x x-bound x-lip =
   extendRationalLipschitzWithᶜ-lipschitz
     κ
@@ -291,7 +294,7 @@ boundedMul-leftᶜ-continuous :
   (κ : ℚ⁺) (x : ℝᶜ)
   (x-bound : BoundedByᶜ κ x)
   (x-lip : RationalRightMultiplierᶜ κ x) →
-  IsContinuous (boundedMul-leftᶜ κ x x-bound x-lip)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMul-leftᶜ κ x x-bound x-lip)
 boundedMul-leftᶜ-continuous κ x x-bound x-lip =
   extendRationalLipschitzWithᶜ-continuous
     κ
@@ -351,10 +354,10 @@ boundedMul-leftᶜ-neg-right κ x x-bound x-lip =
   continuous-equal
     (λ y → boundedMul-leftᶜ κ x x-bound x-lip (-ᶜ y))
     (λ y → -ᶜ (boundedMul-leftᶜ κ x x-bound x-lip y))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedMul-leftᶜ-continuous κ x x-bound x-lip)
       neg-continuous)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       neg-continuous
       (boundedMul-leftᶜ-continuous κ x x-bound x-lip))
     (λ q → scalarMulᶜ-neg-scalar q x)
@@ -371,10 +374,10 @@ boundedMul-leftᶜ-distrib-real-add-rational-left κ x x-bound x-lip q =
   continuous-equal
     (λ y → boundedMul-leftᶜ κ x x-bound x-lip (rational q +ᶜ y))
     (λ y → scalarMulᶜ q x +ᶜ boundedMul-leftᶜ κ x x-bound x-lip y)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedMul-leftᶜ-continuous κ x x-bound x-lip)
       (add-continuous-right (rational q)))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (add-continuous-right (scalarMulᶜ q x))
       (boundedMul-leftᶜ-continuous κ x x-bound x-lip))
     (λ r → scalarMulᶜ-distrib-scalar-add q r x)
@@ -394,10 +397,10 @@ boundedMul-leftᶜ-distrib-real-add κ x x-bound x-lip y z =
     (λ w →
       boundedMul-leftᶜ κ x x-bound x-lip w +ᶜ
       boundedMul-leftᶜ κ x x-bound x-lip z)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedMul-leftᶜ-continuous κ x x-bound x-lip)
       (add-continuous-left z))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (add-continuous-left (boundedMul-leftᶜ κ x x-bound x-lip z))
       (boundedMul-leftᶜ-continuous κ x x-bound x-lip))
     (λ q → boundedMul-leftᶜ-distrib-real-add-rational-left κ x x-bound x-lip q z)
@@ -449,7 +452,7 @@ boundedMulᶜ-close κ x x-bound =
 boundedMulᶜ-lipschitz :
   (κ : ℚ⁺) (x : ℝᶜ)
   (x-bound : BoundedByᶜ κ x) →
-  IsLipschitz (boundedMulᶜ κ x x-bound)
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMulᶜ κ x x-bound)
 boundedMulᶜ-lipschitz κ x x-bound =
   boundedMul-leftᶜ-lipschitz
     κ
@@ -461,7 +464,7 @@ boundedMulᶜ-lipschitz κ x x-bound =
 boundedMulᶜ-continuous :
   (κ : ℚ⁺) (x : ℝᶜ)
   (x-bound : BoundedByᶜ κ x) →
-  IsContinuous (boundedMulᶜ κ x x-bound)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMulᶜ κ x x-bound)
 boundedMulᶜ-continuous κ x x-bound =
   boundedMul-leftᶜ-continuous
     κ

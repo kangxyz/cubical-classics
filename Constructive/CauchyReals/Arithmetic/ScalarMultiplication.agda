@@ -15,62 +15,72 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sum using (inl; inr)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.CauchyCompletion.Recursion
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
 open import Constructive.CauchyReals.Extension
-open import Constructive.CauchyReals.Lipschitz.Base
-open import Constructive.CauchyReals.Lipschitz.RationalExtension
 open import Constructive.Data.PositiveRationals
 open import Constructive.Data.Rationals.Closeness
-open import Constructive.CauchyReals.Recursion
 import Constructive.Data.Rationals as Rational
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open RecursionOf RationalsMetricSpace
 
 
 private
   pointwise-sum-continuous :
     {f g : ℝᶜ → ℝᶜ} →
-    IsContinuous f →
-    IsContinuous g →
-    IsContinuous (λ x → f x +ᶜ g x)
-  pointwise-sum-continuous {f = f} {g = g} f-cont g-cont ε =
+    IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace f →
+    IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace g →
+    IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → f x +ᶜ g x)
+  pointwise-sum-continuous {f = f} {g = g} f-cont g-cont =
     δ , closeAt
     where
-    α : ℚ⁺
-    α = half⁺ ε
+    α : ℚ⁺ → ℚ⁺
+    α ε =
+      half⁺ ε
 
-    μf μg : ℚ⁺
-    μf = fst (f-cont α)
-    μg = fst (g-cont α)
+    μf μg : ℚ⁺ → ℚ⁺
+    μf ε =
+      fst f-cont (α ε)
+    μg ε =
+      fst g-cont (α ε)
 
-    μ : ℚ⁺
-    μ = min⁺ μf μg
+    μ : ℚ⁺ → ℚ⁺
+    μ ε =
+      min⁺ (μf ε) (μg ε)
 
-    δ : ℚ⁺
-    δ = half⁺ μ
+    δ : ℚ⁺ → ℚ⁺
+    δ ε =
+      half⁺ (μ ε)
 
-    δ<μf : δ <⁺ μf
-    δ<μf =
-      half-min⁺<left μf μg
+    δ<μf : (ε : ℚ⁺) → δ ε <⁺ μf ε
+    δ<μf ε =
+      half-min⁺<left (μf ε) (μg ε)
 
-    δ<μg : δ <⁺ μg
-    δ<μg =
-      half-min⁺<right μf μg
+    δ<μg : (ε : ℚ⁺) → δ ε <⁺ μg ε
+    δ<μg ε =
+      half-min⁺<right (μf ε) (μg ε)
 
     closeAt :
+      (ε : ℚ⁺) →
       {x y : ℝᶜ} →
-      x ∼[ δ ] y →
+      x ∼[ δ ε ] y →
       (f x +ᶜ g x) ∼[ ε ] (f y +ᶜ g y)
-    closeAt {x = x} {y = y} x∼y =
+    closeAt ε {x = x} {y = y} x∼y =
       subst
         (λ ρ → (f x +ᶜ g x) ∼[ ρ ] (f y +ᶜ g y))
         (half⁺+half⁺≡ ε)
         (add-close
-          (snd (f-cont α) (close-mono δ<μf x∼y))
-          (snd (g-cont α) (close-mono δ<μg x∼y)))
+          (snd f-cont (α ε) (close-mono (δ<μf ε) x∼y))
+          (snd g-cont (α ε) (close-mono (δ<μg ε) x∼y)))
 
   module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
     open CommRingStr (𝓡 .snd)
@@ -391,7 +401,7 @@ boundedScalarMulᶜ-lipschitz :
   (a : ℚ) (κ : ℚ⁺)
   (a<κ : a ℚOrder.< radius κ)
   (-a<κ : ℚ.- a ℚOrder.< radius κ) →
-  IsLipschitz (boundedScalarMulᶜ a κ a<κ -a<κ)
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedScalarMulᶜ a κ a<κ -a<κ)
 boundedScalarMulᶜ-lipschitz a κ a<κ -a<κ =
   extendRationalLipschitzWithᶜ-lipschitz κ
     (λ q → rational (a ℚ.· q))
@@ -407,9 +417,9 @@ boundedScalarMulᶜ-continuous :
   (a : ℚ) (κ : ℚ⁺)
   (a<κ : a ℚOrder.< radius κ)
   (-a<κ : ℚ.- a ℚOrder.< radius κ) →
-  IsContinuous (boundedScalarMulᶜ a κ a<κ -a<κ)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedScalarMulᶜ a κ a<κ -a<κ)
 boundedScalarMulᶜ-continuous a κ a<κ -a<κ =
-  lipschitz→continuous (boundedScalarMulᶜ-lipschitz a κ a<κ -a<κ)
+  lipschitz→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (boundedScalarMulᶜ-lipschitz a κ a<κ -a<κ)
 
 
 boundedScalarMulᶜ-bound-independent :
@@ -444,10 +454,10 @@ boundedScalarMulᶜ-distrib-real-add-rational-left a κ a<κ -a<κ q =
     (λ y →
       boundedScalarMulᶜ a κ a<κ -a<κ (rational q) +ᶜ
       boundedScalarMulᶜ a κ a<κ -a<κ y)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ)
       (add-continuous-right (rational q)))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (add-continuous-right
         (boundedScalarMulᶜ a κ a<κ -a<κ (rational q)))
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ))
@@ -468,10 +478,10 @@ boundedScalarMulᶜ-distrib-real-add a κ a<κ -a<κ x y =
     (λ z →
       boundedScalarMulᶜ a κ a<κ -a<κ z +ᶜ
       boundedScalarMulᶜ a κ a<κ -a<κ y)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ)
       (add-continuous-left y))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (add-continuous-left
         (boundedScalarMulᶜ a κ a<κ -a<κ y))
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ))
@@ -513,10 +523,10 @@ boundedScalarMulᶜ-neg-real a κ a<κ -a<κ =
   continuous-equal
     (λ x → boundedScalarMulᶜ a κ a<κ -a<κ (-ᶜ x))
     (λ x → -ᶜ (boundedScalarMulᶜ a κ a<κ -a<κ x))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ)
       neg-continuous)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       neg-continuous
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ))
     (λ q → cong rational (SolverHelpers.scale-neg-right ℚCommRing a q))
@@ -535,7 +545,7 @@ boundedScalarMulᶜ-neg-scalar a κ a<κ -a<κ negneg-a<κ =
     (boundedScalarMulᶜ (ℚ.- a) κ -a<κ negneg-a<κ)
     (λ x → -ᶜ (boundedScalarMulᶜ a κ a<κ -a<κ x))
     (boundedScalarMulᶜ-continuous (ℚ.- a) κ -a<κ negneg-a<κ)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       neg-continuous
       (boundedScalarMulᶜ-continuous a κ a<κ -a<κ))
     (λ q → cong rational (SolverHelpers.scale-neg-left ℚCommRing a q))
@@ -568,7 +578,7 @@ scalarMulᶜ-close a =
 
 scalarMulᶜ-lipschitz :
   (a : ℚ) →
-  IsLipschitz (scalarMulᶜ a)
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (scalarMulᶜ a)
 scalarMulᶜ-lipschitz a =
   boundedScalarMulᶜ-lipschitz
     a
@@ -579,9 +589,9 @@ scalarMulᶜ-lipschitz a =
 
 scalarMulᶜ-continuous :
   (a : ℚ) →
-  IsContinuous (scalarMulᶜ a)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (scalarMulᶜ a)
 scalarMulᶜ-continuous a =
-  lipschitz→continuous (scalarMulᶜ-lipschitz a)
+  lipschitz→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (scalarMulᶜ-lipschitz a)
 
 
 scalarMulᶜ-one :
@@ -592,7 +602,7 @@ scalarMulᶜ-one =
     (scalarMulᶜ 1ℚ)
     (λ x → x)
     (scalarMulᶜ-continuous 1ℚ)
-    (nonexpanding→continuous id-nonexpanding)
+    (nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (id-nonexpanding CauchyRealsMetricSpace))
     (λ q → cong rational (ℚ.·IdL q))
 
 
@@ -621,8 +631,8 @@ scalarMulᶜ-neg-real a =
   continuous-equal
     (λ x → scalarMulᶜ a (-ᶜ x))
     (λ x → -ᶜ (scalarMulᶜ a x))
-    (comp-continuous (scalarMulᶜ-continuous a) neg-continuous)
-    (comp-continuous neg-continuous (scalarMulᶜ-continuous a))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} (scalarMulᶜ-continuous a) neg-continuous)
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} neg-continuous (scalarMulᶜ-continuous a))
     (λ q → cong rational (SolverHelpers.scale-neg-right ℚCommRing a q))
 
 
@@ -634,7 +644,7 @@ scalarMulᶜ-neg-scalar a =
     (scalarMulᶜ (ℚ.- a))
     (λ x → -ᶜ (scalarMulᶜ a x))
     (scalarMulᶜ-continuous (ℚ.- a))
-    (comp-continuous neg-continuous (scalarMulᶜ-continuous a))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} neg-continuous (scalarMulᶜ-continuous a))
     (λ q → cong rational (SolverHelpers.scale-neg-left ℚCommRing a q))
 
 
@@ -645,7 +655,7 @@ scalarMulᶜ-assoc a b =
   continuous-equal
     (λ x → scalarMulᶜ a (scalarMulᶜ b x))
     (scalarMulᶜ (a ℚ.· b))
-    (comp-continuous (scalarMulᶜ-continuous a) (scalarMulᶜ-continuous b))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} (scalarMulᶜ-continuous a) (scalarMulᶜ-continuous b))
     (scalarMulᶜ-continuous (a ℚ.· b))
     (λ q → cong rational (ℚ.·Assoc a b q))
 
@@ -670,8 +680,8 @@ scalarMulᶜ-distrib-real-add-rational-left a q =
   continuous-equal
     (λ y → scalarMulᶜ a (rational q +ᶜ y))
     (λ y → scalarMulᶜ a (rational q) +ᶜ scalarMulᶜ a y)
-    (comp-continuous (scalarMulᶜ-continuous a) (add-continuous-right (rational q)))
-    (comp-continuous (add-continuous-right (scalarMulᶜ a (rational q))) (scalarMulᶜ-continuous a))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} (scalarMulᶜ-continuous a) (add-continuous-right (rational q)))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} (add-continuous-right (scalarMulᶜ a (rational q))) (scalarMulᶜ-continuous a))
     (λ r → cong rational (ℚ.·DistL+ a q r))
 
 
@@ -682,7 +692,7 @@ scalarMulᶜ-distrib-real-add a x y =
   continuous-equal
     (λ z → scalarMulᶜ a (z +ᶜ y))
     (λ z → scalarMulᶜ a z +ᶜ scalarMulᶜ a y)
-    (comp-continuous (scalarMulᶜ-continuous a) (add-continuous-left y))
-    (comp-continuous (add-continuous-left (scalarMulᶜ a y)) (scalarMulᶜ-continuous a))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} (scalarMulᶜ-continuous a) (add-continuous-left y))
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace} (add-continuous-left (scalarMulᶜ a y)) (scalarMulᶜ-continuous a))
     (λ q → scalarMulᶜ-distrib-real-add-rational-left a q y)
     x

@@ -18,9 +18,10 @@ open import Constructive.Analysis.CauchyCompletion.Closeness.ReflexiveSymmetric
 open import Constructive.Analysis.CauchyCompletion.Closeness.Internal.Computed
 open import Constructive.Analysis.CauchyCompletion.Closeness.Internal.Prelength
 open import Constructive.Analysis.CauchyCompletion.Closeness.Rounded
-open import Constructive.Analysis.CauchyCompletion.Complete
-open import Constructive.Analysis.CauchyCompletion.Extension.Core
+open import Constructive.Analysis.CauchyCompletion.Completeness
+open import Constructive.Analysis.CauchyCompletion.Extension.Unary
 open import Constructive.Analysis.CauchyCompletion.Induction
+open import Constructive.Analysis.CauchyCompletion.MetricSpace
 open import Constructive.Data.PositiveRationals
 
 private
@@ -34,9 +35,10 @@ module BinaryNonexpandingExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
   open ComputedOf 𝓜
     using (close-triangle)
   open RoundedOf 𝓜
-  open CompleteOf 𝓜
+  open CompletenessOf 𝓜
   open ExtensionOf 𝓜
   open InductionOf 𝓜
+  open MetricSpaceOf 𝓜
   open PrelengthOf 𝓜
     using (difference-from-sum<)
 
@@ -79,7 +81,7 @@ module BinaryNonexpandingExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
       module Right (a : A) =
         NonexpandingExtension
           CauchyCompletionMetricSpace
-          isComplete
+          isCauchyComplete
           (f a)
           (right-ne a)
 
@@ -183,7 +185,7 @@ module BinaryNonexpandingExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
     extendBinaryNonexpanding x y =
       NonexpandingExtension.extend
         CauchyCompletionMetricSpace
-        isComplete
+        isCauchyComplete
         (λ a → rightExtension a y)
         (λ {x = a} {y = b} {ε = ε} →
           rightExtension-left-close a b y ε)
@@ -210,21 +212,21 @@ module BinaryNonexpandingExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
       extendBinaryNonexpanding x (point b) ≡
       NonexpandingExtension.extend
         CauchyCompletionMetricSpace
-        isComplete
+        isCauchyComplete
         (λ a → f a b)
         (λ {x = a} {y = c} {ε = ε} → left-ne a c b ε)
         x
     extendBinaryNonexpanding-point-right x b =
       NonexpandingExtension.extend-unique
         CauchyCompletionMetricSpace
-        isComplete
+        isCauchyComplete
         (λ a → f a b)
         (λ {x = a} {y = c} {ε = ε} → left-ne a c b ε)
         (λ y → extendBinaryNonexpanding y (point b))
         (λ {x = y} {y = z} {ε = ε} →
           NonexpandingExtension.extend-close
             CauchyCompletionMetricSpace
-            isComplete
+            isCauchyComplete
             (λ a → rightExtension a (point b))
             (λ {x = a} {y = c} {ε = ε} →
               rightExtension-left-close a c (point b) ε))
@@ -240,7 +242,7 @@ module BinaryNonexpandingExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
     extendBinaryNonexpanding-close-left x∼y z =
       NonexpandingExtension.extend-close
         CauchyCompletionMetricSpace
-        isComplete
+        isCauchyComplete
         (λ a → rightExtension a z)
         (λ {x = a} {y = b} {ε = ε} →
           rightExtension-left-close a b z ε)

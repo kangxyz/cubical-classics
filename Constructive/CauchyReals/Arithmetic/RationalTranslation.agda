@@ -10,12 +10,18 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.CauchyCompletion.Induction
+open import Constructive.Analysis.CauchyCompletion.Recursion
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Induction
-open import Constructive.CauchyReals.Lipschitz.Base
-open import Constructive.CauchyReals.Recursion
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open InductionOf RationalsMetricSpace
+open RecursionOf RationalsMetricSpace
 
 
 private
@@ -68,26 +74,26 @@ translate-close s =
   TranslationRecursion.rec-close s
 
 
-translate-nonexpanding : (s : ℚ) → IsNonexpanding (λ x → x +ᶜℚ s)
+translate-nonexpanding : (s : ℚ) → IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x +ᶜℚ s)
 translate-nonexpanding s =
   translate-close s
 
 
-translate-lipschitz : (s : ℚ) → IsLipschitz (λ x → x +ᶜℚ s)
+translate-lipschitz : (s : ℚ) → IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x +ᶜℚ s)
 translate-lipschitz s =
   (λ ε → ε) , λ ε → translate-close s
 
 
-translate-continuous : (s : ℚ) → IsContinuous (λ x → x +ᶜℚ s)
+translate-continuous : (s : ℚ) → IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x +ᶜℚ s)
 translate-continuous s =
-  lipschitz→continuous (translate-lipschitz s)
+  lipschitz→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (translate-lipschitz s)
 
 
 private
   translateZeroKit : PropInductionKit ℓ-zero
   translateZeroKit .PropInductionKit.A x = x +ᶜℚ 0ℚ ≡ x
   translateZeroKit .PropInductionKit.isPropA x =
-    isSetℝᶜ (x +ᶜℚ 0ℚ) x
+    isSetCompletion (x +ᶜℚ 0ℚ) x
   translateZeroKit .PropInductionKit.point* q =
     cong rational (ℚ.+IdR q)
   translateZeroKit .PropInductionKit.limit* x x+0≡x =
@@ -133,7 +139,7 @@ private
   translateCombineKit q s .PropInductionKit.A x =
     (x +ᶜℚ q) +ᶜℚ s ≡ x +ᶜℚ (q ℚ.+ s)
   translateCombineKit q s .PropInductionKit.isPropA x =
-    isSetℝᶜ ((x +ᶜℚ q) +ᶜℚ s) (x +ᶜℚ (q ℚ.+ s))
+    isSetCompletion ((x +ᶜℚ q) +ᶜℚ s) (x +ᶜℚ (q ℚ.+ s))
   translateCombineKit q s .PropInductionKit.point* r =
     cong rational (sym (ℚ.+Assoc r q s))
   translateCombineKit q s .PropInductionKit.limit* x assocAt =

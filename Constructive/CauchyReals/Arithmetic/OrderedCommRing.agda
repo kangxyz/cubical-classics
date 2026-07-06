@@ -30,7 +30,8 @@ open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Arithmetic.ScalarOrder
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Continuity
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Bounded
 open import Constructive.CauchyReals.Order.Base
@@ -337,10 +338,10 @@ boundedMulᶜ-min-nonnegative-rational-left κ x x-bound 0≤x q =
     (λ y →
       boundedMulᶜ κ x x-bound (rational q) ⊓ᶜ
       boundedMulᶜ κ x x-bound y)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedMulᶜ-continuous κ x x-bound)
       (min-continuous-right (rational q)))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-continuous-right (boundedMulᶜ κ x x-bound (rational q)))
       (boundedMulᶜ-continuous κ x x-bound))
     (boundedMulᶜ-min-nonnegative-rational-rational κ x x-bound 0≤x q)
@@ -360,10 +361,10 @@ boundedMulᶜ-min-nonnegative κ x x-bound 0≤x y z =
     (λ w →
       boundedMulᶜ κ x x-bound w ⊓ᶜ
       boundedMulᶜ κ x x-bound z)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (boundedMulᶜ-continuous κ x x-bound)
       (min-continuous-left z))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-continuous-left (boundedMulᶜ κ x x-bound z))
       (boundedMulᶜ-continuous κ x x-bound))
     (λ q →

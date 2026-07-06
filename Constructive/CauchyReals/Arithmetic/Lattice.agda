@@ -12,8 +12,13 @@ open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.CauchyReals.Extension
 import Constructive.Data.Rationals as Rational
 
@@ -358,58 +363,58 @@ max-close =
 
 min-nonexpanding-left :
   (z : ℝᶜ) →
-  IsNonexpanding (λ x → x ⊓ᶜ z)
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊓ᶜ z)
 min-nonexpanding-left z x∼y =
   min-close-left x∼y z
 
 
 min-nonexpanding-right :
   (x : ℝᶜ) →
-  IsNonexpanding (λ y → x ⊓ᶜ y)
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x ⊓ᶜ y)
 min-nonexpanding-right x =
   min-close-right x
 
 
 max-nonexpanding-left :
   (z : ℝᶜ) →
-  IsNonexpanding (λ x → x ⊔ᶜ z)
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊔ᶜ z)
 max-nonexpanding-left z x∼y =
   max-close-left x∼y z
 
 
 max-nonexpanding-right :
   (x : ℝᶜ) →
-  IsNonexpanding (λ y → x ⊔ᶜ y)
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x ⊔ᶜ y)
 max-nonexpanding-right x =
   max-close-right x
 
 
 min-continuous-left :
   (z : ℝᶜ) →
-  IsContinuous (λ x → x ⊓ᶜ z)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊓ᶜ z)
 min-continuous-left z =
-  nonexpanding→continuous (min-nonexpanding-left z)
+  nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (min-nonexpanding-left z)
 
 
 min-continuous-right :
   (x : ℝᶜ) →
-  IsContinuous (λ y → x ⊓ᶜ y)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x ⊓ᶜ y)
 min-continuous-right x =
-  nonexpanding→continuous (min-nonexpanding-right x)
+  nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (min-nonexpanding-right x)
 
 
 max-continuous-left :
   (z : ℝᶜ) →
-  IsContinuous (λ x → x ⊔ᶜ z)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊔ᶜ z)
 max-continuous-left z =
-  nonexpanding→continuous (max-nonexpanding-left z)
+  nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (max-nonexpanding-left z)
 
 
 max-continuous-right :
   (x : ℝᶜ) →
-  IsContinuous (λ y → x ⊔ᶜ y)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x ⊔ᶜ y)
 max-continuous-right x =
-  nonexpanding→continuous (max-nonexpanding-right x)
+  nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (max-nonexpanding-right x)
 
 
 min-comm-rational-left :
@@ -470,7 +475,7 @@ min-assoc-rational-rational-left q r =
   nonexpanding-equal
     (λ z → rational q ⊓ᶜ (rational r ⊓ᶜ z))
     (λ z → (rational q ⊓ᶜ rational r) ⊓ᶜ z)
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-nonexpanding-right (rational q))
       (min-nonexpanding-right (rational r)))
     (min-nonexpanding-right (rational q ⊓ᶜ rational r))
@@ -485,10 +490,10 @@ min-assoc-rational-left q y z =
   nonexpanding-equal
     (λ w → rational q ⊓ᶜ (w ⊓ᶜ z))
     (λ w → (rational q ⊓ᶜ w) ⊓ᶜ z)
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-nonexpanding-right (rational q))
       (min-nonexpanding-left z))
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-nonexpanding-left z)
       (min-nonexpanding-right (rational q)))
     (λ r → min-assoc-rational-rational-left q r z)
@@ -503,7 +508,7 @@ min-assoc x y z =
     (λ w → w ⊓ᶜ (y ⊓ᶜ z))
     (λ w → (w ⊓ᶜ y) ⊓ᶜ z)
     (min-nonexpanding-left (y ⊓ᶜ z))
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-nonexpanding-left z)
       (min-nonexpanding-left y))
     (λ q → min-assoc-rational-left q y z)
@@ -518,7 +523,7 @@ max-assoc-rational-rational-left q r =
   nonexpanding-equal
     (λ z → rational q ⊔ᶜ (rational r ⊔ᶜ z))
     (λ z → (rational q ⊔ᶜ rational r) ⊔ᶜ z)
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (max-nonexpanding-right (rational q))
       (max-nonexpanding-right (rational r)))
     (max-nonexpanding-right (rational q ⊔ᶜ rational r))
@@ -533,10 +538,10 @@ max-assoc-rational-left q y z =
   nonexpanding-equal
     (λ w → rational q ⊔ᶜ (w ⊔ᶜ z))
     (λ w → (rational q ⊔ᶜ w) ⊔ᶜ z)
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (max-nonexpanding-right (rational q))
       (max-nonexpanding-left z))
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (max-nonexpanding-left z)
       (max-nonexpanding-right (rational q)))
     (λ r → max-assoc-rational-rational-left q r z)
@@ -551,7 +556,7 @@ max-assoc x y z =
     (λ w → w ⊔ᶜ (y ⊔ᶜ z))
     (λ w → (w ⊔ᶜ y) ⊔ᶜ z)
     (max-nonexpanding-left (y ⊔ᶜ z))
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (max-nonexpanding-left z)
       (max-nonexpanding-left y))
     (λ q → max-assoc-rational-left q y z)
@@ -559,18 +564,16 @@ max-assoc x y z =
 
 
 min-diagonal-continuous :
-  IsContinuous (λ x → x ⊓ᶜ x)
-min-diagonal-continuous ε =
-  δ , closeAt
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊓ᶜ x)
+min-diagonal-continuous =
+  (λ ε → half⁺ ε) , closeAt
   where
-  δ : ℚ⁺
-  δ = half⁺ ε
-
   closeAt :
+    (ε : ℚ⁺) →
     {x y : ℝᶜ} →
-    x ∼[ δ ] y →
+    x ∼[ half⁺ ε ] y →
     (x ⊓ᶜ x) ∼[ ε ] (y ⊓ᶜ y)
-  closeAt {x = x} {y = y} x∼y =
+  closeAt ε {x = x} {y = y} x∼y =
     subst
       (λ ρ → (x ⊓ᶜ x) ∼[ ρ ] (y ⊓ᶜ y))
       (half⁺+half⁺≡ ε)
@@ -578,18 +581,16 @@ min-diagonal-continuous ε =
 
 
 max-diagonal-continuous :
-  IsContinuous (λ x → x ⊔ᶜ x)
-max-diagonal-continuous ε =
-  δ , closeAt
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊔ᶜ x)
+max-diagonal-continuous =
+  (λ ε → half⁺ ε) , closeAt
   where
-  δ : ℚ⁺
-  δ = half⁺ ε
-
   closeAt :
+    (ε : ℚ⁺) →
     {x y : ℝᶜ} →
-    x ∼[ δ ] y →
+    x ∼[ half⁺ ε ] y →
     (x ⊔ᶜ x) ∼[ ε ] (y ⊔ᶜ y)
-  closeAt {x = x} {y = y} x∼y =
+  closeAt ε {x = x} {y = y} x∼y =
     subst
       (λ ρ → (x ⊔ᶜ x) ∼[ ρ ] (y ⊔ᶜ y))
       (half⁺+half⁺≡ ε)
@@ -604,7 +605,7 @@ min-idem =
     (λ x → x ⊓ᶜ x)
     (λ x → x)
     min-diagonal-continuous
-    (nonexpanding→continuous id-nonexpanding)
+    (nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (id-nonexpanding CauchyRealsMetricSpace))
     (λ q → cong rational (ℚ.minIdem q))
 
 
@@ -616,7 +617,7 @@ max-idem =
     (λ x → x ⊔ᶜ x)
     (λ x → x)
     max-diagonal-continuous
-    (nonexpanding→continuous id-nonexpanding)
+    (nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (id-nonexpanding CauchyRealsMetricSpace))
     (λ q → cong rational (ℚ.maxIdem q))
 
 
@@ -627,10 +628,10 @@ min-absorb-max-rational-left q =
   nonexpanding-equal
     (λ y → rational q ⊓ᶜ (rational q ⊔ᶜ y))
     (λ _ → rational q)
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-nonexpanding-right (rational q))
       (max-nonexpanding-right (rational q)))
-    (constant-nonexpanding (rational q))
+    (constant-nonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (rational q))
     (λ r → cong rational (ℚ.minAbsorbLMax q r))
 
 
@@ -641,27 +642,25 @@ max-absorb-min-rational-left q =
   nonexpanding-equal
     (λ y → rational q ⊔ᶜ (rational q ⊓ᶜ y))
     (λ _ → rational q)
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (max-nonexpanding-right (rational q))
       (min-nonexpanding-right (rational q)))
-    (constant-nonexpanding (rational q))
+    (constant-nonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (rational q))
     (λ r → cong rational (ℚ.maxAbsorbLMin q r))
 
 
 min-absorb-max-continuous :
   (y : ℝᶜ) →
-  IsContinuous (λ x → x ⊓ᶜ (x ⊔ᶜ y))
-min-absorb-max-continuous y ε =
-  δ , closeAt
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊓ᶜ (x ⊔ᶜ y))
+min-absorb-max-continuous y =
+  (λ ε → half⁺ ε) , closeAt
   where
-  δ : ℚ⁺
-  δ = half⁺ ε
-
   closeAt :
+    (ε : ℚ⁺) →
     {x z : ℝᶜ} →
-    x ∼[ δ ] z →
+    x ∼[ half⁺ ε ] z →
     (x ⊓ᶜ (x ⊔ᶜ y)) ∼[ ε ] (z ⊓ᶜ (z ⊔ᶜ y))
-  closeAt {x = x} {z = z} x∼z =
+  closeAt ε {x = x} {z = z} x∼z =
     subst
       (λ ρ → (x ⊓ᶜ (x ⊔ᶜ y)) ∼[ ρ ] (z ⊓ᶜ (z ⊔ᶜ y)))
       (half⁺+half⁺≡ ε)
@@ -670,18 +669,16 @@ min-absorb-max-continuous y ε =
 
 max-absorb-min-continuous :
   (y : ℝᶜ) →
-  IsContinuous (λ x → x ⊔ᶜ (x ⊓ᶜ y))
-max-absorb-min-continuous y ε =
-  δ , closeAt
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ⊔ᶜ (x ⊓ᶜ y))
+max-absorb-min-continuous y =
+  (λ ε → half⁺ ε) , closeAt
   where
-  δ : ℚ⁺
-  δ = half⁺ ε
-
   closeAt :
+    (ε : ℚ⁺) →
     {x z : ℝᶜ} →
-    x ∼[ δ ] z →
+    x ∼[ half⁺ ε ] z →
     (x ⊔ᶜ (x ⊓ᶜ y)) ∼[ ε ] (z ⊔ᶜ (z ⊓ᶜ y))
-  closeAt {x = x} {z = z} x∼z =
+  closeAt ε {x = x} {z = z} x∼z =
     subst
       (λ ρ → (x ⊔ᶜ (x ⊓ᶜ y)) ∼[ ρ ] (z ⊔ᶜ (z ⊓ᶜ y)))
       (half⁺+half⁺≡ ε)
@@ -696,7 +693,7 @@ min-absorb-max x y =
     (λ z → z ⊓ᶜ (z ⊔ᶜ y))
     (λ z → z)
     (min-absorb-max-continuous y)
-    (nonexpanding→continuous id-nonexpanding)
+    (nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (id-nonexpanding CauchyRealsMetricSpace))
     (λ q → min-absorb-max-rational-left q y)
     x
 
@@ -709,6 +706,6 @@ max-absorb-min x y =
     (λ z → z ⊔ᶜ (z ⊓ᶜ y))
     (λ z → z)
     (max-absorb-min-continuous y)
-    (nonexpanding→continuous id-nonexpanding)
+    (nonexpanding→uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} (id-nonexpanding CauchyRealsMetricSpace))
     (λ q → max-absorb-min-rational-left q y)
     x

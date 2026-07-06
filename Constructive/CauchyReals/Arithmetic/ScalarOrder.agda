@@ -14,7 +14,8 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Continuity
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.Data.PositiveRationals
@@ -85,10 +86,10 @@ scalarMulᶜ-min-nonnegative-rational-left a q 0≤a =
   continuous-equal
     (λ y → scalarMulᶜ a (rational q ⊓ᶜ y))
     (λ y → scalarMulᶜ a (rational q) ⊓ᶜ scalarMulᶜ a y)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (scalarMulᶜ-continuous a)
       (min-continuous-right (rational q)))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-continuous-right (scalarMulᶜ a (rational q)))
       (scalarMulᶜ-continuous a))
     (λ r → cong rational (scale-min-nonnegative a q r 0≤a))
@@ -104,10 +105,10 @@ scalarMulᶜ-min-nonnegative a 0≤a x y =
   continuous-equal
     (λ z → scalarMulᶜ a (z ⊓ᶜ y))
     (λ z → scalarMulᶜ a z ⊓ᶜ scalarMulᶜ a y)
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (scalarMulᶜ-continuous a)
       (min-continuous-left y))
-    (comp-continuous
+    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-continuous-left (scalarMulᶜ a y))
       (scalarMulᶜ-continuous a))
     (λ q → scalarMulᶜ-min-nonnegative-rational-left a q 0≤a y)

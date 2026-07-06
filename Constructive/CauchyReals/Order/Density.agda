@@ -9,11 +9,19 @@ open import Cubical.Data.Sigma
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+import Constructive.Analysis.CauchyCompletion.Extension as GenericExtension
+open import Constructive.Analysis.CauchyCompletion.Induction
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
 open import Constructive.CauchyReals.Extension
-open import Constructive.CauchyReals.Induction
 open import Constructive.Data.PositiveRationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open GenericExtension.ExtensionOf RationalsMetricSpace
+  using (limit-close-intro)
+open InductionOf RationalsMetricSpace
 
 
 rational-approximation :

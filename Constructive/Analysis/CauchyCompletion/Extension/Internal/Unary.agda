@@ -4,7 +4,7 @@ Extension helpers for Cauchy completions
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.CauchyCompletion.Extension.Core where
+module Constructive.Analysis.CauchyCompletion.Extension.Internal.Unary where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -23,7 +23,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 import Constructive.Data.Rationals as Rational
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Map
-import Constructive.Analysis.Metric.Cauchy as MetricComplete
+import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.CauchyCompletion.Base
 open import Constructive.Analysis.CauchyCompletion.Closeness.ReflexiveSymmetric
 open import Constructive.Analysis.CauchyCompletion.Closeness.Internal.Computed
@@ -283,7 +283,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
 
   module NonexpandingExtension
     (𝓝 : MetricSpace ℓᵗ ℓᵗ')
-    (complete : MetricComplete.IsComplete 𝓝)
+    (complete : MetricCauchy.IsCauchyComplete 𝓝)
     (f : MetricSpace.Carrier 𝓜 → MetricSpace.Carrier 𝓝)
     (f-ne : IsNonexpanding 𝓜 𝓝 f)
     where
@@ -292,23 +292,23 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
       targetApproximation :
         (g : ℚ⁺ → MetricSpace.Carrier 𝓝) →
         ((ε δ : ℚ⁺) → MetricSpace.Close 𝓝 (g ε) (ε +⁺ δ) (g δ)) →
-        MetricComplete.CauchyApproximation 𝓝
+        MetricCauchy.CauchyApproximation 𝓝
       targetApproximation =
-        MetricComplete.cauchy-approximation
+        MetricCauchy.cauchy-approximation
 
       targetLimit :
         (g : ℚ⁺ → MetricSpace.Carrier 𝓝) →
         (gCauchy : (ε δ : ℚ⁺) → MetricSpace.Close 𝓝 (g ε) (ε +⁺ δ) (g δ)) →
         MetricSpace.Carrier 𝓝
       targetLimit g gCauchy =
-        MetricComplete.limitPoint (complete (targetApproximation g gCauchy))
+        MetricCauchy.limitPoint (complete (targetApproximation g gCauchy))
 
       targetConverges :
         (g : ℚ⁺ → MetricSpace.Carrier 𝓝) →
         (gCauchy : (ε δ : ℚ⁺) → MetricSpace.Close 𝓝 (g ε) (ε +⁺ δ) (g δ)) →
-        MetricComplete.ConvergesTo (targetApproximation g gCauchy) (targetLimit g gCauchy)
+        MetricCauchy.ConvergesTo (targetApproximation g gCauchy) (targetLimit g gCauchy)
       targetConverges g gCauchy =
-        MetricComplete.converges (complete (targetApproximation g gCauchy))
+        MetricCauchy.converges (complete (targetApproximation g gCauchy))
 
       point-limit-close-target :
         (a : MetricSpace.Carrier 𝓜) (ε δ : ℚ⁺) →
@@ -527,7 +527,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
     (μ : PrecisionModulus)
     (μ-completion : CompletionPrecisionModulus μ)
     (𝓝 : MetricSpace ℓᵗ ℓᵗ')
-    (complete : MetricComplete.IsComplete 𝓝)
+    (complete : MetricCauchy.IsCauchyComplete 𝓝)
     (f : MetricSpace.Carrier 𝓜 → MetricSpace.Carrier 𝓝)
     (f-cont : IsUniformlyContinuousWith 𝓜 𝓝 μ f)
     where
@@ -572,9 +572,9 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
       targetApproximation :
         (g : ℚ⁺ → MetricSpace.Carrier 𝓝) →
         ((ε δ : ℚ⁺) → TargetClose (ε +⁺ δ) (g ε) (g δ)) →
-        MetricComplete.CauchyApproximation 𝓝
+        MetricCauchy.CauchyApproximation 𝓝
       targetApproximation g gCauchy =
-        MetricComplete.cauchy-approximation
+        MetricCauchy.cauchy-approximation
           (λ ε → g (ν ε))
           (λ ε δ → gCauchy (ν ε) (ν δ) (ε +⁺ δ) (ν-regular ε δ))
 
@@ -583,16 +583,16 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
         (gCauchy : (ε δ : ℚ⁺) → TargetClose (ε +⁺ δ) (g ε) (g δ)) →
         MetricSpace.Carrier 𝓝
       targetLimit g gCauchy =
-        MetricComplete.limitPoint (complete (targetApproximation g gCauchy))
+        MetricCauchy.limitPoint (complete (targetApproximation g gCauchy))
 
       targetConverges :
         (g : ℚ⁺ → MetricSpace.Carrier 𝓝) →
         (gCauchy : (ε δ : ℚ⁺) → TargetClose (ε +⁺ δ) (g ε) (g δ)) →
-        MetricComplete.ConvergesTo
+        MetricCauchy.ConvergesTo
           (targetApproximation g gCauchy)
           (targetLimit g gCauchy)
       targetConverges g gCauchy =
-        MetricComplete.converges (complete (targetApproximation g gCauchy))
+        MetricCauchy.converges (complete (targetApproximation g gCauchy))
 
       point-limit-close-target :
         (a : MetricSpace.Carrier 𝓜) (ε δ : ℚ⁺) →
@@ -602,7 +602,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
         TargetClose (ε ⊖ δ [ δ<ε ]) (f a) (g δ) →
         TargetClose ε (f a) (targetLimit g gCauchy)
       point-limit-close-target a ε δ δ<ε g gCauchy a∼gδ θ ε≤μθ =
-        MetricComplete.close-mono-≤ 𝓝
+        MetricCauchy.close-mono-≤ 𝓝
           (PointLimitSplit.pointLimitTotal≤ split)
           (MetricSpace.close-triangle 𝓝
             (MetricSpace.close-triangle 𝓝 a∼gδ' gδ∼gνι)
@@ -670,7 +670,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
         TargetClose (ε ⊖ (δ +⁺ η) [ δ+η<ε ]) (g δ) (h η) →
         TargetClose ε (targetLimit g gCauchy) (targetLimit h hCauchy)
       limit-limit-close-target g h gCauchy hCauchy ε δ η δ+η<ε gδ∼hη θ ε≤μθ =
-        MetricComplete.close-mono-≤ 𝓝
+        MetricCauchy.close-mono-≤ 𝓝
           (LimitLimitSplit.limitLimitTotal≤ split)
           (MetricSpace.close-triangle 𝓝
             (MetricSpace.close-triangle 𝓝
@@ -766,7 +766,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
       extensionKit .RecursionKit.limit* x g gCauchy =
         targetLimit g gCauchy
       extensionKit .RecursionKit.point-point* a b ε a∼b θ ε≤μθ =
-        f-cont θ (MetricComplete.close-mono-≤ 𝓜 ε≤μθ a∼b)
+        f-cont θ (MetricCauchy.close-mono-≤ 𝓜 ε≤μθ a∼b)
       extensionKit .RecursionKit.point-limit* a ε δ δ<ε y g gCauchy =
         point-limit-close-target a ε δ δ<ε g gCauchy
       extensionKit .RecursionKit.limit-point* x g gCauchy b ε δ δ<ε =
@@ -873,30 +873,30 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
   module ScaledLipschitzExtension
     (κ : ℚ⁺)
     (𝓝 : MetricSpace ℓᵗ ℓᵗ')
-    (complete : MetricComplete.IsComplete 𝓝)
+    (complete : MetricCauchy.IsCauchyComplete 𝓝)
     (f : MetricSpace.Carrier 𝓜 → MetricSpace.Carrier 𝓝)
     (f-lip : IsScaledLipschitzWith κ 𝓝 f)
     where
 
     private
       targetLimit :
-        MetricComplete.CauchyApproximation 𝓝 →
+        MetricCauchy.CauchyApproximation 𝓝 →
         MetricSpace.Carrier 𝓝
       targetLimit x =
-        MetricComplete.limitPoint (complete x)
+        MetricCauchy.limitPoint (complete x)
 
       targetConverges :
-        (x : MetricComplete.CauchyApproximation 𝓝) →
-        MetricComplete.ConvergesTo x (targetLimit x)
+        (x : MetricCauchy.CauchyApproximation 𝓝) →
+        MetricCauchy.ConvergesTo x (targetLimit x)
       targetConverges x =
-        MetricComplete.converges (complete x)
+        MetricCauchy.converges (complete x)
 
       scaledTargetApproximation :
         (g : ℚ⁺ → MetricSpace.Carrier 𝓝) →
         ((ε δ : ℚ⁺) → MetricSpace.Close 𝓝 (g ε) (κ *⁺ (ε +⁺ δ)) (g δ)) →
-        MetricComplete.CauchyApproximation 𝓝
+        MetricCauchy.CauchyApproximation 𝓝
       scaledTargetApproximation g gCauchy =
-        MetricComplete.cauchy-approximation h hCauchy
+        MetricCauchy.cauchy-approximation h hCauchy
         where
         h : ℚ⁺ → MetricSpace.Carrier 𝓝
         h ε =
@@ -913,11 +913,11 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
 
       close-limit-target :
         (a : MetricSpace.Carrier 𝓝) →
-        (x : MetricComplete.CauchyApproximation 𝓝) →
+        (x : MetricCauchy.CauchyApproximation 𝓝) →
         (ε δ : ℚ⁺) →
         (δ<ε : δ <⁺ ε) →
         MetricSpace.Close 𝓝 a (ε ⊖ δ [ δ<ε ])
-          (MetricComplete.approximate x δ) →
+          (MetricCauchy.approximate x δ) →
         MetricSpace.Close 𝓝 a ε (targetLimit x)
       close-limit-target a x ε δ δ<ε a∼xδ =
         Prop.rec
@@ -928,7 +928,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
         step :
           Σ[ ζ ∈ ℚ⁺ ]
             (ζ <⁺ ε ⊖ δ [ δ<ε ]) ×
-            MetricSpace.Close 𝓝 a ζ (MetricComplete.approximate x δ) →
+            MetricSpace.Close 𝓝 a ζ (MetricCauchy.approximate x δ) →
           MetricSpace.Close 𝓝 a ε (targetLimit x)
         step (ζ , ζ<ε-δ , a∼xζ) =
           subst
@@ -944,7 +944,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
 
           xδ∼lim :
             MetricSpace.Close 𝓝
-              (MetricComplete.approximate x δ)
+              (MetricCauchy.approximate x δ)
               (δ +⁺ gap)
               (targetLimit x)
           xδ∼lim =
@@ -952,12 +952,12 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
               (targetConverges x (δ +⁺ gap) δ δ<δ+gap)
 
       limit-close-target :
-        (x : MetricComplete.CauchyApproximation 𝓝) →
+        (x : MetricCauchy.CauchyApproximation 𝓝) →
         (b : MetricSpace.Carrier 𝓝) →
         (ε δ : ℚ⁺) →
         (δ<ε : δ <⁺ ε) →
         MetricSpace.Close 𝓝
-          (MetricComplete.approximate x δ)
+          (MetricCauchy.approximate x δ)
           (ε ⊖ δ [ δ<ε ])
           b →
         MetricSpace.Close 𝓝 (targetLimit x) ε b
@@ -967,13 +967,13 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
             (MetricSpace.close-sym 𝓝 xδ∼b))
 
       limit-limit-target :
-        (x y : MetricComplete.CauchyApproximation 𝓝) →
+        (x y : MetricCauchy.CauchyApproximation 𝓝) →
         (ε δ η : ℚ⁺) →
         (δ+η<ε : δ +⁺ η <⁺ ε) →
         MetricSpace.Close 𝓝
-          (MetricComplete.approximate x δ)
+          (MetricCauchy.approximate x δ)
           (ε ⊖ (δ +⁺ η) [ δ+η<ε ])
-          (MetricComplete.approximate y η) →
+          (MetricCauchy.approximate y η) →
         MetricSpace.Close 𝓝 (targetLimit x) ε (targetLimit y)
       limit-limit-target x y ε δ η δ+η<ε xδ∼yη =
         Prop.rec
@@ -985,9 +985,9 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
           Σ[ ζ ∈ ℚ⁺ ]
             (ζ <⁺ ε ⊖ (δ +⁺ η) [ δ+η<ε ]) ×
             MetricSpace.Close 𝓝
-              (MetricComplete.approximate x δ)
+              (MetricCauchy.approximate x δ)
               ζ
-              (MetricComplete.approximate y η) →
+              (MetricCauchy.approximate y η) →
           MetricSpace.Close 𝓝 (targetLimit x) ε (targetLimit y)
         step (ζ , ζ<ε-δη , xδ∼yηζ) =
           subst
@@ -1011,13 +1011,13 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
 
           lim∼xδ :
             MetricSpace.Close 𝓝 (targetLimit x) (δ +⁺ θ)
-              (MetricComplete.approximate x δ)
+              (MetricCauchy.approximate x δ)
           lim∼xδ =
             targetConverges x (δ +⁺ θ) δ δ<δ+θ
 
           yη∼lim :
             MetricSpace.Close 𝓝
-              (MetricComplete.approximate y η)
+              (MetricCauchy.approximate y η)
               (η +⁺ θ)
               (targetLimit y)
           yη∼lim =
@@ -1070,7 +1070,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
           MetricSpace.Close 𝓝
             (f a)
             ((κ *⁺ ε) ⊖ (κ *⁺ δ) [ κδ<κε ])
-            (MetricComplete.approximate
+            (MetricCauchy.approximate
               (scaledTargetApproximation g gCauchy)
               (κ *⁺ δ))
         a∼hκδ =
@@ -1104,7 +1104,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
 
         hκδ∼b :
           MetricSpace.Close 𝓝
-            (MetricComplete.approximate
+            (MetricCauchy.approximate
               (scaledTargetApproximation g gCauchy)
               (κ *⁺ δ))
             ((κ *⁺ ε) ⊖ (κ *⁺ δ) [ κδ<κε ])
@@ -1159,7 +1159,7 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
           MetricSpace.Close 𝓝
             (g δ)
             neededPrecision
-            (MetricComplete.approximate
+            (MetricCauchy.approximate
               (scaledTargetApproximation h hCauchy)
               (κ *⁺ η))
         gδ∼hκη =
@@ -1170,18 +1170,18 @@ module ExtensionOf (𝓜 : MetricSpace ℓ ℓ') where
 
         gκδ∼hκη :
           MetricSpace.Close 𝓝
-            (MetricComplete.approximate
+            (MetricCauchy.approximate
               (scaledTargetApproximation g gCauchy)
               (κ *⁺ δ))
             neededPrecision
-            (MetricComplete.approximate
+            (MetricCauchy.approximate
               (scaledTargetApproximation h hCauchy)
               (κ *⁺ η))
         gκδ∼hκη =
           subst
             (λ θ →
               MetricSpace.Close 𝓝 (g θ) neededPrecision
-                (MetricComplete.approximate
+                (MetricCauchy.approximate
                   (scaledTargetApproximation h hCauchy)
                   (κ *⁺ η)))
             (sym δIndexPath)

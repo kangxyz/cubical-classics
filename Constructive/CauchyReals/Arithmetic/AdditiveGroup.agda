@@ -15,12 +15,16 @@ open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 
 
 CauchyRealsAbGroup : AbGroup ℓ-zero
 CauchyRealsAbGroup =
-  makeAbGroup 0ᶜ _+ᶜ_ -ᶜ_ isSetℝᶜ
+  makeAbGroup 0ᶜ _+ᶜ_ -ᶜ_ isSetCompletion
     add-assoc add-zero-right add-inverse-right add-comm
 
 

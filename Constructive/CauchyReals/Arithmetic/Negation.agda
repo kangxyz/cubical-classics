@@ -10,12 +10,18 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.CauchyCompletion.Induction
+open import Constructive.Analysis.CauchyCompletion.Recursion
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Induction
-open import Constructive.CauchyReals.Lipschitz.Base
-open import Constructive.CauchyReals.Recursion
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open InductionOf RationalsMetricSpace
+open RecursionOf RationalsMetricSpace
 
 
 private
@@ -61,25 +67,29 @@ neg-close : {x y : ℝᶜ} {ε : ℚ⁺} → x ∼[ ε ] y → (-ᶜ x) ∼[ ε 
 neg-close = NegationRecursion.rec-close
 
 
-neg-nonexpanding : IsNonexpanding -ᶜ_
+neg-nonexpanding : IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace -ᶜ_
 neg-nonexpanding = neg-close
 
 
-neg-lipschitz : IsLipschitz -ᶜ_
+neg-lipschitz : IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace -ᶜ_
 neg-lipschitz =
   (λ ε → ε) , λ ε → neg-close
 
 
-neg-continuous : IsContinuous -ᶜ_
+neg-continuous : IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace -ᶜ_
 neg-continuous =
-  lipschitz→continuous neg-lipschitz
+  lipschitz→uniformlyContinuous
+    {𝓧 = CauchyRealsMetricSpace}
+    {𝓨 = CauchyRealsMetricSpace}
+    {f = -ᶜ_}
+    neg-lipschitz
 
 
 private
   negInvolutiveKit : PropInductionKit ℓ-zero
   negInvolutiveKit .PropInductionKit.A x = -ᶜ (-ᶜ x) ≡ x
   negInvolutiveKit .PropInductionKit.isPropA x =
-    isSetℝᶜ (-ᶜ (-ᶜ x)) x
+    isSetCompletion (-ᶜ (-ᶜ x)) x
   negInvolutiveKit .PropInductionKit.point* q =
     cong rational (ℚ.-Invol q)
   negInvolutiveKit .PropInductionKit.limit* x negneg≡id =

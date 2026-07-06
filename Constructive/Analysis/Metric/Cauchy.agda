@@ -60,8 +60,8 @@ record CauchyLimit
 open CauchyLimit public
 
 
-IsComplete : MetricSpace ℓ ℓ' → Type (ℓ-max ℓ ℓ')
-IsComplete 𝓜 =
+IsCauchyComplete : MetricSpace ℓ ℓ' → Type (ℓ-max ℓ ℓ')
+IsCauchyComplete 𝓜 =
   (x : CauchyApproximation 𝓜) → CauchyLimit x
 
 

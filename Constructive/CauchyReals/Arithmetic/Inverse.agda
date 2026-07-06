@@ -22,7 +22,11 @@ open import Constructive.CauchyReals.Arithmetic.Addition
 open import Constructive.CauchyReals.Arithmetic.Multiplication
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 open import Constructive.CauchyReals.Order.StrictPositive
 import Constructive.Data.Rationals as Rational
 
@@ -52,7 +56,7 @@ isPropHasRightInverseᶜ :
   isProp (HasRightInverseᶜ x)
 isPropHasRightInverseᶜ x a b =
   Σ≡Prop
-    (λ y → isSetℝᶜ (x ·ᶜ y) 1ᶜ)
+    (λ y → isSetCompletion (x ·ᶜ y) 1ᶜ)
     (right-inverse-uniqueᶜ
       {x = x}
       {y = a .fst}

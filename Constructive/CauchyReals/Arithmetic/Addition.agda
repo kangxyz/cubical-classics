@@ -10,13 +10,22 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+import Constructive.Analysis.CauchyCompletion.Extension as GenericExtension
+open import Constructive.Analysis.CauchyCompletion.Induction
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
 open import Constructive.CauchyReals.Extension
-open import Constructive.CauchyReals.Induction
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open GenericExtension.ExtensionOf RationalsMetricSpace
+  using (limit-limit-intro)
+open InductionOf RationalsMetricSpace
 
 
 private
@@ -126,30 +135,38 @@ add-close =
 
 add-nonexpanding-left :
   (z : ℝᶜ) →
-  IsNonexpanding (λ x → x +ᶜ z)
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x +ᶜ z)
 add-nonexpanding-left z x∼y =
   add-close-left x∼y z
 
 
 add-nonexpanding-right :
   (x : ℝᶜ) →
-  IsNonexpanding (λ y → x +ᶜ y)
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x +ᶜ y)
 add-nonexpanding-right x =
   add-close-right x
 
 
 add-continuous-left :
   (z : ℝᶜ) →
-  IsContinuous (λ x → x +ᶜ z)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x +ᶜ z)
 add-continuous-left z =
-  nonexpanding→continuous (add-nonexpanding-left z)
+  nonexpanding→uniformlyContinuous
+    {𝓧 = CauchyRealsMetricSpace}
+    {𝓨 = CauchyRealsMetricSpace}
+    {f = λ x → x +ᶜ z}
+    (add-nonexpanding-left z)
 
 
 add-continuous-right :
   (x : ℝᶜ) →
-  IsContinuous (λ y → x +ᶜ y)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x +ᶜ y)
 add-continuous-right x =
-  nonexpanding→continuous (add-nonexpanding-right x)
+  nonexpanding→uniformlyContinuous
+    {𝓧 = CauchyRealsMetricSpace}
+    {𝓨 = CauchyRealsMetricSpace}
+    {f = λ y → x +ᶜ y}
+    (add-nonexpanding-right x)
 
 
 private
@@ -157,7 +174,7 @@ private
   addZeroRightKit .PropInductionKit.A x =
     x +ᶜ 0ᶜ ≡ x
   addZeroRightKit .PropInductionKit.isPropA x =
-    isSetℝᶜ (x +ᶜ 0ᶜ) x
+    isSetCompletion (x +ᶜ 0ᶜ) x
   addZeroRightKit .PropInductionKit.point* q =
     cong rational (ℚ.+IdR q)
   addZeroRightKit .PropInductionKit.limit* x add0At =
@@ -206,7 +223,7 @@ private
   addZeroLeftKit .PropInductionKit.A x =
     0ᶜ +ᶜ x ≡ x
   addZeroLeftKit .PropInductionKit.isPropA x =
-    isSetℝᶜ (0ᶜ +ᶜ x) x
+    isSetCompletion (0ᶜ +ᶜ x) x
   addZeroLeftKit .PropInductionKit.point* q =
     cong rational (ℚ.+IdL q)
   addZeroLeftKit .PropInductionKit.limit* x add0At =
@@ -284,6 +301,9 @@ add-assoc-rational-rational-left q r =
     (λ z → rational q +ᶜ (rational r +ᶜ z))
     (λ z → (rational q +ᶜ rational r) +ᶜ z)
     (comp-nonexpanding
+      {𝓧 = CauchyRealsMetricSpace}
+      {𝓨 = CauchyRealsMetricSpace}
+      {𝓩 = CauchyRealsMetricSpace}
       (add-nonexpanding-right (rational q))
       (add-nonexpanding-right (rational r)))
     (add-nonexpanding-right (rational q +ᶜ rational r))
@@ -299,9 +319,15 @@ add-assoc-rational-left q y z =
     (λ w → rational q +ᶜ (w +ᶜ z))
     (λ w → (rational q +ᶜ w) +ᶜ z)
     (comp-nonexpanding
+      {𝓧 = CauchyRealsMetricSpace}
+      {𝓨 = CauchyRealsMetricSpace}
+      {𝓩 = CauchyRealsMetricSpace}
       (add-nonexpanding-right (rational q))
       (add-nonexpanding-left z))
     (comp-nonexpanding
+      {𝓧 = CauchyRealsMetricSpace}
+      {𝓨 = CauchyRealsMetricSpace}
+      {𝓩 = CauchyRealsMetricSpace}
       (add-nonexpanding-left z)
       (add-nonexpanding-right (rational q)))
     (λ r → add-assoc-rational-rational-left q r z)
@@ -317,6 +343,9 @@ add-assoc x y z =
     (λ w → (w +ᶜ y) +ᶜ z)
     (add-nonexpanding-left (y +ᶜ z))
     (comp-nonexpanding
+      {𝓧 = CauchyRealsMetricSpace}
+      {𝓨 = CauchyRealsMetricSpace}
+      {𝓩 = CauchyRealsMetricSpace}
       (add-nonexpanding-left z)
       (add-nonexpanding-left y))
     (λ q → add-assoc-rational-left q y z)
@@ -324,18 +353,16 @@ add-assoc x y z =
 
 
 add-inverse-right-continuous :
-  IsContinuous (λ x → x +ᶜ (-ᶜ x))
-add-inverse-right-continuous ε =
-  δ , closeAt
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x +ᶜ (-ᶜ x))
+add-inverse-right-continuous =
+  (λ ε → half⁺ ε) , closeAt
   where
-  δ : ℚ⁺
-  δ = half⁺ ε
-
   closeAt :
+    (ε : ℚ⁺) →
     {x y : ℝᶜ} →
-    x ∼[ δ ] y →
+    x ∼[ half⁺ ε ] y →
     (x +ᶜ (-ᶜ x)) ∼[ ε ] (y +ᶜ (-ᶜ y))
-  closeAt {x = x} {y = y} x∼y =
+  closeAt ε {x = x} {y = y} x∼y =
     subst
       (λ ρ → (x +ᶜ (-ᶜ x)) ∼[ ρ ] (y +ᶜ (-ᶜ y)))
       (half⁺+half⁺≡ ε)

@@ -20,8 +20,13 @@ open import Constructive.CauchyReals.Arithmetic.Internal.BoundedMultiplication
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Bounded
 open import Constructive.CauchyReals.Order.Density
@@ -54,7 +59,7 @@ private
     ℝᶜ
   mulFromBoundsᶜ x y =
     Prop.rec→Set
-      isSetℝᶜ
+      isSetCompletion
       (mulWithBoundᶜ x y)
       (mulWithBoundᶜ-constant x y)
 
@@ -186,7 +191,7 @@ mulᶜ-bound κ x x-bound y =
   Prop.elim
     {P = λ bounds →
       mulFromBoundsᶜ x y bounds ≡ boundedMulᶜ κ x x-bound y}
-    (λ _ → isSetℝᶜ _ _)
+    (λ _ → isSetCompletion _ _)
     step
     (merely-boundedᶜ x)
   where
@@ -227,7 +232,7 @@ mulᶜ-rational-right x q =
   Prop.elim
     {P = λ bounds →
       mulFromBoundsᶜ x (rational q) bounds ≡ scalarMulᶜ q x}
-    (λ _ → isSetℝᶜ _ _)
+    (λ _ → isSetCompletion _ _)
     step
     (merely-boundedᶜ x)
   where
@@ -301,7 +306,7 @@ mulᶜ-neg-right x y =
     {P = λ bounds →
       mulFromBoundsᶜ x (-ᶜ y) bounds ≡
       -ᶜ (mulFromBoundsᶜ x y bounds)}
-    (λ _ → isSetℝᶜ _ _)
+    (λ _ → isSetCompletion _ _)
     step
     (merely-boundedᶜ x)
   where
@@ -322,7 +327,7 @@ mulᶜ-distrib-right x y z =
     {P = λ bounds →
       mulFromBoundsᶜ x (y +ᶜ z) bounds ≡
       mulFromBoundsᶜ x y bounds +ᶜ mulFromBoundsᶜ x z bounds}
-    (λ _ → isSetℝᶜ _ _)
+    (λ _ → isSetCompletion _ _)
     step
     (merely-boundedᶜ x)
   where
@@ -372,81 +377,108 @@ mulᶜ-rational-right-assoc x q r =
 
 mulᶜ-continuous-rational-left :
   (q : ℚ) →
-  IsContinuous (λ x → rational q ·ᶜ x)
-mulᶜ-continuous-rational-left q ε =
-  δ , λ {x = x} {y = y} x∼y →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → rational q ·ᶜ x)
+mulᶜ-continuous-rational-left q =
+  δ , closeAt
+  where
+  scalar-cont : IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (scalarMulᶜ q)
+  scalar-cont =
+    scalarMulᶜ-continuous q
+
+  δ : ℚ⁺ → ℚ⁺
+  δ =
+    fst scalar-cont
+
+  scalar-close :
+    (ε : ℚ⁺) →
+    {x y : ℝᶜ} →
+    x ∼[ δ ε ] y →
+    scalarMulᶜ q x ∼[ ε ] scalarMulᶜ q y
+  scalar-close =
+    snd scalar-cont
+
+  closeAt :
+    (ε : ℚ⁺) →
+    {x y : ℝᶜ} →
+    x ∼[ δ ε ] y →
+    rational q ·ᶜ x ∼[ ε ] rational q ·ᶜ y
+  closeAt ε {x = x} {y = y} x∼y =
     subst2
       (λ u v → u ∼[ ε ] v)
       (sym (mulᶜ-rational-left q x))
       (sym (mulᶜ-rational-left q y))
-      (scalar-close x∼y)
-  where
-  scalar-cont : IsContinuous (scalarMulᶜ q)
-  scalar-cont =
-    scalarMulᶜ-continuous q
-
-  δ : ℚ⁺
-  δ = fst (scalar-cont ε)
-
-  scalar-close :
-    {x y : ℝᶜ} →
-    x ∼[ δ ] y →
-    scalarMulᶜ q x ∼[ ε ] scalarMulᶜ q y
-  scalar-close =
-    snd (scalar-cont ε)
+      (scalar-close ε x∼y)
 
 
 mulᶜ-continuous-rational-right :
   (q : ℚ) →
-  IsContinuous (λ x → x ·ᶜ rational q)
-mulᶜ-continuous-rational-right q ε =
-  δ , λ {x = x} {y = y} x∼y →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ·ᶜ rational q)
+mulᶜ-continuous-rational-right q =
+  δ , closeAt
+  where
+  scalar-cont : IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (scalarMulᶜ q)
+  scalar-cont =
+    scalarMulᶜ-continuous q
+
+  δ : ℚ⁺ → ℚ⁺
+  δ =
+    fst scalar-cont
+
+  scalar-close :
+    (ε : ℚ⁺) →
+    {x y : ℝᶜ} →
+    x ∼[ δ ε ] y →
+    scalarMulᶜ q x ∼[ ε ] scalarMulᶜ q y
+  scalar-close =
+    snd scalar-cont
+
+  closeAt :
+    (ε : ℚ⁺) →
+    {x y : ℝᶜ} →
+    x ∼[ δ ε ] y →
+    x ·ᶜ rational q ∼[ ε ] y ·ᶜ rational q
+  closeAt ε {x = x} {y = y} x∼y =
     subst2
       (λ u v → u ∼[ ε ] v)
       (sym (mulᶜ-rational-right x q))
       (sym (mulᶜ-rational-right y q))
-      (scalar-close x∼y)
-  where
-  scalar-cont : IsContinuous (scalarMulᶜ q)
-  scalar-cont =
-    scalarMulᶜ-continuous q
-
-  δ : ℚ⁺
-  δ = fst (scalar-cont ε)
-
-  scalar-close :
-    {x y : ℝᶜ} →
-    x ∼[ δ ] y →
-    scalarMulᶜ q x ∼[ ε ] scalarMulᶜ q y
-  scalar-close =
-    snd (scalar-cont ε)
+      (scalar-close ε x∼y)
 
 
 mulᶜ-continuous-right-with-bound :
   (κ : ℚ⁺) (x : ℝᶜ) →
   BoundedByᶜ κ x →
-  IsContinuous (λ y → x ·ᶜ y)
-mulᶜ-continuous-right-with-bound κ x x-bound ε =
-  δ , λ {x = y} {y = z} y∼z →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ y → x ·ᶜ y)
+mulᶜ-continuous-right-with-bound κ x x-bound =
+  δ , closeAt
+  where
+  local-cont : IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMulᶜ κ x x-bound)
+  local-cont =
+    boundedMulᶜ-continuous κ x x-bound
+
+  δ : ℚ⁺ → ℚ⁺
+  δ =
+    fst local-cont
+
+  local-close :
+    (ε : ℚ⁺) →
+    {y z : ℝᶜ} →
+    y ∼[ δ ε ] z →
+    boundedMulᶜ κ x x-bound y ∼[ ε ] boundedMulᶜ κ x x-bound z
+  local-close =
+    snd local-cont
+
+  closeAt :
+    (ε : ℚ⁺) →
+    {y z : ℝᶜ} →
+    y ∼[ δ ε ] z →
+    x ·ᶜ y ∼[ ε ] x ·ᶜ z
+  closeAt ε {y = y} {z = z} y∼z =
     subst2
       (λ u v → u ∼[ ε ] v)
       (sym (mulᶜ-bound κ x x-bound y))
       (sym (mulᶜ-bound κ x x-bound z))
-      (local-close y∼z)
-  where
-  local-cont : IsContinuous (boundedMulᶜ κ x x-bound)
-  local-cont =
-    boundedMulᶜ-continuous κ x x-bound
-
-  δ : ℚ⁺
-  δ = fst (local-cont ε)
-
-  local-close :
-    {y z : ℝᶜ} →
-    y ∼[ δ ] z →
-    boundedMulᶜ κ x x-bound y ∼[ ε ] boundedMulᶜ κ x x-bound z
-  local-close =
-    snd (local-cont ε)
+      (local-close ε y∼z)
 
 
 mulᶜ-comm-close-with-bounds :
@@ -635,28 +667,37 @@ mulᶜ-comm x y =
 mulᶜ-continuous-left-with-bound :
   (κ : ℚ⁺) (y : ℝᶜ) →
   BoundedByᶜ κ y →
-  IsContinuous (λ x → x ·ᶜ y)
-mulᶜ-continuous-left-with-bound κ y y-bound ε =
-  δ , λ {x = x} {y = z} x∼z →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ·ᶜ y)
+mulᶜ-continuous-left-with-bound κ y y-bound =
+  δ , closeAt
+  where
+  local-cont : IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → y ·ᶜ x)
+  local-cont =
+    mulᶜ-continuous-right-with-bound κ y y-bound
+
+  δ : ℚ⁺ → ℚ⁺
+  δ =
+    fst local-cont
+
+  local-close :
+    (ε : ℚ⁺) →
+    {x z : ℝᶜ} →
+    x ∼[ δ ε ] z →
+    (y ·ᶜ x) ∼[ ε ] (y ·ᶜ z)
+  local-close =
+    snd local-cont
+
+  closeAt :
+    (ε : ℚ⁺) →
+    {x z : ℝᶜ} →
+    x ∼[ δ ε ] z →
+    x ·ᶜ y ∼[ ε ] z ·ᶜ y
+  closeAt ε {x = x} {z = z} x∼z =
     subst2
       (λ u v → u ∼[ ε ] v)
       (sym (mulᶜ-comm x y))
       (sym (mulᶜ-comm z y))
-      (local-close x∼z)
-  where
-  local-cont : IsContinuous (λ x → y ·ᶜ x)
-  local-cont =
-    mulᶜ-continuous-right-with-bound κ y y-bound
-
-  δ : ℚ⁺
-  δ = fst (local-cont ε)
-
-  local-close :
-    {x z : ℝᶜ} →
-    x ∼[ δ ] z →
-    (y ·ᶜ x) ∼[ ε ] (y ·ᶜ z)
-  local-close =
-    snd (local-cont ε)
+      (local-close ε x∼z)
 
 
 mulᶜ-distrib-left :
@@ -677,7 +718,7 @@ mulᶜ-assoc-rational-left :
   (rational q ·ᶜ x) ·ᶜ y
 mulᶜ-assoc-rational-left q x y =
   Prop.rec
-    (isSetℝᶜ _ _)
+    (isSetCompletion _ _)
     step
     (merely-boundedᶜ x)
   where
@@ -718,14 +759,14 @@ mulᶜ-assoc-rational-left q x y =
         qx-bound-scalar
 
     left-cont :
-      IsContinuous (λ z → rational q ·ᶜ (x ·ᶜ z))
+      IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ z → rational q ·ᶜ (x ·ᶜ z))
     left-cont =
-      comp-continuous
+      comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
         (mulᶜ-continuous-rational-left q)
         (mulᶜ-continuous-right-with-bound κ x x-bound)
 
     right-cont :
-      IsContinuous (λ z → (rational q ·ᶜ x) ·ᶜ z)
+      IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ z → (rational q ·ᶜ x) ·ᶜ z)
     right-cont =
       mulᶜ-continuous-right-with-bound
         (scalar-bound q *⁺ κ)
@@ -762,7 +803,7 @@ mulᶜ-assoc :
   x ·ᶜ (y ·ᶜ z) ≡ (x ·ᶜ y) ·ᶜ z
 mulᶜ-assoc x y z =
   Prop.rec
-    (isSetℝᶜ _ _)
+    (isSetCompletion _ _)
     stepY
     (merely-boundedᶜ y)
   where
@@ -771,7 +812,7 @@ mulᶜ-assoc x y z =
     x ·ᶜ (y ·ᶜ z) ≡ (x ·ᶜ y) ·ᶜ z
   stepY (μ , y-bound) =
     Prop.rec
-      (isSetℝᶜ _ _)
+      (isSetCompletion _ _)
       stepZ
       (merely-boundedᶜ z)
     where
@@ -780,7 +821,7 @@ mulᶜ-assoc x y z =
       x ·ᶜ (y ·ᶜ z) ≡ (x ·ᶜ y) ·ᶜ z
     stepZ (ν , z-bound) =
       Prop.rec
-        (isSetℝᶜ _ _)
+        (isSetCompletion _ _)
         stepYZ
         (merely-boundedᶜ (y ·ᶜ z))
       where
@@ -797,13 +838,13 @@ mulᶜ-assoc x y z =
           x
         where
         left-cont :
-          IsContinuous (λ w → w ·ᶜ (y ·ᶜ z))
+          IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ w → w ·ᶜ (y ·ᶜ z))
         left-cont =
           mulᶜ-continuous-left-with-bound ρ (y ·ᶜ z) yz-bound
 
         right-cont :
-          IsContinuous (λ w → (w ·ᶜ y) ·ᶜ z)
+          IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ w → (w ·ᶜ y) ·ᶜ z)
         right-cont =
-          comp-continuous
+          comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
             (mulᶜ-continuous-left-with-bound ν z z-bound)
             (mulᶜ-continuous-left-with-bound μ y y-bound)

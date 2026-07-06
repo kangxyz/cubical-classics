@@ -27,7 +27,11 @@ open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Arithmetic.ScalarOrder
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.CauchyReals.Order.Bounds

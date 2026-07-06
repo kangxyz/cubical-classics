@@ -11,8 +11,13 @@ open import Constructive.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.CauchyReals.Arithmetic.Lattice
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Instances.Rationals
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.CauchyReals.Extension
 open import Constructive.CauchyReals.Order.Base
 open import Constructive.Data.PositiveRationals
@@ -55,21 +60,19 @@ private
 
   translated-min-continuous :
     (q r : ℚ) →
-    IsContinuous
+    IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace
       (λ z → (rational q +ᶜ z) ⊓ᶜ (rational r +ᶜ z))
-  translated-min-continuous q r ε =
-    δ , closeAt
+  translated-min-continuous q r =
+    (λ ε → half⁺ ε) , closeAt
     where
-    δ : ℚ⁺
-    δ = half⁺ ε
-
     closeAt :
+      (ε : ℚ⁺) →
       {x y : ℝᶜ} →
-      x ∼[ δ ] y →
+      x ∼[ half⁺ ε ] y →
       ((rational q +ᶜ x) ⊓ᶜ (rational r +ᶜ x))
         ∼[ ε ]
       ((rational q +ᶜ y) ⊓ᶜ (rational r +ᶜ y))
-    closeAt {x = x} {y = y} x∼y =
+    closeAt ε {x = x} {y = y} x∼y =
       subst
         (λ ρ →
           ((rational q +ᶜ x) ⊓ᶜ (rational r +ᶜ x))
@@ -100,10 +103,10 @@ private
     nonexpanding-equal
       (λ w → (rational q ⊓ᶜ w) +ᶜ z)
       (λ w → (rational q +ᶜ z) ⊓ᶜ (w +ᶜ z))
-      (comp-nonexpanding
+      (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
         (add-nonexpanding-left z)
         (min-nonexpanding-right (rational q)))
-      (comp-nonexpanding
+      (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
         (min-nonexpanding-right (rational q +ᶜ z))
         (add-nonexpanding-left z))
       (λ r → add-min-distrib-rational-rational-right q r z)
@@ -117,10 +120,10 @@ add-min-distrib-right x y z =
   nonexpanding-equal
     (λ w → (w ⊓ᶜ y) +ᶜ z)
     (λ w → (w +ᶜ z) ⊓ᶜ (y +ᶜ z))
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (add-nonexpanding-left z)
       (min-nonexpanding-left y))
-    (comp-nonexpanding
+    (comp-nonexpanding {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
       (min-nonexpanding-left (y +ᶜ z))
       (add-nonexpanding-left z))
     (λ q → add-min-distrib-rational-left q y z)

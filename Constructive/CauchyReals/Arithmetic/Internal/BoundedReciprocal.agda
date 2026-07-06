@@ -19,16 +19,17 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Cubical.Relation.Nullary
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Map
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Arithmetic.Base
 open import Constructive.CauchyReals.Arithmetic.Internal.BoundedMultiplication
 open import Constructive.CauchyReals.Arithmetic.Multiplication
 open import Constructive.CauchyReals.Arithmetic.Negation
 open import Constructive.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Lipschitz.Base
-open import Constructive.CauchyReals.Lipschitz.RationalExtension
+open import Constructive.CauchyReals.Extension
   using
     ( IsRationalLipschitzWithᶜ
     ; extendRationalLipschitzWithᶜ
@@ -44,6 +45,9 @@ open import Constructive.CauchyReals.Order.Rational
 open import Constructive.CauchyReals.Order.StrictPositive
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
 
 
 private
@@ -841,7 +845,7 @@ boundedReciprocalᶜ-rational-left ε q 0<q ε≤q =
 
 boundedReciprocalᶜ-lipschitz :
   (ε : ℚ⁺) →
-  IsLipschitz (boundedReciprocalᶜ ε)
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedReciprocalᶜ ε)
 boundedReciprocalᶜ-lipschitz ε =
   extendRationalLipschitzWithᶜ-lipschitz
     (reciprocalLipschitzBound⁺ ε)
@@ -851,7 +855,7 @@ boundedReciprocalᶜ-lipschitz ε =
 
 boundedReciprocalᶜ-continuous :
   (ε : ℚ⁺) →
-  IsContinuous (boundedReciprocalᶜ ε)
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedReciprocalᶜ ε)
 boundedReciprocalᶜ-continuous ε =
   extendRationalLipschitzWithᶜ-continuous
     (reciprocalLipschitzBound⁺ ε)
@@ -882,14 +886,14 @@ boundedReciprocalᶜ-bound ε x =
 
   θ : ℚ⁺
   θ =
-    fst (boundedReciprocalᶜ-continuous ε δ)
+    fst (boundedReciprocalᶜ-continuous ε) δ
 
   f-close :
     {y z : ℝᶜ} →
     y ∼[ θ ] z →
     f y ∼[ δ ] f z
   f-close =
-    snd (boundedReciprocalᶜ-continuous ε δ)
+    snd (boundedReciprocalᶜ-continuous ε) δ
 
   upper-step :
     Σ[ q ∈ ℚ ] x ∼[ θ ] rational q →

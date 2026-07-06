@@ -7,28 +7,25 @@ Extension helpers for HoTT Cauchy reals
 module Constructive.CauchyReals.Extension where
 
 open import Cubical.Foundations.Prelude
-open import Cubical.Foundations.HLevels
 
 open import Cubical.Data.Rationals using (ℚ)
 
 import Constructive.Analysis.CauchyCompletion.Extension as GenericExtension
-import Constructive.Analysis.Metric.Complete as MetricComplete
+import Constructive.Analysis.CauchyCompletion.Extension.CompleteTarget as CompleteTargetExtension
+open import Constructive.Analysis.CauchyCompletion.Closeness
+open import Constructive.Analysis.CauchyCompletion.Induction
+open import Constructive.Analysis.Metric.Map
 open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.CauchyReals.Base
-open import Constructive.CauchyReals.Closeness
-open import Constructive.CauchyReals.Continuity
-open import Constructive.CauchyReals.Induction
-open import Constructive.CauchyReals.Recursion public
+open ClosenessOf RationalsMetricSpace
+open ComputedOf RationalsMetricSpace
+open RoundedOf RationalsMetricSpace
+open InductionOf RationalsMetricSpace
 
 
-open GenericExtension.ExtensionOf RationalsMetricSpace public
-  using
-    ( close-limit-intro
-    ; limit-close-intro
-    ; limit-limit-intro
-    ; limit-approx-close
-    )
+open GenericExtension.ExtensionOf RationalsMetricSpace
+  using (limit-approx-close)
 
 
 IsRationalNonexpanding : (ℚ → ℝᶜ) → Type₀
@@ -46,19 +43,13 @@ module _ (f : ℚ → ℝᶜ) (f-ne : IsRationalNonexpanding f) where
     module Extension =
       GenericExtensionOf.NonexpandingExtension
         CauchyRealsMetricSpace
-        MetricComplete.CauchyRealsIsComplete
+        CauchyRealsIsCauchyComplete
         f
         (λ {x} {y} {ε} → f-ne x y ε)
 
   extendNonexpanding : ℝᶜ → ℝᶜ
   extendNonexpanding =
     Extension.extend
-
-  extendNonexpanding-rational :
-    (q : ℚ) →
-    extendNonexpanding (rational q) ≡ f q
-  extendNonexpanding-rational =
-    Extension.extend-point
 
   extendNonexpanding-close :
     {x y : ℝᶜ} {ε : ℚ⁺} →
@@ -67,82 +58,11 @@ module _ (f : ℚ → ℝᶜ) (f-ne : IsRationalNonexpanding f) where
   extendNonexpanding-close =
     Extension.extend-close
 
-  extendNonexpanding-isNonexpanding :
-    IsNonexpanding extendNonexpanding
-  extendNonexpanding-isNonexpanding =
-    extendNonexpanding-close
-
-  extendNonexpanding-continuous :
-    IsContinuous extendNonexpanding
-  extendNonexpanding-continuous =
-    nonexpanding→continuous extendNonexpanding-isNonexpanding
-
-
-extensions-close :
-  {f g : ℚ → ℝᶜ} →
-  (f-ne : IsRationalNonexpanding f) →
-  (g-ne : IsRationalNonexpanding g) →
-  ((q : ℚ) (ε : ℚ⁺) → f q ∼[ ε ] g q) →
-  (x : ℝᶜ) (ε : ℚ⁺) →
-  extendNonexpanding f f-ne x ∼[ ε ] extendNonexpanding g g-ne x
-extensions-close {f = f} {g = g} f-ne g-ne f∼g =
-  PropInduction.ind kit
-  where
-  kit : PropInductionKit ℓ-zero
-  kit .PropInductionKit.A x =
-    (ε : ℚ⁺) →
-    extendNonexpanding f f-ne x ∼[ ε ] extendNonexpanding g g-ne x
-  kit .PropInductionKit.isPropA x =
-    isPropΠ λ ε →
-      squash
-  kit .PropInductionKit.point* q =
-    f∼g q
-  kit .PropInductionKit.limit* x closeAt ε =
-    limit-limit-intro
-      (cauchy-approximation
-        (λ δ → extendNonexpanding f f-ne (approximate x δ))
-        (λ δ η → extendNonexpanding-close f f-ne (isRegular x δ η)))
-      (cauchy-approximation
-        (λ δ → extendNonexpanding g g-ne (approximate x δ))
-        (λ δ η → extendNonexpanding-close g g-ne (isRegular x δ η)))
-      ε δ δ δ+δ<ε
-      (closeAt δ (ε ⊖ (δ +⁺ δ) [ δ+δ<ε ]))
-    where
-    δ : ℚ⁺
-    δ = quarter⁺ ε
-
-    δ+δ<ε : δ +⁺ δ <⁺ ε
-    δ+δ<ε = quarter-sum< ε
-
-
-extensions-equal :
-  {f g : ℚ → ℝᶜ} →
-  (f-ne : IsRationalNonexpanding f) →
-  (g-ne : IsRationalNonexpanding g) →
-  ((q : ℚ) → f q ≡ g q) →
-  (x : ℝᶜ) →
-  extendNonexpanding f f-ne x ≡ extendNonexpanding g g-ne x
-extensions-equal {f = f} {g = g} f-ne g-ne f≡g x =
-  path
-    (extendNonexpanding f f-ne x)
-    (extendNonexpanding g g-ne x)
-    λ ε →
-      extensions-close f-ne g-ne pointwise x ε
-  where
-  pointwise :
-    (q : ℚ) (ε : ℚ⁺) →
-    f q ∼[ ε ] g q
-  pointwise q ε =
-    subst
-      (λ y → f q ∼[ ε ] y)
-      (f≡g q)
-      (close-refl (f q) ε)
-
 
 nonexpanding-equal :
   (f g : ℝᶜ → ℝᶜ) →
-  IsNonexpanding f →
-  IsNonexpanding g →
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace f →
+  IsNonexpanding CauchyRealsMetricSpace CauchyRealsMetricSpace g →
   ((q : ℚ) → f (rational q) ≡ g (rational q)) →
   (x : ℝᶜ) →
   f x ≡ g x
@@ -153,7 +73,7 @@ nonexpanding-equal f g f-ne g-ne rational-path =
   kit .PropInductionKit.A x =
     f x ≡ g x
   kit .PropInductionKit.isPropA x =
-    isSetℝᶜ (f x) (g x)
+    isSetCompletion (f x) (g x)
   kit .PropInductionKit.point* =
     rational-path
   kit .PropInductionKit.limit* x pointwise =
@@ -195,8 +115,8 @@ nonexpanding-equal f g f-ne g-ne rational-path =
 
 continuous-equal :
   (f g : ℝᶜ → ℝᶜ) →
-  IsContinuous f →
-  IsContinuous g →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace f →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace g →
   ((q : ℚ) → f (rational q) ≡ g (rational q)) →
   (x : ℝᶜ) →
   f x ≡ g x
@@ -207,7 +127,7 @@ continuous-equal f g f-cont g-cont rational-path =
   kit .PropInductionKit.A x =
     f x ≡ g x
   kit .PropInductionKit.isPropA x =
-    isSetℝᶜ (f x) (g x)
+    isSetCompletion (f x) (g x)
   kit .PropInductionKit.point* =
     rational-path
   kit .PropInductionKit.limit* x pointwise =
@@ -225,8 +145,8 @@ continuous-equal f g f-cont g-cont rational-path =
       α = quarter⁺ ε
 
       μf μg : ℚ⁺
-      μf = fst (f-cont α)
-      μg = fst (g-cont α)
+      μf = fst f-cont α
+      μg = fst g-cont α
 
       μ : ℚ⁺
       μ = min⁺ μf μg
@@ -251,7 +171,7 @@ continuous-equal f g f-cont g-cont rational-path =
 
       f-lim∼approx : f (limit x) ∼[ α ] f (approximate x δ)
       f-lim∼approx =
-        snd (f-cont α) lim∼approx-f
+        snd f-cont α lim∼approx-f
 
       f-approx∼g-approx : f (approximate x δ) ∼[ α ] g (approximate x δ)
       f-approx∼g-approx =
@@ -262,13 +182,13 @@ continuous-equal f g f-cont g-cont rational-path =
 
       g-approx∼lim : g (approximate x δ) ∼[ α ] g (limit x)
       g-approx∼lim =
-        snd (g-cont α) (close-sym lim∼approx-g)
+        snd g-cont α (close-sym lim∼approx-g)
 
 
 continuous-constant-equal :
   (f : ℝᶜ → ℝᶜ) →
   (c : ℝᶜ) →
-  IsContinuous f →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace f →
   ((q : ℚ) → f (rational q) ≡ c) →
   (x : ℝᶜ) →
   f x ≡ c
@@ -279,7 +199,7 @@ continuous-constant-equal f c f-cont rational-path =
   kit .PropInductionKit.A x =
     f x ≡ c
   kit .PropInductionKit.isPropA x =
-    isSetℝᶜ (f x) c
+    isSetCompletion (f x) c
   kit .PropInductionKit.point* =
     rational-path
   kit .PropInductionKit.limit* x pointwise =
@@ -295,10 +215,10 @@ continuous-constant-equal f c f-cont rational-path =
       α = quarter⁺ ε
 
       μ : ℚ⁺
-      μ = fst (f-cont α)
+      μ = fst f-cont α
 
       f-close : {x y : ℝᶜ} → x ∼[ μ ] y → f x ∼[ α ] f y
-      f-close = snd (f-cont α)
+      f-close = snd f-cont α
 
       δ : ℚ⁺
       δ = quarter⁺ μ
@@ -317,6 +237,87 @@ continuous-constant-equal f c f-cont rational-path =
           (λ y → f (approximate x δ) ∼[ α ] y)
           (pointwise δ)
           (close-refl (f (approximate x δ)) α)
+
+
+IsRationalLipschitzWithᶜ :
+  ℚ⁺ →
+  (ℚ → ℝᶜ) →
+  Type₀
+IsRationalLipschitzWithᶜ κ f =
+  (q r : ℚ) (ε : ℚ⁺) →
+  Closeℚ q ε r →
+  f q ∼[ κ *⁺ ε ] f r
+
+
+private
+  module RationalLipschitzExtension
+    (κ : ℚ⁺) (f : ℚ → ℝᶜ)
+    (f-lip : IsRationalLipschitzWithᶜ κ f)
+    where
+    open CompleteTargetExtension.CompleteTargetExtensionOf.ScaledLipschitzCompletionExtension
+      RationalsMetricSpace
+      κ
+      CauchyRealsMetricSpace
+      CauchyRealsIsCauchyComplete
+      f
+      f-lip
+      public
+      renaming
+        ( extend to extendRationalLipschitzWithᶜ
+        ; extend-point to extendRationalLipschitzWithᶜ-rational
+        ; extend-close to extendRationalLipschitzWithᶜ-close
+        ; extend-lipschitz to extendRationalLipschitzWithᶜ-lipschitzWith
+        )
+
+
+extendRationalLipschitzWithᶜ :
+  (κ : ℚ⁺) (f : ℚ → ℝᶜ) →
+  IsRationalLipschitzWithᶜ κ f →
+  ℝᶜ → ℝᶜ
+extendRationalLipschitzWithᶜ κ f f-lip =
+  RationalLipschitzExtension.extendRationalLipschitzWithᶜ κ f f-lip
+
+
+extendRationalLipschitzWithᶜ-rational :
+  (κ : ℚ⁺) (f : ℚ → ℝᶜ)
+  (f-lip : IsRationalLipschitzWithᶜ κ f)
+  (q : ℚ) →
+  extendRationalLipschitzWithᶜ κ f f-lip (rational q) ≡ f q
+extendRationalLipschitzWithᶜ-rational κ f f-lip =
+  RationalLipschitzExtension.extendRationalLipschitzWithᶜ-rational κ f f-lip
+
+
+extendRationalLipschitzWithᶜ-close :
+  (κ : ℚ⁺) (f : ℚ → ℝᶜ)
+  (f-lip : IsRationalLipschitzWithᶜ κ f) →
+  {x y : ℝᶜ} {ε : ℚ⁺} →
+  x ∼[ ε ] y →
+  extendRationalLipschitzWithᶜ κ f f-lip x
+    ∼[ κ *⁺ ε ]
+  extendRationalLipschitzWithᶜ κ f f-lip y
+extendRationalLipschitzWithᶜ-close κ f f-lip =
+  RationalLipschitzExtension.extendRationalLipschitzWithᶜ-close κ f f-lip
+
+
+extendRationalLipschitzWithᶜ-lipschitz :
+  (κ : ℚ⁺) (f : ℚ → ℝᶜ)
+  (f-lip : IsRationalLipschitzWithᶜ κ f) →
+  IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (extendRationalLipschitzWithᶜ κ f f-lip)
+extendRationalLipschitzWithᶜ-lipschitz κ f f-lip =
+  (λ ε → posInv⁺ κ *⁺ ε) ,
+  RationalLipschitzExtension.extendRationalLipschitzWithᶜ-lipschitzWith κ f f-lip
+
+
+extendRationalLipschitzWithᶜ-continuous :
+  (κ : ℚ⁺) (f : ℚ → ℝᶜ)
+  (f-lip : IsRationalLipschitzWithᶜ κ f) →
+  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (extendRationalLipschitzWithᶜ κ f f-lip)
+extendRationalLipschitzWithᶜ-continuous κ f f-lip =
+  lipschitz→uniformlyContinuous
+    {𝓧 = CauchyRealsMetricSpace}
+    {𝓨 = CauchyRealsMetricSpace}
+    {f = extendRationalLipschitzWithᶜ κ f f-lip}
+    (extendRationalLipschitzWithᶜ-lipschitz κ f f-lip)
 
 
 private
@@ -353,19 +354,6 @@ module _
   extendBinaryNonexpanding : ℝᶜ → ℝᶜ → ℝᶜ
   extendBinaryNonexpanding =
     Extension.extendBinaryNonexpanding
-
-  extendBinaryNonexpanding-rational-left :
-    (q : ℚ) (y : ℝᶜ) →
-    extendBinaryNonexpanding (rational q) y ≡
-    extendNonexpanding (f q) (right-ne q) y
-  extendBinaryNonexpanding-rational-left =
-    Extension.extendBinaryNonexpanding-point-left
-
-  extendBinaryNonexpanding-rational-rational :
-    (q r : ℚ) →
-    extendBinaryNonexpanding (rational q) (rational r) ≡ f q r
-  extendBinaryNonexpanding-rational-rational =
-    Extension.extendBinaryNonexpanding-point-point
 
   extendBinaryNonexpanding-rational-right :
     (x : ℝᶜ) (r : ℚ) →
