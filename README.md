@@ -176,7 +176,11 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Analysis/` contains Bishop-style analysis interfaces, starting
   with precision-indexed metric spaces, their Cauchy completion, rational and
   Cauchy-real metric instances, nonexpanding and uniformly continuous maps,
-  Cauchy completeness, and total boundedness by finite rational nets.
+  Cauchy completeness, total boundedness by finite rational nets, located
+  Cauchy-real approximation interfaces, closed intervals with finite grids,
+  an untruncated approximate IVT for located data, and Cauchy-real series with
+  explicit tail data plus geometric instances under
+  `Constructive/Analysis/Reals/Series/Instances/`.
 - `Classical/Axioms/` contains the `Oracle` interface, choice, excluded middle,
   Diaconescu's theorem via Cubical, and local propositional resizing.
 - `Classical/Foundations/Powerset/` develops impredicative powersets,

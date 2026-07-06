@@ -10,14 +10,17 @@ module Constructive.Data.Rationals where
 
 open import Cubical.Foundations.Prelude
 
+open import Cubical.Data.Empty as Empty
 open import Cubical.Data.Int as ℤ using (pos)
 import Cubical.Data.Int.Order as ℤOrder
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
+import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.NatPlusOne using (ℕ₊₁)
 open import Cubical.Data.NatPlusOne.Base
 open import Cubical.Data.Sigma
 open import Cubical.Data.Sum using (_⊎_ ; inl ; inr)
 open import Cubical.HITs.PropositionalTruncation using (∥_∥₁ ; ∣_∣₁)
+open import Cubical.Relation.Nullary using (Dec)
 open import Cubical.Data.Rationals as ℚ using (ℚ ; [_/_])
 import Cubical.Data.Rationals as ℚ
 import Cubical.Data.Rationals.Order as ℚOrder
@@ -143,6 +146,19 @@ q<q+positive q ε 0<ε =
     (ℚOrder.<-o+ 0 ε q 0<ε)
 
 
+q≤q+nonnegative :
+  (q ε : ℚ) →
+  0 ℚOrder.≤ ε →
+  q ℚOrder.≤ q ℚ.+ ε
+q≤q+nonnegative q ε 0≤ε =
+  subst (λ r → r ℚOrder.≤ q ℚ.+ ε) (ℚ.+IdR q)
+    (ℚOrder.≤Monotone+
+      q q
+      0ℚ ε
+      (ℚOrder.isRefl≤ q)
+      0≤ε)
+
+
 positive-sum :
   {p q : ℚ} →
   0ℚ ℚOrder.< p →
@@ -154,12 +170,31 @@ positive-sum {p = p} {q = q} 0<p 0<q =
     (q<q+positive p q 0<q)
 
 
+nonnegative-positive-sum :
+  {p q : ℚ} →
+  0ℚ ℚOrder.≤ p →
+  0ℚ ℚOrder.< q →
+  0ℚ ℚOrder.< p ℚ.+ q
+nonnegative-positive-sum {p = p} {q = q} 0≤p 0<q =
+  ℚOrder.isTrans≤<
+    0ℚ
+    p
+    (p ℚ.+ q)
+    0≤p
+    (q<q+positive p q 0<q)
+
+
 ≤-refl : (q : ℚ) → q ℚOrder.≤ q
 ≤-refl q = ℚLOR.≤-refl {x = q} {y = q} refl
 
 
 <→≤ : {p q : ℚ} → p ℚOrder.< q → p ℚOrder.≤ q
 <→≤ {p = p} {q = q} = ℚLOR.<-≤-weaken {x = p} {y = q}
+
+
+dec< : (p q : ℚ) → Dec (p ℚOrder.< q)
+dec< =
+  ℚLOR.dec<
 
 
 ≤-trans :
@@ -213,6 +248,29 @@ add-nonpositive≤right {p = p} {r = r} p≤0 =
   subst (λ t → p ℚ.+ r ℚOrder.≤ t)
     (ℚ.+IdL r)
     (+-rPres≤ {p = p} {q = 0ℚ} {r = r} p≤0)
+
+
+neg-nonpositive :
+  {q : ℚ} →
+  0ℚ ℚOrder.≤ q →
+  ℚ.- q ℚOrder.≤ 0ℚ
+neg-nonpositive {q = q} 0≤q =
+  subst2
+    ℚOrder._≤_
+    (ℚ.+IdL (ℚ.- q))
+    (ℚ.+InvR q)
+    (ℚOrder.≤-+o 0ℚ q (ℚ.- q) 0≤q)
+
+
+sub-nonnegative-right≤ :
+  {p q : ℚ} →
+  0ℚ ℚOrder.≤ q →
+  p ℚ.- q ℚOrder.≤ p
+sub-nonnegative-right≤ {p = p} {q = q} 0≤q =
+  subst
+    (λ t → t ℚOrder.≤ p)
+    (ℚ.+Comm (ℚ.- q) p)
+    (add-nonpositive≤right {p = ℚ.- q} {r = p} (neg-nonpositive {q = q} 0≤q))
 
 
 negative-or-nonnegative : (q : ℚ) → (q ℚOrder.< 0ℚ) ⊎ (0ℚ ℚOrder.≤ q)
@@ -802,6 +860,18 @@ mul-right-positive-< {a = a} {b = b} {c = c} 0<a b<c =
   ℚOrder.<-·o b c a 0<a b<c
 
 
+mul-left-nonnegative-≤ :
+  {a b c : ℚ} →
+  0ℚ ℚOrder.≤ a →
+  b ℚOrder.≤ c →
+  a ℚ.· b ℚOrder.≤ a ℚ.· c
+mul-left-nonnegative-≤ {a = a} {b = b} {c = c} 0≤a b≤c =
+  subst2 ℚOrder._≤_
+    (ℚ.·Comm b a)
+    (ℚ.·Comm c a)
+    (ℚOrder.≤-·o b c a 0≤a b≤c)
+
+
 posInv : (q : ℚ) → 0ℚ ℚOrder.< q → ℚ
 posInv q 0<q = ℚOF.inv₊ {q = q} 0<q
 
@@ -828,6 +898,51 @@ posInv-left :
   posInv q 0<q ℚ.· q ≡ 1ℚ
 posInv-left q 0<q =
   ℚOF.·-lInv₊ {q = q} 0<q
+
+
+mul-right-cancel-positive-≤ :
+  {p q c : ℚ} →
+  0ℚ ℚOrder.< c →
+  p ℚ.· c ℚOrder.≤ q ℚ.· c →
+  p ℚOrder.≤ q
+mul-right-cancel-positive-≤ {p = p} {q = q} {c = c} 0<c pc≤qc =
+  subst2 ℚOrder._≤_
+    p-path
+    q-path
+    scaled≤
+  where
+  c⁻¹ : ℚ
+  c⁻¹ =
+    posInv c 0<c
+
+  0≤c⁻¹ : 0ℚ ℚOrder.≤ c⁻¹
+  0≤c⁻¹ =
+    <→≤
+      {p = 0ℚ}
+      {q = c⁻¹}
+      (posInv-positive {q = c} 0<c)
+
+  scaled≤ : (p ℚ.· c) ℚ.· c⁻¹ ℚOrder.≤ (q ℚ.· c) ℚ.· c⁻¹
+  scaled≤ =
+    ℚOrder.≤-·o
+      (p ℚ.· c)
+      (q ℚ.· c)
+      c⁻¹
+      0≤c⁻¹
+      pc≤qc
+
+  p-path : (p ℚ.· c) ℚ.· c⁻¹ ≡ p
+  p-path =
+    sym (ℚ.·Assoc p c c⁻¹) ∙
+    cong (p ℚ.·_) (posInv-right c 0<c) ∙
+    ℚ.·IdR p
+
+  q-path : (q ℚ.· c) ℚ.· c⁻¹ ≡ q
+  q-path =
+    sym (ℚ.·Assoc q c c⁻¹) ∙
+    cong (q ℚ.·_) (posInv-right c 0<c) ∙
+    ℚ.·IdR q
+
 
 posInv-reverse< :
   {p q : ℚ} →
@@ -1303,6 +1418,73 @@ archimedean :
 archimedean = ℚArch.isArchimedeanℚ
 
 
+unitFraction : ℕ → ℚ
+unitFraction n =
+  ℚOF._/_ 1ℚ (1+ n)
+
+
+unitFraction-positive :
+  (n : ℕ) →
+  0 ℚOrder.< unitFraction n
+unitFraction-positive n =
+  ℚOF.·-Pres>0
+    {x = 1ℚ}
+    {y = ℚOF.1/ (1+ n)}
+    0<1
+    (ℚOF.1/n>0 (1+ n))
+
+
+divideBySuc : ℚ → ℕ → ℚ
+divideBySuc q n =
+  ℚOF._/_ q (1+ n)
+
+
+divideBySuc-positive :
+  {q : ℚ} →
+  0ℚ ℚOrder.< q →
+  (n : ℕ) →
+  0ℚ ℚOrder.< divideBySuc q n
+divideBySuc-positive {q = q} 0<q n =
+  mul-positive
+    {a = q}
+    {b = ℚOF.1/ (1+ n)}
+    0<q
+    (ℚOF.1/n>0 (1+ n))
+
+
+divideBySuc-as-unitFraction :
+  (q : ℚ) →
+  (n : ℕ) →
+  divideBySuc q n ≡ q ℚ.· unitFraction n
+divideBySuc-as-unitFraction q n =
+  cong (q ℚ.·_) (sym (ℚ.·IdL (ℚOF.1/ (1+ n))))
+
+
+natMul-divideBySuc :
+  (q : ℚ) →
+  (n : ℕ) →
+  natMul (suc n) (divideBySuc q n) ≡ q
+natMul-divideBySuc q n =
+  ℚOF.·-/-lInv q (1+ n)
+
+
+abstract
+  archimedean-unit-fraction :
+    (ε : ℚ) →
+    0 ℚOrder.< ε →
+    Σ[ n ∈ ℕ ] unitFraction n ℚOrder.< ε
+  archimedean-unit-fraction ε 0<ε with
+      isArchimedean→isArchimedeanInv
+        ℚLinearlyOrderedField
+        ℚArch.isArchimedeanℚ
+        ε
+        1ℚ
+        0<ε
+        0<1
+  ... | 1+ n , unit<ε =
+    n , unit<ε
+
+
 natMul-zero : (ε : ℚ) → natMul zero ε ≡ 0
 natMul-zero = ℚLOR.0⋆q≡0
 
@@ -1361,6 +1543,70 @@ natMul-nonnegative :
   0 ℚOrder.< ε →
   0 ℚOrder.≤ natMul n ε
 natMul-nonnegative n 0<ε = ℚLOR.n⋆q≥0 n _ 0<ε
+
+
+natMul-mono-≤ :
+  (n m : ℕ) {ε : ℚ} →
+  0 ℚOrder.< ε →
+  NatOrder._≤_ n m →
+  natMul n ε ℚOrder.≤ natMul m ε
+natMul-mono-≤ zero m {ε = ε} 0<ε _ =
+  subst
+    (λ q → q ℚOrder.≤ natMul m ε)
+    (sym (natMul-zero ε))
+    (natMul-nonnegative m 0<ε)
+natMul-mono-≤ (suc n) zero 0<ε sn≤0 =
+  Empty.rec (NatOrder.¬-<-zero sn≤0)
+natMul-mono-≤ (suc n) (suc m) {ε = ε} 0<ε sn≤sm =
+  subst2
+    ℚOrder._≤_
+    (sym (natMul-suc n ε))
+    (sym (natMul-suc m ε))
+    (ℚOrder.≤Monotone+
+      (natMul n ε)
+      (natMul m ε)
+      ε ε
+      (natMul-mono-≤ n m 0<ε (NatOrder.pred-≤-pred sn≤sm))
+      (≤-refl ε))
+
+
+natMul-factor-mono-≤ :
+  (n : ℕ) →
+  {ε δ : ℚ} →
+  ε ℚOrder.≤ δ →
+  natMul n ε ℚOrder.≤ natMul n δ
+natMul-factor-mono-≤ zero {ε = ε} {δ = δ} ε≤δ =
+  subst2
+    ℚOrder._≤_
+    (sym (natMul-zero ε))
+    (sym (natMul-zero δ))
+    (≤-refl 0ℚ)
+natMul-factor-mono-≤ (suc n) {ε = ε} {δ = δ} ε≤δ =
+  subst2
+    ℚOrder._≤_
+    (sym (natMul-suc n ε))
+    (sym (natMul-suc n δ))
+    (ℚOrder.≤Monotone+
+      (natMul n ε)
+      (natMul n δ)
+      ε δ
+      (natMul-factor-mono-≤ n ε≤δ)
+      ε≤δ)
+
+
+natMul-mul-left :
+  (n : ℕ) →
+  (a b : ℚ) →
+  natMul n (a ℚ.· b) ≡ a ℚ.· natMul n b
+natMul-mul-left zero a b =
+  natMul-zero (a ℚ.· b) ∙
+  sym (ℚ.·AnnihilR a) ∙
+  cong (a ℚ.·_) (sym (natMul-zero b))
+natMul-mul-left (suc n) a b =
+  natMul-suc n (a ℚ.· b) ∙
+  cong (λ q → q ℚ.+ (a ℚ.· b)) (natMul-mul-left n a b) ∙
+  sym (ℚ.·DistL+ a (natMul n b) b) ∙
+  cong (a ℚ.·_) (sym (natMul-suc n b))
 
 
 positive-half :
