@@ -11,6 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ)
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals using (ℚ)
+import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
@@ -26,6 +27,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
+open import Constructive.Analysis.Reals.Calculus.Derivative
+  using (HasDerivativeAtWith ; hasDerivativeAtWith-local-cong)
 open import Constructive.Analysis.Reals.Series
   using (AntitoneTailModulus ; TailBound)
 open import Constructive.Analysis.Reals.Sequences.Base
@@ -65,10 +68,21 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
     )
 open import Constructive.Analysis.Reals.PowerSeries.Continuity
   using
-    ( PowerSeriesPartialSumsUniformlyContinuousOnBall
+    ( PowerSeriesCoefficientBounds
+    ; PowerSeriesCoefficientBoundsWith
+    ; PowerSeriesPartialSumsUniformlyContinuousOnBall
     ; PowerSeriesPartialSumsUniformlyContinuousOnBallWith
+    ; centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
+    ; centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+    ; centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith
+    ; centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsWith
     ; centeredPowerSeriesSumUniformlyContinuousFromPartialSums
     ; powerSeriesLimitApproximationIndex
+    ; powerSeriesPartialSumsModulusFromCoefficientBounds
+    ; powerSeriesSumContinuousAtFromCoefficientBounds
+    ; powerSeriesSumContinuousAtFromCoefficientBoundsCanonical
+    ; powerSeriesSumContinuousAtFromCoefficientBoundsCanonicalWith
+    ; powerSeriesSumContinuousAtFromCoefficientBoundsWith
     ; powerSeriesSumContinuousAtFromPartialSums
     )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
@@ -95,6 +109,82 @@ hasPowerSeriesWithinAtWith-congFunction f≡g (convergence , sumPath) =
   λ x domain inBall →
     sym (f≡g x domain) ∙
     sumPath x domain inBall
+
+
+hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel :
+  {f g : ℝᶜ → ℝᶜ} →
+  {c x d : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {ν : PrecisionModulus} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((y : ℝᶜ) →
+    (y-inBall : InPowerSeriesBall c ρ y) →
+    g y ≡
+    centeredPowerSeriesSumOnBall a c ρ μ (fst expansion) y y-inBall) →
+  InPowerSeriesBall c ρ x →
+  ((ε η : ℚ⁺) →
+    radius η ℚOrder.≤ radius (ν ε) →
+    (h : ℝᶜ) →
+    BoundedByᶜ η h →
+    InPowerSeriesBall c ρ (x +ᶜ h)) →
+  HasDerivativeAtWith g x d ν →
+  HasDerivativeAtWith f x d ν
+hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel
+  {x = x}
+  expansion
+  modelPath
+  x-inBall
+  forward-inBall =
+  hasDerivativeAtWith-local-cong
+    (snd expansion x x-inBall ∙ sym (modelPath x x-inBall))
+    (λ ε η η≤νε h h-bound →
+      let
+        x+h-inBall = forward-inBall ε η η≤νε h h-bound
+      in
+      snd expansion (x +ᶜ h) x+h-inBall ∙
+      sym (modelPath (x +ᶜ h) x+h-inBall))
+
+
+hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel :
+  {f : ℝᶜ → ℝᶜ} →
+  {c x d : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {ν : PrecisionModulus} →
+  (radiusData : HasInfinitePowerSeriesRadius a) →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  InPowerSeriesBall c ρ x →
+  ((ε η : ℚ⁺) →
+    radius η ℚOrder.≤ radius (ν ε) →
+    (h : ℝᶜ) →
+    BoundedByᶜ η h →
+    InPowerSeriesBall c ρ (x +ᶜ h)) →
+  HasDerivativeAtWith
+    (centeredPowerSeriesSumEverywhere a c radiusData)
+    x
+    d
+    ν →
+  HasDerivativeAtWith f x d ν
+hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
+  {c = c}
+  {a = a}
+  {ρ = ρ}
+  {μ = μ}
+  radiusData
+  expansion =
+  hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel
+    expansion
+    (λ y y-inBall →
+      centeredPowerSeriesSumEverywhere-bound-path a c radiusData ρ y y-inBall ∙
+      centeredPowerSeriesSumOnBallFrom-data-independent
+        (radiusData ρ)
+        (μ , fst expansion)
+        y
+        y-inBall
+        y-inBall)
 
 
 hasPowerSeriesAtWith→uniformlyContinuousOnBallWith :
@@ -191,6 +281,99 @@ hasPowerSeriesAtWith→uniformlyContinuousOnBallFromPartialSums
     expansion
     index-large
     partial-cont
+
+
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  HasPowerSeriesAtUniformlyContinuousOnBallWith
+    f
+    c
+    ρ
+    (powerSeriesPartialSumsModulusFromCoefficientBounds κ ρ χ)
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith
+  expansion
+  index-large
+  coeffBounds =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallWith
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsWith
+      index-large
+      coeffBounds)
+
+
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBounds :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBounds a →
+  HasPowerSeriesAtUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBounds
+  expansion
+  index-large
+  bounds =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBall
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
+      index-large
+      bounds)
+
+
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  HasPowerSeriesAtUniformlyContinuousOnBallWith
+    f
+    c
+    ρ
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      κ
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith
+  expansion
+  coeffBounds =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallWith
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith
+      coeffBounds)
+
+
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  PowerSeriesCoefficientBounds a →
+  HasPowerSeriesAtUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+  expansion
+  bounds =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBall
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+      bounds)
 
 
 hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallWith :
@@ -297,6 +480,109 @@ hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromPartialSums
     expansion
     index-large
     partial-cont
+
+
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBallWith
+    {D = D}
+    f
+    c
+    ρ
+    (powerSeriesPartialSumsModulusFromCoefficientBounds κ ρ χ)
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith
+  expansion
+  index-large
+  coeffBounds =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallWith
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsWith
+      index-large
+      coeffBounds)
+
+
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBounds :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBounds a →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBounds
+  expansion
+  index-large
+  bounds =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBall
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
+      index-large
+      bounds)
+
+
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBallWith
+    {D = D}
+    f
+    c
+    ρ
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      κ
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith
+  expansion
+  coeffBounds =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallWith
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith
+      coeffBounds)
+
+
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  PowerSeriesCoefficientBounds a →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+  expansion
+  bounds =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBall
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+      bounds)
 
 
 hasPowerSeriesAtWith→continuousAtWith :
@@ -422,6 +708,139 @@ hasPowerSeriesAtWith→continuousAtFromPartialSums
     partial-cont
     x
     x-inBall
+
+
+hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsWith :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAtWith
+    f
+    c
+    ρ
+    x
+    x-inBall
+    (powerSeriesPartialSumsModulusFromCoefficientBounds κ ρ χ)
+hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsWith
+  {c = c}
+  expansion
+  index-large
+  coeffBounds
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAtWith
+    expansion
+    x
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBoundsWith
+      index-large
+      coeffBounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesAtWith→continuousAtFromCoefficientBounds :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBounds a →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWith→continuousAtFromCoefficientBounds
+  {c = c}
+  expansion
+  index-large
+  bounds
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAt
+    expansion
+    x
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBounds
+      index-large
+      bounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonicalWith :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAtWith
+    f
+    c
+    ρ
+    x
+    x-inBall
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      κ
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonicalWith
+  {c = c}
+  expansion
+  coeffBounds
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAtWith
+    expansion
+    x
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBoundsCanonicalWith
+      coeffBounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  PowerSeriesCoefficientBounds a →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+  {c = c}
+  expansion
+  bounds
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAt
+    expansion
+    x
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBoundsCanonical
+      bounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
 
 
 hasPowerSeriesWithinAtWith→continuousAtWith :
@@ -587,3 +1006,160 @@ hasPowerSeriesWithinAtWith→continuousAtFromPartialSums
     x
     x-domain
     x-inBall
+
+
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsWith :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAtWith
+    {D = D}
+    f
+    c
+    ρ
+    x
+    x-domain
+    x-inBall
+    (powerSeriesPartialSumsModulusFromCoefficientBounds κ ρ χ)
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsWith
+  {c = c}
+  expansion
+  index-large
+  coeffBounds
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAtWith
+    expansion
+    x
+    x-domain
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBoundsWith
+      index-large
+      coeffBounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBounds :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesCoefficientBounds a →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBounds
+  {c = c}
+  expansion
+  index-large
+  bounds
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAt
+    expansion
+    x
+    x-domain
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBounds
+      index-large
+      bounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonicalWith :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {κ : ℕ → ℚ⁺} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  PowerSeriesCoefficientBoundsWith a κ →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAtWith
+    {D = D}
+    f
+    c
+    ρ
+    x
+    x-domain
+    x-inBall
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      κ
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonicalWith
+  {c = c}
+  expansion
+  coeffBounds
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAtWith
+    expansion
+    x
+    x-domain
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBoundsCanonicalWith
+      coeffBounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonical :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  PowerSeriesCoefficientBounds a →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonical
+  {c = c}
+  expansion
+  bounds
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAt
+    expansion
+    x
+    x-domain
+    x-inBall
+    (powerSeriesSumContinuousAtFromCoefficientBoundsCanonical
+      bounds
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))

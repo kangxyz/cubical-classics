@@ -18,6 +18,11 @@ bounds, or `PowerSeriesPartialSumsDerivativeModulusLarge` records.
   continuity from `HasFPowerSeriesOnBall`, `HasFPowerSeriesAt`, and
   `AnalyticAt`:
   https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Analytic/Basic.html
+- Mathlib's derivative API is the closest mature implementation template for
+  the final target. It exposes consequences such as
+  `HasFPowerSeriesAt.hasDerivAt`, `HasFPowerSeriesOnBall.hasFDerivAt`,
+  `HasFPowerSeriesOnBall.fderiv`, and `AnalyticAt.fderiv`:
+  https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/FDeriv/Analytic.html
 - Mathlib's composition API is a useful warning about scope. The mature API
   supports `HasFPowerSeriesAt.comp` and `AnalyticAt.comp`, but the implementation
   cost is mostly coefficient reindexing and summability bookkeeping:
@@ -57,12 +62,34 @@ Use the external references as design constraints, not as code to copy.
 - Mathlib composition is a mature API, but it is intentionally out of scope
   here. Composition requires coefficient reindexing and summability
   bookkeeping that should not block continuity and derivative automation.
+- Mathlib's derivative split is important locally: derivative at the expansion
+  center is easier than differentiability at every point in a ball; derivative
+  of the function as an analytic function requires convergence of the derivative
+  series after moving the origin. The local constructive version should keep
+  direct `HasDerivativeAtWith` and derivative-is-analytic as separate phases.
 - O'Connor, Krebbers-Spitters, and CoRN all support the same constructive
   engineering rule: make moduli, approximants, and convergence witnesses
   first-class rather than hiding them behind classical existence.
 - Arb is only a later performance reference. Its Taylor and ball-arithmetic
   algorithms should not determine the public proof API until the correctness
   theorems are stable.
+
+## Mature Pattern To Local Proof Shape
+
+| External pattern | Local proof shape | Local non-goal |
+| --- | --- | --- |
+| Mathlib `HasFPowerSeriesOnBall.continuousOn` | closed-subball uniform continuity from `HasPowerSeriesAtWith` plus explicit margin data | classical open-ball topological API |
+| Mathlib `HasFPowerSeriesAt.hasDerivAt` style consequences | derivative theorem whose public input is an expansion and strict-subball point data | caller-built derivative-radius and partial-sum modulus records |
+| Mathlib `HasFPowerSeriesOnBall.fderiv` and `AnalyticAt.fderiv` | later theorem that the derivative function has a local power-series expansion | making re-centering block the direct derivative-at theorem |
+| Mathlib composition API | later proof family after derivative automation is stable | coefficient reindexing before continuity and derivative results |
+| O'Connor exact real elementary functions | moduli and approximation indices stay explicit in internal records | hidden classical convergence arguments |
+| Krebbers-Spitters exact reals | majorants and approximate operations drive constructive estimates | extracting arbitrary coefficient bounds by choice |
+| CoRN real analysis | reusable continuity, differentiability, and Taylor interfaces | duplicating low-level proof plumbing in each instance |
+| Arb implementation practice | future performance route for Taylor evaluation and error bounds | using optimized evaluation as the correctness theorem API |
+
+This plan follows the same split used by mature libraries: public theorems
+state mathematical consequences, while constructive precision data is built by
+the theorem implementation or carried by small internal records.
 
 ## Current Implementation Progress
 
@@ -78,32 +105,123 @@ Implemented theorem-level bridges:
 - `hasPowerSeriesWithinAtWith→continuousAtFromPartialSums`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuliWith`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuli`
+- `mulᶜ-close-right-with-bound`
+- `mulᶜ-close-left-with-bound`
+- `PowerSeriesCoefficientBoundsWith`
+- `PowerSeriesCoefficientBounds`
+- `powerSeriesPartialSumBoundedOnBallFromCoefficientBoundsWith`
+- `powerSeriesPartialSumBoundedOnBallFromCoefficientBounds`
+- `powerSeriesPartialSumUniformlyContinuousOnBallFromCoefficientBoundsWith`
+- `powerSeriesPartialSumUniformlyContinuousOnBallFromCoefficientBounds`
+- `powerSeriesPartialSumsModulusFromCoefficientBounds`
+- `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBoundsWith`
+- `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBounds`
+- `powerSeriesSumUniformlyContinuousFromCoefficientBoundsWith`
+- `powerSeriesSumUniformlyContinuousFromCoefficientBounds`
+- `powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith`
+- `powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical`
+- `powerSeriesSumContinuousAtFromCoefficientBoundsWith`
+- `powerSeriesSumContinuousAtFromCoefficientBounds`
+- `powerSeriesSumContinuousAtFromCoefficientBoundsCanonicalWith`
+- `powerSeriesSumContinuousAtFromCoefficientBoundsCanonical`
+- `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsWith`
+- `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds`
+- `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith`
+- `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBounds`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBounds`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical`
+- `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsWith`
+- `hasPowerSeriesAtWith→continuousAtFromCoefficientBounds`
+- `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonicalWith`
+- `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical`
+- `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsWith`
+- `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBounds`
+- `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonicalWith`
+- `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonical`
+- `powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
+- `hasDerivativeAtWith-local-cong`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
 
-These remove two pieces of repeated downstream proof plumbing: manually
-threading centered sum continuity through analytic expansions, and manually
-deriving derivative-radius data from a coefficient path plus target radius data.
-The formal derivative bridge also specializes the termwise derivative theorem
-to `derivativePowerSeries a` without passing a reflexive coefficient path or
-duplicate target radius data.
+These remove three pieces of repeated downstream proof plumbing: manually
+threading centered sum continuity through analytic expansions, manually
+building partial-sum continuity witnesses when explicit coefficient bounds are
+available, and manually deriving derivative-radius data from a coefficient path
+plus target radius data. The formal derivative bridge also specializes the
+termwise derivative theorem to `derivativePowerSeries a` without passing a
+reflexive coefficient path or duplicate target radius data.
+The coefficient-bound derivative bridge additionally constructs the canonical
+formal partial derivative bounds from coefficient bounds, so instance proofs no
+longer need to pass `PowerSeriesIteratedFormalPartialDerivativeBounds` when
+those coefficient bounds are already available.
+The formal-derivative coefficient-bound bridge gives the same benefit when the
+public derivative value is the sum of `derivativePowerSeries a`, without
+requiring a coefficient path to a named target series.
+The function-level derivative bridges transport a derivative from a total
+centered-sum model through the local expansion path. This removes manual
+rewriting of `linearRemainder` once the centered model derivative is available,
+including the common everywhere-radius model produced by
+`centeredPowerSeriesSumEverywhere`.
+The function-level coefficient-bound derivative wrappers now combine this
+transport with the centered-sum termwise derivative theorem, so callers with
+`HasPowerSeriesAtWith` no longer need to build a separate derivative for the
+centered model before transporting it to the expanded function.
+The matching function-level iterated-bound wrapper gives the same transport
+when a caller already has explicit iterated derivative bounds.
+The canonical coefficient-bound continuity bridges choose
+`powerSeriesLimitApproximationIndex μ` internally and discharge the index
+comparison by reflexivity, so callers no longer pass `χ` or `index-large` when
+explicit coefficient bounds are available.
 
-The partial-sum modulus bridge is intentionally modest. It converts a family of
-finite partial-sum moduli into the existing sum-level continuity criterion. It
-does not yet prove the finite polynomial moduli themselves.
+The partial-sum modulus bridge is intentionally modest. It converts either a
+family of finite partial-sum moduli or explicit coefficient bounds into the
+existing sum-level continuity criterion. It does not yet derive coefficient
+bounds automatically from convergence, majorant, or radius data.
 
 Updated downstream users:
 
 - `expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball`
+- `expᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball`
+- `exp` derivative entries now use the function-level `HasPowerSeriesAtWith`
+  wrappers rather than the centered-sum theorem directly
+- `expᶜUniformlyContinuousOnBallFromCoefficientBounds`
+- `expᶜContinuousAtFromCoefficientBounds`
 - `sinᶜHasDerivativeAtWithFromIteratedBoundsOnSubball`
+- `sinᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball`
+- `sin` derivative entries now use the function-level `HasPowerSeriesAtWith`
+  wrappers rather than the centered-sum theorem directly
+- `sinᶜUniformlyContinuousOnBallFromCoefficientBounds`
+- `sinᶜContinuousAtFromCoefficientBounds`
 - `cosᶜHasDerivativeAtWithFromIteratedBoundsOnSubball`
+- `cosᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball`
+- `cos` derivative entries now use the function-level `HasPowerSeriesAtWith`
+  wrappers before rewriting the named `- sin` target
+- `cosᶜUniformlyContinuousOnBallFromCoefficientBounds`
+- `cosᶜContinuousAtFromCoefficientBounds`
+- `logOnePlusᶜWithinSubunitBallUniformlyContinuousFromCoefficientBounds`
+- `logOnePlusᶜWithinSubunitBallContinuousAtFromCoefficientBounds`
 
 Remaining hard gaps:
 
-- automatically constructing partial-sum uniform-continuity witnesses;
+- automatically constructing partial-sum uniform-continuity witnesses from
+  convergence, majorant, or radius data;
 - proving generic derivative-series convergence on strict subballs;
-- constructing canonical iterated derivative bounds and derivative-modulus
-  largeness data from convergence or majorant data;
+- constructing derivative-modulus largeness data from convergence or majorant
+  data, and constructing canonical iterated derivative bounds when explicit
+  coefficient bounds are not available;
 - replacing elementary instance derivative proofs with the new high-level
   theorem stack.
 
@@ -153,17 +271,34 @@ Names can be adjusted to match local module style, but every exported theorem
 must remove a real proof obligation from downstream users. Do not publish thin
 aliases that only rename existing records.
 
+## Target Proof Contracts
+
+| Theorem family | Caller supplies | The theorem constructs internally | Primary module |
+| --- | --- | --- | --- |
+| subball uniform continuity | expansion, closed subball, strict radius evidence | partial-sum moduli, approximation index, sum-level uniform continuity | `PowerSeries.Continuity` and `Analytic.Consequences` |
+| point continuity from a local series | `HasPowerSeriesAtWith` and radius/margin data | centered-sum continuity and function equality transport | `Analytic.Consequences` |
+| derivative series on strict subballs | original convergence/radius or majorant data | convergence of `derivativePowerSeries a` on smaller balls | `DerivativeConvergence` |
+| termwise derivative for centered sums | expansion point, subball point, derivative coefficient identity when needed | derivative-radius data, iterated derivative bounds, modulus-largeness data, derivative value | `TermwiseDerivative.Theorem` |
+| function-level derivative | `HasPowerSeriesAtWith` and point-in-subball data | centered derivative theorem plus equality transport to the function | `Analytic.Consequences` |
+| elementary instances | named coefficient identities and existing expansion proofs | all generic continuity and derivative plumbing | `Instances.*` |
+
+Each contract is complete only when an ordinary caller can use the public theorem
+without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
+`PowerSeriesIteratedFormalPartialDerivativeBounds`, or
+`PowerSeriesPartialSumsDerivativeModulusLarge`.
+
 ## Status By Target
 
 | Target | Status | Remaining blocker |
 | --- | --- | --- |
-| Continuity from explicit partial-sum witnesses | Implemented as bridges | Needs automatic construction of the witnesses |
-| Uniform continuity on a closed subball | Partially implemented | Finite polynomial modulus theorem |
-| `HasPowerSeriesAtWith` continuity | Partially implemented | Same partial-sum automation gap |
+| Continuity from explicit partial-sum witnesses | Implemented as bridges | Needs automatic construction from expansion data |
+| Uniform continuity on a closed subball | Partially implemented | Coefficient bounds still must be supplied explicitly |
+| `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound variants exist and are used by `exp`, `sin`, `cos`, and `log`; need bridge from expansion/radius data to coefficient bounds |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative radius for `derivativePowerSeries a` | Not implemented generically | Strict-subball derivative convergence |
-| Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Iterated bounds and modulus-largeness are still manual |
-| Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | They still pass derivative bounds and modulus-largeness data |
+| Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound variants build iterated bounds for named targets and formal derivative targets; modulus-largeness is still manual |
+| Function-level derivative transport | Implemented as local, everywhere-model, and coefficient-bound termwise bridges | Modulus-largeness is still manual |
+| Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
 | `log` derivative through the generic theorem | Not implemented | Needs strict radius-one geometric derivative convergence |
 
 ## Theorem Dependency Graph
@@ -181,6 +316,7 @@ strict-subball derivative convergence
   -> formal partial derivative bounds
   -> PowerSeriesPartialSumsDerivativeModulusLarge
   -> HasDerivativeAtWith for centered sums
+  -> local derivative congruence for equal functions near the base point
   -> HasDerivativeAtWith for HasPowerSeriesAtWith functions
 ```
 
@@ -194,22 +330,30 @@ partial derivative modulus.
 
 Use this order before attempting the full final theorem.
 
-1. In `Continuity.agda`, prove finite partial-sum uniform continuity from
-   reusable polynomial estimates on closed balls. Keep the single-partial-sum
-   helper public only if another module uses it directly.
-2. In `Analytic.Consequences.agda`, replace the remaining continuity callers
-   with a theorem that consumes only expansion data plus the Phase 1 automatic
-   partial-sum theorem.
+1. In `Continuity.agda`, extend finite partial-sum uniform continuity from
+   explicit coefficient bounds to the majorant/radius data already carried by
+   power-series convergence records. Keep the single-partial-sum helper public
+   only if another module uses it directly.
+2. In `Analytic.Consequences.agda`, use the coefficient-bound bridges as the
+   temporary high-level continuity API, then replace them with a theorem that
+   consumes only expansion data plus the Phase 1 automatic partial-sum theorem.
 3. In `DerivativeConvergence.agda`, add the majorant-based strict-subball
    derivative convergence theorem before the fully generic radius theorem if
    the generic proof is too large.
-4. In `TermwiseDerivative.IteratedBounds` and
+4. In `Constructive.Analysis.Reals.Calculus.Derivative`, add a local
+   derivative congruence theorem. It should transport `HasDerivativeAtWith`
+   from a model function `g` to a function `f` using equality at the base point
+   and equality on the small perturbations allowed by the chosen modulus.
+5. In `Analytic.Consequences.agda`, add a bridge from
+   `HasPowerSeriesAtWith` to function-level derivative conclusions whenever a
+   total centered-sum model already has the derivative.
+6. In `TermwiseDerivative.IteratedBounds` and
    `TermwiseDerivative.PartialSums`, derive canonical iterated partial
    derivative bounds and modulus-largeness witnesses from the convergence data
    produced in step 3.
-5. In `TermwiseDerivative.Theorem`, expose the final high-level derivative
-   theorem only after steps 3 and 4 remove the current manual arguments.
-6. Update instance modules only after the generic theorem checks. Instance
+7. In `TermwiseDerivative.Theorem`, expose the final high-level derivative
+   theorem only after steps 3 through 6 remove the current manual arguments.
+8. Update instance modules only after the generic theorem checks. Instance
    changes are the acceptance test, not the proof strategy.
 
 ## Non-Goals
@@ -251,10 +395,21 @@ is the constructive version of
 
 for `BoundedByᶜ rho h` and `BoundedByᶜ rho k`.
 
-Implementation targets:
+Implemented first:
+
+- `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBounds`
+- `powerSeriesSumUniformlyContinuousFromCoefficientBounds`
+- `powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical`
+- `powerSeriesSumContinuousAtFromCoefficientBoundsCanonical`
+- `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBounds`
+- `hasPowerSeriesAtWith→continuousAtFromCoefficientBounds`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical`
+- `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical`
+
+Remaining implementation targets:
 
 - `powerSeriesPartialSumLipschitzOnBallWith`
-- `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBounds`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallCanonical`
 
 If coefficient bounds for arbitrary `ℝᶜ` coefficients are available only under
@@ -278,13 +433,24 @@ Acceptance criteria:
 Use Phase 1 with the existing theorems in
 `Constructive.Analysis.Reals.PowerSeries.Continuity`.
 
+Implemented intermediate bridges:
+
+- canonical coefficient-bound variants hide `χ` and `index-large` by using
+  `powerSeriesLimitApproximationIndex` and reflexive index comparison;
+- ordinary and within-domain variants are available for uniform continuity and
+  continuous-at conclusions in `Analytic.Consequences`.
+- `Instances.Exponential.Convergence` and `Instances.Trigonometric.Convergence`
+  now expose coefficient-bound continuity consequences for `exp`, `sin`, and
+  `cos`.
+- `Instances.Logarithm` now uses the within-domain canonical coefficient-bound
+  consequences for uniform continuity and point continuity on the subunit ball.
+
 Implementation targets:
 
 - `hasPowerSeriesOnBallWith→uniformlyContinuousOnSubball`
 - `centeredPowerSeriesSumUniformlyContinuousOnSubball`
 - `hasPowerSeriesAtWith→uniformlyContinuousOnSubball`
 - `hasPowerSeriesAtWith→continuousAtOnSubball`
-- within-domain variants only if a current instance needs them.
 
 The public API should take an expansion, a smaller closed ball, and the required
 strict-containment evidence. It should construct all partial-sum continuity and
@@ -358,12 +524,38 @@ The wrapper should internally derive:
 - canonical `PowerSeriesPartialSumsDerivativeModulusLarge` data;
 - the derivative value as the sum of the formal derivative series.
 
-Implementation targets:
+Implemented transport bridges:
+
+- `hasDerivativeAtWith-local-cong`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
+
+Remaining implementation targets:
 
 - `centeredPowerSeriesSumFormalDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalDerivativeAtWith`
 - `hasPowerSeriesOnBallWith→hasDerivativeAtWithOnSubball`
 - `hasPowerSeriesAtWith→hasDerivativeAtWith`
+
+The transport targets are deliberately separated from derivative-series
+convergence. They do not prove new analytic convergence, but they remove a real
+function-level proof obligation: once a centered model has a derivative and an
+expansion path identifies the original function with that model near the base
+point, the caller should not rewrite the linear remainder by hand.
+
+Current blocker:
+
+- `PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω` cannot be constructed
+  from an arbitrary supplied `μ` and the existing `χ`/`ω` alone. The index
+  `χ ε η` depends on the perturbation precision `η`, so the required target
+  `ω (χ ε η) (quarter⁺ ε)` also varies with `η`. The current records do not
+  provide a uniform lower bound for these moduli on `η ≤ μ ε`, nor enough
+  monotonicity to derive one. The next theorem should either choose `μ`
+  canonically together with `χ`, or strengthen the partial-sum derivative
+  modulus record with the monotonic/uniformity data needed by this proof.
 
 Acceptance criteria:
 

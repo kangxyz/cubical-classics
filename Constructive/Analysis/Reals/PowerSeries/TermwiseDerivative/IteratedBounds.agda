@@ -288,6 +288,21 @@ powerSeriesIteratedFormalPartialDerivativeBoundsFromCoefficientBounds
       (realPowerBoundsFromBound σ x x-bound n)
 
 
+powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds :
+  (σ : ℚ⁺) →
+  (κ : ℕ → ℚ⁺) →
+  ℕ →
+  ℕ →
+  ℚ⁺
+powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ s n =
+  positivePartialSum
+    (λ k →
+      scalar-bound (Rational.natMul (suc k) Rational.1ℚ) *⁺
+      κ (s Nat.+ suc k) *⁺
+      positivePower σ k)
+    n
+
+
 powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds :
   (σ : ℚ⁺) →
   {a : PowerSeries} →
@@ -298,13 +313,7 @@ powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds :
   PowerSeriesIteratedFormalPartialDerivativeBounds
     a
     x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) Rational.1ℚ) *⁺
-          κ (s Nat.+ suc k) *⁺
-          positivePower σ k)
-        n)
+    (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ)
 powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
   σ
   {a = a}

@@ -75,13 +75,19 @@ open import Constructive.Analysis.Reals.PowerSeries.Analytic
   using
     ( AnalyticAt
     ; HasPowerSeriesAt
+    ; HasPowerSeriesAtContinuousAt
     ; HasPowerSeriesAtOnBall
+    ; HasPowerSeriesAtUniformlyContinuousOnBall
     ; HasPowerSeriesAtWith
     ; centeredPowerSeriesSumEverywhereAnalyticAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
+    ; hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+    ; hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
     )
+open import Constructive.Analysis.Reals.PowerSeries.Continuity
+  using (PowerSeriesCoefficientBounds)
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
@@ -313,6 +319,20 @@ negSinᶜ-path =
     0ᶜ
 
 
+sinPowerSeriesCoefficientBounds :
+  PowerSeriesCoefficientBounds sinPowerSeries
+sinPowerSeriesCoefficientBounds =
+  (λ _ → 1⁺) ,
+  sinPowerSeriesCoefficientBoundOne
+
+
+cosPowerSeriesCoefficientBounds :
+  PowerSeriesCoefficientBounds cosPowerSeries
+cosPowerSeriesCoefficientBounds =
+  (λ _ → 1⁺) ,
+  cosPowerSeriesCoefficientBoundOne
+
+
 sinᶜHasPowerSeriesAtWithZero :
   (ρ : ℚ⁺) →
   HasPowerSeriesAtWith
@@ -337,6 +357,50 @@ cosᶜHasPowerSeriesAtWithZero :
 cosᶜHasPowerSeriesAtWithZero =
   centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
     cosPowerSeriesInfiniteRadius
+
+
+sinᶜUniformlyContinuousOnBallFromCoefficientBounds :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtUniformlyContinuousOnBall sinᶜ 0ᶜ ρ
+sinᶜUniformlyContinuousOnBallFromCoefficientBounds ρ =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    (sinᶜHasPowerSeriesAtWithZero ρ)
+    sinPowerSeriesCoefficientBounds
+
+
+cosᶜUniformlyContinuousOnBallFromCoefficientBounds :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtUniformlyContinuousOnBall cosᶜ 0ᶜ ρ
+cosᶜUniformlyContinuousOnBallFromCoefficientBounds ρ =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    (cosᶜHasPowerSeriesAtWithZero ρ)
+    cosPowerSeriesCoefficientBounds
+
+
+sinᶜContinuousAtFromCoefficientBounds :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
+  HasPowerSeriesAtContinuousAt sinᶜ 0ᶜ ρ x x-inBall
+sinᶜContinuousAtFromCoefficientBounds ρ x x-inBall =
+  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+    (sinᶜHasPowerSeriesAtWithZero ρ)
+    sinPowerSeriesCoefficientBounds
+    x
+    x-inBall
+
+
+cosᶜContinuousAtFromCoefficientBounds :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
+  HasPowerSeriesAtContinuousAt cosᶜ 0ᶜ ρ x x-inBall
+cosᶜContinuousAtFromCoefficientBounds ρ x x-inBall =
+  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+    (cosᶜHasPowerSeriesAtWithZero ρ)
+    cosPowerSeriesCoefficientBounds
+    x
+    x-inBall
 
 
 sinᶜHasPowerSeriesAtOnBallZero :

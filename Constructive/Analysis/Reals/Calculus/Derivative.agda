@@ -59,6 +59,59 @@ module HasDerivativeAtWith where
     derivative
 
 
+private
+  linearRemainder-local-path :
+    {f g : ℝᶜ → ℝᶜ} →
+    {x d h : ℝᶜ} →
+    f x ≡ g x →
+    f (x +ᶜ h) ≡ g (x +ᶜ h) →
+    linearRemainder f x d h ≡ linearRemainder g x d h
+  linearRemainder-local-path {d = d} {h = h} basePath forwardPath =
+    cong₂
+      (λ forward base → (forward +ᶜ (-ᶜ base)) +ᶜ (-ᶜ (d ·ᶜ h)))
+      forwardPath
+      basePath
+
+
+hasDerivativeAtWith-local-cong :
+  {f g : ℝᶜ → ℝᶜ} →
+  {x d : ℝᶜ} →
+  {μ : PrecisionModulus} →
+  f x ≡ g x →
+  ((ε η : ℚ⁺) →
+    radius η ℚOrder.≤ radius (μ ε) →
+    (h : ℝᶜ) →
+    BoundedByᶜ η h →
+    f (x +ᶜ h) ≡ g (x +ᶜ h)) →
+  HasDerivativeAtWith g x d μ →
+  HasDerivativeAtWith f x d μ
+hasDerivativeAtWith-local-cong
+  {f = f}
+  {g = g}
+  {x = x}
+  {d = d}
+  basePath
+  forwardPath
+  derivative
+  ε
+  η
+  η≤με
+  h
+  h-bound =
+  subst
+    (BoundedByᶜ (ε *⁺ η))
+    (sym
+      (linearRemainder-local-path
+        {f = f}
+        {g = g}
+        {x = x}
+        {d = d}
+        {h = h}
+        basePath
+        (forwardPath ε η η≤με h h-bound)))
+    (derivative ε η η≤με h h-bound)
+
+
 HasDerivativeAt :
   (ℝᶜ → ℝᶜ) →
   ℝᶜ →

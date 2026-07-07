@@ -98,8 +98,10 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
+    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
     ; positivePartialSum
+    ; powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     ; powerSeriesFormalPartialSumsDerivativeModulus
     ; termwiseConvergenceIndex
@@ -188,7 +190,7 @@ expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
   margin
   derivative-bounds
   partialModulus-large =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
     {a = expPowerSeries}
     {b = expPowerSeries}
     {c = 0ᶜ}
@@ -200,9 +202,54 @@ expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
     derivativePowerSeries-exp
     expPowerSeriesInfiniteRadius
     expPowerSeriesInfiniteRadius
+    (expᶜHasPowerSeriesAtWithZero ρ)
     x-displacement-bound
     margin
     derivative-bounds
+    partialModulus-large
+
+
+expᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball :
+  {x : ℝᶜ} →
+  {ρ σ : ℚ⁺} →
+  {μ : PrecisionModulus} →
+  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement 0ᶜ x)) →
+  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
+  PowerSeriesPartialSumsDerivativeModulusLarge
+    (termwiseConvergenceIndex
+      (expPowerSeriesInfiniteRadius ρ .fst)
+      (derivativeExpPowerSeriesInfiniteRadius σ .fst))
+    μ
+    (powerSeriesFormalPartialSumsDerivativeModulus
+      σ
+      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
+        σ
+        (λ _ → 1⁺))) →
+  HasDerivativeAtWith expᶜ x (expᶜ x) μ
+expᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
+  {x = x}
+  {ρ = ρ}
+  {σ = σ}
+  {μ = μ}
+  x-displacement-bound
+  margin
+  partialModulus-large =
+  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
+    {a = expPowerSeries}
+    {b = expPowerSeries}
+    {c = 0ᶜ}
+    {x = x}
+    {ρ = ρ}
+    {σ = σ}
+    {μ = μ}
+    derivativePowerSeries-exp
+    expPowerSeriesInfiniteRadius
+    expPowerSeriesInfiniteRadius
+    (expᶜHasPowerSeriesAtWithZero ρ)
+    x-displacement-bound
+    margin
+    (λ _ → 1⁺)
+    expPowerSeriesCoefficientBoundOne
     partialModulus-large
 
 

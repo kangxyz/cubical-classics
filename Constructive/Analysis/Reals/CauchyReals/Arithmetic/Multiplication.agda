@@ -481,6 +481,20 @@ mulᶜ-continuous-right-with-bound κ x x-bound =
       (local-close ε y∼z)
 
 
+mulᶜ-close-right-with-bound :
+  (κ : ℚ⁺) (x : ℝᶜ) →
+  BoundedByᶜ κ x →
+  {y z : ℝᶜ} {ε : ℚ⁺} →
+  y ∼[ ε ] z →
+  (x ·ᶜ y) ∼[ κ *⁺ ε ] (x ·ᶜ z)
+mulᶜ-close-right-with-bound κ x x-bound {y = y} {z = z} {ε = ε} y∼z =
+  subst2
+    (λ u v → u ∼[ κ *⁺ ε ] v)
+    (sym (mulᶜ-bound κ x x-bound y))
+    (sym (mulᶜ-bound κ x x-bound z))
+    (boundedMulᶜ-close κ x x-bound y∼z)
+
+
 mulᶜ-comm-close-with-bounds :
   (κ μ : ℚ⁺) (x y : ℝᶜ) →
   BoundedByᶜ κ x →
@@ -698,6 +712,20 @@ mulᶜ-continuous-left-with-bound κ y y-bound =
       (sym (mulᶜ-comm x y))
       (sym (mulᶜ-comm z y))
       (local-close ε x∼z)
+
+
+mulᶜ-close-left-with-bound :
+  (κ : ℚ⁺) (y : ℝᶜ) →
+  BoundedByᶜ κ y →
+  {x z : ℝᶜ} {ε : ℚ⁺} →
+  x ∼[ ε ] z →
+  (x ·ᶜ y) ∼[ κ *⁺ ε ] (z ·ᶜ y)
+mulᶜ-close-left-with-bound κ y y-bound {x = x} {z = z} {ε = ε} x∼z =
+  subst2
+    (λ u v → u ∼[ κ *⁺ ε ] v)
+    (sym (mulᶜ-comm x y))
+    (sym (mulᶜ-comm z y))
+    (mulᶜ-close-right-with-bound κ y y-bound x∼z)
 
 
 mulᶜ-distrib-left :

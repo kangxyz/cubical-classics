@@ -85,13 +85,19 @@ open import Constructive.Analysis.Reals.PowerSeries.Analytic
   using
     ( AnalyticAt
     ; HasPowerSeriesAt
+    ; HasPowerSeriesAtContinuousAt
     ; HasPowerSeriesAtOnBall
+    ; HasPowerSeriesAtUniformlyContinuousOnBall
     ; HasPowerSeriesAtWith
     ; centeredPowerSeriesSumEverywhereAnalyticAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
+    ; hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+    ; hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
     )
+open import Constructive.Analysis.Reals.PowerSeries.Continuity
+  using (PowerSeriesCoefficientBounds)
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
@@ -416,6 +422,13 @@ expᶜ-zero =
     0ᶜ
 
 
+expPowerSeriesCoefficientBounds :
+  PowerSeriesCoefficientBounds expPowerSeries
+expPowerSeriesCoefficientBounds =
+  (λ _ → 1⁺) ,
+  expPowerSeriesCoefficientBoundOne
+
+
 expᶜHasPowerSeriesAtWithZero :
   (ρ : ℚ⁺) →
   HasPowerSeriesAtWith
@@ -427,6 +440,28 @@ expᶜHasPowerSeriesAtWithZero :
 expᶜHasPowerSeriesAtWithZero =
   centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
     expPowerSeriesInfiniteRadius
+
+
+expᶜUniformlyContinuousOnBallFromCoefficientBounds :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtUniformlyContinuousOnBall expᶜ 0ᶜ ρ
+expᶜUniformlyContinuousOnBallFromCoefficientBounds ρ =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    (expᶜHasPowerSeriesAtWithZero ρ)
+    expPowerSeriesCoefficientBounds
+
+
+expᶜContinuousAtFromCoefficientBounds :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
+  HasPowerSeriesAtContinuousAt expᶜ 0ᶜ ρ x x-inBall
+expᶜContinuousAtFromCoefficientBounds ρ x x-inBall =
+  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+    (expᶜHasPowerSeriesAtWithZero ρ)
+    expPowerSeriesCoefficientBounds
+    x
+    x-inBall
 
 
 expᶜHasPowerSeriesAtOnBallZero :
