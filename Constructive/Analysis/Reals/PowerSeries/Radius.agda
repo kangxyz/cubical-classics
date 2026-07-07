@@ -12,6 +12,8 @@ open import Cubical.Data.Nat using (ℕ ; max)
 import Cubical.Data.Nat.Order as NatOrder
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
+open import Cubical.HITs.PropositionalTruncation as Prop
+  using (∥_∥₁ ; ∣_∣₁)
 
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
@@ -19,9 +21,12 @@ open import Constructive.Analysis.Metric.Instances.CauchyReals
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
+  using (neg-zeroᶜ)
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Data.PositiveRationals
@@ -301,6 +306,41 @@ powerSeriesSumOnBall-bound-independent {a = a} {ρ = ρ} {μ = μ}
     tailClose k-bound
 
 
+powerSeriesSumOnBall-center-path :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (convergence : HasPowerSeriesOnBallWith a ρ μ) →
+  {h k : ℝᶜ} →
+  h ≡ k →
+  (h-bound : BoundedByᶜ ρ h) →
+  (k-bound : BoundedByᶜ ρ k) →
+  powerSeriesSumOnBall a ρ μ convergence h h-bound ≡
+  powerSeriesSumOnBall a ρ μ convergence k k-bound
+powerSeriesSumOnBall-center-path
+  {a = a}
+  {ρ = ρ}
+  {μ = μ}
+  convergence
+  {h = h}
+  p
+  h-bound
+  k-bound =
+  subst
+    (λ z →
+      (z-bound : BoundedByᶜ ρ z) →
+      powerSeriesSumOnBall a ρ μ convergence h h-bound ≡
+      powerSeriesSumOnBall a ρ μ convergence z z-bound)
+    p
+    (λ z-bound →
+      powerSeriesSumOnBall-bound-independent
+        convergence
+        h
+        h-bound
+        z-bound)
+    k-bound
+
+
 powerSeriesSumOnBall-data-independent :
   {a : PowerSeries} →
   {ρ σ : ℚ⁺} →
@@ -406,6 +446,131 @@ powerSeriesSumOnBallFrom-data-independent
   h-bound
   k-bound =
   powerSeriesSumOnBall-data-independent
+    left
+    right
+    h
+    h-bound
+    k-bound
+
+
+powerSeriesSumOnBall-coefficients-path :
+  {a b : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ ν : ℚ⁺ → ℕ} →
+  ((n : ℕ) → a n ≡ b n) →
+  (left : HasPowerSeriesOnBallWith a ρ μ) →
+  (right : HasPowerSeriesOnBallWith b σ ν) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  (k-bound : BoundedByᶜ σ h) →
+  powerSeriesSumOnBall a ρ μ left h h-bound ≡
+  powerSeriesSumOnBall b σ ν right h k-bound
+powerSeriesSumOnBall-coefficients-path
+  {a = a}
+  {b = b}
+  {ρ = ρ}
+  {σ = σ}
+  {μ = μ}
+  {ν = ν}
+  coeff≡
+  left
+  right
+  h
+  h-bound
+  k-bound =
+  MetricSpace.close-separated
+    CauchyRealsMetricSpace
+    leftSum
+    rightSum
+    (λ ε →
+      subst
+        (λ κ → MetricSpace.Close CauchyRealsMetricSpace leftSum κ rightSum)
+        (half⁺+half⁺≡ ε)
+        (MetricSpace.close-triangle
+          CauchyRealsMetricSpace
+          (leftTail ε)
+          (MetricSpace.close-sym CauchyRealsMetricSpace (rightTail ε))))
+  where
+  approximationIndex :
+    ℚ⁺ →
+    ℕ
+  approximationIndex ε =
+    max
+      (μ (quarter⁺ (half⁺ (half⁺ ε))))
+      (ν (quarter⁺ (half⁺ (half⁺ ε))))
+
+  leftSum : ℝᶜ
+  leftSum =
+    powerSeriesSumOnBall a ρ μ left h h-bound
+
+  rightSum : ℝᶜ
+  rightSum =
+    powerSeriesSumOnBall b σ ν right h k-bound
+
+  leftTail :
+    (ε : ℚ⁺) →
+    MetricSpace.Close CauchyRealsMetricSpace
+      leftSum
+      (half⁺ ε)
+      (powerSeriesPartialSum b h (approximationIndex ε))
+  leftTail ε =
+    subst
+      (λ partial →
+        MetricSpace.Close CauchyRealsMetricSpace
+          leftSum
+          (half⁺ ε)
+          partial)
+      (powerSeriesPartialSum-cong coeff≡ refl (approximationIndex ε))
+      (seriesSumFromFiniteTailBoundConvergesAt
+        (powerSeriesTerm a h)
+        μ
+        (HasPowerSeriesOnBallWith.tailBound left h h-bound)
+        (HasPowerSeriesOnBallWith.antitoneModulus left)
+        (half⁺ ε)
+        (approximationIndex ε)
+        (NatOrder.left-≤-max
+          {m = μ (quarter⁺ (half⁺ (half⁺ ε)))}
+          {n = ν (quarter⁺ (half⁺ (half⁺ ε)))}))
+
+  rightTail :
+    (ε : ℚ⁺) →
+    MetricSpace.Close CauchyRealsMetricSpace
+      rightSum
+      (half⁺ ε)
+      (powerSeriesPartialSum b h (approximationIndex ε))
+  rightTail ε =
+    seriesSumFromFiniteTailBoundConvergesAt
+      (powerSeriesTerm b h)
+      ν
+      (HasPowerSeriesOnBallWith.tailBound right h k-bound)
+      (HasPowerSeriesOnBallWith.antitoneModulus right)
+      (half⁺ ε)
+      (approximationIndex ε)
+      (NatOrder.right-≤-max
+        {n = ν (quarter⁺ (half⁺ (half⁺ ε)))}
+        {m = μ (quarter⁺ (half⁺ (half⁺ ε)))})
+
+
+powerSeriesSumOnBallFrom-coefficients-path :
+  {a b : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  ((n : ℕ) → a n ≡ b n) →
+  (left : HasPowerSeriesOnBall a ρ) →
+  (right : HasPowerSeriesOnBall b σ) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  (k-bound : BoundedByᶜ σ h) →
+  powerSeriesSumOnBallFrom a ρ left h h-bound ≡
+  powerSeriesSumOnBallFrom b σ right h k-bound
+powerSeriesSumOnBallFrom-coefficients-path
+  coeff≡
+  (μ , left)
+  (ν , right)
+  h
+  h-bound
+  k-bound =
+  powerSeriesSumOnBall-coefficients-path
+    coeff≡
     left
     right
     h
@@ -554,12 +719,174 @@ hasInfinitePowerSeriesRadius-cong coeff≡ radiusData ρ =
   hasPowerSeriesOnBall-cong coeff≡ (radiusData ρ)
 
 
+private
+  PowerSeriesPointBoundData :
+    ℝᶜ →
+    Type₀
+  PowerSeriesPointBoundData x =
+    Σ[ ρ ∈ ℚ⁺ ] BoundedByᶜ ρ x
+
+
+  powerSeriesSumEverywhereFromBounds :
+    (a : PowerSeries) →
+    HasInfinitePowerSeriesRadius a →
+    (x : ℝᶜ) →
+    ∥ PowerSeriesPointBoundData x ∥₁ →
+    ℝᶜ
+  powerSeriesSumEverywhereFromBounds a radiusData x =
+    Prop.rec→Set
+      (MetricSpace.isSetCarrier CauchyRealsMetricSpace)
+      sumWithBound
+      sumWithBound-constant
+    where
+    sumWithBound :
+      PowerSeriesPointBoundData x →
+      ℝᶜ
+    sumWithBound (ρ , x-bound) =
+      powerSeriesSumOnBallFrom a ρ (radiusData ρ) x x-bound
+
+    sumWithBound-constant :
+      (left right : PowerSeriesPointBoundData x) →
+      sumWithBound left ≡ sumWithBound right
+    sumWithBound-constant (ρ , ρ-bound) (σ , σ-bound) =
+      powerSeriesSumOnBallFrom-data-independent
+        (radiusData ρ)
+        (radiusData σ)
+        x
+        ρ-bound
+        σ-bound
+
+
+powerSeriesSumEverywhere :
+  (a : PowerSeries) →
+  HasInfinitePowerSeriesRadius a →
+  ℝᶜ →
+  ℝᶜ
+powerSeriesSumEverywhere a radiusData x =
+  powerSeriesSumEverywhereFromBounds
+    a
+    radiusData
+    x
+    (merely-boundedᶜ x)
+
+
+powerSeriesSumEverywhere-bound-path :
+  (a : PowerSeries) →
+  (radiusData : HasInfinitePowerSeriesRadius a) →
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-bound : BoundedByᶜ ρ x) →
+  powerSeriesSumEverywhere a radiusData x ≡
+  powerSeriesSumOnBallFrom a ρ (radiusData ρ) x x-bound
+powerSeriesSumEverywhere-bound-path a radiusData ρ x x-bound =
+  Prop.elim
+    {P = λ bounds →
+      powerSeriesSumEverywhereFromBounds a radiusData x bounds ≡
+      powerSeriesSumOnBallFrom a ρ (radiusData ρ) x x-bound}
+    (λ _ → MetricSpace.isSetCarrier CauchyRealsMetricSpace _ _)
+    step
+    (merely-boundedᶜ x)
+  where
+  step :
+    (bounds : PowerSeriesPointBoundData x) →
+    powerSeriesSumEverywhereFromBounds a radiusData x ∣ bounds ∣₁ ≡
+    powerSeriesSumOnBallFrom a ρ (radiusData ρ) x x-bound
+  step (σ , σ-bound) =
+    powerSeriesSumOnBallFrom-data-independent
+      (radiusData σ)
+      (radiusData ρ)
+      x
+      σ-bound
+      x-bound
+
+
+powerSeriesSumEverywhere-coefficients-path :
+  {a b : PowerSeries} →
+  ((n : ℕ) → a n ≡ b n) →
+  (leftRadius : HasInfinitePowerSeriesRadius a) →
+  (rightRadius : HasInfinitePowerSeriesRadius b) →
+  (x : ℝᶜ) →
+  powerSeriesSumEverywhere a leftRadius x ≡
+  powerSeriesSumEverywhere b rightRadius x
+powerSeriesSumEverywhere-coefficients-path
+  {a = a}
+  {b = b}
+  coeff≡
+  leftRadius
+  rightRadius
+  x =
+  Prop.elim
+    {P = λ bounds →
+      powerSeriesSumEverywhereFromBounds a leftRadius x bounds ≡
+      powerSeriesSumEverywhere b rightRadius x}
+    (λ _ → MetricSpace.isSetCarrier CauchyRealsMetricSpace _ _)
+    step
+    (merely-boundedᶜ x)
+  where
+  step :
+    (bounds : PowerSeriesPointBoundData x) →
+    powerSeriesSumEverywhereFromBounds a leftRadius x ∣ bounds ∣₁ ≡
+    powerSeriesSumEverywhere b rightRadius x
+  step (ρ , x-bound) =
+    powerSeriesSumOnBallFrom-coefficients-path
+      coeff≡
+      (leftRadius ρ)
+      (rightRadius ρ)
+      x
+      x-bound
+      x-bound ∙
+    sym
+      (powerSeriesSumEverywhere-bound-path
+        b
+        rightRadius
+        ρ
+        x
+        x-bound)
+
+
 centeredDisplacement :
   ℝᶜ →
   ℝᶜ →
   ℝᶜ
 centeredDisplacement c x =
   x +ᶜ (-ᶜ c)
+
+
+centeredDisplacement-zero :
+  (x : ℝᶜ) →
+  centeredDisplacement 0ᶜ x ≡ x
+centeredDisplacement-zero x =
+  cong (x +ᶜ_) neg-zeroᶜ ∙
+  add-zero-right x
+
+
+centeredDisplacement-center-plus :
+  (c x : ℝᶜ) →
+  centeredDisplacement c (c +ᶜ x) ≡ x
+centeredDisplacement-center-plus c x =
+  sym (add-assoc c x (-ᶜ c)) ∙
+  cong (c +ᶜ_) (add-comm x (-ᶜ c)) ∙
+  add-assoc c (-ᶜ c) x ∙
+  cong (_+ᶜ x) (add-inverse-right c) ∙
+  add-zero-left x
+
+
+add-center-centeredDisplacement :
+  (c x : ℝᶜ) →
+  c +ᶜ centeredDisplacement c x ≡ x
+add-center-centeredDisplacement c x =
+  cong (c +ᶜ_) (add-comm x (-ᶜ c)) ∙
+  add-assoc c (-ᶜ c) x ∙
+  cong (_+ᶜ x) (add-inverse-right c) ∙
+  add-zero-left x
+
+
+add-center-centeredDisplacement-forward :
+  (c x h : ℝᶜ) →
+  c +ᶜ (centeredDisplacement c x +ᶜ h) ≡ x +ᶜ h
+add-center-centeredDisplacement-forward c x h =
+  add-assoc c (centeredDisplacement c x) h ∙
+  cong (_+ᶜ h) (add-center-centeredDisplacement c x)
 
 
 record InPowerSeriesBall
@@ -572,6 +899,49 @@ record InPowerSeriesBall
   field
     displacementBound :
       BoundedByᶜ ρ (centeredDisplacement c x)
+
+
+inPowerSeriesBallAtZeroFromBound :
+  {ρ : ℚ⁺} →
+  {x : ℝᶜ} →
+  BoundedByᶜ ρ x →
+  InPowerSeriesBall 0ᶜ ρ x
+inPowerSeriesBallAtZeroFromBound {ρ = ρ} {x = x} x-bound =
+  record
+    { displacementBound =
+        subst
+          (BoundedByᶜ ρ)
+          (sym (centeredDisplacement-zero x))
+          x-bound
+    }
+
+
+inPowerSeriesBallAtZero→bound :
+  {ρ : ℚ⁺} →
+  {x : ℝᶜ} →
+  InPowerSeriesBall 0ᶜ ρ x →
+  BoundedByᶜ ρ x
+inPowerSeriesBallAtZero→bound {ρ = ρ} {x = x} inBall =
+  subst
+    (BoundedByᶜ ρ)
+    (centeredDisplacement-zero x)
+    (InPowerSeriesBall.displacementBound inBall)
+
+
+inPowerSeriesBallAtCenterPlusFromBound :
+  {ρ : ℚ⁺} →
+  (c : ℝᶜ) →
+  {x : ℝᶜ} →
+  BoundedByᶜ ρ x →
+  InPowerSeriesBall c ρ (c +ᶜ x)
+inPowerSeriesBallAtCenterPlusFromBound {ρ = ρ} c {x = x} x-bound =
+  record
+    { displacementBound =
+        subst
+          (BoundedByᶜ ρ)
+          (sym (centeredDisplacement-center-plus c x))
+          x-bound
+    }
 
 
 centeredPowerSeriesTerm :
@@ -601,6 +971,56 @@ centeredPowerSeriesSumOnBall a c ρ μ convergence x inBall =
     convergence
     (centeredDisplacement c x)
     (InPowerSeriesBall.displacementBound inBall)
+
+
+centeredPowerSeriesSumOnBallAtZero-path :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (convergence : HasPowerSeriesOnBallWith a ρ μ) →
+  (x : ℝᶜ) →
+  (x-bound : BoundedByᶜ ρ x) →
+  centeredPowerSeriesSumOnBall
+    a
+    0ᶜ
+    ρ
+    μ
+    convergence
+    x
+    (inPowerSeriesBallAtZeroFromBound x-bound)
+  ≡
+  powerSeriesSumOnBall a ρ μ convergence x x-bound
+centeredPowerSeriesSumOnBallAtZero-path convergence x x-bound =
+  powerSeriesSumOnBall-center-path
+    convergence
+    (centeredDisplacement-zero x)
+    _
+    x-bound
+
+
+centeredPowerSeriesSumOnBallAtCenterPlus-path :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (convergence : HasPowerSeriesOnBallWith a ρ μ) →
+  (c x : ℝᶜ) →
+  (x-bound : BoundedByᶜ ρ x) →
+  centeredPowerSeriesSumOnBall
+    a
+    c
+    ρ
+    μ
+    convergence
+    (c +ᶜ x)
+    (inPowerSeriesBallAtCenterPlusFromBound c x-bound)
+  ≡
+  powerSeriesSumOnBall a ρ μ convergence x x-bound
+centeredPowerSeriesSumOnBallAtCenterPlus-path convergence c x x-bound =
+  powerSeriesSumOnBall-center-path
+    convergence
+    (centeredDisplacement-center-plus c x)
+    _
+    x-bound
 
 
 centeredPowerSeriesSumOnBall-inBall-independent :
@@ -705,6 +1125,61 @@ centeredPowerSeriesSumOnBallFrom-data-independent
     x
     x-inBall
     y-inBall
+
+
+centeredPowerSeriesSumEverywhere :
+  (a : PowerSeries) →
+  ℝᶜ →
+  HasInfinitePowerSeriesRadius a →
+  ℝᶜ →
+  ℝᶜ
+centeredPowerSeriesSumEverywhere a c radiusData x =
+  powerSeriesSumEverywhere a radiusData (centeredDisplacement c x)
+
+
+centeredPowerSeriesSumEverywhere-bound-path :
+  (a : PowerSeries) →
+  (c : ℝᶜ) →
+  (radiusData : HasInfinitePowerSeriesRadius a) →
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  centeredPowerSeriesSumEverywhere a c radiusData x ≡
+  centeredPowerSeriesSumOnBallFrom a c ρ (radiusData ρ) x x-inBall
+centeredPowerSeriesSumEverywhere-bound-path
+  a
+  c
+  radiusData
+  ρ
+  x
+  x-inBall =
+  powerSeriesSumEverywhere-bound-path
+    a
+    radiusData
+    ρ
+    (centeredDisplacement c x)
+    (InPowerSeriesBall.displacementBound x-inBall)
+
+
+centeredPowerSeriesSumEverywhere-coefficients-path :
+  {a b : PowerSeries} →
+  ((n : ℕ) → a n ≡ b n) →
+  (leftRadius : HasInfinitePowerSeriesRadius a) →
+  (rightRadius : HasInfinitePowerSeriesRadius b) →
+  (c x : ℝᶜ) →
+  centeredPowerSeriesSumEverywhere a c leftRadius x ≡
+  centeredPowerSeriesSumEverywhere b c rightRadius x
+centeredPowerSeriesSumEverywhere-coefficients-path
+  coeff≡
+  leftRadius
+  rightRadius
+  c
+  x =
+  powerSeriesSumEverywhere-coefficients-path
+    coeff≡
+    leftRadius
+    rightRadius
+    (centeredDisplacement c x)
 
 
 centeredPowerSeriesConvergesOnBallFrom :

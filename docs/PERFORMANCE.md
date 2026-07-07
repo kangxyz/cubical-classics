@@ -115,6 +115,12 @@ fast p =
   body is trivial.  Bind repeated projections, introduce named type aliases for
   long targets, and avoid exposing record/module projection chains in every
   local signature when a smaller equivalent signature is available.
+- Long chains of public convenience wrappers can make `Typing.CheckRHS`
+  dominate even when each wrapper is mathematically thin.  Keep the small
+  internal combinators, but expose only entry points that are used at module
+  boundaries.  If a downstream instance only needs one canonical theorem,
+  implement that theorem directly from the primitive bounds instead of routing
+  it through many partially specialized wrappers.
 - Cubical Path/Glue comparison can dominate conversion.  Split path-heavy
   arguments into named intermediate lemmas when that gives Agda smaller
   endpoints to compare.
@@ -219,6 +225,17 @@ proof-packaging record, `PowerSeriesTermwiseDerivativeAtWith`.  Replacing it
 with a `Σ` package reduced the module to under a second in the aggregate
 profile; standalone cached checks are about 5 seconds.
 
+A later expansion of the same module reintroduced a cold aggregate cost of
+about 19 seconds in `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative`.
+This time the internal profile was dominated by `Typing.CheckRHS`, not
+`Positivity`: many public convenience theorems forwarded through one another
+before reaching the same primitive termwise-derivative bounds.  The local fix
+was to remove the unused wrapper ladder and keep a direct implementation of
+the canonical centered theorem used by the exponential and trigonometric
+instances.  In a cold `PowerSeries` aggregate profile, the module dropped to
+about 6.2 seconds and the aggregate dropped from about 27.8 seconds to about
+15.4 seconds.
+
 After changing a record package to a `Σ` package, recheck aggregate modules.
 Projection functions no longer get record elaboration behavior, so dependent
 uses may need explicit hidden parameters.  In the IVT approximate modules,
@@ -230,10 +247,14 @@ In the power-series modules, passing explicit hidden parameters around
 
 ## Open Slow Files
 
-There are no remaining slow files from this profiling pass.  If a future
-aggregate profile finds another slow module, add it here with the command used,
-the cold and cached timings, the dominant profile bucket, and the next concrete
-experiment.
+There are no remaining anomalously slow PowerSeries files from this profiling
+pass.  In a cold local `PowerSeries` aggregate profile after the wrapper-chain
+cleanup, the largest residual modules were
+`Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative` at about 6.2
+seconds, `CauchyProduct` at about 1.5 seconds, and `Radius` at about 1.0
+second.  If a future aggregate profile finds another slow module, add it here
+with the command used, the cold and cached timings, the dominant profile
+bucket, and the next concrete experiment.
 
 ## GitHub Matches
 

@@ -12,6 +12,8 @@ open import Cubical.Data.Nat using (ℕ ; zero)
 open import Cubical.Data.Rationals using (ℚ)
 
 open import Constructive.Analysis.Reals.CauchyReals.Base
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+  using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
@@ -276,6 +278,40 @@ derivativeRationalScalePowerSeriesInfiniteRadius q {a = a} radiusData =
     (rationalScalePowerSeriesInfiniteRadius q radiusData)
 
 
+derivativeRealScalePowerSeriesRadius :
+  (x : ℝᶜ) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ x →
+  {a : PowerSeries} →
+  {R : ℚ⁺} →
+  HasPowerSeriesRadius (derivativePowerSeries a) R →
+  HasPowerSeriesRadius
+    (derivativePowerSeries (realScalePowerSeries x a))
+    R
+derivativeRealScalePowerSeriesRadius x κ x-bound {a = a} radiusData =
+  derivativePowerSeriesRadiusFromCoefficientPath
+    {a = realScalePowerSeries x a}
+    {b = realScalePowerSeries x (derivativePowerSeries a)}
+    (derivativePowerSeries-realScale x a)
+    (realScalePowerSeriesRadius x κ x-bound radiusData)
+
+
+derivativeRealScalePowerSeriesInfiniteRadius :
+  (x : ℝᶜ) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ x →
+  {a : PowerSeries} →
+  HasInfinitePowerSeriesRadius (derivativePowerSeries a) →
+  HasInfinitePowerSeriesRadius
+    (derivativePowerSeries (realScalePowerSeries x a))
+derivativeRealScalePowerSeriesInfiniteRadius x κ x-bound {a = a} radiusData =
+  derivativePowerSeriesInfiniteRadiusFromCoefficientPath
+    {a = realScalePowerSeries x a}
+    {b = realScalePowerSeries x (derivativePowerSeries a)}
+    (derivativePowerSeries-realScale x a)
+    (realScalePowerSeriesInfiniteRadius x κ x-bound radiusData)
+
+
 primitiveZeroPowerSeriesInfiniteRadius :
   HasInfinitePowerSeriesRadius (primitivePowerSeries zeroPowerSeries)
 primitiveZeroPowerSeriesInfiniteRadius =
@@ -420,3 +456,37 @@ primitiveRationalScalePowerSeriesInfiniteRadius q {a = a} radiusData =
     {b = rationalScalePowerSeries q (primitivePowerSeries a)}
     (primitivePowerSeries-rationalScale q a)
     (rationalScalePowerSeriesInfiniteRadius q radiusData)
+
+
+primitiveRealScalePowerSeriesRadius :
+  (x : ℝᶜ) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ x →
+  {a : PowerSeries} →
+  {R : ℚ⁺} →
+  HasPowerSeriesRadius (primitivePowerSeries a) R →
+  HasPowerSeriesRadius
+    (primitivePowerSeries (realScalePowerSeries x a))
+    R
+primitiveRealScalePowerSeriesRadius x κ x-bound {a = a} radiusData =
+  primitivePowerSeriesRadiusFromCoefficientPath
+    {a = realScalePowerSeries x a}
+    {b = realScalePowerSeries x (primitivePowerSeries a)}
+    (primitivePowerSeries-realScale x a)
+    (realScalePowerSeriesRadius x κ x-bound radiusData)
+
+
+primitiveRealScalePowerSeriesInfiniteRadius :
+  (x : ℝᶜ) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ x →
+  {a : PowerSeries} →
+  HasInfinitePowerSeriesRadius (primitivePowerSeries a) →
+  HasInfinitePowerSeriesRadius
+    (primitivePowerSeries (realScalePowerSeries x a))
+primitiveRealScalePowerSeriesInfiniteRadius x κ x-bound {a = a} radiusData =
+  primitivePowerSeriesInfiniteRadiusFromCoefficientPath
+    {a = realScalePowerSeries x a}
+    {b = realScalePowerSeries x (primitivePowerSeries a)}
+    (primitivePowerSeries-realScale x a)
+    (realScalePowerSeriesInfiniteRadius x κ x-bound radiusData)

@@ -3,7 +3,7 @@
 Formal exponential power-series coefficients
 
 -}
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --lossy-unification #-}
 module Constructive.Analysis.Reals.PowerSeries.Instances.Exponential where
 
 open import Cubical.Foundations.Prelude
@@ -28,6 +28,9 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
   using (_≤ᶜ_ ; ≤ᶜ-refl)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
+open import Constructive.Analysis.Reals.Calculus.Derivative
+  using (HasDerivativeAtWith)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
@@ -55,7 +58,8 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
-    ( constantPowerSeries
+    ( centeredPowerSeriesSumEverywhere-center
+    ; constantPowerSeries
     ; constantPowerSeriesInfiniteRadius
     ; rationalScaleModulus
     ; rationalScaleModulus-antitone
@@ -77,18 +81,41 @@ open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
     ( derivativePowerSeriesInfiniteRadiusFromCoefficientPath
     ; primitivePowerSeriesInfiniteRadiusFromCoefficientPath
     )
+open import Constructive.Analysis.Reals.PowerSeries.Analytic
+  using
+    ( AnalyticAt
+    ; HasPowerSeriesAt
+    ; HasPowerSeriesAtOnBall
+    ; HasPowerSeriesAtWith
+    ; centeredPowerSeriesSumEverywhereAnalyticAt
+    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
+    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
+    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
+    )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
+open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
+  using
+    ( PowerSeriesIteratedFormalPartialDerivativeBounds
+    ; PowerSeriesPartialSumsDerivativeModulusLarge
+    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; positivePartialSum
+    ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
+    ; powerSeriesFormalPartialSumsDerivativeModulus
+    ; termwiseConvergenceIndex
+    )
 open import Constructive.Data.PositiveRationals
   using
     ( ℚ⁺
     ; 1⁺
+    ; _+⁺_
     ; _*⁺_
     ; *⁺-comm
     ; *⁺-identity-left
     ; half⁺
     ; half<
     ; radius
+    ; scalar-bound
     )
 import Constructive.Data.Rationals.Base as RationalBase
 import Constructive.Data.Rationals.Archimedean as Rational
@@ -227,6 +254,19 @@ reciprocalFactorialClosedBoundOne n =
       {r = RationalBase.1ℚ}
       negative≤0
       0≤1
+
+
+expPowerSeriesCoefficientBoundOne :
+  (n : ℕ) →
+  BoundedByᶜ 1⁺ (expPowerSeries n)
+expPowerSeriesCoefficientBoundOne n =
+  subst
+    (BoundedByᶜ 1⁺)
+    (sym (expPowerSeries-reciprocalFactorial n))
+    (rational-closed-bound→boundedᶜ
+      1⁺
+      (Factorial.reciprocalFactorial n)
+      (reciprocalFactorialClosedBoundOne n))
 
 
 reciprocalFactorial⁺ :
@@ -1367,6 +1407,61 @@ expPowerSeriesInfiniteRadius =
   expPowerSeriesOnBall
 
 
+expᶜ :
+  ℝᶜ →
+  ℝᶜ
+expᶜ =
+  centeredPowerSeriesSumEverywhere
+    expPowerSeries
+    0ᶜ
+    expPowerSeriesInfiniteRadius
+
+
+expᶜ-zero :
+  expᶜ 0ᶜ ≡ 1ᶜ
+expᶜ-zero =
+  centeredPowerSeriesSumEverywhere-center
+    expPowerSeriesInfiniteRadius
+    0ᶜ
+
+
+expᶜHasPowerSeriesAtWithZero :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtWith
+    expᶜ
+    0ᶜ
+    expPowerSeries
+    ρ
+    (expPowerSeriesInfiniteRadius ρ .fst)
+expᶜHasPowerSeriesAtWithZero =
+  centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
+    expPowerSeriesInfiniteRadius
+
+
+expᶜHasPowerSeriesAtOnBallZero :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtOnBall expᶜ 0ᶜ expPowerSeries ρ
+expᶜHasPowerSeriesAtOnBallZero =
+  centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
+    expPowerSeriesInfiniteRadius
+
+
+expᶜHasPowerSeriesAtZero :
+  HasPowerSeriesAt expᶜ 0ᶜ expPowerSeries
+expᶜHasPowerSeriesAtZero =
+  centeredPowerSeriesSumEverywhereHasPowerSeriesAt
+    expPowerSeriesInfiniteRadius
+
+
+expᶜAnalyticAtZero :
+  AnalyticAt expᶜ 0ᶜ
+expᶜAnalyticAtZero =
+  centeredPowerSeriesSumEverywhereAnalyticAt
+    expPowerSeries
+    0ᶜ
+    expPowerSeriesInfiniteRadius
+
+
 derivativeExpPowerSeriesInfiniteRadius :
   HasInfinitePowerSeriesRadius (derivativePowerSeries expPowerSeries)
 derivativeExpPowerSeriesInfiniteRadius =
@@ -1375,6 +1470,75 @@ derivativeExpPowerSeriesInfiniteRadius =
     {b = expPowerSeries}
     derivativePowerSeries-exp
     expPowerSeriesInfiniteRadius
+
+
+expPowerSeriesIteratedFormalPartialDerivativeBounds :
+  (σ : ℚ⁺) →
+  {x : ℝᶜ} →
+  BoundedByᶜ σ x →
+  PowerSeriesIteratedFormalPartialDerivativeBounds
+    expPowerSeries
+    x
+    (λ s n →
+      positivePartialSum
+        (λ k →
+          scalar-bound (Rational.natMul (suc k) RationalBase.1ℚ) *⁺
+          1⁺ *⁺
+          positivePower σ k)
+        n)
+expPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
+  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
+    σ
+    x-bound
+    (λ _ → 1⁺)
+    expPowerSeriesCoefficientBoundOne
+
+
+expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball :
+  {x : ℝᶜ} →
+  {ρ σ : ℚ⁺} →
+  {μ : PrecisionModulus} →
+  {δ : ℕ → ℕ → ℚ⁺} →
+  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement 0ᶜ x)) →
+  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
+  PowerSeriesIteratedFormalPartialDerivativeBounds
+    expPowerSeries
+    (centeredDisplacement 0ᶜ x)
+    δ →
+  PowerSeriesPartialSumsDerivativeModulusLarge
+    (termwiseConvergenceIndex
+      (expPowerSeriesInfiniteRadius ρ .fst)
+      (derivativeExpPowerSeriesInfiniteRadius σ .fst))
+    μ
+    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
+  HasDerivativeAtWith expᶜ x (expᶜ x) μ
+expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
+  {x = x}
+  {ρ = ρ}
+  {σ = σ}
+  {μ = μ}
+  {δ = δ}
+  x-displacement-bound
+  margin
+  derivative-bounds
+  partialModulus-large =
+  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    {a = expPowerSeries}
+    {b = expPowerSeries}
+    {c = 0ᶜ}
+    {x = x}
+    {ρ = ρ}
+    {σ = σ}
+    {μ = μ}
+    {δ = δ}
+    derivativePowerSeries-exp
+    expPowerSeriesInfiniteRadius
+    derivativeExpPowerSeriesInfiniteRadius
+    expPowerSeriesInfiniteRadius
+    x-displacement-bound
+    margin
+    derivative-bounds
+    partialModulus-large
 
 
 primitiveExpPowerSeriesInfiniteRadius :

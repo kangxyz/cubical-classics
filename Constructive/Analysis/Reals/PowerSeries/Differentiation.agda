@@ -27,6 +27,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; constantPowerSeries
     ; negPowerSeries
     ; rationalScalePowerSeries
+    ; realScalePowerSeries
     ; subPowerSeries
     ; zeroPowerSeries
     )
@@ -164,6 +165,27 @@ derivativePowerSeries-rationalScale q a n =
   sym
     (mulᶜ-assoc
       (rational q)
+      (naturalReal (suc n))
+      (a (suc n)))
+
+
+derivativePowerSeries-realScale :
+  (x : ℝᶜ) →
+  (a : PowerSeries) →
+  (n : ℕ) →
+  derivativePowerSeries (realScalePowerSeries x a) n ≡
+  realScalePowerSeries x (derivativePowerSeries a) n
+derivativePowerSeries-realScale x a n =
+  mulᶜ-assoc
+    (naturalReal (suc n))
+    x
+    (a (suc n)) ∙
+  cong
+    (_·ᶜ a (suc n))
+    (mulᶜ-comm (naturalReal (suc n)) x) ∙
+  sym
+    (mulᶜ-assoc
+      x
       (naturalReal (suc n))
       (a (suc n)))
 
@@ -345,5 +367,28 @@ primitivePowerSeries-rationalScale q a (suc n) =
   sym
     (mulᶜ-assoc
       (rational q)
+      (inverseSucReal n)
+      (a n))
+
+
+primitivePowerSeries-realScale :
+  (x : ℝᶜ) →
+  (a : PowerSeries) →
+  (n : ℕ) →
+  primitivePowerSeries (realScalePowerSeries x a) n ≡
+  realScalePowerSeries x (primitivePowerSeries a) n
+primitivePowerSeries-realScale x a zero =
+  sym (mulᶜ-zero-right x)
+primitivePowerSeries-realScale x a (suc n) =
+  mulᶜ-assoc
+    (inverseSucReal n)
+    x
+    (a n) ∙
+  cong
+    (_·ᶜ a n)
+    (mulᶜ-comm (inverseSucReal n) x) ∙
+  sym
+    (mulᶜ-assoc
+      x
       (inverseSucReal n)
       (a n))
