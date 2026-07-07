@@ -244,6 +244,12 @@ canonical sum-level uniform-continuity and point-continuity witnesses. This
 removes the repeated pattern of separately calling
 `hasPowerSeriesOnBallWithFromBoundedTerms` and then rebuilding continuity from
 the original term bounds.
+The real-majorant/rational-bound continuity bridges convert
+`SeriesMajorizedBy (powerSeriesTerm a h) v` plus rational bounds for the
+majorant terms `v n` into the ball-term bounds required by the finite
+partial-sum continuity machinery. This route supports partial sums, raw sums,
+centered sums, and ordinary/within-domain `HasPowerSeriesAtWith` consequences
+without choosing arbitrary coefficient bounds from truncation.
 
 The partial-sum modulus bridge is intentionally modest. It converts either a
 family of finite partial-sum moduli, explicit coefficient bounds, or closed-ball
@@ -354,8 +360,8 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | Target | Status | Remaining blocker |
 | --- | --- | --- |
 | Continuity from explicit partial-sum witnesses | Implemented as bridges | Needs automatic construction from expansion data |
-| Uniform continuity on a closed subball | Partially implemented | Coefficient, closed-ball term, or bounded-term majorant data can now drive canonical moduli; arbitrary radius/convergence data still cannot |
-| `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound variants exist and are used by `exp`, `sin`, `cos`, and `log`; need bridge from expansion/radius data to coefficient bounds |
+| Uniform continuity on a closed subball | Partially implemented | Coefficient, closed-ball term, bounded-term majorant, or real-majorant/rational-bound data can now drive canonical moduli; arbitrary radius/convergence data still cannot |
+| `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; need bridge from expansion/radius data to usable bounds |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative radius for `derivativePowerSeries a` | Not implemented generically | Strict-subball derivative convergence |
 | Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound variants build iterated bounds for named targets and formal derivative targets; modulus-largeness is still manual |
@@ -506,6 +512,9 @@ Implemented intermediate bridges:
   `cos`.
 - `Instances.Logarithm` now uses the within-domain canonical coefficient-bound
   consequences for uniform continuity and point continuity on the subunit ball.
+- real-majorant/rational-bound variants now derive ball-term bounds from
+  `SeriesMajorizedBy` data and expose ordinary and within-domain
+  `HasPowerSeriesAtWith` consequences.
 
 Implementation targets:
 

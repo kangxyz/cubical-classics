@@ -36,8 +36,10 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplicat
   using (scalarMulᶜ ; scalarMulᶜ-assoc ; scalarMulᶜ-one)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-  using (_≤ᶜ_)
+  using (_≤ᶜ_ ; ≤ᶜ-trans)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
+  using (absᶜ ; ≤ᶜabsᶜ-left ; ≤ᶜabsᶜ-right)
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower)
@@ -806,6 +808,121 @@ powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBounds
     termBounds
 
 
+powerSeriesBallTermBoundsFromMajorantBoundsWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  (h : ℝᶜ) →
+  BoundedByᶜ ρ h →
+  (n : ℕ) →
+  BoundedByᶜ (κ n) (powerSeriesTerm a h n)
+powerSeriesBallTermBoundsFromMajorantBoundsWith
+  {a = a}
+  {v = v}
+  {κ = κ}
+  termMajorized
+  majorantBounds
+  h
+  h-bound
+  n =
+  bounded-byᶜ upperBound lowerBound
+  where
+  majorized : SeriesMajorizedBy (powerSeriesTerm a h) v
+  majorized =
+    termMajorized h h-bound
+
+  termAbs≤majorant :
+    absᶜ (powerSeriesTerm a h n) ≤ᶜ v n
+  termAbs≤majorant =
+    SeriesMajorizedBy.termMajorized majorized zero n
+
+  termAbs≤bound :
+    absᶜ (powerSeriesTerm a h n) ≤ᶜ rational (radius (κ n))
+  termAbs≤bound =
+    ≤ᶜ-trans
+      {x = absᶜ (powerSeriesTerm a h n)}
+      {y = v n}
+      {z = rational (radius (κ n))}
+      termAbs≤majorant
+      (upperᶜ (majorantBounds n))
+
+  upperBound :
+    powerSeriesTerm a h n ≤ᶜ rational (radius (κ n))
+  upperBound =
+    ≤ᶜ-trans
+      {x = powerSeriesTerm a h n}
+      {y = absᶜ (powerSeriesTerm a h n)}
+      {z = rational (radius (κ n))}
+      (≤ᶜabsᶜ-left (powerSeriesTerm a h n))
+      termAbs≤bound
+
+  lowerBound :
+    (-ᶜ powerSeriesTerm a h n) ≤ᶜ rational (radius (κ n))
+  lowerBound =
+    ≤ᶜ-trans
+      {x = -ᶜ powerSeriesTerm a h n}
+      {y = absᶜ (powerSeriesTerm a h n)}
+      {z = rational (radius (κ n))}
+      (≤ᶜabsᶜ-right (powerSeriesTerm a h n))
+      termAbs≤bound
+
+
+powerSeriesPartialSumsUniformlyContinuousOnBallFromMajorantBoundsWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {χ : ℚ⁺ → ℕ} →
+  {v : ℕ → ℝᶜ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith
+    a
+    ρ
+    χ
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      χ)
+powerSeriesPartialSumsUniformlyContinuousOnBallFromMajorantBoundsWith
+  termMajorized
+  majorantBounds =
+  powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBoundsWith
+    (powerSeriesBallTermBoundsFromMajorantBoundsWith
+      termMajorized
+      majorantBounds)
+
+
+powerSeriesPartialSumsUniformlyContinuousOnBallFromMajorantBounds :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {χ : ℚ⁺ → ℕ} →
+  {v : ℕ → ℝᶜ} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ] ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ
+powerSeriesPartialSumsUniformlyContinuousOnBallFromMajorantBounds
+  {ρ = ρ}
+  {χ = χ}
+  termMajorized
+  (κ , majorantBounds) =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    χ ,
+  powerSeriesPartialSumsUniformlyContinuousOnBallFromMajorantBoundsWith
+    termMajorized
+    majorantBounds
+
+
 powerSeriesSumUniformlyContinuousFromPartialSums :
   {a : PowerSeries} →
   {ρ : ℚ⁺} →
@@ -1155,6 +1272,60 @@ powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
     termBounds
 
 
+powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {v : ℕ → ℝᶜ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  PowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    ρ
+    μ
+    convergence
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith
+  termMajorized
+  majorantBounds =
+  powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith
+    (powerSeriesBallTermBoundsFromMajorantBoundsWith
+      termMajorized
+      majorantBounds)
+
+
+powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonical :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {v : ℕ → ℝᶜ} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ] ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  PowerSeriesSumUniformlyContinuousOnBall a ρ μ convergence
+powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonical
+  {ρ = ρ}
+  {μ = μ}
+  termMajorized
+  (κ , majorantBounds) =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    (powerSeriesLimitApproximationIndex μ) ,
+  powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith
+    termMajorized
+    majorantBounds
+
+
 powerSeriesSumContinuousAtFromCoefficientBoundsWith :
   {a : PowerSeries} →
   {ρ : ℚ⁺} →
@@ -1387,6 +1558,70 @@ powerSeriesSumContinuousAtFromBallTermBoundsCanonical
     (powerSeriesLimitApproximationIndex μ) ,
   powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith
     termBounds
+    h
+    h-bound
+
+
+powerSeriesSumContinuousAtFromMajorantBoundsCanonicalWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {v : ℕ → ℝᶜ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAtWith
+    a
+    ρ
+    μ
+    convergence
+    h
+    h-bound
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+powerSeriesSumContinuousAtFromMajorantBoundsCanonicalWith
+  termMajorized
+  majorantBounds =
+  uniformlyContinuousPowerSeriesSum→continuousAt
+    (powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith
+      termMajorized
+      majorantBounds)
+
+
+powerSeriesSumContinuousAtFromMajorantBoundsCanonical :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {v : ℕ → ℝᶜ} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ] ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAt a ρ μ convergence h h-bound
+powerSeriesSumContinuousAtFromMajorantBoundsCanonical
+  {ρ = ρ}
+  {μ = μ}
+  termMajorized
+  (κ , majorantBounds)
+  h
+  h-bound =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    (powerSeriesLimitApproximationIndex μ) ,
+  powerSeriesSumContinuousAtFromMajorantBoundsCanonicalWith
+    termMajorized
+    majorantBounds
     h
     h-bound
 
@@ -1832,4 +2067,56 @@ centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
   bounds =
   centeredPowerSeriesSumUniformlyContinuousFromDisplacementΣ
     (powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
+      bounds)
+
+
+centeredPowerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith :
+  {a : PowerSeries} →
+  {c : ℝᶜ} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {v : ℕ → ℝᶜ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  CenteredPowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    c
+    ρ
+    μ
+    convergence
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+centeredPowerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith
+  termMajorized
+  majorantBounds =
+  centeredPowerSeriesSumUniformlyContinuousFromDisplacement
+    (powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith
+      termMajorized
+      majorantBounds)
+
+
+centeredPowerSeriesSumUniformlyContinuousFromMajorantBoundsCanonical :
+  {a : PowerSeries} →
+  {c : ℝᶜ} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {v : ℕ → ℝᶜ} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy (powerSeriesTerm a h) v) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ] ((n : ℕ) → BoundedByᶜ (κ n) (v n)) →
+  CenteredPowerSeriesSumUniformlyContinuousOnBall a c ρ μ convergence
+centeredPowerSeriesSumUniformlyContinuousFromMajorantBoundsCanonical
+  termMajorized
+  bounds =
+  centeredPowerSeriesSumUniformlyContinuousFromDisplacementΣ
+    (powerSeriesSumUniformlyContinuousFromMajorantBoundsCanonical
+      termMajorized
       bounds)
