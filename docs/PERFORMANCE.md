@@ -213,6 +213,13 @@ with about 25 seconds under `Positivity`.  The single-field
 function type aliases, keeping projection-style helper functions for call
 sites.  The file then checked in about 4 seconds.
 
+`Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment` became
+anomalously slow after adding finite-subdivision derivative estimates and
+ring-solver linear-remainder splitting.  The local file check did not complete
+after repeated 30 second waits.  Keeping the helper module small and adding
+`--lossy-unification` localized the conversion pressure from the path-heavy
+subdivision proof.
+
 `Constructive.Analysis.Reals.Series.Comparison` checked at about 46 seconds,
 with about 36 seconds under `Positivity`.  Replacing the proof-packaging
 `SeriesMajorizedBy` record with a `Σ` package and qualified projections reduced
