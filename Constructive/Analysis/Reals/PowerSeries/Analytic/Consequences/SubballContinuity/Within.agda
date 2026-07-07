@@ -176,6 +176,46 @@ hasPowerSeriesWithinAtWith→uniformlyContinuousOnSubballFromCoefficientBounds
     coeffBounds
 
 
+hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnSubball :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesWithinAtWithBounds {D = D} f c a σ μ →
+  radius ρ ℚOrder.< radius σ →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnSubball
+  (expansion , bounds)
+  ρ<σ =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnSubballFromCoefficientBounds
+    expansion
+    ρ<σ
+    bounds
+
+
+hasPowerSeriesWithinAtWithBounds→merelyUniformlyContinuousOnSubball :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesWithinAtWithBounds {D = D} f c a σ μ →
+  radius ρ ℚOrder.< radius σ →
+  HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWithBounds→merelyUniformlyContinuousOnSubball
+  expansion
+  ρ<σ =
+  hasPowerSeriesWithinAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall
+    (hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnSubball
+      expansion
+      ρ<σ)
+
+
 hasPowerSeriesWithinAtWith→continuousAtOnSubballFromCoefficientBoundsWith :
   {ℓ : Level} →
   {D : ℝᶜ → Type ℓ} →
@@ -261,6 +301,68 @@ hasPowerSeriesWithinAtWith→continuousAtOnSubballFromCoefficientBounds
     x
     x-domain
     x-inBall
+
+
+hasPowerSeriesWithinAtWithBounds→continuousAtOnSubball :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesWithinAtWithBounds {D = D} f c a σ μ →
+  radius ρ ℚOrder.< radius σ →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWithBounds→continuousAtOnSubball
+  (expansion , bounds)
+  ρ<σ
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAtOnSubballFromCoefficientBounds
+    expansion
+    ρ<σ
+    bounds
+    x
+    x-domain
+    x-inBall
+
+
+hasPowerSeriesWithinAtWithBounds→merelyContinuousAtOnSubball :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWithBounds {D = D} f c a σ μ) →
+  radius ρ ℚOrder.< radius σ →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtMerelyContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWithBounds→merelyContinuousAtOnSubball
+  {D = D}
+  expansion
+  ρ<σ
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtContinuousAt→merelyContinuousAt
+    {D = D}
+    {x-domain = x-domain}
+    {x-inBall = x-inBall}
+    (hasPowerSeriesWithinAtWithBounds→continuousAtOnSubball
+      expansion
+      ρ<σ
+      x
+      x-domain
+      x-inBall)
 
 
 hasPowerSeriesWithinAtWith→uniformlyContinuousOnSubballFromBallTermBoundsWith :

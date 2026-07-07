@@ -167,6 +167,38 @@ hasPowerSeriesAtWith→uniformlyContinuousOnSubballFromCoefficientBounds
     coeffBounds
 
 
+hasPowerSeriesAtWithBounds→uniformlyContinuousOnSubball :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesAtWithBounds f c a σ μ →
+  radius ρ ℚOrder.< radius σ →
+  HasPowerSeriesAtUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWithBounds→uniformlyContinuousOnSubball
+  (expansion , bounds)
+  ρ<σ =
+  hasPowerSeriesAtWith→uniformlyContinuousOnSubballFromCoefficientBounds
+    expansion
+    ρ<σ
+    bounds
+
+
+hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnSubball :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesAtWithBounds f c a σ μ →
+  radius ρ ℚOrder.< radius σ →
+  HasPowerSeriesAtMerelyUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnSubball expansion ρ<σ =
+  hasPowerSeriesAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall
+    (hasPowerSeriesAtWithBounds→uniformlyContinuousOnSubball expansion ρ<σ)
+
+
 hasPowerSeriesAtWith→continuousAtOnSubballFromCoefficientBoundsWith :
   {f : ℝᶜ → ℝᶜ} →
   {c : ℝᶜ} →
@@ -238,6 +270,55 @@ hasPowerSeriesAtWith→continuousAtOnSubballFromCoefficientBounds
     coeffBounds
     x
     x-inBall
+
+
+hasPowerSeriesAtWithBounds→continuousAtOnSubball :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesAtWithBounds f c a σ μ →
+  radius ρ ℚOrder.< radius σ →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWithBounds→continuousAtOnSubball
+  (expansion , bounds)
+  ρ<σ
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAtOnSubballFromCoefficientBounds
+    expansion
+    ρ<σ
+    bounds
+    x
+    x-inBall
+
+
+hasPowerSeriesAtWithBounds→merelyContinuousAtOnSubball :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWithBounds f c a σ μ) →
+  radius ρ ℚOrder.< radius σ →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtMerelyContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWithBounds→merelyContinuousAtOnSubball
+  expansion
+  ρ<σ
+  x
+  x-inBall =
+  hasPowerSeriesAtContinuousAt→merelyContinuousAt
+    {x-inBall = x-inBall}
+    (hasPowerSeriesAtWithBounds→continuousAtOnSubball
+      expansion
+      ρ<σ
+      x
+      x-inBall)
 
 
 hasPowerSeriesAtWith→uniformlyContinuousOnSubballFromBallTermBoundsWith :
@@ -516,5 +597,3 @@ hasPowerSeriesAtWith→continuousAtOnSubballFromMajorantBounds
     majorantBounds
     x
     x-inBall
-
-

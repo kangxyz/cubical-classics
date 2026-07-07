@@ -89,12 +89,17 @@ open import Constructive.Analysis.Reals.PowerSeries.Analytic
     ; HasPowerSeriesAtOnBall
     ; HasPowerSeriesAtUniformlyContinuousOnBall
     ; HasPowerSeriesAtWith
+    ; HasPowerSeriesAtWithBounds
+    ; HasPowerSeriesAtMerelyContinuousAt
+    ; HasPowerSeriesAtMerelyUniformlyContinuousOnBall
     ; centeredPowerSeriesSumEverywhereAnalyticAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    ; hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
-    ; hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    ; hasPowerSeriesAtWithBounds→continuousAt
+    ; hasPowerSeriesAtWithBounds→merelyContinuousAt
+    ; hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall
+    ; hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall
     )
 open import Constructive.Analysis.Reals.PowerSeries.Continuity
   using (PowerSeriesCoefficientBounds)
@@ -442,13 +447,33 @@ expᶜHasPowerSeriesAtWithZero =
     expPowerSeriesInfiniteRadius
 
 
+expᶜHasPowerSeriesAtWithBoundsZero :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtWithBounds
+    expᶜ
+    0ᶜ
+    expPowerSeries
+    ρ
+    (expPowerSeriesInfiniteRadius ρ .fst)
+expᶜHasPowerSeriesAtWithBoundsZero ρ =
+  expᶜHasPowerSeriesAtWithZero ρ ,
+  expPowerSeriesCoefficientBounds
+
+
 expᶜUniformlyContinuousOnBallFromCoefficientBounds :
   (ρ : ℚ⁺) →
   HasPowerSeriesAtUniformlyContinuousOnBall expᶜ 0ᶜ ρ
 expᶜUniformlyContinuousOnBallFromCoefficientBounds ρ =
-  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
-    (expᶜHasPowerSeriesAtWithZero ρ)
-    expPowerSeriesCoefficientBounds
+  hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall
+    (expᶜHasPowerSeriesAtWithBoundsZero ρ)
+
+
+expᶜMerelyUniformlyContinuousOnBallFromBounds :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtMerelyUniformlyContinuousOnBall expᶜ 0ᶜ ρ
+expᶜMerelyUniformlyContinuousOnBallFromBounds ρ =
+  hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall
+    (expᶜHasPowerSeriesAtWithBoundsZero ρ)
 
 
 expᶜContinuousAtFromCoefficientBounds :
@@ -457,9 +482,20 @@ expᶜContinuousAtFromCoefficientBounds :
   (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
   HasPowerSeriesAtContinuousAt expᶜ 0ᶜ ρ x x-inBall
 expᶜContinuousAtFromCoefficientBounds ρ x x-inBall =
-  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
-    (expᶜHasPowerSeriesAtWithZero ρ)
-    expPowerSeriesCoefficientBounds
+  hasPowerSeriesAtWithBounds→continuousAt
+    (expᶜHasPowerSeriesAtWithBoundsZero ρ)
+    x
+    x-inBall
+
+
+expᶜMerelyContinuousAtFromBounds :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
+  HasPowerSeriesAtMerelyContinuousAt expᶜ 0ᶜ ρ x x-inBall
+expᶜMerelyContinuousAtFromBounds ρ x x-inBall =
+  hasPowerSeriesAtWithBounds→merelyContinuousAt
+    (expᶜHasPowerSeriesAtWithBoundsZero ρ)
     x
     x-inBall
 

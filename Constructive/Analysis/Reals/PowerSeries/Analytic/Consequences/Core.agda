@@ -389,6 +389,33 @@ hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
       bounds)
 
 
+hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesAtWithBounds f c a ρ μ →
+  HasPowerSeriesAtUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall (expansion , bounds) =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    expansion
+    bounds
+
+
+hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesAtWithBounds f c a ρ μ →
+  HasPowerSeriesAtMerelyUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall expansion =
+  hasPowerSeriesAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall
+    (hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall expansion)
+
+
 hasPowerSeriesAtWith→uniformlyContinuousOnBallFromBallTermBoundsWith :
   {f : ℝᶜ → ℝᶜ} →
   {c : ℝᶜ} →
@@ -762,6 +789,38 @@ hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanon
     expansion
     (centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
       bounds)
+
+
+hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnBall :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesWithinAtWithBounds {D = D} f c a ρ μ →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnBall
+  (expansion , bounds) =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    expansion
+    bounds
+
+
+hasPowerSeriesWithinAtWithBounds→merelyUniformlyContinuousOnBall :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesWithinAtWithBounds {D = D} f c a ρ μ →
+  HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWithBounds→merelyUniformlyContinuousOnBall expansion =
+  hasPowerSeriesWithinAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall
+    (hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnBall expansion)
 
 
 hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromBallTermBoundsWith :
@@ -1201,6 +1260,43 @@ hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
       bounds
       (centeredDisplacement c x)
       (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesAtWithBounds→continuousAt :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesAtWithBounds f c a ρ μ →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWithBounds→continuousAt
+  (expansion , bounds)
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
+    expansion
+    bounds
+    x
+    x-inBall
+
+
+hasPowerSeriesAtWithBounds→merelyContinuousAt :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWithBounds f c a ρ μ) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtMerelyContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWithBounds→merelyContinuousAt expansion x x-inBall =
+  hasPowerSeriesAtContinuousAt→merelyContinuousAt
+    {x-inBall = x-inBall}
+    (hasPowerSeriesAtWithBounds→continuousAt expansion x x-inBall)
 
 
 hasPowerSeriesAtWith→continuousAtFromBallTermBoundsWith :
@@ -1749,6 +1845,62 @@ hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonical
       bounds
       (centeredDisplacement c x)
       (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesWithinAtWithBounds→continuousAt :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  HasPowerSeriesWithinAtWithBounds {D = D} f c a ρ μ →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWithBounds→continuousAt
+  (expansion , bounds)
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonical
+    expansion
+    bounds
+    x
+    x-domain
+    x-inBall
+
+
+hasPowerSeriesWithinAtWithBounds→merelyContinuousAt :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWithBounds {D = D} f c a ρ μ) →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtMerelyContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWithBounds→merelyContinuousAt
+  {D = D}
+  expansion
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtContinuousAt→merelyContinuousAt
+    {D = D}
+    {x-domain = x-domain}
+    {x-inBall = x-inBall}
+    (hasPowerSeriesWithinAtWithBounds→continuousAt
+      expansion
+      x
+      x-domain
+      x-inBall)
 
 
 hasPowerSeriesWithinAtWith→continuousAtFromBallTermBoundsWith :

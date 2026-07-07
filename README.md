@@ -72,6 +72,8 @@ agda --build-library
 - `AGENTS.md` records repository-wide operating rules for automated agents.
 - `docs/DEVELOPMENT.md` is the short navigation guide for proof boundaries,
   public entry points, common pitfalls, and verification commands.
+- `docs/BISHOP_ANALYSIS.md` explains the split between bare HoTT Cauchy-real
+  data, located data, explicit rational moduli, and truncated continuity.
 
 ## Dedekind Reals
 

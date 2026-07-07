@@ -62,6 +62,8 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
     ( PowerSeriesMajorizedOnBall
     ; majorizedOnBall→hasPowerSeriesOnBallWith
     )
+open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
+  using (PowerSeriesCoefficientBounds)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
@@ -91,6 +93,18 @@ HasPowerSeriesAtWith :
 HasPowerSeriesAtWith f c a ρ μ =
   Σ[ convergence ∈ HasPowerSeriesOnBallWith a ρ μ ]
     PowerSeriesExpansionPath f c a ρ μ convergence
+
+
+HasPowerSeriesAtWithBounds :
+  (ℝᶜ → ℝᶜ) →
+  ℝᶜ →
+  PowerSeries →
+  ℚ⁺ →
+  (ℚ⁺ → ℕ) →
+  Type₀
+HasPowerSeriesAtWithBounds f c a ρ μ =
+  Σ[ expansion ∈ HasPowerSeriesAtWith f c a ρ μ ]
+    PowerSeriesCoefficientBounds a
 
 
 HasPowerSeriesAtOnBall :
@@ -214,6 +228,20 @@ HasPowerSeriesWithinAtWith :
 HasPowerSeriesWithinAtWith {D = D} f c a ρ μ =
   Σ[ convergence ∈ HasPowerSeriesOnBallWith a ρ μ ]
     PowerSeriesWithinExpansionPath {D = D} f c a ρ μ convergence
+
+
+HasPowerSeriesWithinAtWithBounds :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  ((x : ℝᶜ) → D x → ℝᶜ) →
+  ℝᶜ →
+  PowerSeries →
+  ℚ⁺ →
+  (ℚ⁺ → ℕ) →
+  Type ℓ
+HasPowerSeriesWithinAtWithBounds {D = D} f c a ρ μ =
+  Σ[ expansion ∈ HasPowerSeriesWithinAtWith {D = D} f c a ρ μ ]
+    PowerSeriesCoefficientBounds a
 
 
 HasPowerSeriesWithinAtOnBall :

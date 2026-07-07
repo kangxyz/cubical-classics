@@ -191,9 +191,16 @@ Implemented theorem-level bridges:
 - `PowerSeriesPartialSumsDerivativeUniformModulus`
 - `powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus`
 - `powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus`
+- `partialSumsDerivativeTargetModulus`
+- `powerSeriesPartialSumsDerivativeUniformModulus-constant`
+- `powerSeriesPartialDerivativeRemainderBoundFromUniformPartialSumsDerivative`
+- `powerSeriesFormalPartialDerivativeRemainderBoundFromUniformPartialSumsDerivative`
 - `hasDerivativeAtWith-local-cong`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPartialDerivativeRemainderOnSubballCanonicalIndex→hasDerivativeAtWith`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromUniformPartialSumsOnSubballCanonicalIndex→hasDerivativeAtWith`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromUniformPartialSumsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
@@ -247,9 +254,15 @@ The partial-sums derivative modulus layer now has a checked strengthened
 condition, `PowerSeriesPartialSumsDerivativeUniformModulus`, plus constructors
 to obtain `PowerSeriesPartialSumsDerivativeModulusLarge` directly or after
 shrinking another perturbation modulus by `min⁺`. This proves the planned
-record-strengthening route for the derivative-modulus blocker; the remaining
-work is to construct the uniform datum from convergence, majorants, or
-canonical partial-sum derivative moduli.
+record-strengthening route for the derivative-modulus blocker. The uniform
+partial-sums layer also has a checked constant-modulus bridge: if every formal
+finite partial sum is differentiable with the same modulus `μ`, then the old
+termwise derivative remainder criterion is built automatically with target
+modulus `λ ε → μ (quarter⁺ ε)`. The quarter shift is forced by the existing
+partial-remainder proof, which asks the finite derivative proof at precision
+`quarter⁺ ε`. The remaining work is the stronger direct second-derivative
+estimate that constructs this uniform finite-partial-sum derivative witness
+from convergence, majorants, or coefficient/ball-term bounds.
 The canonical coefficient-bound continuity bridges choose
 `powerSeriesLimitApproximationIndex μ` internally and discharge the index
 comparison by reflexivity, so callers no longer pass `χ` or `index-large` when
@@ -330,6 +343,10 @@ Remaining hard gaps:
 - constructing derivative-modulus largeness data from convergence or majorant
   data; the data-rich Phase 4 wrappers now accept the stronger uniform
   derivative-modulus datum and construct the old largeness witness internally;
+- constructing the direct second-derivative estimate that turns derivative
+  majorants or ball-term bounds into a uniform finite-partial-sum derivative
+  witness; the checked Phase 4B bridge currently consumes that witness and
+  makes the uniform-modulus proof reflexive;
 - constructing canonical iterated derivative bounds when explicit coefficient
   bounds are not available;
 - replacing elementary instance derivative proofs with the new high-level
@@ -360,6 +377,9 @@ The following local modules are already the foundation for this work:
 - `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem` contains
   the hard termwise derivative criterion, but callers still need to provide too
   much proof plumbing.
+- `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.UniformPartialSums`
+  contains the constant uniform partial-sum derivative modulus bridge used by
+  the Phase 4B wrappers.
 - `Constructive.Analysis.Reals.PowerSeries.Majorant` and
   `Constructive.Analysis.Reals.PowerSeries.Instances.Geometric` provide the
   majorant and geometric-tail infrastructure needed for generic automation.
@@ -407,8 +427,8 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | `HasPowerSeriesAtWith` continuity | Implemented for data-rich paths | Strict-subball coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; bare `HasPowerSeriesAtWith` alone cannot construct a modulus |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative convergence for `derivativePowerSeries a` | Implemented on strict subballs | Majorized/coefficient-bound paths remain; naked original ball convergence now yields strict-subball derivative convergence, radius closure, and infinite-radius closure. Boundary/same-radius convergence is not claimed |
-| Termwise derivative to `HasDerivativeAtWith` | Implemented for data-rich paths | Uniform derivative-modulus variants construct derivative radius from Phase 3 and hide the old largeness record; a canonical uniform modulus is still missing |
-| Function-level derivative transport | Implemented for data-rich paths | `HasPowerSeriesAtWith` wrappers hide derivative radius, iterated bounds from coefficient bounds, and the old largeness record when a uniform derivative-modulus witness is supplied |
+| Termwise derivative to `HasDerivativeAtWith` | Implemented for data-rich paths | Uniform derivative-modulus variants construct derivative radius from Phase 3 and hide the old largeness record; constant-modulus finite-partial-sum wrappers also exist. The remaining blocker is constructing the uniform finite-partial-sum derivative witness from second-derivative bounds/majorants |
+| Function-level derivative transport | Implemented for data-rich paths | `HasPowerSeriesAtWith` wrappers hide derivative radius, iterated bounds from coefficient bounds, and the old largeness record when a uniform derivative-modulus witness or uniform finite-partial-sum derivative witness is supplied |
 | Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
 | `log` derivative through the generic theorem | Not implemented | Needs strict radius-one geometric derivative convergence |
 

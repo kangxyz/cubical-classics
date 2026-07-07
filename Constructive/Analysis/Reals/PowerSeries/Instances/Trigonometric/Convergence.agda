@@ -79,12 +79,17 @@ open import Constructive.Analysis.Reals.PowerSeries.Analytic
     ; HasPowerSeriesAtOnBall
     ; HasPowerSeriesAtUniformlyContinuousOnBall
     ; HasPowerSeriesAtWith
+    ; HasPowerSeriesAtWithBounds
+    ; HasPowerSeriesAtMerelyContinuousAt
+    ; HasPowerSeriesAtMerelyUniformlyContinuousOnBall
     ; centeredPowerSeriesSumEverywhereAnalyticAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    ; hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
-    ; hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
+    ; hasPowerSeriesAtWithBounds→continuousAt
+    ; hasPowerSeriesAtWithBounds→merelyContinuousAt
+    ; hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall
+    ; hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall
     )
 open import Constructive.Analysis.Reals.PowerSeries.Continuity
   using (PowerSeriesCoefficientBounds)
@@ -359,22 +364,62 @@ cosᶜHasPowerSeriesAtWithZero =
     cosPowerSeriesInfiniteRadius
 
 
+sinᶜHasPowerSeriesAtWithBoundsZero :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtWithBounds
+    sinᶜ
+    0ᶜ
+    sinPowerSeries
+    ρ
+    (sinPowerSeriesInfiniteRadius ρ .fst)
+sinᶜHasPowerSeriesAtWithBoundsZero ρ =
+  sinᶜHasPowerSeriesAtWithZero ρ ,
+  sinPowerSeriesCoefficientBounds
+
+
+cosᶜHasPowerSeriesAtWithBoundsZero :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtWithBounds
+    cosᶜ
+    0ᶜ
+    cosPowerSeries
+    ρ
+    (cosPowerSeriesInfiniteRadius ρ .fst)
+cosᶜHasPowerSeriesAtWithBoundsZero ρ =
+  cosᶜHasPowerSeriesAtWithZero ρ ,
+  cosPowerSeriesCoefficientBounds
+
+
 sinᶜUniformlyContinuousOnBallFromCoefficientBounds :
   (ρ : ℚ⁺) →
   HasPowerSeriesAtUniformlyContinuousOnBall sinᶜ 0ᶜ ρ
 sinᶜUniformlyContinuousOnBallFromCoefficientBounds ρ =
-  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
-    (sinᶜHasPowerSeriesAtWithZero ρ)
-    sinPowerSeriesCoefficientBounds
+  hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall
+    (sinᶜHasPowerSeriesAtWithBoundsZero ρ)
 
 
 cosᶜUniformlyContinuousOnBallFromCoefficientBounds :
   (ρ : ℚ⁺) →
   HasPowerSeriesAtUniformlyContinuousOnBall cosᶜ 0ᶜ ρ
 cosᶜUniformlyContinuousOnBallFromCoefficientBounds ρ =
-  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical
-    (cosᶜHasPowerSeriesAtWithZero ρ)
-    cosPowerSeriesCoefficientBounds
+  hasPowerSeriesAtWithBounds→uniformlyContinuousOnBall
+    (cosᶜHasPowerSeriesAtWithBoundsZero ρ)
+
+
+sinᶜMerelyUniformlyContinuousOnBallFromBounds :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtMerelyUniformlyContinuousOnBall sinᶜ 0ᶜ ρ
+sinᶜMerelyUniformlyContinuousOnBallFromBounds ρ =
+  hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall
+    (sinᶜHasPowerSeriesAtWithBoundsZero ρ)
+
+
+cosᶜMerelyUniformlyContinuousOnBallFromBounds :
+  (ρ : ℚ⁺) →
+  HasPowerSeriesAtMerelyUniformlyContinuousOnBall cosᶜ 0ᶜ ρ
+cosᶜMerelyUniformlyContinuousOnBallFromBounds ρ =
+  hasPowerSeriesAtWithBounds→merelyUniformlyContinuousOnBall
+    (cosᶜHasPowerSeriesAtWithBoundsZero ρ)
 
 
 sinᶜContinuousAtFromCoefficientBounds :
@@ -383,9 +428,8 @@ sinᶜContinuousAtFromCoefficientBounds :
   (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
   HasPowerSeriesAtContinuousAt sinᶜ 0ᶜ ρ x x-inBall
 sinᶜContinuousAtFromCoefficientBounds ρ x x-inBall =
-  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
-    (sinᶜHasPowerSeriesAtWithZero ρ)
-    sinPowerSeriesCoefficientBounds
+  hasPowerSeriesAtWithBounds→continuousAt
+    (sinᶜHasPowerSeriesAtWithBoundsZero ρ)
     x
     x-inBall
 
@@ -396,9 +440,32 @@ cosᶜContinuousAtFromCoefficientBounds :
   (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
   HasPowerSeriesAtContinuousAt cosᶜ 0ᶜ ρ x x-inBall
 cosᶜContinuousAtFromCoefficientBounds ρ x x-inBall =
-  hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical
-    (cosᶜHasPowerSeriesAtWithZero ρ)
-    cosPowerSeriesCoefficientBounds
+  hasPowerSeriesAtWithBounds→continuousAt
+    (cosᶜHasPowerSeriesAtWithBoundsZero ρ)
+    x
+    x-inBall
+
+
+sinᶜMerelyContinuousAtFromBounds :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
+  HasPowerSeriesAtMerelyContinuousAt sinᶜ 0ᶜ ρ x x-inBall
+sinᶜMerelyContinuousAtFromBounds ρ x x-inBall =
+  hasPowerSeriesAtWithBounds→merelyContinuousAt
+    (sinᶜHasPowerSeriesAtWithBoundsZero ρ)
+    x
+    x-inBall
+
+
+cosᶜMerelyContinuousAtFromBounds :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
+  HasPowerSeriesAtMerelyContinuousAt cosᶜ 0ᶜ ρ x x-inBall
+cosᶜMerelyContinuousAtFromBounds ρ x x-inBall =
+  hasPowerSeriesAtWithBounds→merelyContinuousAt
+    (cosᶜHasPowerSeriesAtWithBoundsZero ρ)
     x
     x-inBall
 
