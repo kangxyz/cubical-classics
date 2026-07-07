@@ -39,6 +39,11 @@ module when practical.  Run `agda --build-library` for changes to shared
 interfaces, public module paths, foundational definitions, or aggregate
 exports.  Always run `git diff --check` before reporting completion.
 
+For anomalously slow Agda checks, follow `docs/PERFORMANCE.md` before changing
+proof shape or treating the slowdown as a proof failure.
+Whenever an anomalous type-checking issue is identified or fixed, record the
+pattern, trigger, and local response in `docs/PERFORMANCE.md`.
+
 ## Boundaries
 
 - `Constructive/` is for code that does not use the library's classical
