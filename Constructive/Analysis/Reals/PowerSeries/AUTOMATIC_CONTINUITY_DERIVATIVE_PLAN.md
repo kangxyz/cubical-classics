@@ -195,6 +195,10 @@ Implemented theorem-level bridges:
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
+- `derivativePowerSeriesTermBoundPrecision`
+- `derivativePowerSeriesTermBoundsFromCoefficientBoundsWith`
+- `derivativePowerSeriesOnBallWithFromCoefficientBoundsAndMajorant`
+- `derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant`
 
 These remove three pieces of repeated downstream proof plumbing: manually
 threading centered sum continuity through analytic expansions, manually
@@ -250,6 +254,12 @@ majorant terms `v n` into the ball-term bounds required by the finite
 partial-sum continuity machinery. This route supports partial sums, raw sums,
 centered sums, and ordinary/within-domain `HasPowerSeriesAtWith` consequences
 without choosing arbitrary coefficient bounds from truncation.
+The derivative-convergence layer now has a first non-transport bridge: explicit
+coefficient bounds on `a` yield closed-ball bounds for the formal derivative
+terms, and a caller-supplied real majorant tail for those derivative-term bounds
+constructs `HasPowerSeriesOnBallWith (derivativePowerSeries a) ρ μ`. This is
+the majorant route requested by Phase 3, but it still leaves the fully generic
+strict-subball theorem from radius data to prove.
 
 The partial-sum modulus bridge is intentionally modest. It converts either a
 family of finite partial-sum moduli, explicit coefficient bounds, or closed-ball
@@ -286,7 +296,8 @@ Remaining hard gaps:
 - automatically constructing closed-ball rational term bounds or partial-sum
   uniform-continuity witnesses from arbitrary convergence, majorant, or radius
   data;
-- proving generic derivative-series convergence on strict subballs;
+- proving fully generic derivative-series convergence on strict subballs from
+  original radius/convergence data;
 - constructing derivative-modulus largeness data from convergence or majorant
   data, and constructing canonical iterated derivative bounds when explicit
   coefficient bounds are not available;
@@ -311,9 +322,10 @@ The following local modules are already the foundation for this work:
 - `Constructive.Analysis.Reals.PowerSeries.Differentiation` defines the formal
   derivative series.
 - `Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence` currently
-  transports derivative convergence through coefficient paths. It does not yet
-  prove generic convergence of the formal derivative from radius data of the
-  original series.
+  transports derivative convergence through coefficient paths and has a
+  coefficient-bound/majorant-tail bridge for the formal derivative. It does not
+  yet prove generic convergence of the formal derivative from radius data of
+  the original series.
 - `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem` contains
   the hard termwise derivative criterion, but callers still need to provide too
   much proof plumbing.
@@ -363,7 +375,7 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | Uniform continuity on a closed subball | Partially implemented | Coefficient, closed-ball term, bounded-term majorant, or real-majorant/rational-bound data can now drive canonical moduli; arbitrary radius/convergence data still cannot |
 | `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; need bridge from expansion/radius data to usable bounds |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
-| Derivative radius for `derivativePowerSeries a` | Not implemented generically | Strict-subball derivative convergence |
+| Derivative convergence for `derivativePowerSeries a` | Partially implemented | Coefficient-bound plus majorant-tail bridge exists; strict-subball radius theorem remains |
 | Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound variants build iterated bounds for named targets and formal derivative targets; modulus-largeness is still manual |
 | Function-level derivative transport | Implemented as local, everywhere-model, and coefficient-bound termwise bridges | Modulus-largeness is still manual |
 | Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
@@ -407,7 +419,10 @@ Use this order before attempting the full final theorem.
    consumes only expansion data plus the Phase 1 automatic partial-sum theorem.
 3. In `DerivativeConvergence.agda`, add the majorant-based strict-subball
    derivative convergence theorem before the fully generic radius theorem if
-   the generic proof is too large.
+   the generic proof is too large. The first checked bridge now consumes
+   coefficient bounds plus a majorant tail for the derived formal-derivative
+   term bounds; the next step is deriving that majorant tail from strict
+   subball/radius data.
 4. In `Constructive.Analysis.Reals.Calculus.Derivative`, add a local
    derivative congruence theorem. It should transport `HasDerivativeAtWith`
    from a model function `g` to a function `f` using equality at the base point
