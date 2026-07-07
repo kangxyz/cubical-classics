@@ -34,6 +34,34 @@ powerSeriesLimitApproximationIndex μ ε =
   μ (quarter⁺ (half⁺ (quarter⁺ ε)))
 
 
+PowerSeriesPartialSumUniformlyContinuousOnBallWith :
+  (a : PowerSeries) →
+  (ρ : ℚ⁺) →
+  ℕ →
+  PrecisionModulus →
+  Type₀
+PowerSeriesPartialSumUniformlyContinuousOnBallWith a ρ n ν =
+  (ε : ℚ⁺) →
+  {h k : ℝᶜ} →
+  (h-bound : BoundedByᶜ ρ h) →
+  (k-bound : BoundedByᶜ ρ k) →
+  MetricSpace.Close CauchyRealsMetricSpace h (ν ε) k →
+  MetricSpace.Close CauchyRealsMetricSpace
+    (powerSeriesPartialSum a h n)
+    ε
+    (powerSeriesPartialSum a k n)
+
+
+PowerSeriesPartialSumUniformlyContinuousOnBall :
+  (a : PowerSeries) →
+  (ρ : ℚ⁺) →
+  ℕ →
+  Type₀
+PowerSeriesPartialSumUniformlyContinuousOnBall a ρ n =
+  Σ[ ν ∈ PrecisionModulus ]
+    PowerSeriesPartialSumUniformlyContinuousOnBallWith a ρ n ν
+
+
 PowerSeriesPartialSumsUniformlyContinuousOnBallWith :
   (a : PowerSeries) →
   (ρ : ℚ⁺) →
@@ -60,6 +88,41 @@ PowerSeriesPartialSumsUniformlyContinuousOnBall :
 PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ =
   Σ[ ν ∈ PrecisionModulus ]
     PowerSeriesPartialSumsUniformlyContinuousOnBallWith a ρ χ ν
+
+
+powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuliWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {χ : ℚ⁺ → ℕ} →
+  (ω : ℕ → PrecisionModulus) →
+  ((n : ℕ) →
+    PowerSeriesPartialSumUniformlyContinuousOnBallWith a ρ n (ω n)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith
+    a
+    ρ
+    χ
+    (λ ε → ω (χ ε) (quarter⁺ ε))
+powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuliWith
+  {χ = χ}
+  ω
+  partial-cont
+  ε =
+  partial-cont (χ ε) (quarter⁺ ε)
+
+
+powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuli :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {χ : ℚ⁺ → ℕ} →
+  ((n : ℕ) → PowerSeriesPartialSumUniformlyContinuousOnBall a ρ n) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ
+powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuli
+  {χ = χ}
+  partial-cont =
+  (λ ε → partial-cont (χ ε) .fst (quarter⁺ ε)) ,
+  powerSeriesPartialSumsUniformlyContinuousOnBallFromPartialSumModuliWith
+    (λ n → partial-cont n .fst)
+    (λ n → partial-cont n .snd)
 
 
 powerSeriesSumUniformlyContinuousFromPartialSums :

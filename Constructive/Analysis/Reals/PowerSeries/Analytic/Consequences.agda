@@ -9,6 +9,7 @@ module Constructive.Analysis.Reals.PowerSeries.Analytic.Consequences where
 open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Nat using (ℕ)
+import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 
@@ -61,6 +62,14 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using
     ( PowerSeriesMajorizedOnBall
     ; majorizedOnBall→hasPowerSeriesOnBallWith
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Continuity
+  using
+    ( PowerSeriesPartialSumsUniformlyContinuousOnBall
+    ; PowerSeriesPartialSumsUniformlyContinuousOnBallWith
+    ; centeredPowerSeriesSumUniformlyContinuousFromPartialSums
+    ; powerSeriesLimitApproximationIndex
+    ; powerSeriesSumContinuousAtFromPartialSums
     )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
@@ -139,6 +148,51 @@ hasPowerSeriesAtWith→uniformlyContinuousOnBall expansion (ν , uniform) =
   hasPowerSeriesAtWith→uniformlyContinuousOnBallWith expansion uniform
 
 
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromPartialSumsWith :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  {ν : PrecisionModulus} →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith a ρ χ ν →
+  HasPowerSeriesAtUniformlyContinuousOnBallWith f c ρ ν
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromPartialSumsWith
+  expansion
+  index-large
+  partial-cont =
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallWith
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromPartialSums
+      index-large
+      partial-cont)
+
+
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromPartialSums :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ →
+  HasPowerSeriesAtUniformlyContinuousOnBall f c ρ
+hasPowerSeriesAtWith→uniformlyContinuousOnBallFromPartialSums
+  expansion
+  index-large
+  (ν , partial-cont) =
+  ν ,
+  hasPowerSeriesAtWith→uniformlyContinuousOnBallFromPartialSumsWith
+    expansion
+    index-large
+    partial-cont
+
+
 hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallWith :
   {ℓ : Level} →
   {D : ℝᶜ → Type ℓ} →
@@ -194,6 +248,55 @@ hasPowerSeriesWithinAtWith→uniformlyContinuousOnBall :
 hasPowerSeriesWithinAtWith→uniformlyContinuousOnBall expansion (ν , uniform) =
   ν ,
   hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallWith expansion uniform
+
+
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromPartialSumsWith :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  {ν : PrecisionModulus} →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith a ρ χ ν →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBallWith {D = D} f c ρ ν
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromPartialSumsWith
+  expansion
+  index-large
+  partial-cont =
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallWith
+    expansion
+    (centeredPowerSeriesSumUniformlyContinuousFromPartialSums
+      index-large
+      partial-cont)
+
+
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromPartialSums :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ →
+  HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ
+hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromPartialSums
+  expansion
+  index-large
+  (ν , partial-cont) =
+  ν ,
+  hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromPartialSumsWith
+    expansion
+    index-large
+    partial-cont
 
 
 hasPowerSeriesAtWith→continuousAtWith :
@@ -259,6 +362,66 @@ hasPowerSeriesAtWith→continuousAt expansion x x-inBall (ν , continuous) =
     x
     x-inBall
     continuous
+
+
+hasPowerSeriesAtWith→continuousAtFromPartialSumsWith :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  {ν : PrecisionModulus} →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith a ρ χ ν →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAtWith f c ρ x x-inBall ν
+hasPowerSeriesAtWith→continuousAtFromPartialSumsWith
+  {c = c}
+  expansion
+  index-large
+  partial-cont
+  x
+  x-inBall =
+  hasPowerSeriesAtWith→continuousAtWith
+    expansion
+    x
+    x-inBall
+    (powerSeriesSumContinuousAtFromPartialSums
+      index-large
+      partial-cont
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesAtWith→continuousAtFromPartialSums :
+  {f : ℝᶜ → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesAtWith f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ →
+  (x : ℝᶜ) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesAtContinuousAt f c ρ x x-inBall
+hasPowerSeriesAtWith→continuousAtFromPartialSums
+  expansion
+  index-large
+  (ν , partial-cont)
+  x
+  x-inBall =
+  ν ,
+  hasPowerSeriesAtWith→continuousAtFromPartialSumsWith
+    expansion
+    index-large
+    partial-cont
+    x
+    x-inBall
 
 
 hasPowerSeriesWithinAtWith→continuousAtWith :
@@ -346,3 +509,81 @@ hasPowerSeriesWithinAtWith→continuousAt
     x-domain
     x-inBall
     continuous
+
+
+hasPowerSeriesWithinAtWith→continuousAtFromPartialSumsWith :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  {ν : PrecisionModulus} →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith a ρ χ ν →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAtWith
+    {D = D}
+    f
+    c
+    ρ
+    x
+    x-domain
+    x-inBall
+    ν
+hasPowerSeriesWithinAtWith→continuousAtFromPartialSumsWith
+  {c = c}
+  expansion
+  index-large
+  partial-cont
+  x
+  x-domain
+  x-inBall =
+  hasPowerSeriesWithinAtWith→continuousAtWith
+    expansion
+    x
+    x-domain
+    x-inBall
+    (powerSeriesSumContinuousAtFromPartialSums
+      index-large
+      partial-cont
+      (centeredDisplacement c x)
+      (InPowerSeriesBall.displacementBound x-inBall))
+
+
+hasPowerSeriesWithinAtWith→continuousAtFromPartialSums :
+  {ℓ : Level} →
+  {D : ℝᶜ → Type ℓ} →
+  {f : (x : ℝᶜ) → D x → ℝᶜ} →
+  {c : ℝᶜ} →
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  (expansion : HasPowerSeriesWithinAtWith {D = D} f c a ρ μ) →
+  ((ε : ℚ⁺) →
+    (NatOrder._≤_) (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ →
+  (x : ℝᶜ) →
+  (x-domain : D x) →
+  (x-inBall : InPowerSeriesBall c ρ x) →
+  HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall
+hasPowerSeriesWithinAtWith→continuousAtFromPartialSums
+  expansion
+  index-large
+  (ν , partial-cont)
+  x
+  x-domain
+  x-inBall =
+  ν ,
+  hasPowerSeriesWithinAtWith→continuousAtFromPartialSumsWith
+    expansion
+    index-large
+    partial-cont
+    x
+    x-domain
+    x-inBall

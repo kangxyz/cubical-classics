@@ -98,7 +98,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
     ; positivePartialSum
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     ; powerSeriesFormalPartialSumsDerivativeModulus
@@ -188,7 +188,7 @@ expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
   margin
   derivative-bounds
   partialModulus-large =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
     {a = expPowerSeries}
     {b = expPowerSeries}
     {c = 0ᶜ}
@@ -199,7 +199,6 @@ expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
     {δ = δ}
     derivativePowerSeries-exp
     expPowerSeriesInfiniteRadius
-    derivativeExpPowerSeriesInfiniteRadius
     expPowerSeriesInfiniteRadius
     x-displacement-bound
     margin

@@ -88,7 +88,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
     ; hasDerivativeAtWith-derivative-path
     ; positivePartialSum
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
@@ -175,7 +175,7 @@ sinᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
   margin
   derivative-bounds
   partialModulus-large =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
     {a = sinPowerSeries}
     {b = cosPowerSeries}
     {c = 0ᶜ}
@@ -186,7 +186,6 @@ sinᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
     {δ = δ}
     derivativePowerSeries-sin
     sinPowerSeriesInfiniteRadius
-    derivativeSinPowerSeriesInfiniteRadius
     cosPowerSeriesInfiniteRadius
     x-displacement-bound
     margin
@@ -234,7 +233,7 @@ cosᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
   derivative :
     HasDerivativeAtWith cosᶜ x (negSinᶜ x) μ
   derivative =
-    centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
       {a = cosPowerSeries}
       {b = negPowerSeries sinPowerSeries}
       {c = 0ᶜ}
@@ -245,7 +244,6 @@ cosᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
       {δ = δ}
       derivativePowerSeries-cos
       cosPowerSeriesInfiniteRadius
-      derivativeCosPowerSeriesInfiniteRadius
       (negPowerSeriesInfiniteRadius sinPowerSeriesInfiniteRadius)
       x-displacement-bound
       margin
