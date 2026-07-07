@@ -79,7 +79,12 @@ approximate-IVTΣ-rational-located-strict
     n
     right-path
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational b}
+      {f = f}
+      located
+      uc)
     targetPrecision
     leftMargin
     rightMargin
@@ -310,4 +315,9 @@ approximate-IVT∥∥-rational-step-with-right-located-strict
     n
     right-path
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational b}
+      {f = f}
+      located
+      uc)

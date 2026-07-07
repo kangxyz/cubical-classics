@@ -120,7 +120,7 @@ approximate-IVTΣ-with-locators-and-gap-bound {a = a} {b = b}
   mesh : ℚ⁺
   mesh =
     uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (ivtData .snd)
       (IVTErrorBudget.movementPrecision budget)
 
   gridData :
@@ -162,7 +162,7 @@ approximate-IVTΣ-with-gap-bound {a = a} {b = b}
     κ
     gap-bound
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
     (LocatedMap.locatorAt located (leftEndpoint {a = a} {b = b} a≤b))
     (LocatedMap.locatorAt located (rightEndpoint {a = a} {b = b} a≤b))
 
@@ -219,7 +219,7 @@ approximate-IVTΣ {a = a} {b = b}
     loc-b
     a≤b
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
     (LocatedMap.locatorAt located (leftEndpoint {a = a} {b = b} a≤b))
     (LocatedMap.locatorAt located (rightEndpoint {a = a} {b = b} a≤b))
     targetPrecision

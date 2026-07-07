@@ -59,10 +59,13 @@ approximate-IVTΣ-grid :
     <⁺ targetPrecision →
   AdjacentClose G
     (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       movementPrecision) →
-  gridSampleValues ivtData G samplePrecision Fin.zero ℚOrder.< 0ℚ →
-  0ℚ ℚOrder.≤ gridSampleValues ivtData G samplePrecision (Fin.fromℕ (suc n)) →
+  gridSampleValues {a = a} {b = b} {f = f}
+    ivtData G samplePrecision Fin.zero ℚOrder.< 0ℚ →
+  0ℚ ℚOrder.≤
+    gridSampleValues {a = a} {b = b} {f = f}
+      ivtData G samplePrecision (Fin.fromℕ (suc n)) →
   Σ[ x ∈ [ a , b ]ᶜ ] absᶜ (f x) <ᶜ rational (radius targetPrecision)
 approximate-IVTΣ-grid {a = a} {b = b} {a≤b = a≤b} f ivtData {n = n}
     G samplePrecision movementPrecision boundPrecision targetPrecision
@@ -87,15 +90,19 @@ approximate-IVTΣ-grid {a = a} {b = b} {a≤b = a≤b} f ivtData {n = n}
   near :
     Σ[ i ∈ Fin (suc (suc n)) ]
       NonnegativeSmall
-        (gridSampleValues ivtData G samplePrecision)
+        (gridSampleValues {a = a} {b = b} {f = f}
+          ivtData G samplePrecision)
         smallPrecision
         i
   near =
     gridNearZeroRight
       n
-      (gridSampleValues ivtData G samplePrecision)
+      (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
       smallPrecision
       (adjacentSampleValuesClose
+        {a = a}
+        {b = b}
+        {f = f}
         ivtData
         G
         samplePrecision
@@ -110,7 +117,8 @@ approximate-IVTΣ-grid {a = a} {b = b} {a≤b = a≤b} f ivtData {n = n}
 
   nearSmall :
     NonnegativeSmall
-      (gridSampleValues ivtData G samplePrecision)
+      (gridSampleValues {a = a} {b = b} {f = f}
+        ivtData G samplePrecision)
       smallPrecision
       nearIndex
   nearSmall =
@@ -132,7 +140,7 @@ approximate-IVTΣ-grid-margins :
     <⁺ targetPrecision →
   AdjacentClose G
     (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       movementPrecision) →
   NegativeMarginᶜ
     leftMargin
@@ -201,11 +209,11 @@ approximate-IVTΣ-grid-located-margins :
     rightMargin
     (f (rightEndpoint {a = a} {b = b} a≤b)) →
   Σ[ x ∈ [ a , b ]ᶜ ] absᶜ (f x) <ᶜ rational (radius targetPrecision)
-approximate-IVTΣ-grid-located-margins f located uc G samplePrecision
+approximate-IVTΣ-grid-located-margins {a = a} {b = b} f located uc G samplePrecision
     movementPrecision boundPrecision targetPrecision leftMargin rightMargin =
   approximate-IVTΣ-grid-margins
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
     G
     samplePrecision
     movementPrecision
@@ -227,7 +235,7 @@ approximate-IVTΣ-grid-budget :
   (budget : IVTErrorBudget leftMargin rightMargin targetPrecision) →
   AdjacentClose G
     (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       (IVTErrorBudget.movementPrecision budget)) →
   NegativeMarginᶜ
     leftMargin
@@ -428,10 +436,10 @@ approximate-IVTΣ-grid-located-budget :
     rightMargin
     (f (rightEndpoint {a = a} {b = b} a≤b)) →
   Σ[ x ∈ [ a , b ]ᶜ ] absᶜ (f x) <ᶜ rational (radius targetPrecision)
-approximate-IVTΣ-grid-located-budget f located uc =
+approximate-IVTΣ-grid-located-budget {a = a} {b = b} f located uc =
   approximate-IVTΣ-grid-budget
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
 
 
 approximate-IVTΣ-grid-default-budget :
@@ -444,7 +452,7 @@ approximate-IVTΣ-grid-default-budget :
   (leftMargin rightMargin : ℚ⁺) →
   AdjacentClose G
     (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       (IVTErrorBudget.movementPrecision
         (defaultIVTErrorBudget leftMargin rightMargin targetPrecision))) →
   NegativeMarginᶜ
@@ -487,10 +495,10 @@ approximate-IVTΣ-grid-located-default-budget :
     rightMargin
     (f (rightEndpoint {a = a} {b = b} a≤b)) →
   Σ[ x ∈ [ a , b ]ᶜ ] absᶜ (f x) <ᶜ rational (radius targetPrecision)
-approximate-IVTΣ-grid-located-default-budget f located uc =
+approximate-IVTΣ-grid-located-default-budget {a = a} {b = b} f located uc =
   approximate-IVTΣ-grid-default-budget
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
 
 
 approximate-IVT∥∥-grid-strict :
@@ -506,7 +514,7 @@ approximate-IVT∥∥-grid-strict :
   ((leftMargin rightMargin : ℚ⁺) →
     AdjacentClose G
       (uniformModulus {a = a} {b = b} {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData)
+        (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
         (IVTErrorBudget.movementPrecision
           (budgetAt leftMargin rightMargin)))) →
   f (leftEndpoint {a = a} {b = b} a≤b) <ᶜ 0ᶜ →
@@ -576,10 +584,10 @@ approximate-IVT∥∥-grid-located-strict :
   0ᶜ <ᶜ f (rightEndpoint {a = a} {b = b} a≤b) →
   ∥ Σ[ x ∈ [ a , b ]ᶜ ]
       absᶜ (f x) <ᶜ rational (radius targetPrecision) ∥₁
-approximate-IVT∥∥-grid-located-strict f located uc =
+approximate-IVT∥∥-grid-located-strict {a = a} {b = b} f located uc =
   approximate-IVT∥∥-grid-strict
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
 
 
 approximate-IVTΣ-grid-located-strict :
@@ -606,7 +614,7 @@ approximate-IVTΣ-grid-located-strict {a = a} {b = b} {a≤b = a≤b}
     f located uc G targetPrecision budgetAt adjacentAt leftNegative rightPositive =
   approximate-IVTΣ-grid-budget
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
     G
     targetPrecision
     leftMargin
@@ -664,7 +672,7 @@ approximate-IVT∥∥-grid-strict-default-budget :
   ((leftMargin rightMargin : ℚ⁺) →
     AdjacentClose G
       (uniformModulus {a = a} {b = b} {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData)
+        (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
         (IVTErrorBudget.movementPrecision
           (defaultIVTErrorBudget leftMargin rightMargin targetPrecision)))) →
   f (leftEndpoint {a = a} {b = b} a≤b) <ᶜ 0ᶜ →
@@ -699,7 +707,8 @@ approximate-IVT∥∥-grid-located-strict-default-budget :
   0ᶜ <ᶜ f (rightEndpoint {a = a} {b = b} a≤b) →
   ∥ Σ[ x ∈ [ a , b ]ᶜ ]
       absᶜ (f x) <ᶜ rational (radius targetPrecision) ∥₁
-approximate-IVT∥∥-grid-located-strict-default-budget f located uc =
+approximate-IVT∥∥-grid-located-strict-default-budget {a = a} {b = b}
+    f located uc =
   approximate-IVT∥∥-grid-strict-default-budget
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)

@@ -134,11 +134,8 @@ eventuallyApart-sym :
   {N : ℕ} →
   EventuallyApart N u v →
   EventuallyApart N v u
-eventuallyApart-sym u#v n N≤n with u#v n N≤n
-... | inl u<v =
-  inr u<v
-... | inr v<u =
-  inl v<u
+eventuallyApart-sym u#v n N≤n =
+  Sum.rec inr inl (u#v n N≤n)
 
 
 eventually<→eventuallyApart :

@@ -15,7 +15,7 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; fst)
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst)
 import Cubical.Data.Sum as Sum
 open import Cubical.Tactics.CommRingSolver.Reflection
 
@@ -29,6 +29,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Inverse
   using (HasRightInverseᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+  using (bounded-byᶜ-mul)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
@@ -487,10 +489,7 @@ realGeometricPowerMajorantFromBounds :
 realGeometricPowerMajorantFromBounds x bound powerBounds =
   record
     { termsMajorized =
-        record
-          { termMajorized = termMajorized
-          ; majorantNonnegative = majorantNonnegative
-          }
+        termMajorized , majorantNonnegative
     }
   where
   ρ : ℚ⁺
@@ -562,6 +561,40 @@ realGeometricPowerBoundsFromStep x bound step =
     realGeometricPowerBound-one x
   powerBound (suc n) =
     step n (powerBound n)
+
+
+realPowerBoundsFromBound :
+  (ρ : ℚ⁺) →
+  (x : ℝᶜ) →
+  BoundedByᶜ ρ x →
+  (n : ℕ) →
+  BoundedByᶜ (positivePower ρ n) (realPower x n)
+realPowerBoundsFromBound ρ x x-bound zero =
+  realGeometricPowerBound-one x
+realPowerBoundsFromBound ρ x x-bound (suc n) =
+  bounded-byᶜ-mul
+    ρ
+    (positivePower ρ n)
+    x
+    (realPower x n)
+    x-bound
+    (realPowerBoundsFromBound ρ x x-bound n)
+
+
+realGeometricPowerBoundsFromBound :
+  (x : ℝᶜ) →
+  (bound : RealGeometricBound x) →
+  RealGeometricPowerBounds x bound
+realGeometricPowerBoundsFromBound x bound =
+  record { powerBound = realPowerBoundsFromBound ρ x x-bound }
+  where
+  ρ : ℚ⁺
+  ρ =
+    RealGeometricBound.ratioBound bound
+
+  x-bound : BoundedByᶜ ρ x
+  x-bound =
+    RealGeometricBound.termBound bound
 
 
 realGeometricPowerSeriesTailBoundFromPositiveData :

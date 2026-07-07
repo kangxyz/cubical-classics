@@ -110,6 +110,20 @@ natMul-divideBySuc q n =
   ℚOF.·-/-lInv q (1+ n)
 
 
+natMul-unitFraction :
+  (n : ℕ) →
+  natMul (suc n) (unitFraction n) ≡ 1ℚ
+natMul-unitFraction n =
+  cong (natMul (suc n)) (sym divideBySuc≡unit) ∙
+  natMul-divideBySuc 1ℚ n
+  where
+  divideBySuc≡unit :
+    divideBySuc 1ℚ n ≡ unitFraction n
+  divideBySuc≡unit =
+    divideBySuc-as-unitFraction 1ℚ n ∙
+    ℚ.·IdL (unitFraction n)
+
+
 abstract
   archimedean-unit-fraction :
     (ε : ℚ) →

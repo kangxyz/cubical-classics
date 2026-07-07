@@ -168,8 +168,8 @@ sampleValue :
   (x : [ a , b ]ᶜ) →
   ℚ⁺ →
   ℚ
-sampleValue ivtData x ε =
-  approximateValue ivtData x ε .fst
+sampleValue {a = a} {b = b} {f = f} ivtData x ε =
+  approximateValue {a = a} {b = b} {f = f} ivtData x ε .fst
 
 
 sampleValueClose :
@@ -177,9 +177,10 @@ sampleValueClose :
   (ivtData : IVTFunctionData a b f) →
   (x : [ a , b ]ᶜ) →
   (ε : ℚ⁺) →
-  f x ∼[ ε ] rational (sampleValue ivtData x ε)
-sampleValueClose ivtData x ε =
-  approximateValue ivtData x ε .snd
+  f x ∼[ ε ] rational
+    (sampleValue {a = a} {b = b} {f = f} ivtData x ε)
+sampleValueClose {a = a} {b = b} {f = f} ivtData x ε =
+  approximateValue {a = a} {b = b} {f = f} ivtData x ε .snd
 
 
 gridSampleValues :
@@ -190,8 +191,8 @@ gridSampleValues :
   ℚ⁺ →
   Fin (suc n) →
   ℚ
-gridSampleValues ivtData G ε i =
-  sampleValue ivtData (Grid.point G i) ε
+gridSampleValues {a = a} {b = b} {f = f} ivtData G ε i =
+  sampleValue {a = a} {b = b} {f = f} ivtData (Grid.point G i) ε
 
 
 gridSampleClose :
@@ -201,9 +202,13 @@ gridSampleClose :
   (G : Grid a b a≤b n) →
   (ε : ℚ⁺) →
   (i : Fin (suc n)) →
-  f (Grid.point G i) ∼[ ε ] rational (gridSampleValues ivtData G ε i)
-gridSampleClose ivtData G ε i =
-  sampleValueClose ivtData (Grid.point G i) ε
+  f (Grid.point G i) ∼[ ε ] rational
+    (gridSampleValues {a = a} {b = b} {f = f} ivtData G ε i)
+gridSampleClose {a = a} {b = b} {f = f} ivtData G ε i =
+  sampleValueClose {a = a} {b = b} {f = f}
+    ivtData
+    (Grid.point G i)
+    ε
 
 
 ApproxValues :
@@ -269,24 +274,24 @@ sampleNonnegativeSmallBounded :
   samplePrecision <⁺ boundPrecision →
   (i : Fin (suc n)) →
   NonnegativeSmall
-    (gridSampleValues ivtData G samplePrecision)
+    (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
     smallPrecision
     i →
   BoundedByᶜ
     (smallPrecision +⁺ boundPrecision)
     (f (Grid.point G i))
-sampleNonnegativeSmallBounded {f = f} ivtData G samplePrecision boundPrecision smallPrecision
-    sample<bound i (0≤q , q<small) =
+sampleNonnegativeSmallBounded {a = a} {b = b} {f = f} ivtData G
+    samplePrecision boundPrecision smallPrecision sample<bound i (0≤q , q<small) =
   nonnegativeSmallCloseBounded
     (f (Grid.point G i))
-    (gridSampleValues ivtData G samplePrecision i)
+    (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision i)
     samplePrecision
     boundPrecision
     smallPrecision
     sample<bound
     0≤q
     q<small
-    (gridSampleClose ivtData G samplePrecision i)
+    (gridSampleClose {a = a} {b = b} {f = f} ivtData G samplePrecision i)
 
 
 sampleNonnegativeSmallAbs< :
@@ -299,12 +304,13 @@ sampleNonnegativeSmallAbs< :
   smallPrecision +⁺ boundPrecision <⁺ targetPrecision →
   (i : Fin (suc n)) →
   NonnegativeSmall
-    (gridSampleValues ivtData G samplePrecision)
+    (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
     smallPrecision
     i →
   absᶜ (f (Grid.point G i)) <ᶜ rational (radius targetPrecision)
-sampleNonnegativeSmallAbs< {f = f} ivtData G samplePrecision boundPrecision smallPrecision
-    targetPrecision sample<bound small+bound<target i smallAt =
+sampleNonnegativeSmallAbs< {a = a} {b = b} {f = f} ivtData G samplePrecision
+    boundPrecision smallPrecision targetPrecision sample<bound small+bound<target
+    i smallAt =
   ≤ᶜ-<ᶜ-trans
     (absᶜ (f (Grid.point G i)))
     (rational (radius (smallPrecision +⁺ boundPrecision)))
@@ -313,6 +319,9 @@ sampleNonnegativeSmallAbs< {f = f} ivtData G samplePrecision boundPrecision smal
       (smallPrecision +⁺ boundPrecision)
       (f (Grid.point G i))
       (sampleNonnegativeSmallBounded
+        {a = a}
+        {b = b}
+        {f = f}
         ivtData
         G
         samplePrecision
@@ -404,11 +413,11 @@ adjacentSampleValuesClose :
   (samplePrecision movementPrecision : ℚ⁺) →
   AdjacentClose G
     (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       movementPrecision) →
   (i : Fin (suc n)) →
   AdjacentValuesClose
-    (gridSampleValues ivtData G samplePrecision)
+    (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
     ((samplePrecision +⁺ movementPrecision) +⁺ samplePrecision)
     i
 adjacentSampleValuesClose {a = a} {b = b} {a≤b = a≤b} {f = f} ivtData {n = n}
@@ -425,15 +434,17 @@ adjacentSampleValuesClose {a = a} {b = b} {a≤b = a≤b} {f = f} ivtData {n = n
 
   left-sample-close :
     f (Grid.point G left) ∼[ samplePrecision ]
-    rational (gridSampleValues ivtData G samplePrecision left)
+    rational (gridSampleValues {a = a} {b = b} {f = f}
+      ivtData G samplePrecision left)
   left-sample-close =
-    gridSampleClose ivtData G samplePrecision left
+    gridSampleClose {a = a} {b = b} {f = f} ivtData G samplePrecision left
 
   right-sample-close :
     f (Grid.point G right) ∼[ samplePrecision ]
-    rational (gridSampleValues ivtData G samplePrecision right)
+    rational (gridSampleValues {a = a} {b = b} {f = f}
+      ivtData G samplePrecision right)
   right-sample-close =
-    gridSampleClose ivtData G samplePrecision right
+    gridSampleClose {a = a} {b = b} {f = f} ivtData G samplePrecision right
 
   movement-close :
     f (Grid.point G left) ∼[ movementPrecision ] f (Grid.point G right)
@@ -442,14 +453,16 @@ adjacentSampleValuesClose {a = a} {b = b} {a≤b = a≤b} {f = f} ivtData {n = n
       {a = a}
       {b = b}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       movementPrecision
       (adjacentClose i)
 
   cauchy-close :
-    rational (gridSampleValues ivtData G samplePrecision left)
+    rational (gridSampleValues {a = a} {b = b} {f = f}
+      ivtData G samplePrecision left)
       ∼[ (samplePrecision +⁺ movementPrecision) +⁺ samplePrecision ]
-    rational (gridSampleValues ivtData G samplePrecision right)
+    rational (gridSampleValues {a = a} {b = b} {f = f}
+      ivtData G samplePrecision right)
   cauchy-close =
     close-triangle
       (close-triangle (close-sym left-sample-close) movement-close)
@@ -528,19 +541,23 @@ sampleNearZeroCandidate :
   (samplePrecision movementPrecision : ℚ⁺) →
   AdjacentClose G
     (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
       movementPrecision) →
-  gridSampleValues ivtData G samplePrecision Fin.zero ℚOrder.< 0ℚ →
+  gridSampleValues {a = a} {b = b} {f = f}
+    ivtData G samplePrecision Fin.zero ℚOrder.< 0ℚ →
   0ℚ ℚOrder.≤
-    gridSampleValues ivtData G samplePrecision (Fin.fromℕ (suc n)) →
+    gridSampleValues {a = a} {b = b} {f = f}
+      ivtData G samplePrecision (Fin.fromℕ (suc n)) →
   Σ[ i ∈ Fin (suc n) ]
     NearZeroCandidate
-      (gridSampleValues ivtData G samplePrecision)
+      (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
       ((samplePrecision +⁺ movementPrecision) +⁺ samplePrecision)
       i
-sampleNearZeroCandidate ivtData G samplePrecision movementPrecision adjacentClose =
+sampleNearZeroCandidate {a = a} {b = b} {f = f} ivtData G samplePrecision
+    movementPrecision adjacentClose =
   gridNearZeroCandidate
     _
-    (gridSampleValues ivtData G samplePrecision)
+    (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
     ((samplePrecision +⁺ movementPrecision) +⁺ samplePrecision)
-    (adjacentSampleValuesClose ivtData G samplePrecision movementPrecision adjacentClose)
+    (adjacentSampleValuesClose {a = a} {b = b} {f = f}
+      ivtData G samplePrecision movementPrecision adjacentClose)

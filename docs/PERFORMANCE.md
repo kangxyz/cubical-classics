@@ -36,7 +36,9 @@ interface in the temporary copy and profile the file itself.  This gives a
 repeatable measurement for one edit without rebuilding unrelated modules.
 For unfamiliar symptoms, search GitHub issues and pull requests in
 `agda/agda` and related libraries for similar performance reports, explanations,
-and workarounds before inventing a local fix.
+and workarounds before inventing a local fix.  After fixing a slow file, record
+the profile signal, local response, and verification here; leave unresolved
+items in `Open Slow Files`.
 
 ## Reading Profiles
 
@@ -64,6 +66,14 @@ Do not infer that a proof body is slow just because the file is slow.
 If `Typing.TypeSig`, `InterfaceInstantiateFull`, or serialization dominates,
 also try replacing a proof body by a hole in a temporary copy.  If the type
 alone is slow, shrink the exposed signature before editing the proof.
+
+If `Positivity` dominates an otherwise small module, inspect public record
+declarations before proof bodies.  `record` declarations with dependent fields
+can make positivity checking re-traverse large interval, locator, or series
+types.  `--lossy-unification` does not address this bucket.  Good candidates
+for simplification are single-field records and records that only package
+proof/data evidence.  A transparent iterated `Σ` package with a small
+projection module is often enough when callers do not need record syntax.
 
 ## Slow Patterns And Responses
 
@@ -110,11 +120,15 @@ fast p =
   endpoints to compare.
 - Named dependent records with eta equality, nested projections,
   record-valued implicit metas, and signatures that quantify over records with
-  large fields can make conversion and unification unexpectedly expensive.  If
-  a record is only packaging data and proofs inside a local construction, try
-  an iterated `Σ` type before introducing a public record.  If a record is
-  public or mathematically clarifies an interface, keep the record but make
-  projections and parameters explicit near expensive uses.
+  large fields can make checking unexpectedly expensive.  `no-eta-equality`
+  avoids one known cost, but it does not remove positivity or type-signature
+  work.  If a record is only packaging data and proofs, try an iterated `Σ`
+  type with a projection module before adding another public record.  For
+  single-field records, a function type alias can be clearer and faster.  If a
+  record is public or mathematically clarifies an interface, keep the record
+  but make projections and parameters explicit near expensive uses.  When a
+  record becomes a `Σ` package, expect some downstream calls to need explicit
+  hidden arguments that record elaboration used to infer.
 - Generic ordered-field and ordered-ring theorems can be too general for a
   rational-specific proof.  Avoid routing rational-specific facts through
   generic algebra when the generic theorem produces expensive conversion.  A
@@ -130,12 +144,14 @@ fast p =
   `--lossy-unification` to that module's options and report that the flag was
   added.  Keep the flag local to the slow module, and verify a clean reload;
   upstream reports include cases where lossy unification interacts badly with
-  instance arguments and literals.
+  instance arguments and literals.  Do not use this flag as the first response
+  to a `Positivity`-dominated profile.
 
 ## Case Studies
 
 The following examples came from profiling the constructive real-analysis
-stack with Agda 2.8.0.
+stack with Agda 2.8.0.  Move only fixed patterns here; keep unfinished
+diagnostics in `Open Slow Files`.
 
 `Constructive.Analysis.Reals.Sequences.Order` spent about 200 seconds in
 `eventuallyApart-sym`.  The proof used `with u#v n N≤n` over the apartness
@@ -160,44 +176,64 @@ proof from `ℚArch.isArchimedeanℚ 1ℚ ε` avoided the generic ordered-field
 conversion path.  Make the zero case and multiplicative transport arguments
 explicit; otherwise Agda can leave large quotient-rational constraints.
 
-`Constructive.Analysis.Reals.IVT.Uniform`,
-`Constructive.Analysis.Reals.Interval.Extrema`, and
-`Constructive.Analysis.Reals.Calculus.Derivative` showed substantial
-`Miscellaneous` time in cold profiles.  These should not be refactored by
-guessing at proof bodies.  First check whether the cost is record/type
-signature elaboration, imports rebuilt underneath the file, or interface
-serialization.
+`Constructive.Analysis.Reals.IVT.Uniform` checked at about 52 seconds in a
+cold local profile, with about 49 seconds under `Positivity`.  The hot surface
+was not a proof body; it was the public `IVTFunctionData` record over interval
+functions and locator evidence.  Replacing that record with a transparent
+iterated `Σ` alias, plus a small `IVTFunctionData` projection module, reduced
+the file check to about 4 seconds.  Do not hide this alias behind `abstract`:
+callers in the approximate IVT stack need the package to reduce definitionally.
+Use qualified projections from the `IVTFunctionData` module at call sites.
+
+`Constructive.Analysis.Reals.Interval.Extrema` checked at about 74 seconds,
+with about 69 seconds under `Positivity`.  The public `ApproxMaximum` and
+`ApproxMinimum` records were just packaging a rational value, a truncated
+witness, and an upper or lower bound.  Encoding them as `Σ` packages with
+constructor-shaped helper functions and qualified projection modules reduced
+the file check to about 5 seconds.  The constructors remain available as
+helper functions, but callers should use the qualified projection modules
+rather than relying on unqualified record-field opens.
+
+`Constructive.Analysis.Reals.Calculus.Derivative` checked at about 29 seconds,
+with about 25 seconds under `Positivity`.  The single-field
+`HasDerivativeAtWith` and `HasDerivativeWithinAtWith` records were replaced by
+function type aliases, keeping projection-style helper functions for call
+sites.  The file then checked in about 4 seconds.
+
+`Constructive.Analysis.Reals.Series.Comparison` checked at about 46 seconds,
+with about 36 seconds under `Positivity`.  Replacing the proof-packaging
+`SeriesMajorizedBy` record with a `Σ` package and qualified projections reduced
+the file check to about 4 seconds.
+
+`Constructive.Analysis.Reals.PowerSeries.Majorant` checked at about 36 seconds
+inside a cold local `PowerSeries` aggregate profile, with about 33 seconds
+under `Positivity`.  The `PowerSeriesMajorizedOnBall` record only packaged a
+term majorization proof, a tail bound, and an antitone modulus.  Replacing it
+with a `Σ` package and qualified projections reduced the module to under a
+second in the aggregate profile; standalone cached checks are about 5 seconds.
+
+`Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative` checked at about
+66 seconds inside the same aggregate profile, with about 68 seconds under
+`Positivity` in a direct internal profile.  The hot declaration was another
+proof-packaging record, `PowerSeriesTermwiseDerivativeAtWith`.  Replacing it
+with a `Σ` package reduced the module to under a second in the aggregate
+profile; standalone cached checks are about 5 seconds.
+
+After changing a record package to a `Σ` package, recheck aggregate modules.
+Projection functions no longer get record elaboration behavior, so dependent
+uses may need explicit hidden parameters.  In the IVT approximate modules,
+passing `{a}`, `{b}`, and `{f}` explicitly to `locatedIVTFunctionData`,
+`gridSampleValues`, `gridSampleClose`, and `adjacentSampleValuesClose` kept
+the aggregate `Constructive.Analysis.Reals.IVT` check small and predictable.
+In the power-series modules, passing explicit hidden parameters around
+`PowerSeriesMajorizedOnBall` projections avoids large unresolved metas.
 
 ## Open Slow Files
 
-These files still need targeted follow-up.  Treat them as a diagnostic queue,
-not as known proof failures.
-
-- `Constructive.Analysis.Reals.IVT.Uniform` checked at about 52 seconds in a
-  cold local profile, mostly under `Miscellaneous`.  The file is small, so the
-  likely next target is its public record/type surface or imported interval and
-  locator stack.  Profile it with `--profile=internal --profile=serialize
-  --profile=sharing`; if `Typing.TypeSig` is visible, try a temporary variant
-  with the `IVTFunctionData` fields expressed as a local `Σ` package or with
-  narrower imports.
-- `Constructive.Analysis.Reals.Interval.Extrema` checked at about 73 seconds
-  even with `--lossy-unification`; only a small fraction of the time was
-  attributed to `finiteMaximumFromSeed`.  Do not spend the next pass on the
-  finite-search recursion first.  Instead test whether repeated
-  `ImageFiniteNet.size imageNet` and `ImageFiniteNet.center imageNet`
-  projections in local signatures are forcing large record comparisons.  A
-  scratch variant should bind the size and center data once, then re-profile.
-- `Constructive.Analysis.Reals.Calculus.Derivative` checked at about 27
-  seconds and did not improve from `--lossy-unification` in the scratch copy.
-  The module is mostly public derivative data.  The next useful experiment is
-  to profile type signatures and record elaboration, then decide whether the
-  public records should stay as records with smaller field aliases or whether
-  any purely local packaging can be a `Σ` type.
-- `Constructive.Analysis.Reals.Series.Comparison` still checked at about 36
-  seconds after the `Series.Tail` hot spot was fixed.  Since this module
-  already has `--lossy-unification`, the next pass should look for expensive
-  public signatures, imported tail/finite-series interfaces, and record
-  projection chains around `SeriesMajorizedBy` before changing proof bodies.
+There are no remaining slow files from this profiling pass.  If a future
+aggregate profile finds another slow module, add it here with the command used,
+the cold and cached timings, the dominant profile bucket, and the next concrete
+experiment.
 
 ## GitHub Matches
 

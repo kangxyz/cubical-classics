@@ -15,7 +15,7 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax)
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 import Cubical.Data.Sum as Sum
 open import Cubical.Tactics.CommRingSolver.Reflection
 
@@ -152,10 +152,7 @@ rationalGeometricMajorizedByPositive :
     (rationalGeometricTerm r)
     (positiveGeometricTerm (RationalGeometricBound.ratioBound bound))
 rationalGeometricMajorizedByPositive r bound =
-  record
-    { termMajorized = termMajorized
-    ; majorantNonnegative = majorantNonnegative
-    }
+  termMajorized , majorantNonnegative
   where
   ρ : ℚ⁺
   ρ =

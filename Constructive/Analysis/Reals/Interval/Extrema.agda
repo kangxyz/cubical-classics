@@ -35,42 +35,100 @@ open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals.Base as RationalBase
 
 
-record ApproxMaximum
-    {a b : ℝᶜ}
-    (f : [ a , b ]ᶜ → ℝᶜ)
-    (ε : ℚ⁺) :
-    Type₀ where
-  constructor approx-maximum
-  no-eta-equality
-
-  field
-    value : ℚ
-    nearValue : ∥ Σ[ x ∈ [ a , b ]ᶜ ] f x ∼[ ε ] rational value ∥₁
-    approximateUpper :
-      (x : [ a , b ]ᶜ) →
-      f x ≤ᶜ rational (value ℚ.+ radius ε)
+ApproxMaximum :
+  {a b : ℝᶜ} →
+  ([ a , b ]ᶜ → ℝᶜ) →
+  ℚ⁺ →
+  Type₀
+ApproxMaximum {a = a} {b = b} f ε =
+  Σ[ value ∈ ℚ ]
+    Σ[ nearValue ∈ ∥ Σ[ x ∈ [ a , b ]ᶜ ]
+        f x ∼[ ε ] rational value ∥₁ ]
+      ((x : [ a , b ]ᶜ) →
+        f x ≤ᶜ rational (value ℚ.+ radius ε))
 
 
-open ApproxMaximum public
+approx-maximum :
+  {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+  (value : ℚ) →
+  ∥ Σ[ x ∈ [ a , b ]ᶜ ] f x ∼[ ε ] rational value ∥₁ →
+  ((x : [ a , b ]ᶜ) →
+    f x ≤ᶜ rational (value ℚ.+ radius ε)) →
+  ApproxMaximum f ε
+approx-maximum value nearValue approximateUpper =
+  value , nearValue , approximateUpper
 
 
-record ApproxMinimum
-    {a b : ℝᶜ}
-    (f : [ a , b ]ᶜ → ℝᶜ)
-    (ε : ℚ⁺) :
-    Type₀ where
-  constructor approx-minimum
-  no-eta-equality
+module ApproxMaximum where
+  value :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+    ApproxMaximum f ε →
+    ℚ
+  value max =
+    max .fst
 
-  field
-    value : ℚ
-    nearValue : ∥ Σ[ x ∈ [ a , b ]ᶜ ] f x ∼[ ε ] rational value ∥₁
-    approximateLower :
-      (x : [ a , b ]ᶜ) →
-      rational (value ℚ.- radius ε) ≤ᶜ f x
+  nearValue :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+    (max : ApproxMaximum f ε) →
+    ∥ Σ[ x ∈ [ a , b ]ᶜ ] f x ∼[ ε ] rational (value max) ∥₁
+  nearValue max =
+    max .snd .fst
+
+  approximateUpper :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+    (max : ApproxMaximum f ε) →
+    (x : [ a , b ]ᶜ) →
+    f x ≤ᶜ rational (value max ℚ.+ radius ε)
+  approximateUpper max =
+    max .snd .snd
 
 
-open ApproxMinimum public
+ApproxMinimum :
+  {a b : ℝᶜ} →
+  ([ a , b ]ᶜ → ℝᶜ) →
+  ℚ⁺ →
+  Type₀
+ApproxMinimum {a = a} {b = b} f ε =
+  Σ[ value ∈ ℚ ]
+    Σ[ nearValue ∈ ∥ Σ[ x ∈ [ a , b ]ᶜ ]
+        f x ∼[ ε ] rational value ∥₁ ]
+      ((x : [ a , b ]ᶜ) →
+        rational (value ℚ.- radius ε) ≤ᶜ f x)
+
+
+approx-minimum :
+  {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+  (value : ℚ) →
+  ∥ Σ[ x ∈ [ a , b ]ᶜ ] f x ∼[ ε ] rational value ∥₁ →
+  ((x : [ a , b ]ᶜ) →
+    rational (value ℚ.- radius ε) ≤ᶜ f x) →
+  ApproxMinimum f ε
+approx-minimum value nearValue approximateLower =
+  value , nearValue , approximateLower
+
+
+module ApproxMinimum where
+  value :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+    ApproxMinimum f ε →
+    ℚ
+  value min =
+    min .fst
+
+  nearValue :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+    (min : ApproxMinimum f ε) →
+    ∥ Σ[ x ∈ [ a , b ]ᶜ ] f x ∼[ ε ] rational (value min) ∥₁
+  nearValue min =
+    min .snd .fst
+
+  approximateLower :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} {ε : ℚ⁺} →
+    (min : ApproxMinimum f ε) →
+    (x : [ a , b ]ᶜ) →
+    rational (value min ℚ.- radius ε) ≤ᶜ f x
+  approximateLower min =
+    min .snd .snd
 
 
 private

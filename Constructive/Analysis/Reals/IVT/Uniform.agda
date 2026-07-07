@@ -55,15 +55,29 @@ uniformClose (μ , f-cont) ε =
   f-cont ε
 
 
-record IVTFunctionData
-    (a b : ℝᶜ)
-    (f : [ a , b ]ᶜ → ℝᶜ) :
-    Type₀ where
-  no-eta-equality
+IVTFunctionData :
+  (a b : ℝᶜ) →
+  ([ a , b ]ᶜ → ℝᶜ) →
+  Type₀
+IVTFunctionData a b f =
+  Σ[ approxEvaluable ∈ ApproxEvaluable f ]
+    isUniformlyContinuousOnInterval a b f
 
-  field
-    approxEvaluable : ApproxEvaluable f
-    uniformlyContinuous : isUniformlyContinuousOnInterval a b f
+
+module IVTFunctionData where
+  approxEvaluable :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} →
+    IVTFunctionData a b f →
+    ApproxEvaluable f
+  approxEvaluable ivtData =
+    ivtData .fst
+
+  uniformlyContinuous :
+    {a b : ℝᶜ} {f : [ a , b ]ᶜ → ℝᶜ} →
+    IVTFunctionData a b f →
+    isUniformlyContinuousOnInterval a b f
+  uniformlyContinuous ivtData =
+    ivtData .snd
 
 
 locatedIVTFunctionData :
@@ -71,10 +85,8 @@ locatedIVTFunctionData :
   LocatedMap f →
   isUniformlyContinuousOnInterval a b f →
   IVTFunctionData a b f
-locatedIVTFunctionData located uc .IVTFunctionData.approxEvaluable =
-  locatedMap→ApproxEvaluable located
-locatedIVTFunctionData located uc .IVTFunctionData.uniformlyContinuous =
-  uc
+locatedIVTFunctionData located uc =
+  locatedMap→ApproxEvaluable located , uc
 
 
 approximateValue :
@@ -83,5 +95,5 @@ approximateValue :
   (x : [ a , b ]ᶜ) →
   (ε : ℚ⁺) →
   Σ[ q ∈ ℚ ] f x ∼[ ε ] rational q
-approximateValue ivtData =
-  IVTFunctionData.approxEvaluable ivtData
+approximateValue {a = a} {b = b} {f = f} ivtData =
+  IVTFunctionData.approxEvaluable {a = a} {b = b} {f = f} ivtData

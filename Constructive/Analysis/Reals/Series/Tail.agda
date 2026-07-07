@@ -16,7 +16,7 @@ import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
-open import Cubical.Data.Sum using (inl ; inr)
+open import Cubical.Data.Sum as Sum using (inl ; inr)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base
@@ -352,6 +352,42 @@ tailBound-drop {u = u} tailBound m ε n k μ≤n =
     NatOrder.≤-trans μ≤n (m , refl)
 
 
+tailBound-lift-drop :
+  {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+  (m : ℕ) →
+  TailBound (drop m u) μ →
+  TailBound u (λ ε → m + μ ε)
+tailBound-lift-drop {u = u} {μ = μ} m dropTail ε n k m+μ≤n =
+  subst
+    (BoundedByᶜ ε)
+    (tailSum-drop u m d k ∙ cong (λ l → tailSum u l k) m+d≡n)
+    (dropTail ε d k μ≤d)
+  where
+  j : ℕ
+  j =
+    m+μ≤n .fst
+
+  j+m+μ≡n :
+    j + (m + μ ε) ≡ n
+  j+m+μ≡n =
+    m+μ≤n .snd
+
+  d : ℕ
+  d =
+    j + μ ε
+
+  μ≤d : NatOrder._≤_ (μ ε) d
+  μ≤d =
+    j , refl
+
+  m+d≡n : m + d ≡ n
+  m+d≡n =
+    Nat.+-assoc m j (μ ε) ∙
+    cong (_+ μ ε) (Nat.+-comm m j) ∙
+    sym (Nat.+-assoc j m (μ ε)) ∙
+    j+m+μ≡n
+
+
 AntitoneTailModulus :
   (ℚ⁺ → ℕ) →
   Type₀
@@ -359,6 +395,15 @@ AntitoneTailModulus μ =
   {ε δ : ℚ⁺} →
   radius ε ℚOrder.≤ radius δ →
   NatOrder._≤_ (μ δ) (μ ε)
+
+
+antitoneTailModulus-lift-drop :
+  {μ : ℚ⁺ → ℕ} →
+  (m : ℕ) →
+  AntitoneTailModulus μ →
+  AntitoneTailModulus (λ ε → m + μ ε)
+antitoneTailModulus-lift-drop m μ-ant ε≤δ =
+  NatOrder.≤-k+ (μ-ant ε≤δ)
 
 
 tailBound-pair :
@@ -369,50 +414,58 @@ tailBound-pair :
   NatOrder._≤_ (μ κ) m →
   NatOrder._≤_ (μ κ) n →
   BoundedByᶜ κ (partialSum u m +ᶜ (-ᶜ partialSum u n))
-tailBound-pair {u = u} tailBound κ m n μκ≤m μκ≤n
-  with NatOrder.splitℕ-≤ m n
-... | inl m≤n =
-  subst
-    (BoundedByᶜ κ)
-    (sym diff-path)
-    (bounded-byᶜ-neg κ (tailSum u m k) (tailBound κ m k μκ≤m))
+tailBound-pair {u = u} tailBound κ m n μκ≤m μκ≤n =
+  Sum.rec left right (NatOrder.splitℕ-≤ m n)
   where
-  diff : Σ[ k ∈ ℕ ]
-    partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ -ᶜ tailSum u m k
-  diff =
-    partialSum-diff-left-tail≤ u m n m≤n
+  left :
+    NatOrder._≤_ m n →
+    BoundedByᶜ κ (partialSum u m +ᶜ (-ᶜ partialSum u n))
+  left m≤n =
+    subst
+      (BoundedByᶜ κ)
+      (sym diff-path)
+      (bounded-byᶜ-neg κ (tailSum u m k) (tailBound κ m k μκ≤m))
+    where
+    diff : Σ[ k ∈ ℕ ]
+      partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ -ᶜ tailSum u m k
+    diff =
+      partialSum-diff-left-tail≤ u m n m≤n
 
-  k : ℕ
-  k =
-    diff .fst
+    k : ℕ
+    k =
+      diff .fst
 
-  diff-path :
-    partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ -ᶜ tailSum u m k
-  diff-path =
-    diff .snd
-... | inr n<m =
-  subst
-    (BoundedByᶜ κ)
-    (sym diff-path)
-    (tailBound κ n k μκ≤n)
-  where
-  n≤m : NatOrder._≤_ n m
-  n≤m =
-    NatOrder.<-weaken n<m
+    diff-path :
+      partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ -ᶜ tailSum u m k
+    diff-path =
+      diff .snd
 
-  diff : Σ[ k ∈ ℕ ]
-    partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ tailSum u n k
-  diff =
-    partialSum-diff-right-tail≤ u n m n≤m
+  right :
+    NatOrder._<_ n m →
+    BoundedByᶜ κ (partialSum u m +ᶜ (-ᶜ partialSum u n))
+  right n<m =
+    subst
+      (BoundedByᶜ κ)
+      (sym diff-path)
+      (tailBound κ n k μκ≤n)
+    where
+    n≤m : NatOrder._≤_ n m
+    n≤m =
+      NatOrder.<-weaken n<m
 
-  k : ℕ
-  k =
-    diff .fst
+    diff : Σ[ k ∈ ℕ ]
+      partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ tailSum u n k
+    diff =
+      partialSum-diff-right-tail≤ u n m n≤m
 
-  diff-path :
-    partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ tailSum u n k
-  diff-path =
-    diff .snd
+    k : ℕ
+    k =
+      diff .fst
+
+    diff-path :
+      partialSum u m +ᶜ (-ᶜ partialSum u n) ≡ tailSum u n k
+    diff-path =
+      diff .snd
 
 
 absoluteTerms :
@@ -528,6 +581,112 @@ nonnegative-tail-upper→TailBound {u = u} 0≤u upper ε m k μ≤m =
   nonnegative-upper→bounded-byᶜ
     (tailSum-nonnegative u 0≤u m k)
     (upper ε m k μ≤m)
+
+
+tailSum-ratio-half-upper :
+  (u : ℕ → ℝᶜ) →
+  ((n : ℕ) → 0ᶜ ≤ᶜ u n) →
+  (N : ℕ) →
+  ((n : ℕ) → NatOrder._≤_ N n → u (suc n) +ᶜ u (suc n) ≤ᶜ u n) →
+  (m k : ℕ) →
+  NatOrder._≤_ N m →
+  tailSum u m k ≤ᶜ u m +ᶜ u m
+tailSum-ratio-half-upper u 0≤u N ratio m zero N≤m =
+  subst
+    (λ x → x ≤ᶜ u m +ᶜ u m)
+    (sym (tailSum-zero u m))
+    doubled-nonnegative
+  where
+  doubled-nonnegative : 0ᶜ ≤ᶜ u m +ᶜ u m
+  doubled-nonnegative =
+    subst
+      (λ x → x ≤ᶜ u m +ᶜ u m)
+      (add-zero-left 0ᶜ)
+      (≤ᶜ-add
+        {a = 0ᶜ}
+        {b = u m}
+        {c = 0ᶜ}
+        {d = u m}
+        (0≤u m)
+        (0≤u m))
+tailSum-ratio-half-upper u 0≤u N ratio m (suc k) N≤m =
+  subst
+    (λ x → x ≤ᶜ u m +ᶜ u m)
+    (sym (tailSum-suc-start u m k))
+    (≤ᶜ-trans
+      {x = u m +ᶜ tailSum u (suc m) k}
+      {y = u m +ᶜ (u (suc m) +ᶜ u (suc m))}
+      {z = u m +ᶜ u m}
+      tail≤doubled-next
+      ratio-step)
+  where
+  N≤sucm : NatOrder._≤_ N (suc m)
+  N≤sucm =
+    NatOrder.≤-trans N≤m (suc zero , refl)
+
+  tail≤next-double :
+    tailSum u (suc m) k ≤ᶜ u (suc m) +ᶜ u (suc m)
+  tail≤next-double =
+    tailSum-ratio-half-upper u 0≤u N ratio (suc m) k N≤sucm
+
+  tail≤doubled-next :
+    u m +ᶜ tailSum u (suc m) k ≤ᶜ
+    u m +ᶜ (u (suc m) +ᶜ u (suc m))
+  tail≤doubled-next =
+    ≤ᶜ-add
+      {a = u m}
+      {b = u m}
+      {c = tailSum u (suc m) k}
+      {d = u (suc m) +ᶜ u (suc m)}
+      (≤ᶜ-refl (u m))
+      tail≤next-double
+
+  ratio-step :
+    u m +ᶜ (u (suc m) +ᶜ u (suc m)) ≤ᶜ u m +ᶜ u m
+  ratio-step =
+    ≤ᶜ-add
+      {a = u m}
+      {b = u m}
+      {c = u (suc m) +ᶜ u (suc m)}
+      {d = u m}
+      (≤ᶜ-refl (u m))
+      (ratio m N≤m)
+
+
+eventual-ratio-half-tailBound :
+  {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+  ((n : ℕ) → 0ᶜ ≤ᶜ u n) →
+  (N : ℕ) →
+  ((n : ℕ) → NatOrder._≤_ N n → u (suc n) +ᶜ u (suc n) ≤ᶜ u n) →
+  ((ε : ℚ⁺) → NatOrder._≤_ N (μ ε)) →
+  ((ε : ℚ⁺) →
+    (m : ℕ) →
+    NatOrder._≤_ (μ ε) m →
+    u m +ᶜ u m ≤ᶜ rational (radius ε)) →
+  TailBound u μ
+eventual-ratio-half-tailBound {u = u} {μ = μ}
+    0≤u N ratio N≤μ doubled-upper =
+  nonnegative-tail-upper→TailBound 0≤u upper
+  where
+  upper :
+    (ε : ℚ⁺) →
+    (m k : ℕ) →
+    NatOrder._≤_ (μ ε) m →
+    tailSum u m k ≤ᶜ rational (radius ε)
+  upper ε m k μ≤m =
+    ≤ᶜ-trans
+      {x = tailSum u m k}
+      {y = u m +ᶜ u m}
+      {z = rational (radius ε)}
+      (tailSum-ratio-half-upper
+        u
+        0≤u
+        N
+        ratio
+        m
+        k
+        (NatOrder.≤-trans (N≤μ ε) μ≤m))
+      (doubled-upper ε m μ≤m)
 
 
 tailBound-add :

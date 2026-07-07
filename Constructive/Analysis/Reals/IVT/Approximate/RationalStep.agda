@@ -74,7 +74,7 @@ approximate-IVTΣ-rational-step-margins :
       {a = rational a}
       {b = rational (Rational.grid a (radius step) (suc n))}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (ivtData .snd)
       movementPrecision →
   NegativeMarginᶜ
     leftMargin
@@ -132,7 +132,7 @@ approximate-IVTΣ-rational-step-margins a step n f ivtData
         {a = rational a}
         {b = rational (Rational.grid a (radius step) (suc n))}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData)
+        (ivtData .snd)
         movementPrecision)
   adjacentClose i =
     MetricSpace.close-mono
@@ -147,7 +147,7 @@ approximate-IVTΣ-rational-step-margins a step n f ivtData
           {a = rational a}
           {b = rational (Rational.grid a (radius step) (suc n))}
           {f = f}
-          (IVTFunctionData.uniformlyContinuous ivtData)
+          (ivtData .snd)
           movementPrecision}
       stepClose<mod
       (rationalStepGridAdjacentClose a step (suc n) i)
@@ -172,7 +172,7 @@ approximate-IVTΣ-rational-step-with-right-margins :
       {a = rational a}
       {b = rational b}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (ivtData .snd)
       movementPrecision →
   NegativeMarginᶜ
     leftMargin
@@ -232,7 +232,7 @@ approximate-IVTΣ-rational-step-with-right-margins a b step n right-path
         {a = rational a}
         {b = rational b}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData)
+        (ivtData .snd)
         movementPrecision)
   adjacentClose i =
     MetricSpace.close-mono
@@ -245,7 +245,7 @@ approximate-IVTΣ-rational-step-with-right-margins a b step n right-path
           {a = rational a}
           {b = rational b}
           {f = f}
-          (IVTFunctionData.uniformlyContinuous ivtData)
+          (ivtData .snd)
           movementPrecision}
       stepClose<mod
       (rationalStepGridWithRightAdjacentClose a b step (suc n) right-path i)
@@ -273,7 +273,7 @@ approximate-IVTΣ-rational-step-budget :
       {a = rational a}
       {b = rational (Rational.grid a (radius step) (suc n))}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData))
+      (ivtData .snd))
     leftMargin
     rightMargin
     targetPrecision →
@@ -343,7 +343,7 @@ approximate-IVTΣ-rational-step-with-right-budget :
       {a = rational a}
       {b = rational b}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData))
+      (ivtData .snd))
     leftMargin
     rightMargin
     targetPrecision →
@@ -448,7 +448,12 @@ approximate-IVTΣ-rational-step-located-budget a step n f located uc =
     step
     n
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational (Rational.grid a (radius step) (suc n))}
+      {f = f}
+      located
+      uc)
 
 
 approximate-IVTΣ-rational-step-with-right-located-budget :
@@ -496,7 +501,12 @@ approximate-IVTΣ-rational-step-with-right-located-budget a b step n right-path
     n
     right-path
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational b}
+      {f = f}
+      located
+      uc)
 
 
 
@@ -520,7 +530,7 @@ approximate-IVTΣ-rational-step-default-budget :
       {a = rational a}
       {b = rational (Rational.grid a (radius step) (suc n))}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (ivtData .snd)
       (IVTErrorBudget.movementPrecision
         (defaultIVTErrorBudget leftMargin rightMargin targetPrecision)) →
   NegativeMarginᶜ
@@ -558,7 +568,7 @@ approximate-IVTΣ-rational-step-default-budget a step n f ivtData
         {a = rational a}
         {b = rational (Rational.grid a (radius step) (suc n))}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData))
+        (ivtData .snd))
       leftMargin
       rightMargin
       targetPrecision
@@ -579,7 +589,7 @@ approximate-IVTΣ-rational-step-with-right-default-budget :
       {a = rational a}
       {b = rational b}
       {f = f}
-      (IVTFunctionData.uniformlyContinuous ivtData)
+      (ivtData .snd)
       (IVTErrorBudget.movementPrecision
         (defaultIVTErrorBudget leftMargin rightMargin targetPrecision)) →
   NegativeMarginᶜ
@@ -617,7 +627,7 @@ approximate-IVTΣ-rational-step-with-right-default-budget a b step n right-path
         {a = rational a}
         {b = rational b}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData))
+        (ivtData .snd))
       leftMargin
       rightMargin
       targetPrecision
@@ -672,7 +682,12 @@ approximate-IVTΣ-rational-step-located-default-budget a step n f located uc =
     step
     n
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational (Rational.grid a (radius step) (suc n))}
+      {f = f}
+      located
+      uc)
 
 
 approximate-IVTΣ-rational-step-with-right-located-default-budget :
@@ -718,7 +733,12 @@ approximate-IVTΣ-rational-step-with-right-located-default-budget
     n
     right-path
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational b}
+      {f = f}
+      located
+      uc)
 
 
 
@@ -743,7 +763,7 @@ approximate-IVT∥∥-rational-step-strict :
         {a = rational a}
         {b = rational (Rational.grid a (radius step) (suc n))}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData))
+        (ivtData .snd))
       leftMargin
       rightMargin
       targetPrecision) →
@@ -831,7 +851,7 @@ approximate-IVT∥∥-rational-step-with-right-strict :
         {a = rational a}
         {b = rational b}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData))
+        (ivtData .snd))
       leftMargin
       rightMargin
       targetPrecision) →
@@ -876,7 +896,7 @@ approximate-IVT∥∥-rational-step-with-right-strict a b step n right-path
         {a = rational a}
         {b = rational b}
         {f = f}
-        (IVTFunctionData.uniformlyContinuous ivtData)
+        (ivtData .snd)
         (IVTErrorBudget.movementPrecision
           (RationalStepIVTBudget.errorBudget
             (budgetAt leftMargin rightMargin))))
@@ -891,7 +911,7 @@ approximate-IVT∥∥-rational-step-with-right-strict a b step n right-path
           {a = rational a}
           {b = rational b}
           {f = f}
-          (IVTFunctionData.uniformlyContinuous ivtData)
+          (ivtData .snd)
           (IVTErrorBudget.movementPrecision
             (RationalStepIVTBudget.errorBudget
               (budgetAt leftMargin rightMargin)))}
@@ -948,7 +968,12 @@ approximate-IVT∥∥-rational-step-located-strict a step n f located uc =
     step
     n
     f
-    (locatedIVTFunctionData located uc)
+    (locatedIVTFunctionData
+      {a = rational a}
+      {b = rational (Rational.grid a (radius step) (suc n))}
+      {f = f}
+      located
+      uc)
 
 
 approximate-IVTΣ-rational-step-with-right-located-strict :
@@ -1035,4 +1060,3 @@ approximate-IVTΣ-rational-step-with-right-located-strict
       (RationalStepIVTBudget.stepClose<modulus
         (budgetAt leftMargin rightMargin))
       (rationalStepGridWithRightAdjacentClose a b step (suc n) right-path i)
-

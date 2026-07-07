@@ -43,16 +43,59 @@ open import Constructive.Analysis.Reals.Series.Finite
 open import Constructive.Analysis.Reals.Series.Cauchy
 open import Constructive.Analysis.Reals.Series.Tail
 
-record SeriesMajorizedBy (u v : ℕ → ℝᶜ) : Type₀ where
-  no-eta-equality
+SeriesMajorizedBy :
+  (u v : ℕ → ℝᶜ) →
+  Type₀
+SeriesMajorizedBy u v =
+  Σ[ termMajorized ∈
+      ((m n : ℕ) → absᶜ (drop m u n) ≤ᶜ drop m v n) ]
+    ((m n : ℕ) → 0ᶜ ≤ᶜ drop m v n)
 
-  field
-    termMajorized :
-      (m n : ℕ) →
-      absᶜ (drop m u n) ≤ᶜ drop m v n
-    majorantNonnegative :
-      (m n : ℕ) →
-      0ᶜ ≤ᶜ drop m v n
+
+module SeriesMajorizedBy where
+  termMajorized :
+    {u v : ℕ → ℝᶜ} →
+    SeriesMajorizedBy u v →
+    (m n : ℕ) →
+    absᶜ (drop m u n) ≤ᶜ drop m v n
+  termMajorized majorized =
+    majorized .fst
+
+  majorantNonnegative :
+    {u v : ℕ → ℝᶜ} →
+    SeriesMajorizedBy u v →
+    (m n : ℕ) →
+    0ᶜ ≤ᶜ drop m v n
+  majorantNonnegative majorized =
+    majorized .snd
+
+
+seriesMajorizedByTerms :
+  {u v : ℕ → ℝᶜ} →
+  ((n : ℕ) → absᶜ (u n) ≤ᶜ v n) →
+  ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
+  SeriesMajorizedBy u v
+seriesMajorizedByTerms {u = u} {v = v} term≤ 0≤major =
+  termMajorized , majorantNonnegative
+  where
+  termMajorized :
+    (m n : ℕ) →
+    absᶜ (drop m u n) ≤ᶜ drop m v n
+  termMajorized m n =
+    subst2
+      (λ x y → absᶜ x ≤ᶜ y)
+      (sym (drop-index m u n))
+      (sym (drop-index m v n))
+      (term≤ (m Nat.+ n))
+
+  majorantNonnegative :
+    (m n : ℕ) →
+    0ᶜ ≤ᶜ drop m v n
+  majorantNonnegative m n =
+    subst
+      (λ y → 0ᶜ ≤ᶜ y)
+      (sym (drop-index m v n))
+      (0≤major (m Nat.+ n))
 
 
 tailSum-comparison :

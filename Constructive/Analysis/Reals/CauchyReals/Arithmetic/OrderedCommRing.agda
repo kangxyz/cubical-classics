@@ -18,7 +18,9 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 open import Cubical.Relation.Binary.Order.Pseudolattice
 open import Cubical.Relation.Nullary
+open import Cubical.Tactics.CommRingSolver.Reflection
 
+import Constructive.Algebra.OrderedCommRing.Properties as OrderedProperties
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -35,7 +37,9 @@ open import Constructive.Analysis.Metric.Instances.CauchyReals
 open import Constructive.Analysis.Reals.CauchyReals.Extension
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
+open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Properties
+open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
 open import Constructive.Analysis.Reals.CauchyReals.Order.Tightness
 open import Constructive.Analysis.Reals.CauchyReals.Order.WeakLinear
@@ -44,6 +48,27 @@ import Constructive.Data.Rationals as Rational
 
 
 private
+  module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
+    open CommRingStr (𝓡 .snd)
+
+    product-upper-double :
+      (u x v y : 𝓡 .fst) →
+      ((u + (- x)) · (v + y)) +
+      ((u + x) · (v + (- y))) ≡
+      (u · v + (- (x · y))) +
+      (u · v + (- (x · y)))
+    product-upper-double _ _ _ _ =
+      solve! 𝓡
+
+    product-lower-double :
+      (u x v y : 𝓡 .fst) →
+      ((u + x) · (v + y)) +
+      ((u + (- x)) · (v + (- y))) ≡
+      (u · v + x · y) +
+      (u · v + x · y)
+    product-lower-double _ _ _ _ =
+      solve! 𝓡
+
   diff-nonnegativeℚ :
     {a b : ℚ} →
     a ℚOrder.≤ b →
@@ -137,6 +162,24 @@ private
         r
         r≤q
         (Rational.≤-refl r))
+
+  product-upper-double :
+    (u x v y : ℝᶜ) →
+    ((u +ᶜ (-ᶜ x)) ·ᶜ (v +ᶜ y)) +ᶜ
+    ((u +ᶜ x) ·ᶜ (v +ᶜ (-ᶜ y))) ≡
+    (u ·ᶜ v +ᶜ (-ᶜ (x ·ᶜ y))) +ᶜ
+    (u ·ᶜ v +ᶜ (-ᶜ (x ·ᶜ y)))
+  product-upper-double =
+    SolverHelpers.product-upper-double CauchyRealsCommRing
+
+  product-lower-double :
+    (u x v y : ℝᶜ) →
+    ((u +ᶜ x) ·ᶜ (v +ᶜ y)) +ᶜ
+    ((u +ᶜ (-ᶜ x)) ·ᶜ (v +ᶜ (-ᶜ y))) ≡
+    (u ·ᶜ v +ᶜ x ·ᶜ y) +ᶜ
+    (u ·ᶜ v +ᶜ x ·ᶜ y)
+  product-lower-double =
+    SolverHelpers.product-lower-double CauchyRealsCommRing
 
 
 scalarMulᶜ-nonnegative :
@@ -560,3 +603,209 @@ CauchyRealsOrderedCommRing .snd =
     _<ᶜ_
     _≤ᶜ_
     CauchyRealsIsOrderedCommRing
+
+
+module CauchyRealsOrdered =
+  OrderedProperties.OrderedCommRingTheory CauchyRealsOrderedCommRing
+
+
+scalarMulᶜ-half-double :
+  (x : ℝᶜ) →
+  scalarMulᶜ Rational.1/2 (x +ᶜ x) ≡ x
+scalarMulᶜ-half-double x =
+  scalarMulᶜ-distrib-real-add Rational.1/2 x x ∙
+  sym (scalarMulᶜ-distrib-scalar-add Rational.1/2 Rational.1/2 x) ∙
+  cong (λ q → scalarMulᶜ q x) Rational.1/2+1/2≡1 ∙
+  scalarMulᶜ-one x
+
+
+double-nonnegativeᶜ→nonnegative :
+  (x : ℝᶜ) →
+  0ᶜ ≤ᶜ (x +ᶜ x) →
+  0ᶜ ≤ᶜ x
+double-nonnegativeᶜ→nonnegative x double-nonnegative =
+  subst
+    (λ y → 0ᶜ ≤ᶜ y)
+    (scalarMulᶜ-half-double x)
+    (scalarMulᶜ-nonnegative
+      Rational.1/2
+      (Rational.<→≤
+        {p = Rational.0ℚ}
+        {q = Rational.1/2}
+        Rational.0<1/2)
+      double-nonnegative)
+
+
+abs-minus-nonnegativeᶜ :
+  (x : ℝᶜ) →
+  0ᶜ ≤ᶜ (absᶜ x +ᶜ (-ᶜ x))
+abs-minus-nonnegativeᶜ x =
+  CauchyRealsOrdered.≥→Diff≥0
+    {x = absᶜ x}
+    {y = x}
+    (≤ᶜabsᶜ-left x)
+
+
+abs-plus-nonnegativeᶜ :
+  (x : ℝᶜ) →
+  0ᶜ ≤ᶜ (absᶜ x +ᶜ x)
+abs-plus-nonnegativeᶜ x =
+  subst
+    (λ y → 0ᶜ ≤ᶜ (absᶜ x +ᶜ y))
+    (neg-involutive x)
+    (CauchyRealsOrdered.≥→Diff≥0
+      {x = absᶜ x}
+      {y = -ᶜ x}
+      (≤ᶜabsᶜ-right x))
+
+
+mulᶜ≤abs-product :
+  (x y : ℝᶜ) →
+  x ·ᶜ y ≤ᶜ absᶜ x ·ᶜ absᶜ y
+mulᶜ≤abs-product x y =
+  CauchyRealsOrdered.Diff≥0→≥
+    {x = absᶜ x ·ᶜ absᶜ y}
+    {y = x ·ᶜ y}
+    productDiffNonnegative
+  where
+  productDiff : ℝᶜ
+  productDiff =
+    absᶜ x ·ᶜ absᶜ y +ᶜ (-ᶜ (x ·ᶜ y))
+
+  leftProductNonnegative :
+    0ᶜ ≤ᶜ
+    ((absᶜ x +ᶜ (-ᶜ x)) ·ᶜ (absᶜ y +ᶜ y))
+  leftProductNonnegative =
+    CauchyRealsOrdered.·-Pres≥0
+      (abs-minus-nonnegativeᶜ x)
+      (abs-plus-nonnegativeᶜ y)
+
+  rightProductNonnegative :
+    0ᶜ ≤ᶜ
+    ((absᶜ x +ᶜ x) ·ᶜ (absᶜ y +ᶜ (-ᶜ y)))
+  rightProductNonnegative =
+    CauchyRealsOrdered.·-Pres≥0
+      (abs-plus-nonnegativeᶜ x)
+      (abs-minus-nonnegativeᶜ y)
+
+  doubleProductDiffNonnegative :
+    0ᶜ ≤ᶜ (productDiff +ᶜ productDiff)
+  doubleProductDiffNonnegative =
+    subst
+      (λ z → 0ᶜ ≤ᶜ z)
+      (product-upper-double (absᶜ x) x (absᶜ y) y)
+      (nonnegativeᶜ-add
+        leftProductNonnegative
+        rightProductNonnegative)
+
+  productDiffNonnegative :
+    0ᶜ ≤ᶜ productDiff
+  productDiffNonnegative =
+    double-nonnegativeᶜ→nonnegative
+      productDiff
+      doubleProductDiffNonnegative
+
+
+neg-mulᶜ≤abs-product :
+  (x y : ℝᶜ) →
+  -ᶜ (x ·ᶜ y) ≤ᶜ absᶜ x ·ᶜ absᶜ y
+neg-mulᶜ≤abs-product x y =
+  CauchyRealsOrdered.Diff≥0→≥
+    {x = absᶜ x ·ᶜ absᶜ y}
+    {y = -ᶜ (x ·ᶜ y)}
+    (subst
+      (λ z → 0ᶜ ≤ᶜ (absᶜ x ·ᶜ absᶜ y +ᶜ z))
+      (sym (neg-involutive (x ·ᶜ y)))
+      productDiffNonnegative)
+  where
+  productDiff : ℝᶜ
+  productDiff =
+    absᶜ x ·ᶜ absᶜ y +ᶜ x ·ᶜ y
+
+  leftProductNonnegative :
+    0ᶜ ≤ᶜ
+    ((absᶜ x +ᶜ x) ·ᶜ (absᶜ y +ᶜ y))
+  leftProductNonnegative =
+    CauchyRealsOrdered.·-Pres≥0
+      (abs-plus-nonnegativeᶜ x)
+      (abs-plus-nonnegativeᶜ y)
+
+  rightProductNonnegative :
+    0ᶜ ≤ᶜ
+    ((absᶜ x +ᶜ (-ᶜ x)) ·ᶜ (absᶜ y +ᶜ (-ᶜ y)))
+  rightProductNonnegative =
+    CauchyRealsOrdered.·-Pres≥0
+      (abs-minus-nonnegativeᶜ x)
+      (abs-minus-nonnegativeᶜ y)
+
+  doubleProductDiffNonnegative :
+    0ᶜ ≤ᶜ (productDiff +ᶜ productDiff)
+  doubleProductDiffNonnegative =
+    subst
+      (λ z → 0ᶜ ≤ᶜ z)
+      (product-lower-double (absᶜ x) x (absᶜ y) y)
+      (nonnegativeᶜ-add
+        leftProductNonnegative
+        rightProductNonnegative)
+
+  productDiffNonnegative :
+    0ᶜ ≤ᶜ productDiff
+  productDiffNonnegative =
+    double-nonnegativeᶜ→nonnegative
+      productDiff
+      doubleProductDiffNonnegative
+
+
+bounded-byᶜ-abs≤rational :
+  (κ : ℚ⁺) (x : ℝᶜ) →
+  BoundedByᶜ κ x →
+  absᶜ x ≤ᶜ rational (radius κ)
+bounded-byᶜ-abs≤rational κ x x-bound =
+  absᶜ-least
+    x
+    (rational (radius κ))
+    (≤ℚ→rational≤ᶜ
+      {q = Rational.0ℚ}
+      {r = radius κ}
+      (ℚOrder.<Weaken≤ Rational.0ℚ (radius κ) (κ .snd)))
+    (upperᶜ x-bound)
+    (lowerᶜ x-bound)
+
+
+bounded-byᶜ-mul :
+  (κ μ : ℚ⁺) (x y : ℝᶜ) →
+  BoundedByᶜ κ x →
+  BoundedByᶜ μ y →
+  BoundedByᶜ (κ *⁺ μ) (x ·ᶜ y)
+bounded-byᶜ-mul κ μ x y x-bound y-bound =
+  bounded-byᶜ
+    (≤ᶜ-trans
+      {x = x ·ᶜ y}
+      {y = absᶜ x ·ᶜ absᶜ y}
+      {z = rational (radius (κ *⁺ μ))}
+      (mulᶜ≤abs-product x y)
+      absProduct≤bound)
+    (≤ᶜ-trans
+      {x = -ᶜ (x ·ᶜ y)}
+      {y = absᶜ x ·ᶜ absᶜ y}
+      {z = rational (radius (κ *⁺ μ))}
+      (neg-mulᶜ≤abs-product x y)
+      absProduct≤bound)
+  where
+  absProduct≤rationalProduct :
+    absᶜ x ·ᶜ absᶜ y ≤ᶜ
+    rational (radius κ) ·ᶜ rational (radius μ)
+  absProduct≤rationalProduct =
+    CauchyRealsOrdered.·-PosPres≥
+      (absᶜ-nonnegative x)
+      (absᶜ-nonnegative y)
+      (bounded-byᶜ-abs≤rational κ x x-bound)
+      (bounded-byᶜ-abs≤rational μ y y-bound)
+
+  absProduct≤bound :
+    absᶜ x ·ᶜ absᶜ y ≤ᶜ rational (radius (κ *⁺ μ))
+  absProduct≤bound =
+    subst
+      (λ z → absᶜ x ·ᶜ absᶜ y ≤ᶜ z)
+      (mulᶜ-rational-rational (radius κ) (radius μ))
+      absProduct≤rationalProduct

@@ -130,7 +130,8 @@ The code is split by whether it uses the library's classical `Oracle`.
   Dedekind cuts and MacNeille completeness.
 - `Constructive/Data/` contains constructive data-level support, including
   rational order/arithmetic lemmas, positive rationals, rational scalar bounds,
-  and rational closeness.
+  rational closeness, and factorial/reciprocal-factorial coefficients used by
+  power series.
 - `Constructive/Algebra/OrderedCommRing/` builds on Cubical's ordered
   commutative rings, with Archimedean properties, morphisms, and univalence.
 - `Constructive/Algebra/Order/` contains constructive order-completeness
@@ -165,6 +166,14 @@ The code is split by whether it uses the library's classical `Oracle`.
 - `Constructive/Analysis/Reals/Sequences/` contains modulated Cauchy-real
   sequence convergence, Cauchy completeness, subsequences, uniformly continuous
   maps, algebraic limit laws, and eventual order lemmas.
+- `Constructive/Analysis/Reals/PowerSeries.agda` is the public entry point for
+  one-variable Cauchy-real power series, with explicit tail data, closed-ball
+  convergence records, continuity criteria from uniform partial-sum control,
+  function-facing analytic-at predicates, majorant support, algebraic
+  coefficient operations, Cauchy-product coefficients, finite-polynomial exact
+  evaluators, formal derivative and primitive coefficients plus derivative
+  convergence transports, the geometric power-series adapter, and formal
+  exponential/trigonometric/logarithmic coefficients.
 - Generic Cauchy-completion, closeness, induction, recursion, completeness,
   nonexpanding, Lipschitz, and uniformly-continuous interfaces live under
   `Constructive/Analysis/`; the Cauchy-real aggregate reexports the generic
@@ -191,7 +200,8 @@ The code is split by whether it uses the library's classical `Oracle`.
   IVT proof support kept under `Constructive/Analysis/Reals/IVT/Approximate/`,
   and Cauchy-real series
   with explicit tail data plus geometric instances under
-  `Constructive/Analysis/Reals/Series/Instances/`.
+  `Constructive/Analysis/Reals/Series/Instances/`, and one-variable power
+  series under `Constructive/Analysis/Reals/PowerSeries/`.
 - `Constructive/Analysis/FixedPoint/` contains constructive fixed-point
   results, starting with the Banach contraction principle for complete
   precision-indexed metric spaces, explicit positive-rational contraction
