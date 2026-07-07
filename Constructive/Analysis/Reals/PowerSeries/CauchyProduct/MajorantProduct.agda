@@ -1,0 +1,612 @@
+{-
+
+Part of Constructive.Analysis.Reals.PowerSeries.CauchyProduct
+
+-}
+{-# OPTIONS --safe --lossy-unification #-}
+module Constructive.Analysis.Reals.PowerSeries.CauchyProduct.MajorantProduct where
+
+open import Cubical.Foundations.Prelude
+
+open import Cubical.Algebra.CommRing
+import Cubical.Data.Nat as Nat
+open import Cubical.Data.Nat using (ℕ ; zero ; suc)
+import Cubical.Data.Nat.Order as NatOrder
+open import Cubical.Data.Rationals as ℚ using (ℚ)
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
+open import Cubical.HITs.PropositionalTruncation as Prop
+open import Cubical.Tactics.CommRingSolver.Reflection
+
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
+open import Constructive.Analysis.Metric.Base using (MetricSpace)
+open import Constructive.Analysis.Metric.Instances.CauchyReals
+  using (CauchyRealsMetricSpace)
+open import Constructive.Analysis.Metric.Instances.Rationals
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
+  using (CauchyRealsCommRing)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+  using
+    ( mulᶜ≤abs-product
+    ; mulᶜ-pres≤ᶜ-right
+    ; neg-mulᶜ≤abs-product
+    )
+open import Constructive.Analysis.Reals.CauchyReals.Base
+open import Constructive.Analysis.Reals.CauchyReals.Order.Base
+  using (_≤ᶜ_ ; ≤ᶜ-refl ; ≤ᶜ-trans)
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+  using
+    ( BoundedByᶜ
+    ; bounded-byᶜ
+    ; bounded-byᶜ-add
+    ; bounded-byᶜ-close-zero
+    ; merely-boundedᶜ
+    ; upperᶜ
+    )
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
+  using (close-rational-upper-bound)
+open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
+  using
+    ( absᶜ
+    ; absᶜ-least
+    ; absᶜ-nonnegative
+    ; absᶜ-triangle
+    ; absᶜ-zero
+    ; nonnegativeᶜ-add
+    ; ≤ᶜabsᶜ-left
+    ; ≤ᶜabsᶜ-right
+    )
+open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
+  using (diffᶜ-nonnegative→≤ᶜ ; ≤ᶜ-add)
+open import Constructive.Analysis.Reals.Series
+  using
+    ( AntitoneTailModulus
+    ; SeriesMajorizedBy
+    ; TailBound
+    ; comparisonTest
+    ; diff-close-zero→close
+    ; drop
+    ; drop-index
+    ; partialSum
+    ; partialSum-add
+    ; partialSum-diff-right-tail≤
+    ; partialSum-suc
+    ; partialSumSequence
+    ; seriesSumFromFiniteTailBound
+    ; seriesSumFromFiniteTailBoundConvergesTo
+    ; seriesMajorizedByTerms
+    ; nonnegative-upper→bounded-byᶜ
+    ; tailSum
+    ; tailSum-comparison
+    ; tailSum-nonnegative
+    ; tailSum-suc-start
+    )
+open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+  using (realPower ; realPower-suc ; realPower-zero)
+open import Constructive.Analysis.Reals.PowerSeries.Base
+open import Constructive.Analysis.Reals.PowerSeries.Radius
+  using
+    ( HasPowerSeriesOnBall
+    ; HasPowerSeriesOnBallWith
+    ; powerSeriesSumOnBall
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Majorant
+  using
+    ( PowerSeriesMajorizedOnBall
+    ; majorizedOnBall→hasPowerSeriesOnBall
+    ; majorizedOnBall→hasPowerSeriesOnBallWith
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Algebra
+  using
+    ( addPowerSeries
+    ; constantPowerSeries
+    ; negPowerSeries
+    ; partialSum-mulLeft
+    ; rationalScalePowerSeries
+    ; shiftPowerSeries
+    ; subPowerSeries
+    ; zeroPowerSeries
+    )
+open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
+
+open ClosenessOf RationalsMetricSpace
+
+import Constructive.Analysis.Reals.Sequences.Algebra as SeqAlg
+import Constructive.Analysis.Reals.Sequences.Convergence as SeqConv
+import Constructive.Analysis.Reals.Sequences.Order as SeqOrder
+open import Constructive.Analysis.Reals.Sequences.Base
+  using (maxModulus ; maxModulus-left≤ ; maxModulus-right≤)
+
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Internal
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Core
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Remainder
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Bounds
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.MajorantRemainder
+
+seriesPartialSumsEventuallyBoundedBySum :
+  (u : ℕ → ℝᶜ) →
+  (μ : ℚ⁺ → ℕ) →
+  (uTail : TailBound u μ) →
+  (μ-antitone : AntitoneTailModulus μ) →
+  (κ : ℚ⁺) →
+  BoundedByᶜ κ (seriesSumFromFiniteTailBound u μ uTail μ-antitone) →
+  SeqAlg.EventuallyBoundedByWith
+    (λ _ → μ (quarter⁺ (half⁺ (half⁺ 1⁺))))
+    (1⁺ +⁺ κ)
+    (partialSumSequence u)
+seriesPartialSumsEventuallyBoundedBySum
+    u μ uTail μ-antitone κ sum-bound _ n μ≤n =
+  subst
+    (BoundedByᶜ (1⁺ +⁺ κ))
+    (minus-plus-cancel-right partial sum)
+    (bounded-byᶜ-add
+      1⁺
+      κ
+      diff
+      sum
+      diff-bound
+      sum-bound)
+  where
+  partial : ℝᶜ
+  partial =
+    partialSum u n
+
+  sum : ℝᶜ
+  sum =
+    seriesSumFromFiniteTailBound u μ uTail μ-antitone
+
+  diff : ℝᶜ
+  diff =
+    partial +ᶜ (-ᶜ sum)
+
+  partial∼sum :
+    partial ∼[ half⁺ 1⁺ ] sum
+  partial∼sum =
+    seriesSumFromFiniteTailBoundConvergesTo
+      u
+      μ
+      uTail
+      μ-antitone
+      .snd
+      (half⁺ 1⁺)
+      n
+      μ≤n
+
+  diff-bound :
+    BoundedByᶜ 1⁺ diff
+  diff-bound =
+    close→difference-bounded-byᶜ
+      partial
+      sum
+      (half< 1⁺)
+      partial∼sum
+
+
+sequenceCauchyProductTailBoundFromMajorantRemainderBoundAndSumBounds :
+  {u v U V : ℕ → ℝᶜ} →
+  (ν τ χ : ℚ⁺ → ℕ) →
+  (κ ι : ℚ⁺) →
+  (uTail : TailBound u ν) →
+  (ν-antitone : AntitoneTailModulus ν) →
+  (vTail : TailBound v τ) →
+  (τ-antitone : AntitoneTailModulus τ) →
+  (uMajorized : SeriesMajorizedBy u U) →
+  (vMajorized : SeriesMajorizedBy v V) →
+  (sumU-bound :
+    BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone)) →
+  (sumV-bound :
+    BoundedByᶜ κ (seriesSumFromFiniteTailBound v τ vTail τ-antitone)) →
+  (majorantRemainderBound :
+    (ε : ℚ⁺) →
+    (n : ℕ) →
+    NatOrder._≤_ (χ ε) n →
+    BoundedByᶜ ε (rectangularTriangularRemainder U V n n)) →
+  TailBound
+    (sequenceCauchyProduct u v)
+    (λ ε →
+      sequenceCauchyProductPartialSumsConvergeToProductFromRemainderConvergence
+        u
+        v
+        ν
+        τ
+        (λ ε → χ (half⁺ ε))
+        (λ _ → τ (quarter⁺ (half⁺ (half⁺ 1⁺))))
+        (1⁺ +⁺ κ)
+        ι
+        uTail
+        ν-antitone
+        vTail
+        τ-antitone
+        sumU-bound
+        (seriesPartialSumsEventuallyBoundedBySum
+          _
+          τ
+          vTail
+          τ-antitone
+          κ
+          sumV-bound)
+        (rectangularTriangularRemainderConvergesFromMajorantBound
+          uMajorized
+          vMajorized
+          χ
+          majorantRemainderBound)
+        .fst
+        (quarter⁺ ε))
+sequenceCauchyProductTailBoundFromMajorantRemainderBoundAndSumBounds
+  {u = u}
+  {v = v}
+  ν
+  τ
+  χ
+  κ
+  ι
+  uTail
+  ν-antitone
+  vTail
+  τ-antitone
+  uMajorized
+  vMajorized
+  sumU-bound
+  sumV-bound
+  majorantRemainderBound =
+  sequenceCauchyProductTailBoundFromMajorantRemainderBound
+    {u = u}
+    {v = v}
+    ν
+    τ
+    χ
+    (λ _ → τ (quarter⁺ (half⁺ (half⁺ 1⁺))))
+    (1⁺ +⁺ κ)
+    ι
+    uTail
+    ν-antitone
+    vTail
+    τ-antitone
+    uMajorized
+    vMajorized
+    sumU-bound
+    (seriesPartialSumsEventuallyBoundedBySum
+      _
+      τ
+      vTail
+      τ-antitone
+      κ
+      sumV-bound)
+    majorantRemainderBound
+
+
+sequenceCauchyProductSumProductFromMajorantRemainderBound :
+  {u v U V : ℕ → ℝᶜ} →
+  (ν τ μ χ β : ℚ⁺ → ℕ) →
+  (κ ι : ℚ⁺) →
+  (uTail : TailBound u ν) →
+  (ν-antitone : AntitoneTailModulus ν) →
+  (vTail : TailBound v τ) →
+  (τ-antitone : AntitoneTailModulus τ) →
+  (uMajorized : SeriesMajorizedBy u U) →
+  (vMajorized : SeriesMajorizedBy v V) →
+  (productMajorTail : TailBound (sequenceCauchyProduct U V) μ) →
+  (μ-antitone : AntitoneTailModulus μ) →
+  BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone) →
+  SeqAlg.EventuallyBoundedByWith β κ (partialSumSequence v) →
+  ((ε : ℚ⁺) →
+    (n : ℕ) →
+    NatOrder._≤_ (χ ε) n →
+    BoundedByᶜ
+      ε
+      (rectangularTriangularRemainder U V n n)) →
+  seriesSumFromFiniteTailBound
+    (sequenceCauchyProduct u v)
+    μ
+    (sequenceCauchyProductTailBoundFromMajorant
+      uMajorized
+      vMajorized
+      productMajorTail)
+    μ-antitone
+  ≡
+  seriesSumFromFiniteTailBound u ν uTail ν-antitone ·ᶜ
+  seriesSumFromFiniteTailBound v τ vTail τ-antitone
+sequenceCauchyProductSumProductFromMajorantRemainderBound
+  {u = u}
+  {v = v}
+  ν
+  τ
+  μ
+  χ
+  β
+  κ
+  ι
+  uTail
+  ν-antitone
+  vTail
+  τ-antitone
+  uMajorized
+  vMajorized
+  productMajorTail
+  μ-antitone
+  sumU-bound
+  partialV-bound
+  majorantRemainderBound =
+  sequenceCauchyProductSumProductFromRemainderBound
+    u
+    v
+    ν
+    τ
+    μ
+    χ
+    β
+    κ
+    ι
+    uTail
+    ν-antitone
+    vTail
+    τ-antitone
+    (sequenceCauchyProductTailBoundFromMajorant
+      uMajorized
+      vMajorized
+      productMajorTail)
+    μ-antitone
+    sumU-bound
+    partialV-bound
+    (λ ε n χ≤n →
+      rectangularTriangularRemainderBoundFromMajorant
+        uMajorized
+        vMajorized
+        ε
+        n
+        (majorantRemainderBound ε n χ≤n))
+
+
+sequenceCauchyProductSumProductFromMajorantProductTailWithPartialBound :
+  {u v U V : ℕ → ℝᶜ} →
+  (ν τ μ β : ℚ⁺ → ℕ) →
+  (κ ι : ℚ⁺) →
+  (uTail : TailBound u ν) →
+  (ν-antitone : AntitoneTailModulus ν) →
+  (vTail : TailBound v τ) →
+  (τ-antitone : AntitoneTailModulus τ) →
+  (uMajorized : SeriesMajorizedBy u U) →
+  (vMajorized : SeriesMajorizedBy v V) →
+  (productMajorTail : TailBound (sequenceCauchyProduct U V) μ) →
+  (μ-antitone : AntitoneTailModulus μ) →
+  BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone) →
+  SeqAlg.EventuallyBoundedByWith β κ (partialSumSequence v) →
+  seriesSumFromFiniteTailBound
+    (sequenceCauchyProduct u v)
+    μ
+    (sequenceCauchyProductTailBoundFromMajorant
+      uMajorized
+      vMajorized
+      productMajorTail)
+    μ-antitone
+  ≡
+  seriesSumFromFiniteTailBound u ν uTail ν-antitone ·ᶜ
+  seriesSumFromFiniteTailBound v τ vTail τ-antitone
+sequenceCauchyProductSumProductFromMajorantProductTailWithPartialBound
+  {U = U}
+  {V = V}
+  ν
+  τ
+  μ
+  β
+  κ
+  ι
+  uTail
+  ν-antitone
+  vTail
+  τ-antitone
+  uMajorized
+  vMajorized
+  productMajorTail
+  μ-antitone
+  sumU-bound
+  partialV-bound =
+  sequenceCauchyProductSumProductFromMajorantRemainderBound
+    ν
+    τ
+    μ
+    μ
+    β
+    κ
+    ι
+    uTail
+    ν-antitone
+    vTail
+    τ-antitone
+    uMajorized
+    vMajorized
+    productMajorTail
+    μ-antitone
+    sumU-bound
+    partialV-bound
+    (rectangularTriangularRemainderBoundFromProductTail
+      U
+      V
+      U-nonnegative
+      V-nonnegative
+      (λ n →
+        rectangularTriangularRemainder≤cauchyProductTail
+          U
+          V
+          U-nonnegative
+          V-nonnegative
+          n
+          n
+          NatOrder.≤-refl)
+      productMajorTail)
+  where
+  U-nonnegative :
+    (n : ℕ) → 0ᶜ ≤ᶜ U n
+  U-nonnegative n =
+    SeriesMajorizedBy.majorantNonnegative uMajorized zero n
+
+  V-nonnegative :
+    (n : ℕ) → 0ᶜ ≤ᶜ V n
+  V-nonnegative n =
+    SeriesMajorizedBy.majorantNonnegative vMajorized zero n
+
+
+sequenceCauchyProductSumProductFromMajorantProductTailAndSumBounds :
+  {u v U V : ℕ → ℝᶜ} →
+  (ν τ μ : ℚ⁺ → ℕ) →
+  (κ ι : ℚ⁺) →
+  (uTail : TailBound u ν) →
+  (ν-antitone : AntitoneTailModulus ν) →
+  (vTail : TailBound v τ) →
+  (τ-antitone : AntitoneTailModulus τ) →
+  (uMajorized : SeriesMajorizedBy u U) →
+  (vMajorized : SeriesMajorizedBy v V) →
+  (productMajorTail : TailBound (sequenceCauchyProduct U V) μ) →
+  (μ-antitone : AntitoneTailModulus μ) →
+  BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone) →
+  BoundedByᶜ κ (seriesSumFromFiniteTailBound v τ vTail τ-antitone) →
+  seriesSumFromFiniteTailBound
+    (sequenceCauchyProduct u v)
+    μ
+    (sequenceCauchyProductTailBoundFromMajorant
+      uMajorized
+      vMajorized
+      productMajorTail)
+    μ-antitone
+  ≡
+  seriesSumFromFiniteTailBound u ν uTail ν-antitone ·ᶜ
+  seriesSumFromFiniteTailBound v τ vTail τ-antitone
+sequenceCauchyProductSumProductFromMajorantProductTailAndSumBounds
+  ν
+  τ
+  μ
+  κ
+  ι
+  uTail
+  ν-antitone
+  vTail
+  τ-antitone
+  uMajorized
+  vMajorized
+  productMajorTail
+  μ-antitone
+  sumU-bound
+  sumV-bound =
+  sequenceCauchyProductSumProductFromMajorantProductTailWithPartialBound
+    ν
+    τ
+    μ
+    (λ _ → τ (quarter⁺ (half⁺ (half⁺ 1⁺))))
+    (1⁺ +⁺ κ)
+    ι
+    uTail
+    ν-antitone
+    vTail
+    τ-antitone
+    uMajorized
+    vMajorized
+    productMajorTail
+    μ-antitone
+    sumU-bound
+    (seriesPartialSumsEventuallyBoundedBySum
+      _
+      τ
+      vTail
+      τ-antitone
+      κ
+      sumV-bound)
+
+
+sequenceCauchyProductSumProductFromMajorantProductTail :
+  {u v U V : ℕ → ℝᶜ} →
+  (ν τ μ : ℚ⁺ → ℕ) →
+  (uTail : TailBound u ν) →
+  (ν-antitone : AntitoneTailModulus ν) →
+  (vTail : TailBound v τ) →
+  (τ-antitone : AntitoneTailModulus τ) →
+  (uMajorized : SeriesMajorizedBy u U) →
+  (vMajorized : SeriesMajorizedBy v V) →
+  (productMajorTail : TailBound (sequenceCauchyProduct U V) μ) →
+  (μ-antitone : AntitoneTailModulus μ) →
+  seriesSumFromFiniteTailBound
+    (sequenceCauchyProduct u v)
+    μ
+    (sequenceCauchyProductTailBoundFromMajorant
+      uMajorized
+      vMajorized
+      productMajorTail)
+    μ-antitone
+  ≡
+  seriesSumFromFiniteTailBound u ν uTail ν-antitone ·ᶜ
+  seriesSumFromFiniteTailBound v τ vTail τ-antitone
+sequenceCauchyProductSumProductFromMajorantProductTail
+  {u = u}
+  {v = v}
+  ν
+  τ
+  μ
+  uTail
+  ν-antitone
+  vTail
+  τ-antitone
+  uMajorized
+  vMajorized
+  productMajorTail
+  μ-antitone =
+  Prop.rec
+    (isSetCompletion productSum productOfSums)
+    step-left
+    (merely-boundedᶜ sumU)
+  where
+  productSum : ℝᶜ
+  productSum =
+    seriesSumFromFiniteTailBound
+      (sequenceCauchyProduct u v)
+      μ
+      (sequenceCauchyProductTailBoundFromMajorant
+        uMajorized
+        vMajorized
+        productMajorTail)
+      μ-antitone
+
+  sumU : ℝᶜ
+  sumU =
+    seriesSumFromFiniteTailBound u ν uTail ν-antitone
+
+  sumV : ℝᶜ
+  sumV =
+    seriesSumFromFiniteTailBound v τ vTail τ-antitone
+
+  productOfSums : ℝᶜ
+  productOfSums =
+    sumU ·ᶜ sumV
+
+  step-left :
+    Σ[ ι ∈ ℚ⁺ ] BoundedByᶜ ι sumU →
+    productSum ≡ productOfSums
+  step-left (ι , sumU-bound) =
+    Prop.rec
+      (isSetCompletion productSum productOfSums)
+      step-right
+      (merely-boundedᶜ sumV)
+    where
+    step-right :
+      Σ[ κ ∈ ℚ⁺ ] BoundedByᶜ κ sumV →
+      productSum ≡ productOfSums
+    step-right (κ , sumV-bound) =
+      sequenceCauchyProductSumProductFromMajorantProductTailAndSumBounds
+        ν
+        τ
+        μ
+        κ
+        ι
+        uTail
+        ν-antitone
+        vTail
+        τ-antitone
+        uMajorized
+        vMajorized
+        productMajorTail
+        μ-antitone
+        sumU-bound
+        sumV-bound
