@@ -196,9 +196,13 @@ Implemented theorem-level bridges:
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
 - `derivativePowerSeriesTermBoundPrecision`
+- `DerivativePowerSeriesBoundMajorantOnBall`
 - `derivativePowerSeriesTermBoundsFromCoefficientBoundsWith`
 - `derivativePowerSeriesOnBallWithFromCoefficientBoundsAndMajorant`
 - `derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant`
+- `derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant`
+- `derivativePowerSeriesRadiusFromCoefficientBoundsAndMajorants`
+- `derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants`
 
 These remove three pieces of repeated downstream proof plumbing: manually
 threading centered sum continuity through analytic expansions, manually
@@ -257,9 +261,11 @@ without choosing arbitrary coefficient bounds from truncation.
 The derivative-convergence layer now has a first non-transport bridge: explicit
 coefficient bounds on `a` yield closed-ball bounds for the formal derivative
 terms, and a caller-supplied real majorant tail for those derivative-term bounds
-constructs `HasPowerSeriesOnBallWith (derivativePowerSeries a) ρ μ`. This is
-the majorant route requested by Phase 3, but it still leaves the fully generic
-strict-subball theorem from radius data to prove.
+constructs `HasPowerSeriesOnBallWith (derivativePowerSeries a) ρ μ`. The same
+majorant data can now be supplied by subball to construct
+`HasPowerSeriesRadius` or `HasInfinitePowerSeriesRadius` for the formal
+derivative. This is the majorant route requested by Phase 3, but it still leaves
+the fully generic strict-subball theorem from radius data to prove.
 
 The partial-sum modulus bridge is intentionally modest. It converts either a
 family of finite partial-sum moduli, explicit coefficient bounds, or closed-ball
@@ -375,7 +381,7 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | Uniform continuity on a closed subball | Partially implemented | Coefficient, closed-ball term, bounded-term majorant, or real-majorant/rational-bound data can now drive canonical moduli; arbitrary radius/convergence data still cannot |
 | `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; need bridge from expansion/radius data to usable bounds |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
-| Derivative convergence for `derivativePowerSeries a` | Partially implemented | Coefficient-bound plus majorant-tail bridge exists; strict-subball radius theorem remains |
+| Derivative convergence for `derivativePowerSeries a` | Partially implemented | Coefficient-bound plus majorant-tail bridges now produce on-ball, radius, and infinite-radius data; strict-subball theorem from original radius data remains |
 | Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound variants build iterated bounds for named targets and formal derivative targets; modulus-largeness is still manual |
 | Function-level derivative transport | Implemented as local, everywhere-model, and coefficient-bound termwise bridges | Modulus-largeness is still manual |
 | Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
@@ -587,6 +593,15 @@ Implementation targets:
 - `derivativePowerSeriesOnStrictSubball`
 - `derivativePowerSeriesRadius`
 - `derivativePowerSeriesInfiniteRadius`
+
+Implemented majorant route:
+
+- `DerivativePowerSeriesBoundMajorantOnBall`
+- `derivativePowerSeriesTermBoundsFromCoefficientBoundsWith`
+- `derivativePowerSeriesOnBallWithFromCoefficientBoundsAndMajorant`
+- `derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant`
+- `derivativePowerSeriesRadiusFromCoefficientBoundsAndMajorants`
+- `derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants`
 
 Acceptance criteria:
 

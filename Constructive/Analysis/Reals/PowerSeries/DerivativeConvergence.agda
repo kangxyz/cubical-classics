@@ -10,6 +10,8 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 open import Cubical.Data.Rationals using (ℚ)
+import Cubical.Data.Rationals.Order as ℚOrder
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
   using (0ᶜ)
@@ -51,6 +53,23 @@ derivativePowerSeriesTermBoundPrecision :
 derivativePowerSeriesTermBoundPrecision κ ρ n =
   scalar-bound (Rational.natMul (suc n) Rational.1ℚ) *⁺
     (κ (suc n) *⁺ positivePower ρ n)
+
+
+DerivativePowerSeriesBoundMajorantOnBall :
+  (ℕ → ℚ⁺) →
+  ℚ⁺ →
+  Type₀
+DerivativePowerSeriesBoundMajorantOnBall κ ρ =
+  Σ[ v ∈ (ℕ → ℝᶜ) ]
+    Σ[ μ ∈ (ℚ⁺ → ℕ) ]
+      Σ[ bound≤majorant ∈
+          ((n : ℕ) →
+            rational
+              (radius (derivativePowerSeriesTermBoundPrecision κ ρ n)) ≤ᶜ
+            v n) ]
+        Σ[ majorantNonnegative ∈ ((n : ℕ) → 0ᶜ ≤ᶜ v n) ]
+          Σ[ majorTail ∈ TailBound v μ ]
+            AntitoneTailModulus μ
 
 
 private
@@ -191,6 +210,79 @@ derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant
     majorantNonnegative
     majorTail
     majorAntitone
+
+
+derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  (κ : ℕ → ℚ⁺) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
+  DerivativePowerSeriesBoundMajorantOnBall κ ρ →
+  HasPowerSeriesOnBall (derivativePowerSeries a) ρ
+derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant
+    {a = a}
+    {ρ = ρ}
+    κ
+    coefficientBounds
+    (v , μ , bound≤majorant , majorantNonnegative , majorTail ,
+      majorAntitone) =
+  derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant
+    {a = a}
+    {ρ = ρ}
+    {v = v}
+    {μ = μ}
+    κ
+    coefficientBounds
+    bound≤majorant
+    majorantNonnegative
+    majorTail
+    majorAntitone
+
+
+derivativePowerSeriesRadiusFromCoefficientBoundsAndMajorants :
+  {a : PowerSeries} →
+  {R : ℚ⁺} →
+  (κ : ℕ → ℚ⁺) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
+  ((ρ : ℚ⁺) →
+    radius ρ ℚOrder.< radius R →
+    DerivativePowerSeriesBoundMajorantOnBall κ ρ) →
+  HasPowerSeriesRadius (derivativePowerSeries a) R
+derivativePowerSeriesRadiusFromCoefficientBoundsAndMajorants
+    {a = a}
+    κ
+    coefficientBounds
+    majorants =
+  record
+    { onSubball =
+        λ ρ ρ<R →
+          derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant
+            {a = a}
+            {ρ = ρ}
+            κ
+            coefficientBounds
+            (majorants ρ ρ<R)
+    }
+
+
+derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants :
+  {a : PowerSeries} →
+  (κ : ℕ → ℚ⁺) →
+  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
+  ((ρ : ℚ⁺) → DerivativePowerSeriesBoundMajorantOnBall κ ρ) →
+  HasInfinitePowerSeriesRadius (derivativePowerSeries a)
+derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+    {a = a}
+    κ
+    coefficientBounds
+    majorants
+    ρ =
+  derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant
+    {a = a}
+    {ρ = ρ}
+    κ
+    coefficientBounds
+    (majorants ρ)
 
 
 derivativePowerSeriesOnBallWithFromCoefficientPath :
