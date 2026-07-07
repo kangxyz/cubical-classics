@@ -328,8 +328,10 @@ Remaining hard gaps:
   uniform-continuity witnesses from arbitrary convergence, majorant, or radius
   data;
 - constructing derivative-modulus largeness data from convergence or majorant
-  data, and constructing canonical iterated derivative bounds when explicit
-  coefficient bounds are not available;
+  data; the data-rich Phase 4 wrappers now accept the stronger uniform
+  derivative-modulus datum and construct the old largeness witness internally;
+- constructing canonical iterated derivative bounds when explicit coefficient
+  bounds are not available;
 - replacing elementary instance derivative proofs with the new high-level
   theorem stack.
 
@@ -405,8 +407,8 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | `HasPowerSeriesAtWith` continuity | Implemented for data-rich paths | Strict-subball coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; bare `HasPowerSeriesAtWith` alone cannot construct a modulus |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative convergence for `derivativePowerSeries a` | Implemented on strict subballs | Majorized/coefficient-bound paths remain; naked original ball convergence now yields strict-subball derivative convergence, radius closure, and infinite-radius closure. Boundary/same-radius convergence is not claimed |
-| Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound plus derivative-majorant variants construct formal derivative radius and iterated bounds; modulus-largeness is still manual |
-| Function-level derivative transport | Implemented as local, everywhere-model, coefficient-bound, and derivative-majorant termwise bridges | Modulus-largeness is still manual |
+| Termwise derivative to `HasDerivativeAtWith` | Implemented for data-rich paths | Uniform derivative-modulus variants construct derivative radius from Phase 3 and hide the old largeness record; a canonical uniform modulus is still missing |
+| Function-level derivative transport | Implemented for data-rich paths | `HasPowerSeriesAtWith` wrappers hide derivative radius, iterated bounds from coefficient bounds, and the old largeness record when a uniform derivative-modulus witness is supplied |
 | Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
 | `log` derivative through the generic theorem | Not implemented | Needs strict radius-one geometric derivative convergence |
 
@@ -667,14 +669,15 @@ Acceptance criteria:
 Package the existing theorem in
 `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem`.
 
-The wrapper should internally derive:
+The data-rich wrappers should internally derive:
 
 - derivative-series convergence from Phase 3;
 - target derivative-radius data by coefficient path when the derivative series
   is a named instance;
 - iterated formal partial derivative bounds from generic coefficient or
   majorant bounds;
-- canonical `PowerSeriesPartialSumsDerivativeModulusLarge` data;
+- `PowerSeriesPartialSumsDerivativeModulusLarge` data from the supplied
+  `PowerSeriesPartialSumsDerivativeUniformModulus`;
 - the derivative value as the sum of the formal derivative series.
 
 Implemented transport bridges:
@@ -685,8 +688,16 @@ Implemented transport bridges:
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformModulus→hasDerivativeAtWith`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballUniformModulus→hasDerivativeAtWith`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformModulus`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformSubmodulus`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformModulus`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformSubmodulus`
 
-Remaining implementation targets:
+Remaining implementation targets after the data-rich Phase 4 wrappers:
 
 - `centeredPowerSeriesSumFormalDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalDerivativeAtWith`
@@ -706,17 +717,21 @@ Current blocker:
   `PowerSeriesPartialSumsDerivativeUniformModulus χ μ ω` implies
   `PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω`, and also after
   replacing an existing perturbation modulus by `λ ε → min⁺ (μ ε) (ν ε)`.
-  What remains is the mathematical construction of that uniform datum from the
-  convergence or majorant data used by the termwise derivative theorem. Without
-  that construction, instance proofs can still be asked for a manual uniform
-  witness or the older largeness witness.
+  Phase 4 now consumes this uniform datum at the centered-sum and
+  `HasPowerSeriesAtWith` layers, constructs derivative-radius data using
+  `derivativePowerSeriesInfiniteRadius`, and converts the uniform datum to the
+  old largeness witness internally. What remains for the unsuffixed theorem is
+  the mathematical construction of a canonical uniform datum from convergence
+  or majorant data.
 
 Acceptance criteria:
 
 - A caller with a power-series expansion, a point inside a strict subball, and a
-  margin can obtain `HasDerivativeAtWith`.
+  margin can obtain `HasDerivativeAtWith` without passing derivative-radius
+  data or `PowerSeriesPartialSumsDerivativeModulusLarge`, provided it supplies
+  the stronger uniform derivative-modulus witness.
 - Downstream instance modules do not manually pass derivative radius, iterated
-  bounds, or partial-sum derivative modulus records.
+  bounds from coefficient bounds, or partial-sum derivative largeness records.
 
 ## Phase 5: Derivative Is Analytic
 
