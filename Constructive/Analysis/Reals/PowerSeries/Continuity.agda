@@ -35,6 +35,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
   using (scalarMulᶜ ; scalarMulᶜ-assoc ; scalarMulᶜ-one)
 open import Constructive.Analysis.Reals.CauchyReals.Base
+open import Constructive.Analysis.Reals.CauchyReals.Order.Base
+  using (_≤ᶜ_)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
@@ -44,6 +46,8 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using (bounded-byᶜ-zero ; shiftPowerSeries ; powerSeriesPartialSum-shift)
 open import Constructive.Analysis.Reals.PowerSeries.Base
+open import Constructive.Analysis.Reals.PowerSeries.Majorant
+  using (hasPowerSeriesOnBallWithFromBoundedTerms)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
@@ -1385,6 +1389,190 @@ powerSeriesSumContinuousAtFromBallTermBoundsCanonical
     termBounds
     h
     h-bound
+
+
+powerSeriesSumUniformlyContinuousFromBoundedTermsAndMajorantCanonicalWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {κ : ℕ → ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {μ : ℚ⁺ → ℕ} →
+  (termBounds :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (bound≤majorant : (n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
+  (majorantNonnegative : (n : ℕ) → 0ᶜ ≤ᶜ v n) →
+  (majorTail : TailBound v μ) →
+  (majorAntitone : AntitoneTailModulus μ) →
+  PowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    ρ
+    μ
+    (hasPowerSeriesOnBallWithFromBoundedTerms
+      termBounds
+      bound≤majorant
+      majorantNonnegative
+      majorTail
+      majorAntitone)
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+powerSeriesSumUniformlyContinuousFromBoundedTermsAndMajorantCanonicalWith
+  termBounds
+  bound≤majorant
+  majorantNonnegative
+  majorTail
+  majorAntitone =
+  powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith
+    {convergence =
+      hasPowerSeriesOnBallWithFromBoundedTerms
+        termBounds
+        bound≤majorant
+        majorantNonnegative
+        majorTail
+        majorAntitone}
+    termBounds
+
+
+powerSeriesSumUniformlyContinuousFromBoundedTermsAndMajorantCanonical :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {κ : ℕ → ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {μ : ℚ⁺ → ℕ} →
+  (termBounds :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (bound≤majorant : (n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
+  (majorantNonnegative : (n : ℕ) → 0ᶜ ≤ᶜ v n) →
+  (majorTail : TailBound v μ) →
+  (majorAntitone : AntitoneTailModulus μ) →
+  PowerSeriesSumUniformlyContinuousOnBall
+    a
+    ρ
+    μ
+    (hasPowerSeriesOnBallWithFromBoundedTerms
+      termBounds
+      bound≤majorant
+      majorantNonnegative
+      majorTail
+      majorAntitone)
+powerSeriesSumUniformlyContinuousFromBoundedTermsAndMajorantCanonical
+  termBounds
+  bound≤majorant
+  majorantNonnegative
+  majorTail
+  majorAntitone =
+  powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
+    {convergence =
+      hasPowerSeriesOnBallWithFromBoundedTerms
+        termBounds
+        bound≤majorant
+        majorantNonnegative
+        majorTail
+        majorAntitone}
+    (_ , termBounds)
+
+
+powerSeriesSumContinuousAtFromBoundedTermsAndMajorantCanonicalWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {κ : ℕ → ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {μ : ℚ⁺ → ℕ} →
+  (termBounds :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (bound≤majorant : (n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
+  (majorantNonnegative : (n : ℕ) → 0ᶜ ≤ᶜ v n) →
+  (majorTail : TailBound v μ) →
+  (majorAntitone : AntitoneTailModulus μ) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAtWith
+    a
+    ρ
+    μ
+    (hasPowerSeriesOnBallWithFromBoundedTerms
+      termBounds
+      bound≤majorant
+      majorantNonnegative
+      majorTail
+      majorAntitone)
+    h
+    h-bound
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+powerSeriesSumContinuousAtFromBoundedTermsAndMajorantCanonicalWith
+  termBounds
+  bound≤majorant
+  majorantNonnegative
+  majorTail
+  majorAntitone =
+  powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith
+    {convergence =
+      hasPowerSeriesOnBallWithFromBoundedTerms
+        termBounds
+        bound≤majorant
+        majorantNonnegative
+        majorTail
+        majorAntitone}
+    termBounds
+
+
+powerSeriesSumContinuousAtFromBoundedTermsAndMajorantCanonical :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {κ : ℕ → ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {μ : ℚ⁺ → ℕ} →
+  (termBounds :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (bound≤majorant : (n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
+  (majorantNonnegative : (n : ℕ) → 0ᶜ ≤ᶜ v n) →
+  (majorTail : TailBound v μ) →
+  (majorAntitone : AntitoneTailModulus μ) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAt
+    a
+    ρ
+    μ
+    (hasPowerSeriesOnBallWithFromBoundedTerms
+      termBounds
+      bound≤majorant
+      majorantNonnegative
+      majorTail
+      majorAntitone)
+    h
+    h-bound
+powerSeriesSumContinuousAtFromBoundedTermsAndMajorantCanonical
+  termBounds
+  bound≤majorant
+  majorantNonnegative
+  majorTail
+  majorAntitone =
+  powerSeriesSumContinuousAtFromBallTermBoundsCanonical
+    {convergence =
+      hasPowerSeriesOnBallWithFromBoundedTerms
+        termBounds
+        bound≤majorant
+        majorantNonnegative
+        majorTail
+        majorAntitone}
+    (_ , termBounds)
 
 
 centeredPowerSeriesSumUniformlyContinuousFromDisplacement :

@@ -137,6 +137,10 @@ Implemented theorem-level bridges:
 - `powerSeriesSumContinuousAtFromBallTermBounds`
 - `powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith`
 - `powerSeriesSumContinuousAtFromBallTermBoundsCanonical`
+- `powerSeriesSumUniformlyContinuousFromBoundedTermsAndMajorantCanonicalWith`
+- `powerSeriesSumUniformlyContinuousFromBoundedTermsAndMajorantCanonical`
+- `powerSeriesSumContinuousAtFromBoundedTermsAndMajorantCanonicalWith`
+- `powerSeriesSumContinuousAtFromBoundedTermsAndMajorantCanonical`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsWith`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith`
@@ -224,12 +228,19 @@ that radius. The same data now feeds partial sums, raw sums, centered sums, and
 `HasPowerSeriesAtWith` / `HasPowerSeriesWithinAtWith` continuity consequences,
 including canonical variants that choose `powerSeriesLimitApproximationIndex μ`
 internally.
+The bounded-term/majorant bridges now also construct the convergence witness
+from the majorant tail and use the same bounded-term data to construct
+canonical sum-level uniform-continuity and point-continuity witnesses. This
+removes the repeated pattern of separately calling
+`hasPowerSeriesOnBallWithFromBoundedTerms` and then rebuilding continuity from
+the original term bounds.
 
 The partial-sum modulus bridge is intentionally modest. It converts either a
 family of finite partial-sum moduli, explicit coefficient bounds, or closed-ball
-term bounds into the existing sum-level continuity criterion. It does not yet
-construct those term bounds automatically from convergence, majorant, or radius
-data.
+term bounds into the existing sum-level continuity criterion. It also consumes
+bounded-term majorant data when rational term bounds are part of that data. It
+does not yet construct rational term bounds automatically from arbitrary
+convergence, majorant, or radius data.
 
 Updated downstream users:
 
@@ -256,8 +267,9 @@ Updated downstream users:
 
 Remaining hard gaps:
 
-- automatically constructing closed-ball term bounds or partial-sum
-  uniform-continuity witnesses from convergence, majorant, or radius data;
+- automatically constructing closed-ball rational term bounds or partial-sum
+  uniform-continuity witnesses from arbitrary convergence, majorant, or radius
+  data;
 - proving generic derivative-series convergence on strict subballs;
 - constructing derivative-modulus largeness data from convergence or majorant
   data, and constructing canonical iterated derivative bounds when explicit
@@ -332,7 +344,7 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | Target | Status | Remaining blocker |
 | --- | --- | --- |
 | Continuity from explicit partial-sum witnesses | Implemented as bridges | Needs automatic construction from expansion data |
-| Uniform continuity on a closed subball | Partially implemented | Coefficient bounds still must be supplied explicitly |
+| Uniform continuity on a closed subball | Partially implemented | Coefficient, closed-ball term, or bounded-term majorant data can now drive canonical moduli; arbitrary radius/convergence data still cannot |
 | `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound variants exist and are used by `exp`, `sin`, `cos`, and `log`; need bridge from expansion/radius data to coefficient bounds |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative radius for `derivativePowerSeries a` | Not implemented generically | Strict-subball derivative convergence |
