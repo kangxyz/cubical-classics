@@ -9,6 +9,8 @@ module Constructive.Analysis.Reals.PowerSeries.Continuity where
 open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
+open import Cubical.Data.Rationals as ℚ using (ℚ)
+import Cubical.Data.Rationals.Order as ℚOrder
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
@@ -17,15 +19,28 @@ open import Constructive.Analysis.Metric.Instances.CauchyReals
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base using (0ᶜ)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
+  using (0ᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
-  using (_·ᶜ_ ; mulᶜ-close-left-with-bound ; mulᶜ-close-right-with-bound)
+  using
+    ( _·ᶜ_
+    ; mulᶜ-close-left-with-bound
+    ; mulᶜ-close-right-with-bound
+    ; mulᶜ-rational-rational
+    ; mulᶜ-rational-right
+    )
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
   using (bounded-byᶜ-mul)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
+  using (scalarMulᶜ ; scalarMulᶜ-assoc ; scalarMulᶜ-one)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.Series
+open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+  using (realPower)
+open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+  using (positivePower)
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using (bounded-byᶜ-zero ; shiftPowerSeries ; powerSeriesPartialSum-shift)
 open import Constructive.Analysis.Reals.PowerSeries.Base
@@ -90,6 +105,179 @@ PowerSeriesCoefficientBounds :
   Type₀
 PowerSeriesCoefficientBounds a =
   Σ[ κ ∈ (ℕ → ℚ⁺) ] PowerSeriesCoefficientBoundsWith a κ
+
+
+powerSeriesCoefficientBoundPrecisionFromBallTermBounds :
+  ℚ⁺ →
+  (ℕ → ℚ⁺) →
+  ℕ →
+  ℚ⁺
+powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ n =
+  posInv⁺ (positivePower ρ n) *⁺ κ n
+
+
+realPower-rational-positive :
+  (ρ : ℚ⁺) →
+  (n : ℕ) →
+  realPower (rational (radius ρ)) n ≡
+  rational (radius (positivePower ρ n))
+realPower-rational-positive ρ zero =
+  refl
+realPower-rational-positive ρ (suc n) =
+  cong
+    (λ p → rational (radius ρ) ·ᶜ p)
+    (realPower-rational-positive ρ n) ∙
+  mulᶜ-rational-rational (radius ρ) (radius (positivePower ρ n))
+
+
+powerSeriesCoefficientFromRationalProbe :
+  (ρ : ℚ⁺) →
+  (a : PowerSeries) →
+  (n : ℕ) →
+  scalarMulᶜ
+    (radius (posInv⁺ (positivePower ρ n)))
+    (powerSeriesTerm a (rational (radius ρ)) n)
+  ≡ a n
+powerSeriesCoefficientFromRationalProbe ρ a n =
+  cong
+    (scalarMulᶜ invρⁿ)
+    (cong (a n ·ᶜ_) (realPower-rational-positive ρ n) ∙
+      mulᶜ-rational-right (a n) ρⁿ) ∙
+  scalarMulᶜ-assoc invρⁿ ρⁿ (a n) ∙
+  cong (λ q → scalarMulᶜ q (a n)) invρⁿ*ρⁿ≡1 ∙
+  scalarMulᶜ-one (a n)
+  where
+  ρⁿ : ℚ
+  ρⁿ =
+    radius (positivePower ρ n)
+
+  invρⁿ : ℚ
+  invρⁿ =
+    radius (posInv⁺ (positivePower ρ n))
+
+  invρⁿ*ρⁿ≡1 : invρⁿ ℚ.· ρⁿ ≡ Rational.1ℚ
+  invρⁿ*ρⁿ≡1 =
+    cong radius (*⁺-posInv-left (positivePower ρ n))
+
+
+powerSeriesCoefficientBoundsFromRationalProbeTermBoundsWith :
+  {a : PowerSeries} →
+  {κ : ℕ → ℚ⁺} →
+  (ρ : ℚ⁺) →
+  ((n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a (rational (radius ρ)) n)) →
+  PowerSeriesCoefficientBoundsWith
+    a
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+powerSeriesCoefficientBoundsFromRationalProbeTermBoundsWith
+  {a = a}
+  {κ = κ}
+  ρ
+  termBounds
+  n =
+  subst
+    (BoundedByᶜ (posInv⁺ ρⁿ⁺ *⁺ κ n))
+    (powerSeriesCoefficientFromRationalProbe ρ a n)
+    scaledTermBound
+  where
+  ρⁿ⁺ : ℚ⁺
+  ρⁿ⁺ =
+    positivePower ρ n
+
+  invρⁿ : ℚ
+  invρⁿ =
+    radius (posInv⁺ ρⁿ⁺)
+
+  invρⁿ-nonnegative :
+    Rational.0ℚ ℚOrder.≤ invρⁿ
+  invρⁿ-nonnegative =
+    Rational.<→≤
+      {p = Rational.0ℚ}
+      {q = invρⁿ}
+      (posInv⁺ ρⁿ⁺ .snd)
+
+  scaledTermBound :
+    BoundedByᶜ
+      (posInv⁺ ρⁿ⁺ *⁺ κ n)
+      (scalarMulᶜ
+        invρⁿ
+        (powerSeriesTerm a (rational (radius ρ)) n))
+  scaledTermBound =
+    bounded-byᶜ-scale-nonnegative
+      invρⁿ
+      (κ n)
+      (posInv⁺ ρⁿ⁺)
+      (powerSeriesTerm a (rational (radius ρ)) n)
+      invρⁿ-nonnegative
+      (Rational.≤-refl invρⁿ)
+      (termBounds n)
+
+
+positiveRationalSelfBounded :
+  (ρ : ℚ⁺) →
+  BoundedByᶜ ρ (rational (radius ρ))
+positiveRationalSelfBounded ρ =
+  rational-closed-bound→boundedᶜ
+    ρ
+    (radius ρ)
+    (rational-closed-boundᶜ
+      (Rational.≤-refl (radius ρ))
+      negρ≤ρ)
+  where
+  0≤ρ : Rational.0ℚ ℚOrder.≤ radius ρ
+  0≤ρ =
+    Rational.<→≤
+      {p = Rational.0ℚ}
+      {q = radius ρ}
+      (ρ .snd)
+
+  negρ≤0 : ℚ.- radius ρ ℚOrder.≤ Rational.0ℚ
+  negρ≤0 =
+    Rational.neg-nonpositive 0≤ρ
+
+  negρ≤ρ : ℚ.- radius ρ ℚOrder.≤ radius ρ
+  negρ≤ρ =
+    Rational.≤-trans
+      {p = ℚ.- radius ρ}
+      {q = Rational.0ℚ}
+      {r = radius ρ}
+      negρ≤0
+      0≤ρ
+
+
+powerSeriesCoefficientBoundsFromBallTermBoundsWith :
+  {a : PowerSeries} →
+  {κ : ℕ → ℚ⁺} →
+  (ρ : ℚ⁺) →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesCoefficientBoundsWith
+    a
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+powerSeriesCoefficientBoundsFromBallTermBoundsWith ρ termBounds =
+  powerSeriesCoefficientBoundsFromRationalProbeTermBoundsWith
+    ρ
+    (termBounds
+      (rational (radius ρ))
+      (positiveRationalSelfBounded ρ))
+
+
+powerSeriesCoefficientBoundsFromBallTermBounds :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesCoefficientBounds a
+powerSeriesCoefficientBoundsFromBallTermBounds
+  {ρ = ρ}
+  (κ , termBounds) =
+  powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ ,
+  powerSeriesCoefficientBoundsFromBallTermBoundsWith ρ termBounds
 
 
 powerSeriesPartialSumBoundPrecision :
@@ -568,6 +756,52 @@ powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBounds
     coeffBounds
 
 
+powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBoundsWith :
+  {a : PowerSeries} →
+  {κ : ℕ → ℚ⁺} →
+  {ρ : ℚ⁺} →
+  {χ : ℚ⁺ → ℕ} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBallWith
+    a
+    ρ
+    χ
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      χ)
+powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBoundsWith
+  {ρ = ρ}
+  termBounds =
+  powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBoundsWith
+    (powerSeriesCoefficientBoundsFromBallTermBoundsWith ρ termBounds)
+
+
+powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBounds :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {χ : ℚ⁺ → ℕ} →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesPartialSumsUniformlyContinuousOnBall a ρ χ
+powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBounds
+  {ρ = ρ}
+  {χ = χ}
+  (κ , termBounds) =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    χ ,
+  powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBoundsWith
+    termBounds
+
+
 powerSeriesSumUniformlyContinuousFromPartialSums :
   {a : PowerSeries} →
   {ρ : ℚ⁺} →
@@ -809,6 +1043,114 @@ powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
     coeffBounds
 
 
+powerSeriesSumUniformlyContinuousFromBallTermBoundsWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {κ : ℕ → ℚ⁺} →
+  ((ε : ℚ⁺) →
+    NatOrder._≤_ (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    ρ
+    μ
+    convergence
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      χ)
+powerSeriesSumUniformlyContinuousFromBallTermBoundsWith
+  {ρ = ρ}
+  index-large
+  termBounds =
+  powerSeriesSumUniformlyContinuousFromCoefficientBoundsWith
+    index-large
+    (powerSeriesCoefficientBoundsFromBallTermBoundsWith ρ termBounds)
+
+
+powerSeriesSumUniformlyContinuousFromBallTermBounds :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  ((ε : ℚ⁺) →
+    NatOrder._≤_ (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesSumUniformlyContinuousOnBall a ρ μ convergence
+powerSeriesSumUniformlyContinuousFromBallTermBounds
+  {ρ = ρ}
+  {χ = χ}
+  index-large
+  (κ , termBounds) =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    χ ,
+  powerSeriesSumUniformlyContinuousFromBallTermBoundsWith
+    index-large
+    termBounds
+
+
+powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    ρ
+    μ
+    convergence
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith
+  {μ = μ}
+  termBounds =
+  powerSeriesSumUniformlyContinuousFromBallTermBoundsWith
+    {χ = powerSeriesLimitApproximationIndex μ}
+    (λ _ → NatOrder.≤-refl)
+    termBounds
+
+
+powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  PowerSeriesSumUniformlyContinuousOnBall a ρ μ convergence
+powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
+  {ρ = ρ}
+  {μ = μ}
+  (κ , termBounds) =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    (powerSeriesLimitApproximationIndex μ) ,
+  powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith
+    termBounds
+
+
 powerSeriesSumContinuousAtFromCoefficientBoundsWith :
   {a : PowerSeries} →
   {ρ : ℚ⁺} →
@@ -913,6 +1255,134 @@ powerSeriesSumContinuousAtFromCoefficientBoundsCanonical
     (powerSeriesLimitApproximationIndex μ) ,
   powerSeriesSumContinuousAtFromCoefficientBoundsCanonicalWith
     coeffBounds
+    h
+    h-bound
+
+
+powerSeriesSumContinuousAtFromBallTermBoundsWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {κ : ℕ → ℚ⁺} →
+  ((ε : ℚ⁺) →
+    NatOrder._≤_ (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAtWith
+    a
+    ρ
+    μ
+    convergence
+    h
+    h-bound
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      χ)
+powerSeriesSumContinuousAtFromBallTermBoundsWith
+  {ρ = ρ}
+  index-large
+  termBounds =
+  powerSeriesSumContinuousAtFromCoefficientBoundsWith
+    index-large
+    (powerSeriesCoefficientBoundsFromBallTermBoundsWith ρ termBounds)
+
+
+powerSeriesSumContinuousAtFromBallTermBounds :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  ((ε : ℚ⁺) →
+    NatOrder._≤_ (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAt a ρ μ convergence h h-bound
+powerSeriesSumContinuousAtFromBallTermBounds
+  {ρ = ρ}
+  {χ = χ}
+  index-large
+  (κ , termBounds)
+  h
+  h-bound =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    χ ,
+  powerSeriesSumContinuousAtFromBallTermBoundsWith
+    index-large
+    termBounds
+    h
+    h-bound
+
+
+powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAtWith
+    a
+    ρ
+    μ
+    convergence
+    h
+    h-bound
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith
+  {μ = μ}
+  termBounds =
+  powerSeriesSumContinuousAtFromBallTermBoundsWith
+    {χ = powerSeriesLimitApproximationIndex μ}
+    (λ _ → NatOrder.≤-refl)
+    termBounds
+
+
+powerSeriesSumContinuousAtFromBallTermBoundsCanonical :
+  {a : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  (h : ℝᶜ) →
+  (h-bound : BoundedByᶜ ρ h) →
+  PowerSeriesSumContinuousAt a ρ μ convergence h h-bound
+powerSeriesSumContinuousAtFromBallTermBoundsCanonical
+  {ρ = ρ}
+  {μ = μ}
+  (κ , termBounds)
+  h
+  h-bound =
+  powerSeriesPartialSumsModulusFromCoefficientBounds
+    (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+    ρ
+    (powerSeriesLimitApproximationIndex μ) ,
+  powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith
+    termBounds
     h
     h-bound
 
@@ -1072,4 +1542,106 @@ centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
   bounds =
   centeredPowerSeriesSumUniformlyContinuousFromDisplacementΣ
     (powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+      bounds)
+
+
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsWith :
+  {a : PowerSeries} →
+  {c : ℝᶜ} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {κ : ℕ → ℚ⁺} →
+  ((ε : ℚ⁺) →
+    NatOrder._≤_ (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  CenteredPowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    c
+    ρ
+    μ
+    convergence
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      χ)
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsWith
+  index-large
+  termBounds =
+  centeredPowerSeriesSumUniformlyContinuousFromDisplacement
+    (powerSeriesSumUniformlyContinuousFromBallTermBoundsWith
+      index-large
+      termBounds)
+
+
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBounds :
+  {a : PowerSeries} →
+  {c : ℝᶜ} →
+  {ρ : ℚ⁺} →
+  {μ χ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  ((ε : ℚ⁺) →
+    NatOrder._≤_ (powerSeriesLimitApproximationIndex μ ε) (χ ε)) →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  CenteredPowerSeriesSumUniformlyContinuousOnBall a c ρ μ convergence
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBounds
+  index-large
+  bounds =
+  centeredPowerSeriesSumUniformlyContinuousFromDisplacementΣ
+    (powerSeriesSumUniformlyContinuousFromBallTermBounds
+      index-large
+      bounds)
+
+
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith :
+  {a : PowerSeries} →
+  {c : ℝᶜ} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  {κ : ℕ → ℚ⁺} →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    (n : ℕ) →
+    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  CenteredPowerSeriesSumUniformlyContinuousOnBallWith
+    a
+    c
+    ρ
+    μ
+    convergence
+    (powerSeriesPartialSumsModulusFromCoefficientBounds
+      (powerSeriesCoefficientBoundPrecisionFromBallTermBounds ρ κ)
+      ρ
+      (powerSeriesLimitApproximationIndex μ))
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith
+  termBounds =
+  centeredPowerSeriesSumUniformlyContinuousFromDisplacement
+    (powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith
+      termBounds)
+
+
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical :
+  {a : PowerSeries} →
+  {c : ℝᶜ} →
+  {ρ : ℚ⁺} →
+  {μ : ℚ⁺ → ℕ} →
+  {convergence : HasPowerSeriesOnBallWith a ρ μ} →
+  Σ[ κ ∈ (ℕ → ℚ⁺) ]
+    ((h : ℝᶜ) →
+      BoundedByᶜ ρ h →
+      (n : ℕ) →
+      BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
+  CenteredPowerSeriesSumUniformlyContinuousOnBall a c ρ μ convergence
+centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
+  bounds =
+  centeredPowerSeriesSumUniformlyContinuousFromDisplacementΣ
+    (powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
       bounds)

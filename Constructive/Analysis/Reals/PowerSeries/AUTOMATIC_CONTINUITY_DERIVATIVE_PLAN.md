@@ -116,34 +116,67 @@ Implemented theorem-level bridges:
 - `powerSeriesPartialSumsModulusFromCoefficientBounds`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBoundsWith`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBounds`
+- `powerSeriesCoefficientBoundsFromRationalProbeTermBoundsWith`
+- `powerSeriesCoefficientBoundsFromBallTermBoundsWith`
+- `powerSeriesCoefficientBoundsFromBallTermBounds`
+- `powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBoundsWith`
+- `powerSeriesPartialSumsUniformlyContinuousOnBallFromBallTermBounds`
 - `powerSeriesSumUniformlyContinuousFromCoefficientBoundsWith`
 - `powerSeriesSumUniformlyContinuousFromCoefficientBounds`
 - `powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith`
 - `powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical`
+- `powerSeriesSumUniformlyContinuousFromBallTermBoundsWith`
+- `powerSeriesSumUniformlyContinuousFromBallTermBounds`
+- `powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith`
+- `powerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical`
 - `powerSeriesSumContinuousAtFromCoefficientBoundsWith`
 - `powerSeriesSumContinuousAtFromCoefficientBounds`
 - `powerSeriesSumContinuousAtFromCoefficientBoundsCanonicalWith`
 - `powerSeriesSumContinuousAtFromCoefficientBoundsCanonical`
+- `powerSeriesSumContinuousAtFromBallTermBoundsWith`
+- `powerSeriesSumContinuousAtFromBallTermBounds`
+- `powerSeriesSumContinuousAtFromBallTermBoundsCanonicalWith`
+- `powerSeriesSumContinuousAtFromBallTermBoundsCanonical`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsWith`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith`
 - `centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical`
+- `centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsWith`
+- `centeredPowerSeriesSumUniformlyContinuousFromBallTermBounds`
+- `centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonicalWith`
+- `centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical`
 - `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith`
 - `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBounds`
 - `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith`
 - `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromBallTermBoundsWith`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromBallTermBounds`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromBallTermBoundsCanonicalWith`
+- `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromBallTermBoundsCanonical`
 - `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsWith`
 - `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBounds`
 - `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonicalWith`
 - `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromBallTermBoundsWith`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromBallTermBounds`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromBallTermBoundsCanonicalWith`
+- `hasPowerSeriesWithinAtWith→uniformlyContinuousOnBallFromBallTermBoundsCanonical`
 - `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsWith`
 - `hasPowerSeriesAtWith→continuousAtFromCoefficientBounds`
 - `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonicalWith`
 - `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical`
+- `hasPowerSeriesAtWith→continuousAtFromBallTermBoundsWith`
+- `hasPowerSeriesAtWith→continuousAtFromBallTermBounds`
+- `hasPowerSeriesAtWith→continuousAtFromBallTermBoundsCanonicalWith`
+- `hasPowerSeriesAtWith→continuousAtFromBallTermBoundsCanonical`
 - `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsWith`
 - `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBounds`
 - `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonicalWith`
 - `hasPowerSeriesWithinAtWith→continuousAtFromCoefficientBoundsCanonical`
+- `hasPowerSeriesWithinAtWith→continuousAtFromBallTermBoundsWith`
+- `hasPowerSeriesWithinAtWith→continuousAtFromBallTermBounds`
+- `hasPowerSeriesWithinAtWith→continuousAtFromBallTermBoundsCanonicalWith`
+- `hasPowerSeriesWithinAtWith→continuousAtFromBallTermBoundsCanonical`
 - `powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds`
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
@@ -185,11 +218,18 @@ The canonical coefficient-bound continuity bridges choose
 `powerSeriesLimitApproximationIndex μ` internally and discharge the index
 comparison by reflexivity, so callers no longer pass `χ` or `index-large` when
 explicit coefficient bounds are available.
+The closed-ball term-bound bridges derive coefficient bounds by probing the
+term bound at the positive rational radius and rescaling by the inverse power of
+that radius. The same data now feeds partial sums, raw sums, centered sums, and
+`HasPowerSeriesAtWith` / `HasPowerSeriesWithinAtWith` continuity consequences,
+including canonical variants that choose `powerSeriesLimitApproximationIndex μ`
+internally.
 
 The partial-sum modulus bridge is intentionally modest. It converts either a
-family of finite partial-sum moduli or explicit coefficient bounds into the
-existing sum-level continuity criterion. It does not yet derive coefficient
-bounds automatically from convergence, majorant, or radius data.
+family of finite partial-sum moduli, explicit coefficient bounds, or closed-ball
+term bounds into the existing sum-level continuity criterion. It does not yet
+construct those term bounds automatically from convergence, majorant, or radius
+data.
 
 Updated downstream users:
 
@@ -216,8 +256,8 @@ Updated downstream users:
 
 Remaining hard gaps:
 
-- automatically constructing partial-sum uniform-continuity witnesses from
-  convergence, majorant, or radius data;
+- automatically constructing closed-ball term bounds or partial-sum
+  uniform-continuity witnesses from convergence, majorant, or radius data;
 - proving generic derivative-series convergence on strict subballs;
 - constructing derivative-modulus largeness data from convergence or majorant
   data, and constructing canonical iterated derivative bounds when explicit
