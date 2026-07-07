@@ -172,8 +172,8 @@ The code is split by whether it uses the library's classical `Oracle`.
   function-facing analytic-at predicates, majorant support, algebraic
   coefficient operations, Cauchy-product coefficients, finite-polynomial exact
   evaluators, formal derivative and primitive coefficients plus derivative
-  convergence transports, the geometric power-series adapter, and formal
-  exponential/trigonometric/logarithmic coefficients.
+  convergence on strict subballs and transports, the geometric power-series
+  adapter, and formal exponential/trigonometric/logarithmic coefficients.
 - Generic Cauchy-completion, closeness, induction, recursion, completeness,
   nonexpanding, Lipschitz, and uniformly-continuous interfaces live under
   `Constructive/Analysis/`; the Cauchy-real aggregate reexports the generic

@@ -131,10 +131,20 @@ module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
     (i · b) · (s · sn) ≡ (i · s) · (b · sn)
   scale-sigma-cancel-form _ _ _ _ = solve! 𝓡
 
+  weighted-scale-sigma-cancel-form :
+    (i b p s sn : 𝓡 .fst) →
+    ((i · b) · p) · (s · sn) ≡ (i · s) · ((b · p) · sn)
+  weighted-scale-sigma-cancel-form _ _ _ _ _ = solve! 𝓡
+
   coefficient-sigma-cancel-form :
     (N i r s : 𝓡 .fst) →
     ((N · i) · r) · s ≡ N · ((i · s) · r)
   coefficient-sigma-cancel-form _ _ _ _ = solve! 𝓡
+
+  weighted-ratio-scale-form :
+    (N r s t : 𝓡 .fst) →
+    ((N · r) · s) · t ≡ N · ((r · s) · t)
+  weighted-ratio-scale-form _ _ _ _ = solve! 𝓡
 
   scalar-product-form :
     (N i r : 𝓡 .fst) →
