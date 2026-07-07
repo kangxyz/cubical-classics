@@ -392,6 +392,73 @@ PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω =
   radius η ℚOrder.≤ radius (ω (χ ε η) (quarter⁺ ε))
 
 
+PowerSeriesPartialSumsDerivativeUniformModulus :
+  TermwiseDerivativeIndex →
+  PrecisionModulus →
+  (ℕ → PrecisionModulus) →
+  Type₀
+PowerSeriesPartialSumsDerivativeUniformModulus χ μ ω =
+  (ε η : ℚ⁺) →
+  radius (μ ε) ℚOrder.≤ radius (ω (χ ε η) (quarter⁺ ε))
+
+
+powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus :
+  {χ : TermwiseDerivativeIndex} →
+  {μ : PrecisionModulus} →
+  {ω : ℕ → PrecisionModulus} →
+  PowerSeriesPartialSumsDerivativeUniformModulus χ μ ω →
+  PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω
+powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus
+  {χ = χ}
+  {μ = μ}
+  {ω = ω}
+  uniformModulus
+  ε
+  η
+  η≤με =
+  Rational.≤-trans
+    {p = radius η}
+    {q = radius (μ ε)}
+    {r = radius (ω (χ ε η) (quarter⁺ ε))}
+    η≤με
+    (uniformModulus ε η)
+
+
+powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus :
+  {χ : TermwiseDerivativeIndex} →
+  (μ ν : PrecisionModulus) →
+  {ω : ℕ → PrecisionModulus} →
+  PowerSeriesPartialSumsDerivativeUniformModulus χ ν ω →
+  PowerSeriesPartialSumsDerivativeModulusLarge
+    χ
+    (λ ε → min⁺ (μ ε) (ν ε))
+    ω
+powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus
+  {χ = χ}
+  μ
+  ν
+  {ω = ω}
+  uniformModulus
+  ε
+  η
+  η≤min =
+  Rational.≤-trans
+    {p = radius η}
+    {q = radius (ν ε)}
+    {r = radius (ω (χ ε η) (quarter⁺ ε))}
+    η≤ν
+    (uniformModulus ε η)
+  where
+  η≤ν : radius η ℚOrder.≤ radius (ν ε)
+  η≤ν =
+    Rational.≤-trans
+      {p = radius η}
+      {q = radius (min⁺ (μ ε) (ν ε))}
+      {r = radius (ν ε)}
+      η≤min
+      (min⁺≤right (μ ε) (ν ε))
+
+
 PowerSeriesPartialSumsHaveDerivativeWith :
   PowerSeries →
   PowerSeries →

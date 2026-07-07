@@ -186,6 +186,9 @@ Implemented theorem-level bridges:
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
 - `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith`
+- `PowerSeriesPartialSumsDerivativeUniformModulus`
+- `powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus`
+- `powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus`
 - `hasDerivativeAtWith-local-cong`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromLocalModel`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel`
@@ -218,6 +221,13 @@ transport with the centered-sum termwise derivative theorem, so callers with
 centered model before transporting it to the expanded function.
 The matching function-level iterated-bound wrapper gives the same transport
 when a caller already has explicit iterated derivative bounds.
+The partial-sums derivative modulus layer now has a checked strengthened
+condition, `PowerSeriesPartialSumsDerivativeUniformModulus`, plus constructors
+to obtain `PowerSeriesPartialSumsDerivativeModulusLarge` directly or after
+shrinking another perturbation modulus by `min⁺`. This proves the planned
+record-strengthening route for the derivative-modulus blocker; the remaining
+work is to construct the uniform datum from convergence, majorants, or
+canonical partial-sum derivative moduli.
 The canonical coefficient-bound continuity bridges choose
 `powerSeriesLimitApproximationIndex μ` internally and discharge the index
 comparison by reflexivity, so callers no longer pass `χ` or `index-large` when
@@ -600,14 +610,15 @@ point, the caller should not rewrite the linear remainder by hand.
 
 Current blocker:
 
-- `PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω` cannot be constructed
-  from an arbitrary supplied `μ` and the existing `χ`/`ω` alone. The index
-  `χ ε η` depends on the perturbation precision `η`, so the required target
-  `ω (χ ε η) (quarter⁺ ε)` also varies with `η`. The current records do not
-  provide a uniform lower bound for these moduli on `η ≤ μ ε`, nor enough
-  monotonicity to derive one. The next theorem should either choose `μ`
-  canonically together with `χ`, or strengthen the partial-sum derivative
-  modulus record with the monotonic/uniformity data needed by this proof.
+- The partial-sum derivative modulus record now has the strengthened
+  uniform-lower-bound route:
+  `PowerSeriesPartialSumsDerivativeUniformModulus χ μ ω` implies
+  `PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω`, and also after
+  replacing an existing perturbation modulus by `λ ε → min⁺ (μ ε) (ν ε)`.
+  What remains is the mathematical construction of that uniform datum from the
+  convergence or majorant data used by the termwise derivative theorem. Without
+  that construction, instance proofs can still be asked for a manual uniform
+  witness or the older largeness witness.
 
 Acceptance criteria:
 
