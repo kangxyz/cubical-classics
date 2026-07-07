@@ -70,7 +70,9 @@ open import Constructive.Analysis.Reals.PowerSeries.Differentiation
     )
 open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
   using
-    ( derivativePowerSeriesInfiniteRadiusFromCoefficientPath
+    ( DerivativePowerSeriesBoundMajorantOnBall
+    ; derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+    ; derivativePowerSeriesInfiniteRadiusFromCoefficientPath
     ; derivativePrimitivePowerSeriesInfiniteRadius
     )
 open import Constructive.Data.PositiveRationals
@@ -748,6 +750,85 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnS
     partialModulus-large
 
 
+centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex→hasDerivativeAtWith :
+  {a : PowerSeries} →
+  {c x : ℝᶜ} →
+  {ρ σ : ℚ⁺} →
+  {μ : PrecisionModulus} →
+  (radiusData : HasInfinitePowerSeriesRadius a) →
+  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
+  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
+  (κ : ℕ → ℚ⁺) →
+  (coefficientBounds : (n : ℕ) → BoundedByᶜ (κ n) (a n)) →
+  (derivativeMajorants :
+    (τ : ℚ⁺) → DerivativePowerSeriesBoundMajorantOnBall κ τ) →
+  PowerSeriesPartialSumsDerivativeModulusLarge
+    (termwiseConvergenceIndex
+      (radiusData ρ .fst)
+      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+        {a = a}
+        κ
+        coefficientBounds
+        derivativeMajorants
+        σ
+        .fst))
+    μ
+    (powerSeriesFormalPartialSumsDerivativeModulus
+      σ
+      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
+        σ
+        κ)) →
+  HasDerivativeAtWith
+    (centeredPowerSeriesSumEverywhere a c radiusData)
+    x
+    (centeredPowerSeriesSumEverywhere
+      (derivativePowerSeries a)
+      c
+      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+        {a = a}
+        κ
+        coefficientBounds
+        derivativeMajorants)
+      x)
+    μ
+centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex→hasDerivativeAtWith
+  {a = a}
+  {c = c}
+  {x = x}
+  {ρ = ρ}
+  {σ = σ}
+  {μ = μ}
+  radiusData
+  x-displacement-bound
+  margin
+  κ
+  coefficientBounds
+  derivativeMajorants
+  partialModulus-large =
+  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    {a = a}
+    {c = c}
+    {x = x}
+    {ρ = ρ}
+    {σ = σ}
+    {μ = μ}
+    radiusData
+    derivativeRadius
+    x-displacement-bound
+    margin
+    κ
+    coefficientBounds
+    partialModulus-large
+  where
+  derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)
+  derivativeRadius =
+    derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+      {a = a}
+      κ
+      coefficientBounds
+      derivativeMajorants
+
+
 hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex :
   {f : ℝᶜ → ℝᶜ} →
   {a b : PowerSeries} →
@@ -1043,6 +1124,90 @@ hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonica
           η≤με
           h
           h-bound))
+
+
+hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex :
+  {f : ℝᶜ → ℝᶜ} →
+  {a : PowerSeries} →
+  {c x : ℝᶜ} →
+  {ρ σ : ℚ⁺} →
+  {seriesModulus : ℚ⁺ → ℕ} →
+  {μ : PrecisionModulus} →
+  (radiusData : HasInfinitePowerSeriesRadius a) →
+  HasPowerSeriesAtWith f c a ρ seriesModulus →
+  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
+  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
+  (κ : ℕ → ℚ⁺) →
+  (coefficientBounds : (n : ℕ) → BoundedByᶜ (κ n) (a n)) →
+  (derivativeMajorants :
+    (τ : ℚ⁺) → DerivativePowerSeriesBoundMajorantOnBall κ τ) →
+  PowerSeriesPartialSumsDerivativeModulusLarge
+    (termwiseConvergenceIndex
+      (radiusData ρ .fst)
+      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+        {a = a}
+        κ
+        coefficientBounds
+        derivativeMajorants
+        σ
+        .fst))
+    μ
+    (powerSeriesFormalPartialSumsDerivativeModulus
+      σ
+      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
+        σ
+        κ)) →
+  HasDerivativeAtWith
+    f
+    x
+    (centeredPowerSeriesSumEverywhere
+      (derivativePowerSeries a)
+      c
+      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+        {a = a}
+        κ
+        coefficientBounds
+        derivativeMajorants)
+      x)
+    μ
+hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex
+  {a = a}
+  {c = c}
+  {x = x}
+  {ρ = ρ}
+  {σ = σ}
+  {μ = μ}
+  radiusData
+  expansion
+  x-displacement-bound
+  margin
+  κ
+  coefficientBounds
+  derivativeMajorants
+  partialModulus-large =
+  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex
+    {a = a}
+    {c = c}
+    {x = x}
+    {ρ = ρ}
+    {σ = σ}
+    {μ = μ}
+    radiusData
+    derivativeRadius
+    expansion
+    x-displacement-bound
+    margin
+    κ
+    coefficientBounds
+    partialModulus-large
+  where
+  derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)
+  derivativeRadius =
+    derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
+      {a = a}
+      κ
+      coefficientBounds
+      derivativeMajorants
 
 
 PowerSeriesTermwiseDerivativeAt :

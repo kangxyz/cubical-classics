@@ -195,6 +195,8 @@ Implemented theorem-level bridges:
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex`
+- `centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex→hasDerivativeAtWith`
+- `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex`
 - `derivativePowerSeriesTermBoundPrecision`
 - `DerivativePowerSeriesBoundMajorantOnBall`
 - `derivativePowerSeriesTermBoundsFromCoefficientBoundsWith`
@@ -229,6 +231,11 @@ transport with the centered-sum termwise derivative theorem, so callers with
 centered model before transporting it to the expanded function.
 The matching function-level iterated-bound wrapper gives the same transport
 when a caller already has explicit iterated derivative bounds.
+The coefficient-bound derivative-majorant wrappers now use the Phase 3
+majorant family to construct the formal derivative radius internally, both for
+the centered everywhere model and for `HasPowerSeriesAtWith` functions. This
+removes the manual `derivativeRadius` argument when callers have coefficient
+bounds and a derivative majorant family.
 The partial-sums derivative modulus layer now has a checked strengthened
 condition, `PowerSeriesPartialSumsDerivativeUniformModulus`, plus constructors
 to obtain `PowerSeriesPartialSumsDerivativeModulusLarge` directly or after
@@ -382,8 +389,8 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; need bridge from expansion/radius data to usable bounds |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative convergence for `derivativePowerSeries a` | Partially implemented | Coefficient-bound plus majorant-tail bridges now produce on-ball, radius, and infinite-radius data; strict-subball theorem from original radius data remains |
-| Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound variants build iterated bounds for named targets and formal derivative targets; modulus-largeness is still manual |
-| Function-level derivative transport | Implemented as local, everywhere-model, and coefficient-bound termwise bridges | Modulus-largeness is still manual |
+| Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound plus derivative-majorant variants construct formal derivative radius and iterated bounds; modulus-largeness is still manual |
+| Function-level derivative transport | Implemented as local, everywhere-model, coefficient-bound, and derivative-majorant termwise bridges | Modulus-largeness is still manual |
 | Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
 | `log` derivative through the generic theorem | Not implemented | Needs strict radius-one geometric derivative convergence |
 
