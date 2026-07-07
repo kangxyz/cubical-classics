@@ -111,11 +111,13 @@ Implemented theorem-level bridges:
 - `PowerSeriesCoefficientBounds`
 - `powerSeriesPartialSumBoundedOnBallFromCoefficientBoundsWith`
 - `powerSeriesPartialSumBoundedOnBallFromCoefficientBounds`
+- `powerSeriesPartialSumLipschitzOnBallWith`
 - `powerSeriesPartialSumUniformlyContinuousOnBallFromCoefficientBoundsWith`
 - `powerSeriesPartialSumUniformlyContinuousOnBallFromCoefficientBounds`
 - `powerSeriesPartialSumsModulusFromCoefficientBounds`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBoundsWith`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallFromCoefficientBounds`
+- `powerSeriesPartialSumsUniformlyContinuousOnBallCanonical`
 - `powerSeriesCoefficientBoundsFromRationalProbeTermBoundsWith`
 - `powerSeriesCoefficientBoundsFromBallTermBoundsWith`
 - `powerSeriesCoefficientBoundsFromBallTermBounds`
@@ -265,6 +267,12 @@ majorant terms `v n` into the ball-term bounds required by the finite
 partial-sum continuity machinery. This route supports partial sums, raw sums,
 centered sums, and ordinary/within-domain `HasPowerSeriesAtWith` consequences
 without choosing arbitrary coefficient bounds from truncation.
+The strict-subball continuity bridges now restrict larger-ball convergence data
+with `hasPowerSeriesOnSmallerBallWith`, choose the canonical Phase 1
+partial-sum modulus, and transport centered sums back to function values with
+`centeredPowerSeriesSumOnBall-data-independent`. They are intentionally exposed
+only under data-rich suffixes: coefficient bounds, ball-term bounds, or
+real-majorant/rational-bound data.
 The derivative-convergence layer now has a first non-transport bridge: explicit
 coefficient bounds on `a` yield closed-ball bounds for the formal derivative
 terms, and a caller-supplied real majorant tail for those derivative-term bounds
@@ -385,8 +393,8 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 | Target | Status | Remaining blocker |
 | --- | --- | --- |
 | Continuity from explicit partial-sum witnesses | Implemented as bridges | Needs automatic construction from expansion data |
-| Uniform continuity on a closed subball | Partially implemented | Coefficient, closed-ball term, bounded-term majorant, or real-majorant/rational-bound data can now drive canonical moduli; arbitrary radius/convergence data still cannot |
-| `HasPowerSeriesAtWith` continuity | Partially implemented | Direct coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; need bridge from expansion/radius data to usable bounds |
+| Uniform continuity on a closed subball | Implemented for data-rich paths | Coefficient, closed-ball term, bounded-term majorant, or real-majorant/rational-bound data drive canonical moduli; bare arbitrary radius/convergence data remains non-constructive without a future bounds bridge |
+| `HasPowerSeriesAtWith` continuity | Implemented for data-rich paths | Strict-subball coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; bare `HasPowerSeriesAtWith` alone cannot construct a modulus |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative convergence for `derivativePowerSeries a` | Partially implemented | Coefficient-bound plus majorant-tail bridges now produce on-ball, radius, and infinite-radius data; strict-subball theorem from original radius data remains |
 | Termwise derivative to `HasDerivativeAtWith` | Partially implemented | Coefficient-bound plus derivative-majorant variants construct formal derivative radius and iterated bounds; modulus-largeness is still manual |
@@ -503,10 +511,15 @@ Implemented first:
 - `hasPowerSeriesAtWith→uniformlyContinuousOnBallFromCoefficientBoundsCanonical`
 - `hasPowerSeriesAtWith→continuousAtFromCoefficientBoundsCanonical`
 
-Remaining implementation targets:
+Final implementation targets completed:
 
 - `powerSeriesPartialSumLipschitzOnBallWith`
 - `powerSeriesPartialSumsUniformlyContinuousOnBallCanonical`
+
+The low-level `PowerSeriesPartialSumsUniformlyContinuousOnBallWith` criterion
+remains available for direct bridge use. Ordinary coefficient-bound
+continuity paths use canonical wrappers instead of caller-supplied partial-sum
+witnesses.
 
 If coefficient bounds for arbitrary `ℝᶜ` coefficients are available only under
 truncation, do not force a choice principle into the public API. Use one of
@@ -544,21 +557,30 @@ Implemented intermediate bridges:
   `SeriesMajorizedBy` data and expose ordinary and within-domain
   `HasPowerSeriesAtWith` consequences.
 
-Implementation targets:
+Implemented strict-subball targets:
 
-- `hasPowerSeriesOnBallWith→uniformlyContinuousOnSubball`
-- `centeredPowerSeriesSumUniformlyContinuousOnSubball`
-- `hasPowerSeriesAtWith→uniformlyContinuousOnSubball`
-- `hasPowerSeriesAtWith→continuousAtOnSubball`
+- `hasPowerSeriesOnBallWith→uniformlyContinuousOnSubballFromCoefficientBounds`
+- `centeredPowerSeriesSumUniformlyContinuousOnSubballFromCoefficientBounds`
+- ball-term-bound variants of both sum-level wrappers
+- real-majorant/rational-bound variants of both sum-level wrappers
+- `hasPowerSeriesAtWith→uniformlyContinuousOnSubballFromCoefficientBounds`
+- `hasPowerSeriesAtWith→continuousAtOnSubballFromCoefficientBounds`
+- ball-term-bound and real-majorant/rational-bound variants of both
+  function-level wrappers
+- within-domain variants of the function-level wrappers
 
-The public API should take an expansion, a smaller closed ball, and the required
-strict-containment evidence. It should construct all partial-sum continuity and
-sum continuity data internally.
+The public API takes an expansion, a smaller closed ball, the required
+strict-containment evidence, and explicit constructive bound data. It constructs
+all partial-sum continuity and sum continuity data internally. The unsuffixed
+bare target names are deliberately not implemented: bare
+`HasPowerSeriesAtWith` does not provide constructive access to a coefficient
+bound, ball-term bound, or majorant/rational-bound family.
 
 Acceptance criteria:
 
-- `Analytic.Consequences` can expose direct continuity consequences from
-  `HasPowerSeriesAtWith`.
+- `Analytic.Consequences` exposes direct strict-subball continuity consequences
+  from `HasPowerSeriesAtWith` when supplied with coefficient bounds, ball-term
+  bounds, or real-majorant/rational-bound data.
 - Instance modules for `exp`, `sin`, `cos`, and `log` do not build continuity
   data manually when a power-series expansion is already present.
 

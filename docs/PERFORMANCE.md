@@ -175,6 +175,13 @@ series convergence, and the cost was conversion/unification rather than
 mathematical work.  Adding `--lossy-unification` to the module reduced the
 file-level check to a few seconds.
 
+`Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence` became
+anomalously slow while adding the strict-subball derivative-convergence proof,
+with conversion/unification pressure around scalar-majorant transports and the
+strict-subball scale expression.  Keeping the scalar scale expression explicit
+at use sites and adding `--lossy-unification` kept cached file checks around
+5-6 seconds.
+
 `Constructive.Data.Rationals.Archimedean` spent about 36 seconds in
 `archimedean-unit-fraction` when it called the generic
 `isArchimedean→isArchimedeanInv` ordered-field theorem.  A rational-specific

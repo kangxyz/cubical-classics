@@ -8,10 +8,16 @@ module Constructive.Analysis.Reals.PowerSeries.Majorant where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.Data.Nat using (ℕ)
+open import Cubical.Data.Nat using (ℕ ; zero ; suc)
+open import Cubical.Data.Rationals as ℚ using (ℚ)
+import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+  using (scalarMulᶜ-nonnegative ; scalarMulᶜ-pres≤ᶜ-scalar)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
+  using (scalarMulᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
   using (_≤ᶜ_ ; ≤ᶜ-trans)
@@ -21,8 +27,11 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
 open import Constructive.Analysis.Reals.PowerSeries.Base
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.Core
+  using (bounded-byᶜ-zero)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
+import Constructive.Data.Rationals as Rational
 
 
 PowerSeriesMajorizedOnBall :
@@ -63,6 +72,109 @@ module PowerSeriesMajorizedOnBall where
     AntitoneTailModulus μ
   majorAntitone majorized =
     majorized .snd .snd
+
+  abstract
+    majorantNonnegative :
+      {a : PowerSeries} {ρ : ℚ⁺} {v : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+      PowerSeriesMajorizedOnBall a ρ v μ →
+      (n : ℕ) →
+      0ᶜ ≤ᶜ v n
+    majorantNonnegative {a = a} {ρ = ρ} {v = v} {μ = μ} majorized n =
+      SeriesMajorizedBy.majorantNonnegative
+        (termMajorized
+          {a = a}
+          {ρ = ρ}
+          {v = v}
+          {μ = μ}
+          majorized
+          0ᶜ
+          (bounded-byᶜ-zero ρ))
+        zero
+        n
+
+    shiftedScalarScaleMajorantNonnegative :
+      {a : PowerSeries} {ρ : ℚ⁺} {v : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+      (q : ℚ) →
+      Rational.0ℚ ℚOrder.≤ q →
+      PowerSeriesMajorizedOnBall a ρ v μ →
+      (n : ℕ) →
+      0ᶜ ≤ᶜ scalarMulᶜ q (v (suc n))
+    shiftedScalarScaleMajorantNonnegative
+        {a = a}
+        {ρ = ρ}
+        {v = v}
+        {μ = μ}
+        q
+        0≤q
+        majorized
+        n =
+      scalarMulᶜ-nonnegative
+        q
+        0≤q
+        {x = v (suc n)}
+        (majorantNonnegative
+          {a = a}
+          {ρ = ρ}
+          {v = v}
+          {μ = μ}
+          majorized
+          (suc n))
+
+    shiftedPositiveScalarScaleMajorantNonnegative :
+      {a : PowerSeries} {ρ : ℚ⁺} {v : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+      (q : ℚ) →
+      Rational.0ℚ ℚOrder.< q →
+      PowerSeriesMajorizedOnBall a ρ v μ →
+      (n : ℕ) →
+      0ᶜ ≤ᶜ scalarMulᶜ q (v (suc n))
+    shiftedPositiveScalarScaleMajorantNonnegative
+        {a = a}
+        {ρ = ρ}
+        {v = v}
+        {μ = μ}
+        q
+        0<q
+        majorized
+        n =
+      shiftedScalarScaleMajorantNonnegative
+        {a = a}
+        {ρ = ρ}
+        {v = v}
+        {μ = μ}
+        q
+        (Rational.<→≤ {p = Rational.0ℚ} {q = q} 0<q)
+        majorized
+        n
+
+    shiftedScalarScaleMajorant≤ :
+      {a : PowerSeries} {ρ : ℚ⁺} {v : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+      (q r : ℚ) →
+      q ℚOrder.≤ r →
+      PowerSeriesMajorizedOnBall a ρ v μ →
+      (n : ℕ) →
+      scalarMulᶜ q (v (suc n)) ≤ᶜ scalarMulᶜ r (v (suc n))
+    shiftedScalarScaleMajorant≤
+        {a = a}
+        {ρ = ρ}
+        {v = v}
+        {μ = μ}
+        q
+        r
+        q≤r
+        majorized
+        n =
+      scalarMulᶜ-pres≤ᶜ-scalar
+        {a = q}
+        {b = r}
+        q≤r
+        {x = v (suc n)}
+        (majorantNonnegative
+          {a = a}
+          {ρ = ρ}
+          {v = v}
+          {μ = μ}
+          majorized
+          (suc n))
 
 
 powerSeriesMajorizedOnBallFromTermBounds :
