@@ -11,3 +11,4 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Geometric public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Trigonometric public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm public
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent public

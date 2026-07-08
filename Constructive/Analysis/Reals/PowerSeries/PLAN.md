@@ -74,6 +74,16 @@ The first complete target is:
 - termwise differentiation;
 - elementary instances `exp`, `sin`, `cos`, `log` through controlled series.
 
+## Current Status
+
+Phases 1 through 9 are implemented for the constructive, data-rich API:
+closed-ball convergence, majorants, algebra, continuity, termwise
+differentiation, exponential/trigonometric instances, radius-one logarithm,
+atanh/atan subunit-ball instances, and the function-facing analytic predicates
+are exported through `PowerSeries.agda`.  The remaining planned work is Phase
+10-style evaluation and argument-reduction work, plus any future theorem that
+explicitly packages global reciprocal/composition domains for `log`.
+
 ## Non-Goals
 
 - Do not begin with multivariable analytic maps or Fréchet power series.  The
@@ -174,6 +184,7 @@ Constructive/Analysis/Reals/PowerSeries/Instances/Geometric.agda
 Constructive/Analysis/Reals/PowerSeries/Instances/Exponential.agda
 Constructive/Analysis/Reals/PowerSeries/Instances/Trigonometric.agda
 Constructive/Analysis/Reals/PowerSeries/Instances/Logarithm.agda
+Constructive/Analysis/Reals/PowerSeries/Instances/Arctangent.agda
 ```
 
 `PowerSeries.agda` and `Instances.agda` should be aggregate modules only after
@@ -352,6 +363,12 @@ atanh z = Σ z^(2n+1) / (2n+1), |z| < 1
 log x = 2 * atanh ((x - 1) / (x + 1))
 ```
 
+The checked Phase 8 API exposes the radius-one, domain-evidenced pieces:
+`Logarithm.agda` provides `logOnePlusPowerSeries` and its local within-ball
+function, while `Arctangent.agda` provides `atanhPowerSeries`,
+`atanPowerSeries`, their subunit-ball majorants, convergence/radius data,
+coefficient bounds, continuity wrappers, and analytic-within witnesses.
+
 The logarithm must carry domain data:
 
 - `x` is positive, preferably with a positive lower bound;
@@ -364,7 +381,10 @@ For arctangent:
 atan x = Σ (-1)^n x^(2n+1)/(2n+1), |x| < 1
 ```
 
-Global `atan` should wait for argument reduction.
+Global `atan` should wait for argument reduction.  Global `log` through the
+atanh transform should likewise be exposed only after the reciprocal/domain
+composition API can carry the positivity and bounded-away-from-zero evidence
+without hiding it.
 
 ## Phase 9: Analytic API
 

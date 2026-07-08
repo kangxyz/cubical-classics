@@ -178,7 +178,7 @@ The code is split by whether it uses the library's classical `Oracle`.
   automatic termwise-derivative wrappers, transports, strict-subball
   re-centering and derivative-analyticity
   wrappers, the geometric power-series adapter, and formal
-  exponential/trigonometric/logarithmic coefficients.
+  exponential/trigonometric/logarithmic/atanh/atan coefficients.
 - Generic Cauchy-completion, closeness, induction, recursion, completeness,
   nonexpanding, Lipschitz, and uniformly-continuous interfaces live under
   `Constructive/Analysis/`; the Cauchy-real aggregate reexports the generic
