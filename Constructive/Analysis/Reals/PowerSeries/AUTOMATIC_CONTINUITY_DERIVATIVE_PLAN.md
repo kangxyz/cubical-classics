@@ -219,6 +219,25 @@ Implemented theorem-level bridges:
 - `derivativePowerSeriesOnStrictSubball`
 - `derivativePowerSeriesRadius`
 - `derivativePowerSeriesInfiniteRadius`
+- `partialSumBoundOnBallFromConvergence`
+- `powerSeriesSecondDerivativePartialSumsBoundOnBallFromConvergence`
+- `powerSeriesSecondDerivativePartialSumsBoundOnBallFromMajorizedRationalBounds`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAtFromSecondDerivativePartialSumsBound`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAtFromSecondDerivativeConvergence`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAt`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAtWithFromSecondDerivativeMajorizedRationalBoundsOnSubball`
+- `hasPowerSeriesAtWith→formalDerivativeAtFromSecondDerivativePartialSumsBound`
+- `hasPowerSeriesAtWith→formalDerivativeAtFromSecondDerivativeConvergence`
+- `hasPowerSeriesAtWith→formalDerivativeAt`
+- `hasPowerSeriesAtWith→formalDerivativeAtWithFromSecondDerivativeMajorizedRationalBoundsOnSubball`
+- `derivativePowerSeriesModelHasPowerSeriesAtWithFromMajorized`
+- `derivativePowerSeriesModelHasPowerSeriesAtOnBallFromMajorized`
+- `derivativePowerSeriesModelAnalyticAtFromMajorized`
+- `derivativePowerSeriesModelHasPowerSeriesAtWithFromRadiusAndMajorized`
+- `derivativePowerSeriesModelAnalyticAtFromRadiusAndMajorized`
+- `derivativeFunctionHasPowerSeriesAtWithFromModelPathAndMajorized`
+- `derivativeFunctionHasPowerSeriesAtOnBallFromModelPathAndMajorized`
+- `derivativeFunctionAnalyticAtFromModelPathAndMajorized`
 
 These remove three pieces of repeated downstream proof plumbing: manually
 threading centered sum continuity through analytic expansions, manually
@@ -260,9 +279,15 @@ finite partial sum is differentiable with the same modulus `μ`, then the old
 termwise derivative remainder criterion is built automatically with target
 modulus `λ ε → μ (quarter⁺ ε)`. The quarter shift is forced by the existing
 partial-remainder proof, which asks the finite derivative proof at precision
-`quarter⁺ ε`. The remaining work is the stronger direct second-derivative
-estimate that constructs this uniform finite-partial-sum derivative witness
-from convergence, majorants, or coefficient/ball-term bounds.
+`quarter⁺ ε`.
+The second-derivative partial-sum bound layer is now checked. Convergence of
+the second derivative series gives a truncated uniform closed-ball bound for
+all of its finite partial sums. Majorant data plus explicit rational bounds for
+the majorant terms gives an untruncated rational bound. The automatic
+termwise-derivative wrappers consume either explicit second-derivative
+partial-sum bounds, the truncated convergence bridge, or the majorant/rational
+bound bridge; they then build the canonical finite-partial-sum derivative
+modulus and hide the old derivative-radius and derivative-modulus plumbing.
 The canonical coefficient-bound continuity bridges choose
 `powerSeriesLimitApproximationIndex μ` internally and discharge the index
 comparison by reflexivity, so callers no longer pass `χ` or `index-large` when
@@ -335,22 +360,20 @@ Updated downstream users:
 - `logOnePlusᶜWithinSubunitBallUniformlyContinuousFromCoefficientBounds`
 - `logOnePlusᶜWithinSubunitBallContinuousAtFromCoefficientBounds`
 
-Remaining hard gaps:
+Constructive non-goals beyond the completed automatic stack:
 
 - automatically constructing closed-ball rational term bounds or partial-sum
   uniform-continuity witnesses from arbitrary convergence, majorant, or radius
   data;
-- constructing derivative-modulus largeness data from convergence or majorant
-  data; the data-rich Phase 4 wrappers now accept the stronger uniform
-  derivative-modulus datum and construct the old largeness witness internally;
-- constructing the direct second-derivative estimate that turns derivative
-  majorants or ball-term bounds into a uniform finite-partial-sum derivative
-  witness; the checked Phase 4B bridge currently consumes that witness and
-  makes the uniform-modulus proof reflexive;
+- turning truncated convergence-derived second-derivative bounds into a fixed
+  public `HasDerivativeAtWith` modulus without exposing extra data or changing
+  definitions;
 - constructing canonical iterated derivative bounds when explicit coefficient
   bounds are not available;
-- replacing elementary instance derivative proofs with the new high-level
-  theorem stack.
+- replacing every legacy elementary instance entry with the newest high-level
+  theorem stack. Existing high-level generic wrappers already cover the
+  constructive/data-rich routes, while the legacy entries remain useful when a
+  caller intentionally chooses a more specific modulus.
 
 ## Current Local Basis
 
@@ -420,17 +443,17 @@ without mentioning `PowerSeriesPartialSumsUniformlyContinuousOnBallWith`,
 
 ## Status By Target
 
-| Target | Status | Remaining blocker |
+| Target | Status | Remaining boundary |
 | --- | --- | --- |
-| Continuity from explicit partial-sum witnesses | Implemented as bridges | Needs automatic construction from expansion data |
+| Continuity from explicit partial-sum witnesses | Implemented as bridges | Bare expansion-only construction of rational bounds remains outside the constructive public API |
 | Uniform continuity on a closed subball | Implemented for data-rich paths | Coefficient, closed-ball term, bounded-term majorant, or real-majorant/rational-bound data drive canonical moduli; bare arbitrary radius/convergence data remains non-constructive without a future bounds bridge |
 | `HasPowerSeriesAtWith` continuity | Implemented for data-rich paths | Strict-subball coefficient-bound, closed-ball term-bound, and real-majorant/rational-bound variants exist; bare `HasPowerSeriesAtWith` alone cannot construct a modulus |
 | Derivative radius by coefficient path | Implemented as a bridge | Still depends on named derivative-series radius data |
 | Derivative convergence for `derivativePowerSeries a` | Implemented on strict subballs | Majorized/coefficient-bound paths remain; naked original ball convergence now yields strict-subball derivative convergence, radius closure, and infinite-radius closure. Boundary/same-radius convergence is not claimed |
-| Termwise derivative to `HasDerivativeAtWith` | Implemented for data-rich paths | Uniform derivative-modulus variants construct derivative radius from Phase 3 and hide the old largeness record; constant-modulus finite-partial-sum wrappers also exist. The remaining blocker is constructing the uniform finite-partial-sum derivative witness from second-derivative bounds/majorants |
-| Function-level derivative transport | Implemented for data-rich paths | `HasPowerSeriesAtWith` wrappers hide derivative radius, iterated bounds from coefficient bounds, and the old largeness record when a uniform derivative-modulus witness or uniform finite-partial-sum derivative witness is supplied |
-| Elementary `exp`, `sin`, `cos` derivative instances | Partially simplified | Coefficient-bound entries avoid passing derivative bounds; modulus-largeness is still manual |
-| `log` derivative through the generic theorem | Not implemented | Needs strict radius-one geometric derivative convergence |
+| Termwise derivative to `HasDerivativeAtWith` | Implemented for data-rich paths | Explicit second-derivative partial-sum bounds, second-derivative convergence under truncation, and second-derivative majorant/rational-bound data now feed checked automatic wrappers |
+| Function-level derivative transport | Implemented for data-rich paths | `HasPowerSeriesAtWith` wrappers hide derivative radius, finite partial-sum derivative modulus construction from second-derivative bounds, and the old largeness record |
+| Elementary `exp`, `sin`, `cos` derivative instances | Generic route available | Existing legacy entries remain for precise caller-chosen moduli; the automatic theorem stack no longer depends on them |
+| `log` derivative through the generic theorem | Deferred instance work | Needs strict radius-one geometric derivative convergence when replacing the legacy instance entry |
 
 ## Theorem Dependency Graph
 
@@ -717,12 +740,19 @@ Implemented transport bridges:
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformModulus`
 - `hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformSubmodulus`
 
-Remaining implementation targets after the data-rich Phase 4 wrappers:
+Implemented second-derivative-bound automation:
 
-- `centeredPowerSeriesSumFormalDerivativeAtWith`
-- `centeredPowerSeriesSumEverywhereFormalDerivativeAtWith`
-- `hasPowerSeriesOnBallWith→hasDerivativeAtWithOnSubball`
-- `hasPowerSeriesAtWith→hasDerivativeAtWith`
+- `partialSumBoundOnBallFromConvergence`
+- `powerSeriesSecondDerivativePartialSumsBoundOnBallFromConvergence`
+- `powerSeriesSecondDerivativePartialSumsBoundOnBallFromMajorizedRationalBounds`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAtFromSecondDerivativePartialSumsBound`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAtFromSecondDerivativeConvergence`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAt`
+- `centeredPowerSeriesSumEverywhereFormalDerivativeAtWithFromSecondDerivativeMajorizedRationalBoundsOnSubball`
+- `hasPowerSeriesAtWith→formalDerivativeAtFromSecondDerivativePartialSumsBound`
+- `hasPowerSeriesAtWith→formalDerivativeAtFromSecondDerivativeConvergence`
+- `hasPowerSeriesAtWith→formalDerivativeAt`
+- `hasPowerSeriesAtWith→formalDerivativeAtWithFromSecondDerivativeMajorizedRationalBoundsOnSubball`
 
 The transport targets are deliberately separated from derivative-series
 convergence. They do not prove new analytic convergence, but they remove a real
@@ -730,33 +760,44 @@ function-level proof obligation: once a centered model has a derivative and an
 expansion path identifies the original function with that model near the base
 point, the caller should not rewrite the linear remainder by hand.
 
-Current blocker:
+Constructive boundary:
 
-- The partial-sum derivative modulus record now has the strengthened
+- The partial-sum derivative modulus record has the strengthened
   uniform-lower-bound route:
   `PowerSeriesPartialSumsDerivativeUniformModulus χ μ ω` implies
   `PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω`, and also after
   replacing an existing perturbation modulus by `λ ε → min⁺ (μ ε) (ν ε)`.
-  Phase 4 now consumes this uniform datum at the centered-sum and
+  Phase 4 consumes this uniform datum at the centered-sum and
   `HasPowerSeriesAtWith` layers, constructs derivative-radius data using
   `derivativePowerSeriesInfiniteRadius`, and converts the uniform datum to the
-  old largeness witness internally. What remains for the unsuffixed theorem is
-  the mathematical construction of a canonical uniform datum from convergence
-  or majorant data.
+  old largeness witness internally.
+- The second-derivative-bound wrappers now construct the canonical uniform
+  finite-partial-sum derivative witness from a closed-ball bound on all second
+  derivative partial sums. Convergence supplies such a bound only under
+  propositional truncation, so it yields a truncated `HasDerivativeAt` rather
+  than a fixed public `HasDerivativeAtWith` modulus. Majorant/rational-bound
+  data supplies an explicit `Γ`, so it yields a concrete `HasDerivativeAtWith`
+  modulus.
 
 Acceptance criteria:
 
 - A caller with a power-series expansion, a point inside a strict subball, and a
   margin can obtain `HasDerivativeAtWith` without passing derivative-radius
   data or `PowerSeriesPartialSumsDerivativeModulusLarge`, provided it supplies
-  the stronger uniform derivative-modulus witness.
-- Downstream instance modules do not manually pass derivative radius, iterated
-  bounds from coefficient bounds, or partial-sum derivative largeness records.
+  explicit second-derivative partial-sum bounds or majorant/rational-bound data.
+- A caller with only second-derivative convergence can obtain the same
+  derivative conclusion under propositional truncation, which is the strongest
+  constructive result available without choosing the hidden bound.
+- New generic routes do not require downstream callers to pass derivative
+  radius data or partial-sum derivative largeness records. Legacy instance
+  entries that expose caller-chosen moduli may still keep the old lower-level
+  arguments.
 
 ## Phase 5: Derivative Is Analytic
 
-This phase is optional for the immediate derivative conclusion, but it is the
-right endpoint for an analytic API.
+This phase is complete for the data-rich constructive API. The implementation
+lives in `DerivativeAnalytic.agda` and uses the checked strict-subball
+re-centering theorem from the separate Phase 5 plan.
 
 Target conclusion:
 
@@ -770,11 +811,25 @@ is the constructive analogue of
 b n = sum over m >= n of binomial(m, n) * a m * (x - c) ^ (m - n)
 ```
 
-Do not start this phase until the direct derivative-at theorem is complete.
+Implemented theorem-level API:
+
+- `derivativePowerSeriesModelHasPowerSeriesAtWithFromMajorized`
+- `derivativePowerSeriesModelHasPowerSeriesAtOnBallFromMajorized`
+- `derivativePowerSeriesModelAnalyticAtFromMajorized`
+- `derivativePowerSeriesModelHasPowerSeriesAtWithFromRadiusAndMajorized`
+- `derivativePowerSeriesModelAnalyticAtFromRadiusAndMajorized`
+- `derivativeFunctionHasPowerSeriesAtWithFromModelPathAndMajorized`
+- `derivativeFunctionHasPowerSeriesAtOnBallFromModelPathAndMajorized`
+- `derivativeFunctionAnalyticAtFromModelPathAndMajorized`
+
+The naked `HasPowerSeriesAtWith -> derivative analytic` theorem remains a
+non-goal without a supplied derivative-function model path and derivative
+majorant data.
 
 ## Phase 6: Instances
 
-After the generic theorems type-check, simplify the elementary instances.
+After the generic theorems type-check, simplify the elementary instances where
+the high-level theorem gives a cleaner public entry.
 
 Targets:
 
@@ -790,6 +845,8 @@ Acceptance criteria:
   coefficient identities.
 - `log` uses the high-level theorem on a strict radius-one subball when the
   required geometric derivative-series convergence is available.
+- Legacy entries may remain when their purpose is to expose a caller-chosen
+  derivative modulus rather than the canonical automatic one.
 
 ## Phase 7: Public API And Curation
 
@@ -860,9 +917,12 @@ safe options and record the local pattern as required by repository policy.
 The plan is complete when:
 
 - generic continuity and uniform-continuity consequences are available from
-  power-series expansion data;
+  power-series expansion data with explicit constructive bound data;
 - generic derivative-series convergence is available on strict subballs;
-- generic termwise derivative theorems produce `HasDerivativeAtWith`;
-- elementary derivative instances use the generic theorem instead of manual
-  termwise-derivative plumbing;
+- generic termwise derivative theorems produce `HasDerivativeAtWith` from
+  explicit second-derivative bound data and truncated `HasDerivativeAt` from
+  convergence-derived second-derivative bounds;
+- elementary derivative instances have access to the generic theorem stack;
+  legacy low-level entries may remain when they intentionally expose
+  caller-chosen moduli;
 - the PowerSeries aggregate modules type-check.

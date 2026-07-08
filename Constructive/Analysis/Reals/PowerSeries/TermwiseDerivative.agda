@@ -12,5 +12,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Rules pub
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.PartialSums public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.IteratedBounds public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.UniformPartialSums public
+open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.SecondDerivativePartialSumBounds public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.ErrorBounds public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem public
+open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Automatic public

@@ -232,6 +232,17 @@ term majorization proof, a tail bound, and an antitone modulus.  Replacing it
 with a `Σ` package and qualified projections reduced the module to under a
 second in the aggregate profile; standalone cached checks are about 5 seconds.
 
+`Constructive.Analysis.Reals.PowerSeries.Recenter.Majorant` stayed small when
+it only converted fixed-coefficient majorant data into coefficient-convergence
+data, but a direct public on-ball strict-subball wrapper made the local check
+fail to finish after repeated 30 second waits.  The trigger was the exposed
+signature combining `PowerSeriesMajorizedOnBall`, radius inequalities, and
+`HasPowerSeriesOnBallWith` around the new re-centering data.  The local
+response was to keep `Recenter.Majorant` as the fixed-coefficient majorant
+layer and defer the double-series/on-ball bridge to the smaller theorem module,
+where the strict-subball proof can be profiled independently.  The checked
+majorant layer remains local and uses `--lossy-unification`.
+
 `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative` checked at about
 66 seconds inside the same aggregate profile, with about 68 seconds under
 `Positivity` in a direct internal profile.  The hot declaration was another
@@ -316,6 +327,12 @@ git diff --check
 
 Run broader checks only when the change touches shared interfaces, module
 paths, foundational definitions, or aggregate exports.
+
+`Constructive.Analysis.Reals.PowerSeries.Recenter.FiniteIdentity` initially
+used the commutative-ring solver for the triangular snoc associativity step and
+did not finish after 90 seconds. Replacing the solver call with an explicit
+`add-assoc`/`add-comm` proof kept the target small and made the module check in
+about five seconds.
 
 ## Upstream References
 
