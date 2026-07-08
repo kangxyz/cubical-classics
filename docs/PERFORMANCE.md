@@ -255,20 +255,10 @@ The upstream Agda issue tracker has several reports that match these symptoms:
   points at scoping, reduce nested module aliases and broad public opens before
   editing mathematical proofs.
 
-## Upstream References
-
-- [`agda/agda#4517`](https://github.com/agda/agda/issues/4517)
-- [`agda/agda#7784`](https://github.com/agda/agda/issues/7784)
-- [`agda/agda#4573`](https://github.com/agda/agda/issues/4573)
-- [`agda/agda#8589`](https://github.com/agda/agda/issues/8589)
-- [`agda/agda#7975`](https://github.com/agda/agda/issues/7975)
-- [`agda/agda#6136`](https://github.com/agda/agda/issues/6136)
-- [`agda/agda#8485`](https://github.com/agda/agda/issues/8485)
-- [`agda/agda#6721`](https://github.com/agda/agda/issues/6721)
-- [`agda/agda#7289`](https://github.com/agda/agda/issues/7289)
-- [`agda/agda#5279`](https://github.com/agda/agda/issues/5279)
-- [`agda/agda#1646`](https://github.com/agda/agda/issues/1646)
-- [`agda/agda#4060`](https://github.com/agda/agda/issues/4060)
-- [`agda/agda#2228`](https://github.com/agda/agda/issues/2228)
-- [`agda/agda#5060`](https://github.com/agda/agda/issues/5060)
-- [`agda/agda#4628`](https://github.com/agda/agda/issues/4628)
+Related upstream reports that may be useful for future triage:
+[`agda/agda#8589`](https://github.com/agda/agda/issues/8589),
+[`agda/agda#7975`](https://github.com/agda/agda/issues/7975),
+[`agda/agda#6136`](https://github.com/agda/agda/issues/6136),
+[`agda/agda#8485`](https://github.com/agda/agda/issues/8485),
+[`agda/agda#5060`](https://github.com/agda/agda/issues/5060), and
+[`agda/agda#4628`](https://github.com/agda/agda/issues/4628).
