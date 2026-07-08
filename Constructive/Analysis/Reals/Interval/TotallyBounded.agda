@@ -3,7 +3,7 @@
 Total boundedness interfaces for closed intervals
 
 -}
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --lossy-unification #-}
 module Constructive.Analysis.Reals.Interval.TotallyBounded where
 
 open import Cubical.Foundations.Prelude
@@ -32,7 +32,8 @@ IntervalFiniteNetData :
   ℚ⁺ →
   Type₀
 IntervalFiniteNetData {a = a} {b = b} a≤b ε =
-  Σ[ n ∈ ℕ ] Σ[ G ∈ Grid a b a≤b n ] GridCovers G ε
+  Σ[ n ∈ ℕ ] Σ[ G ∈ Grid a b a≤b n ]
+    GridCovers {a = a} {b = b} {a≤b = a≤b} {n = n} G ε
 
 
 intervalTotallyBoundedFromGridCovers :
@@ -40,18 +41,25 @@ intervalTotallyBoundedFromGridCovers :
   (a≤b : a ≤ᶜ b) →
   ((ε : ℚ⁺) → IntervalFiniteNetData a≤b ε) →
   IsTotallyBounded (IntervalMetric a b)
-intervalTotallyBoundedFromGridCovers a≤b gridData ε =
-  gridFiniteNet G ε gridCovers
+intervalTotallyBoundedFromGridCovers {a = a} {b = b} a≤b gridData ε =
+  gridFiniteNet {a = a} {b = b} {a≤b = a≤b} {n = netData .fst} G ε gridCovers
   where
   netData : IntervalFiniteNetData a≤b ε
   netData =
     gridData ε
 
-  G : Grid _ _ a≤b (netData .fst)
+  G : Grid a b a≤b (netData .fst)
   G =
     netData .snd .fst
 
-  gridCovers : GridCovers G ε
+  gridCovers :
+    GridCovers
+      {a = a}
+      {b = b}
+      {a≤b = a≤b}
+      {n = netData .fst}
+      G
+      ε
   gridCovers =
     netData .snd .snd
 
@@ -62,10 +70,12 @@ intervalTotallyBoundedWithGapBound :
   (κ : ℚ⁺) →
   BoundedByᶜ κ (gapᶜ a b) →
   IsTotallyBounded (IntervalMetric a b)
-intervalTotallyBoundedWithGapBound a≤b κ gap-bound =
+intervalTotallyBoundedWithGapBound {a = a} {b = b} a≤b κ gap-bound =
   intervalTotallyBoundedFromGridCovers
+    {a = a}
+    {b = b}
     a≤b
-    (boundedOffsetGridCoverData a≤b κ gap-bound)
+    (boundedOffsetGridCoverData {a = a} {b = b} a≤b κ gap-bound)
 
 
 locatedIntervalTotallyBounded :

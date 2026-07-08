@@ -31,6 +31,17 @@ cd "$tmp"
 agda --profile=modules Constructive/Analysis/Reals.agda
 ```
 
+When the symptom is high memory rather than only wall time, measure the same
+cold or cached check with the platform resource tool.  On macOS:
+
+```sh
+/usr/bin/time -l agda Constructive/Analysis/Reals.agda
+```
+
+Record `maximum resident set size` with the timing.  A high RSS number without
+a matching module profile is hard to interpret; collect both the module profile
+and the memory measurement from the same cold/cached setup when possible.
+
 When a module profile identifies a slow file, remove only that file's local
 interface in the temporary copy and profile the file itself.  This gives a
 repeatable measurement for one edit without rebuilding unrelated modules.
@@ -133,8 +144,17 @@ fast p =
   single-field records, a function type alias can be clearer and faster.  If a
   record is public or mathematically clarifies an interface, keep the record
   but make projections and parameters explicit near expensive uses.  When a
-  record becomes a `Σ` package, expect some downstream calls to need explicit
-  hidden arguments that record elaboration used to infer.
+  record becomes a `Σ` package, make sure every public parameter still appears
+  in the alias body.  If a parameter is needed only for the external API, keep
+  a small equality anchor in the package; otherwise projection calls may leave
+  hidden arguments unsolved downstream.  Expect some downstream calls to need
+  explicit hidden arguments that record elaboration used to infer.
+- Memory spikes usually follow the same causes as time spikes: large record
+  positivity checks, big unresolved implicit metas, and conversion over large
+  path or ordered-algebra targets.  Measure RSS with `/usr/bin/time -l`, then
+  use module/internal profiles to find the source.  Reducing record positivity
+  and shrinking large inferred targets is usually more effective than adding
+  heap or waiting longer.
 - Generic ordered-field and ordered-ring theorems can be too general for a
   rational-specific proof.  Avoid routing rational-specific facts through
   generic algebra when the generic theorem produces expensive conversion.  A
@@ -182,13 +202,6 @@ strict-subball scale expression.  Keeping the scalar scale expression explicit
 at use sites and adding `--lossy-unification` kept cached file checks around
 5-6 seconds.
 
-`Constructive.Data.Rationals.Archimedean` spent about 36 seconds in
-`archimedean-unit-fraction` when it called the generic
-`isArchimedean→isArchimedeanInv` ordered-field theorem.  A rational-specific
-proof from `ℚArch.isArchimedeanℚ 1ℚ ε` avoided the generic ordered-field
-conversion path.  Make the zero case and multiplicative transport arguments
-explicit; otherwise Agda can leave large quotient-rational constraints.
-
 `Constructive.Analysis.Reals.IVT.Uniform` checked at about 52 seconds in a
 cold local profile, with about 49 seconds under `Positivity`.  The hot surface
 was not a proof body; it was the public `IVTFunctionData` record over interval
@@ -232,16 +245,14 @@ term majorization proof, a tail bound, and an antitone modulus.  Replacing it
 with a `Σ` package and qualified projections reduced the module to under a
 second in the aggregate profile; standalone cached checks are about 5 seconds.
 
-`Constructive.Analysis.Reals.PowerSeries.Recenter.Majorant` stayed small when
-it only converted fixed-coefficient majorant data into coefficient-convergence
-data, but a direct public on-ball strict-subball wrapper made the local check
-fail to finish after repeated 30 second waits.  The trigger was the exposed
-signature combining `PowerSeriesMajorizedOnBall`, radius inequalities, and
-`HasPowerSeriesOnBallWith` around the new re-centering data.  The local
-response was to keep `Recenter.Majorant` as the fixed-coefficient majorant
-layer and defer the double-series/on-ball bridge to the smaller theorem module,
-where the strict-subball proof can be profiled independently.  The checked
-majorant layer remains local and uses `--lossy-unification`.
+`Constructive.Analysis.Reals.PowerSeries.Recenter.Majorant` checked at about
+37 seconds inside a cold local `PowerSeries` aggregate profile, with about
+40 seconds under `Positivity` in a direct internal profile.  The file was
+small; the hot surface was the public proof/data records
+`RecenterCoefficientMajorantData` and `RecenterCoefficientMajorants`.
+Replacing them with transparent `Σ` packages and projection modules, and
+turning the only record literal into an explicit tuple/function package,
+reduced the module to about 48 milliseconds in the aggregate profile.
 
 `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative` checked at about
 66 seconds inside the same aggregate profile, with about 68 seconds under
@@ -261,6 +272,66 @@ instances.  In a cold `PowerSeries` aggregate profile, the module dropped to
 about 6.2 seconds and the aggregate dropped from about 27.8 seconds to about
 15.4 seconds.
 
+`Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.SecondDerivativePartialSumBounds.Finite`
+checked at about 24 seconds inside a cold local `PowerSeries` aggregate
+profile.  A direct definitions profile put about 22 seconds in a local
+`bound` proof over partial-sum boundedness.  The proof used `with` splits on
+`NatOrder.≤-split` and `NatOrder.splitℕ-≤` over large dependent boundedness
+targets.  Rewriting both splits as `Sum.rec` with named `left` and `right`
+branches reduced the module to about 171 milliseconds in the aggregate
+profile.
+
+`Constructive.Analysis.Reals` was profiled from a cold local copy after
+removing only the repository `_build` directory and keeping external Cubical
+interfaces cached.  Before the Constructive cleanup, the aggregate profile was
+about 224 seconds.  The largest local modules were
+`Constructive.Data.Rationals.Archimedean` at about 42 seconds,
+`Constructive.Analysis.Reals.Series.Instances.Geometric.Real` at about
+39 seconds, `Constructive.Analysis.Reals.Interval.TotallyBounded` at about
+24 seconds, and `Constructive.Analysis.Reals.Interval.Grid` at about
+17 seconds.  After the fixes below, the same cold aggregate profile was about
+104 seconds.  A cold `/usr/bin/time -l agda Constructive/Analysis/Reals.agda`
+run after the fixes reported `2061697024` bytes maximum resident set size and
+about 106 seconds wall time.
+
+`Constructive.Data.Rationals.Archimedean` spent about 40 seconds in a direct
+definitions profile, with about 37 seconds in `archimedean-unit-fraction`.
+The trigger was routing a rational-specific unit-fraction fact through the
+generic `isArchimedean→isArchimedeanInv` ordered-field theorem.  Replacing it
+with a direct proof from `ℚArch.isArchimedeanℚ 1ℚ ε`, and making the zero case
+and multiplicative endpoint transport explicit, reduced the file profile to
+about 10 seconds.  In the fixed cold aggregate, the module was about
+7.2 seconds.
+
+`Constructive.Analysis.Reals.Series.Instances.Geometric.Real` looked like
+`Miscellaneous` in a definitions profile, but `--profile=internal` showed
+about 36 seconds under `Positivity`.  The hot declarations were proof/data
+records such as `RealGeometricBound`, `RealGeometricTerms`,
+`RealGeometricPowerMajorant`, and `RealGeometricPowerBounds`.  Replacing them
+with transparent `Σ` packages or function aliases, while keeping projection
+modules with the same names, reduced `Positivity` to about 10 milliseconds and
+the standalone internal profile to about 5 seconds.  In the fixed cold
+aggregate, the module was about 1 second.
+
+`Constructive.Analysis.Reals.Interval.Grid` spent about 19 seconds in a direct
+internal profile, with about 15 seconds under `Positivity`, even though the
+record only packaged grid points and endpoint paths.  Replacing `Grid` with a
+transparent `Σ` package removed the positivity cost.  The first version of the
+alias omitted the `a≤b` parameter from the right-hand side, which caused
+downstream `Grid.point` calls to leave hidden `a≤b` metas unsolved.  Keep a
+small equality anchor for such API parameters in the package:
+`Σ[ order ∈ a ≤ᶜ b ] Σ[ _ ∈ order ≡ a≤b ] ...`.  With that anchor, the core
+grid module checked in about 3.4 seconds standalone and about 59 milliseconds
+inside the fixed cold aggregate, without patching downstream grid clients.
+
+`Constructive.Analysis.Reals.Interval.TotallyBounded` checked at about
+24 seconds in the original cold aggregate, and a direct definitions profile
+put about 22 seconds in local finite-net/grid packaging.  Adding
+`--lossy-unification` to this small interface module, and making the
+`GridCovers` parameters explicit at the finite-net boundary, reduced the
+standalone profile to about 4 seconds.  In the fixed cold aggregate, the
+module was about 38 milliseconds.
+
 After changing a record package to a `Σ` package, recheck aggregate modules.
 Projection functions no longer get record elaboration behavior, so dependent
 uses may need explicit hidden parameters.  In the IVT approximate modules,
@@ -272,14 +343,31 @@ In the power-series modules, passing explicit hidden parameters around
 
 ## Open Slow Files
 
-There are no remaining anomalously slow PowerSeries files from this profiling
-pass.  In a cold local `PowerSeries` aggregate profile after the wrapper-chain
-cleanup, the largest residual modules were
-`Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative` at about 6.2
-seconds, `CauchyProduct` at about 1.5 seconds, and `Radius` at about 1.0
-second.  If a future aggregate profile finds another slow module, add it here
-with the command used, the cold and cached timings, the dominant profile
-bucket, and the next concrete experiment.
+There are no remaining anomalously slow PowerSeries files from the current
+PowerSeries profiling pass.  In a cold local `PowerSeries` aggregate profile
+after the `Recenter.Majorant` and finite partial-sum cleanup, the aggregate
+checked in about 34.7 seconds.  The largest residual modules were
+`Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem` at about
+5.6 seconds, `Instances.Logarithm.Global` at about 1.3 seconds,
+`Recenter.StripFinite` at about 1.2 seconds, and `Radius.Centered` at about
+1.1 seconds.
+
+There are no single-file Constructive Reals outliers left from the 2026-07-08
+profile on the scale of the fixed 17-42 second modules.  After the cleanup,
+the cold local `Constructive.Analysis.Reals` aggregate checked in about
+104 seconds and had about 2.06 GB maximum RSS.  The largest residual modules
+were `Constructive.Data.Rationals.Archimedean` at about 7.2 seconds,
+`Constructive.Analysis.Reals.CauchyReals.Order.Bounded` at about 5.9 seconds,
+`Constructive.Analysis.Reals.Locator.Base` at about 5.7 seconds,
+`Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication` at
+about 4.2 seconds, and `Constructive.Data.Rationals.Bounds` at about
+4.0 seconds.  These are broad foundational modules rather than isolated
+proof-packaging outliers; profile them individually before applying another
+structural change.
+
+If a future aggregate profile finds another slow module, add it here with the
+command used, the cold and cached timings, the dominant profile bucket, RSS if
+memory is part of the symptom, and the next concrete experiment.
 
 ## GitHub Matches
 
@@ -316,17 +404,7 @@ The upstream Agda issue tracker has several reports that match these symptoms:
   points at scoping, reduce nested module aliases and broad public opens before
   editing mathematical proofs.
 
-## When To Stop
-
-Stop local refactoring once the touched module and the nearest aggregate
-module check in normal cached mode.  Then run:
-
-```sh
-git diff --check
-```
-
-Run broader checks only when the change touches shared interfaces, module
-paths, foundational definitions, or aggregate exports.
+## Additional Case Studies
 
 `Constructive.Analysis.Reals.PowerSeries.Recenter.FiniteIdentity` initially
 used the commutative-ring solver for the triangular snoc associativity step and
@@ -372,6 +450,18 @@ isolating that wrapper in a small submodule still did not finish after a
 30 second wait.  Keep the checked bridge at the algebraic `logTransformᶜ`
 path level, and delay `atanhᶜFromSubunitBound` transport until the surrounding
 normal form is already fixed by a smaller theorem.
+
+## When To Stop
+
+Stop local refactoring once the touched module and the nearest aggregate
+module check in normal cached mode.  Then run:
+
+```sh
+git diff --check
+```
+
+Run broader checks only when the change touches shared interfaces, module
+paths, foundational definitions, or aggregate exports.
 
 ## Upstream References
 

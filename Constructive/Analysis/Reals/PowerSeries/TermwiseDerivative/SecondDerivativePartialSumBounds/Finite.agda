@@ -13,7 +13,7 @@ open import Cubical.Data.Nat using (ℕ ; suc ; zero)
 import Cubical.Data.Nat.Order as NatOrder
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
-open import Cubical.Data.Sum using (inl ; inr)
+open import Cubical.Data.Sum as Sum using (inl ; inr)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
@@ -213,22 +213,31 @@ private
             ρ
             (suc m)
             (Γ +⁺ Λ)
-        bound y y-bound n n≤sucm with NatOrder.≤-split n≤sucm
-        ... | inl n<sucm =
-          bounded-byᶜ-monotone
-            Γ≤Γ+Λ
-            (prefixBound
-              y
-              y-bound
-              n
-              (NatOrder.pred-≤-pred n<sucm))
-        ... | inr n≡sucm =
-          bounded-byᶜ-monotone
-            Λ≤Γ+Λ
-            (subst
-              (λ k → BoundedByᶜ Λ (powerSeriesPartialSum a y k))
-              (sym n≡sucm)
-              (lastBound y y-bound))
+        bound y y-bound n n≤sucm =
+          Sum.rec left right (NatOrder.≤-split n≤sucm)
+          where
+          left :
+            n NatOrder.< suc m →
+            BoundedByᶜ (Γ +⁺ Λ) (powerSeriesPartialSum a y n)
+          left n<sucm =
+            bounded-byᶜ-monotone
+              Γ≤Γ+Λ
+              (prefixBound
+                y
+                y-bound
+                n
+                (NatOrder.pred-≤-pred n<sucm))
+
+          right :
+            n ≡ suc m →
+            BoundedByᶜ (Γ +⁺ Λ) (powerSeriesPartialSum a y n)
+          right n≡sucm =
+            bounded-byᶜ-monotone
+              Λ≤Γ+Λ
+              (subst
+                (λ k → BoundedByᶜ Λ (powerSeriesPartialSum a y k))
+                (sym n≡sucm)
+                (lastBound y y-bound))
 
 
 partialSumBoundOnBallFromConvergence :
@@ -336,13 +345,22 @@ partialSumBoundOnBallFromConvergence {a = a} {ρ = ρ} {μ = μ} convergence =
       BoundedByᶜ ρ y →
       (n : ℕ) →
       BoundedByᶜ (Γ +⁺ 1⁺) (powerSeriesPartialSum a y n)
-    bound y y-bound n with NatOrder.splitℕ-≤ n cutoff
-    ... | inl n≤cutoff =
-      bounded-byᶜ-monotone
-        Γ≤Γ+1
-        (prefixBound y y-bound n n≤cutoff)
-    ... | inr cutoff<n =
-      tailCase y y-bound n cutoff<n
+    bound y y-bound n =
+      Sum.rec left right (NatOrder.splitℕ-≤ n cutoff)
+      where
+      left :
+        NatOrder._≤_ n cutoff →
+        BoundedByᶜ (Γ +⁺ 1⁺) (powerSeriesPartialSum a y n)
+      left n≤cutoff =
+        bounded-byᶜ-monotone
+          Γ≤Γ+1
+          (prefixBound y y-bound n n≤cutoff)
+
+      right :
+        cutoff NatOrder.< n →
+        BoundedByᶜ (Γ +⁺ 1⁺) (powerSeriesPartialSum a y n)
+      right cutoff<n =
+        tailCase y y-bound n cutoff<n
 
 
 powerSeriesSecondDerivativePartialSumsBoundOnBallFromConvergence :

@@ -124,23 +124,6 @@ natMul-unitFraction n =
     ℚ.·IdL (unitFraction n)
 
 
-abstract
-  archimedean-unit-fraction :
-    (ε : ℚ) →
-    0 ℚOrder.< ε →
-    Σ[ n ∈ ℕ ] unitFraction n ℚOrder.< ε
-  archimedean-unit-fraction ε 0<ε with
-      isArchimedean→isArchimedeanInv
-        ℚLinearlyOrderedField
-        ℚArch.isArchimedeanℚ
-        ε
-        1ℚ
-        0<ε
-        0<1
-  ... | 1+ n , unit<ε =
-    n , unit<ε
-
-
 natMul-zero : (ε : ℚ) → natMul zero ε ≡ 0
 natMul-zero = ℚLOR.0⋆q≡0
 
@@ -263,3 +246,44 @@ natMul-mul-left (suc n) a b =
   cong (λ q → q ℚ.+ (a ℚ.· b)) (natMul-mul-left n a b) ∙
   sym (ℚ.·DistL+ a (natMul n b) b) ∙
   cong (a ℚ.·_) (sym (natMul-suc n b))
+
+
+abstract
+  archimedean-unit-fraction :
+    (ε : ℚ) →
+    0 ℚOrder.< ε →
+    Σ[ n ∈ ℕ ] unitFraction n ℚOrder.< ε
+  archimedean-unit-fraction ε 0<ε with
+      ℚArch.isArchimedeanℚ 1ℚ ε 0<ε
+  ... | zero , 1<0 =
+    Empty.rec
+      (ℚLOR.<-asym
+        {x = 0ℚ}
+        {y = 1ℚ}
+        0<1
+        (subst (1ℚ ℚOrder.<_) (natMul-zero ε) 1<0))
+  ... | suc n , nε>1 =
+    n ,
+    subst2
+      ℚOrder._<_
+      (ℚ.·IdL (unitFraction n))
+      rightEndpoint
+      (ℚOF.·-rPosPres<
+        {x = unitFraction n}
+        {y = 1ℚ}
+        {z = natMul (suc n) ε}
+        (unitFraction-positive n)
+        nε>1)
+    where
+    rightEndpoint :
+      natMul (suc n) ε ℚ.· unitFraction n ≡ ε
+    rightEndpoint =
+      ℚ.·Comm (natMul (suc n) ε) (unitFraction n) ∙
+      sym (natMul-mul-left (suc n) (unitFraction n) ε) ∙
+      cong
+        (natMul (suc n))
+        (ℚ.·Comm (unitFraction n) ε) ∙
+      cong
+        (natMul (suc n))
+        (sym (divideBySuc-as-unitFraction ε n)) ∙
+      natMul-divideBySuc ε n

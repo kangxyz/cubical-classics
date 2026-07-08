@@ -242,11 +242,7 @@ trigPowerSeriesPowerBoundsFromBall ρ ρ<1 h h-bound n =
   where
   bound : RealGeometricBound h
   bound =
-    record
-      { ratioBound = ρ
-      ; ratioBound<1 = ρ<1
-      ; termBound = h-bound
-      }
+    ρ , ρ<1 , h-bound
 
 
 trigPowerSeriesPowerBoundsOnAnyBall :

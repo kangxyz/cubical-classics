@@ -47,21 +47,57 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
 
-record RealGeometricBound (x : ℝᶜ) : Type₀ where
-  no-eta-equality
-
-  field
-    ratioBound : ℚ⁺
-    ratioBound<1 : radius ratioBound ℚOrder.< Rational.1ℚ
-    termBound : BoundedByᶜ ratioBound x
+RealGeometricBound : ℝᶜ → Type₀
+RealGeometricBound x =
+  Σ[ ratioBound ∈ ℚ⁺ ]
+    Σ[ ratioBound<1 ∈ radius ratioBound ℚOrder.< Rational.1ℚ ]
+      BoundedByᶜ ratioBound x
 
 
-record RealGeometricTerms (x : ℝᶜ) : Type₀ where
-  no-eta-equality
+module RealGeometricBound where
+  ratioBound :
+    {x : ℝᶜ} →
+    RealGeometricBound x →
+    ℚ⁺
+  ratioBound bound =
+    bound .fst
 
-  field
-    term : ℕ → ℝᶜ
-    firstTerm : term zero ≡ rationalGeometricTerm Rational.1ℚ zero
+  ratioBound<1 :
+    {x : ℝᶜ} →
+    (bound : RealGeometricBound x) →
+    radius (ratioBound bound) ℚOrder.< Rational.1ℚ
+  ratioBound<1 bound =
+    bound .snd .fst
+
+  termBound :
+    {x : ℝᶜ} →
+    (bound : RealGeometricBound x) →
+    BoundedByᶜ (ratioBound bound) x
+  termBound bound =
+    bound .snd .snd
+
+
+RealGeometricTerms : ℝᶜ → Type₀
+RealGeometricTerms x =
+  Σ[ term ∈ (ℕ → ℝᶜ) ]
+    term zero ≡ rationalGeometricTerm Rational.1ℚ zero
+
+
+module RealGeometricTerms where
+  term :
+    {x : ℝᶜ} →
+    RealGeometricTerms x →
+    ℕ →
+    ℝᶜ
+  term terms =
+    terms .fst
+
+  firstTerm :
+    {x : ℝᶜ} →
+    (terms : RealGeometricTerms x) →
+    term {x = x} terms zero ≡ rationalGeometricTerm Rational.1ℚ zero
+  firstTerm terms =
+    terms .snd
 
 
 realPower :
@@ -93,10 +129,7 @@ realGeometricPowerTerms :
   (x : ℝᶜ) →
   RealGeometricTerms x
 realGeometricPowerTerms x =
-  record
-    { term = realPower x
-    ; firstTerm = refl
-    }
+  realPower x , refl
 
 
 realGeometricFiniteIdentity :
@@ -139,7 +172,7 @@ RealGeometricTailBound :
   (ℚ⁺ → ℕ) →
   Type₀
 RealGeometricTailBound x terms μ =
-  SeriesTailBound (RealGeometricTerms.term terms) μ
+  SeriesTailBound (RealGeometricTerms.term {x = x} terms) μ
 
 
 RealGeometricFiniteTailBound :
@@ -148,20 +181,31 @@ RealGeometricFiniteTailBound :
   (ℚ⁺ → ℕ) →
   Type₀
 RealGeometricFiniteTailBound x terms μ =
-  TailBound (RealGeometricTerms.term terms) μ
+  TailBound (RealGeometricTerms.term {x = x} terms) μ
 
 
-record RealGeometricPowerMajorant
-  (x : ℝᶜ)
-  (terms : RealGeometricTerms x)
-  (bound : RealGeometricBound x) : Type₀ where
-  no-eta-equality
+RealGeometricPowerMajorant :
+  (x : ℝᶜ) →
+  RealGeometricTerms x →
+  RealGeometricBound x →
+  Type₀
+RealGeometricPowerMajorant x terms bound =
+  SeriesMajorizedBy
+    (RealGeometricTerms.term {x = x} terms)
+    (positiveGeometricTerm (RealGeometricBound.ratioBound {x = x} bound))
 
-  field
-    termsMajorized :
-      SeriesMajorizedBy
-        (RealGeometricTerms.term terms)
-        (positiveGeometricTerm (RealGeometricBound.ratioBound bound))
+
+module RealGeometricPowerMajorant where
+  termsMajorized :
+    {x : ℝᶜ} →
+    {terms : RealGeometricTerms x} →
+    {bound : RealGeometricBound x} →
+    RealGeometricPowerMajorant x terms bound →
+    SeriesMajorizedBy
+      (RealGeometricTerms.term {x = x} terms)
+      (positiveGeometricTerm (RealGeometricBound.ratioBound {x = x} bound))
+  termsMajorized majorant =
+    majorant
 
 
 realGeometricTailBoundFromMajorant :
@@ -175,7 +219,12 @@ realGeometricTailBoundFromMajorant :
     μ →
   RealGeometricFiniteTailBound x terms μ
 realGeometricTailBoundFromMajorant x terms bound majorant =
-  comparisonTest (RealGeometricPowerMajorant.termsMajorized majorant)
+  comparisonTest
+    (RealGeometricPowerMajorant.termsMajorized
+      {x = x}
+      {terms = terms}
+      {bound = bound}
+      majorant)
 
 
 realGeometricSeriesTailBoundFromMajorant :
@@ -189,8 +238,10 @@ realGeometricSeriesTailBoundFromMajorant :
     μ →
   AntitoneTailModulus μ →
   RealGeometricTailBound x terms (λ ε → μ (half⁺ ε))
-realGeometricSeriesTailBoundFromMajorant x terms bound majorant majorTail μ-antitone =
+realGeometricSeriesTailBoundFromMajorant x terms bound majorant {μ = μ} majorTail μ-antitone =
   tailBound→SeriesTailBound
+    {u = RealGeometricTerms.term {x = x} terms}
+    {μ = μ}
     (realGeometricTailBoundFromMajorant x terms bound majorant majorTail)
     μ-antitone
 
@@ -468,17 +519,28 @@ RealGeometricPowerMajorized x bound =
   RealGeometricPowerMajorant x (realGeometricPowerTerms x) bound
 
 
-record RealGeometricPowerBounds
-  (x : ℝᶜ)
-  (bound : RealGeometricBound x) : Type₀ where
-  no-eta-equality
+RealGeometricPowerBounds :
+  (x : ℝᶜ) →
+  RealGeometricBound x →
+  Type₀
+RealGeometricPowerBounds x bound =
+  (n : ℕ) →
+  BoundedByᶜ
+    (positivePower (RealGeometricBound.ratioBound bound) n)
+    (realPower x n)
 
-  field
-    powerBound :
-      (n : ℕ) →
-      BoundedByᶜ
-        (positivePower (RealGeometricBound.ratioBound bound) n)
-        (realPower x n)
+
+module RealGeometricPowerBounds where
+  powerBound :
+    {x : ℝᶜ} →
+    {bound : RealGeometricBound x} →
+    RealGeometricPowerBounds x bound →
+    (n : ℕ) →
+    BoundedByᶜ
+      (positivePower (RealGeometricBound.ratioBound bound) n)
+      (realPower x n)
+  powerBound powerBounds =
+    powerBounds
 
 
 realGeometricPowerMajorantFromBounds :
@@ -487,10 +549,7 @@ realGeometricPowerMajorantFromBounds :
   RealGeometricPowerBounds x bound →
   RealGeometricPowerMajorized x bound
 realGeometricPowerMajorantFromBounds x bound powerBounds =
-  record
-    { termsMajorized =
-        termMajorized , majorantNonnegative
-    }
+  termMajorized , majorantNonnegative
   where
   ρ : ℚ⁺
   ρ =
@@ -550,7 +609,7 @@ realGeometricPowerBoundsFromStep :
       (realPower x (suc n))) →
   RealGeometricPowerBounds x bound
 realGeometricPowerBoundsFromStep x bound step =
-  record { powerBound = powerBound }
+  powerBound
   where
   powerBound :
     (n : ℕ) →
@@ -586,7 +645,7 @@ realGeometricPowerBoundsFromBound :
   (bound : RealGeometricBound x) →
   RealGeometricPowerBounds x bound
 realGeometricPowerBoundsFromBound x bound =
-  record { powerBound = realPowerBoundsFromBound ρ x x-bound }
+  realPowerBoundsFromBound ρ x x-bound
   where
   ρ : ℚ⁺
   ρ =

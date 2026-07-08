@@ -615,62 +615,24 @@ recenterCoefficientMajorantDataFromMajorizedOnStrictSubball :
   PowerSeriesMajorizedOnBall a σ v ν →
   (n : ℕ) →
   RecenterCoefficientMajorantData a d n
-coefficientMajorant
-    (recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
-      {δ = δ}
-      {σ = σ}
-      {v = v}
-      d
-      d-bound
-      δ<σ
-      majorized
-      n) =
-  recenterCoefficientMajorant {v = v} δ σ δ<σ n
-coefficientModulus
-    (recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
-      {δ = δ}
-      {σ = σ}
-      {ν = ν}
-      d
-      d-bound
-      δ<σ
-      majorized
-      n) =
+recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
+  {δ = δ}
+  {σ = σ}
+  {v = v}
+  {ν = ν}
+  d
+  d-bound
+  δ<σ
+  majorized
+  n =
+  recenterCoefficientMajorant {v = v} δ σ δ<σ n ,
   rationalScaleModulus
     (radius (recenterCoefficientScale δ σ δ<σ n))
-    ν
-coefficientMajorized
-    (recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
-      {δ = δ}
-      {σ = σ}
-      {v = v}
-      d
-      d-bound
-      δ<σ
-      majorized
-      n) =
+    ν ,
   seriesMajorizedByTerms
     (coefficientTerm≤majorant d d-bound δ<σ majorized n)
-    (recenterCoefficientMajorantNonnegative δ<σ majorized n)
-coefficientMajorTail
-    (recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
-      {δ = δ}
-      {σ = σ}
-      d
-      d-bound
-      δ<σ
-      majorized
-      n) =
-  strictSubballCoefficientMajorTail δ<σ majorized n
-coefficientMajorAntitone
-    (recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
-      {δ = δ}
-      {σ = σ}
-      d
-      d-bound
-      δ<σ
-      majorized
-      n) =
+    (recenterCoefficientMajorantNonnegative δ<σ majorized n) ,
+  strictSubballCoefficientMajorTail δ<σ majorized n ,
   strictSubballCoefficientMajorAntitone δ<σ majorized n
 
 
@@ -695,16 +657,13 @@ recenterPowerSeriesDataFromMajorizedOnStrictSubballδ<σ
     δ<σ
     majorized =
   recenterPowerSeriesDataFromCoefficientMajorants
-    record
-      { coefficientMajorantData =
-          recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
-            {a = a}
-            {δ = δ}
-            {σ = σ}
-            {v = v}
-            {ν = ν}
-            d
-            d-bound
-            δ<σ
-            majorized
-      }
+    (recenterCoefficientMajorantDataFromMajorizedOnStrictSubball
+      {a = a}
+      {δ = δ}
+      {σ = σ}
+      {v = v}
+      {ν = ν}
+      d
+      d-bound
+      δ<σ
+      majorized)
