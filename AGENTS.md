@@ -7,6 +7,14 @@ documentation tone, and module style, follow `STYLE.md`.
 For repository navigation, proof boundaries, and verification commands, use
 `docs/DEVELOPMENT.md`.
 
+## Skills
+
+- Use `$agda-theorem-first-curation` for Agda theorem-library curation,
+  generated-code cleanup, meaningful theorem migration, public API slimming,
+  or review work where thin aliases, reexports, wrappers, or proof plumbing
+  might be mistaken for theorem progress. Apply its minimal loop for small
+  proof edits and its curation loop for module migration or API cleanup.
+
 ## Working Principles
 
 - Read the relevant code before changing it.
