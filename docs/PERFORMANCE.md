@@ -50,7 +50,9 @@ For unfamiliar symptoms, search GitHub issues and pull requests in
 explanations, and workarounds before inventing a local fix.  After fixing a
 slow file, record the profile signal, local response, and verification in
 `docs/PERFORMANCE_CASE_STUDIES.md`; leave unresolved items in
-`Open Slow Files`.
+`Open Slow Files`.  If triage reveals a reusable slow pattern or response that
+is not covered below, add it to `Slow Patterns And Responses` in this file as
+part of the same change.
 
 ## Reading Profiles
 

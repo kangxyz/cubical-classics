@@ -43,7 +43,9 @@ For anomalously slow Agda checks, follow `docs/PERFORMANCE.md` before changing
 proof shape or treating the slowdown as a proof failure.
 Whenever an anomalous type-checking issue is identified or fixed, record the
 fixed case study in `docs/PERFORMANCE_CASE_STUDIES.md`; keep unresolved
-diagnostics in `docs/PERFORMANCE.md`.
+diagnostics in `docs/PERFORMANCE.md`.  If the work uncovers a reusable slow
+pattern or response, add it to the `Slow Patterns And Responses` section of
+`docs/PERFORMANCE.md`.
 
 ## Boundaries
 
