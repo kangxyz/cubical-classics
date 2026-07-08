@@ -9,6 +9,8 @@ module Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEqu
 open import Cubical.Foundations.Prelude
 
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.GeometricBridge public
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.AtanhZero public
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.AtanhTransport public
 
 open import Cubical.Algebra.CommRing
 open import Cubical.Data.Rationals as ℚ using (ℚ)
@@ -50,6 +52,12 @@ private
       (c h r : 𝓡 .fst) →
       c · (1r + h · r) ≡ c + h · (c · r)
     denominator-one-plus-quotient _ _ _ =
+      solve! 𝓡
+
+    divide-add-numerator :
+      (c h r : 𝓡 .fst) →
+      (c + h) · r ≡ (c · r) + (h · r)
+    divide-add-numerator _ _ _ =
       solve! 𝓡
 
     log-transform-one-plus-numerator :
@@ -255,6 +263,36 @@ positiveDivision-denominatorMulOnePlus-path cLower c h c-bound =
   r : ℝᶜ
   r =
     reciprocalPositiveᶜ cLower c c-bound
+
+
+positiveDivision-add-numerator-path :
+  (cLower : ℚ⁺) →
+  (c h : ℝᶜ) →
+  (c-bound : BoundedAwayPositiveᶜ cLower c) →
+  divideByPositiveᶜ (c +ᶜ h) cLower c c-bound ≡
+  1ᶜ +ᶜ divideByPositiveᶜ h cLower c c-bound
+positiveDivision-add-numerator-path cLower c h c-bound =
+  SolverHelpers.divide-add-numerator
+    CauchyRealsCommRing
+    c
+    h
+    r ∙
+  cong (_+ᶜ (h ·ᶜ r))
+    (reciprocalPositiveᶜ-right cLower c c-bound)
+  where
+  r : ℝᶜ
+  r =
+    reciprocalPositiveᶜ cLower c c-bound
+
+
+positiveDivision-onePlusQuotient-path :
+  (cLower : ℚ⁺) →
+  (c h : ℝᶜ) →
+  (c-bound : BoundedAwayPositiveᶜ cLower c) →
+  1ᶜ +ᶜ divideByPositiveᶜ h cLower c c-bound ≡
+  divideByPositiveᶜ (c +ᶜ h) cLower c c-bound
+positiveDivision-onePlusQuotient-path cLower c h c-bound =
+  sym (positiveDivision-add-numerator-path cLower c h c-bound)
 
 
 logTransformᶜ-onePlus-path :
