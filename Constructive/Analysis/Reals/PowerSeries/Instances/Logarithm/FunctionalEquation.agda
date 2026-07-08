@@ -32,8 +32,17 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.DomainScaling
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global
   using
-    ( logTransformᶜ
+    ( LogDomainᶜ
+    ; atanhᶜFromSubunitBound
+    ; denominatorBound
+    ; denominatorLower
+    ; log-domain-from-positive-boundedᶜ
+    ; logTransformᶜ
+    ; logᶜ-positive-bounded
     ; twoᶜ
+    ; transformBound
+    ; transformRadius
+    ; transformRadius<1
     )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
   using
@@ -360,6 +369,55 @@ logTransformᶜ-onePlus-twoPlus-path u denomLower denomBound =
     (twoᶜ +ᶜ u)
     (logTransformᶜ-onePlus-denominator-path u)
     denomBound
+
+
+logOnePlusᶜWithinSubunitBall-global :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  (u : ℝᶜ) →
+  (u-bound : BoundedByᶜ ρ u) →
+  let
+    domain =
+      log-domain-from-positive-boundedᶜ
+        (1ᶜ +ᶜ u)
+        (onePlusStrictSubunitDomain ρ ρ<1 u u-bound)
+  in
+  logᶜ-positive-bounded
+    (1ᶜ +ᶜ u)
+    (onePlusStrictSubunitDomain ρ ρ<1 u u-bound)
+  ≡
+  twoᶜ ·ᶜ
+  atanhᶜFromSubunitBound
+    (transformRadius domain)
+    (transformRadius<1 domain)
+    (divideByPositiveᶜ
+      u
+      (denominatorLower domain)
+      ((1ᶜ +ᶜ u) +ᶜ 1ᶜ)
+      (denominatorBound domain))
+    (subst
+      (BoundedByᶜ (transformRadius domain))
+      (logTransformᶜ-onePlus-path
+        u
+        (denominatorLower domain)
+        (denominatorBound domain))
+      (transformBound domain))
+logOnePlusᶜWithinSubunitBall-global ρ ρ<1 u u-bound =
+  cong (twoᶜ ·ᶜ_)
+    (atanhᶜFromSubunitBound-argument-path
+      (transformRadius domain)
+      (transformRadius<1 domain)
+      (logTransformᶜ-onePlus-path
+        u
+        (denominatorLower domain)
+        (denominatorBound domain))
+      (transformBound domain))
+  where
+  domain : LogDomainᶜ (1ᶜ +ᶜ u)
+  domain =
+    log-domain-from-positive-boundedᶜ
+      (1ᶜ +ᶜ u)
+      (onePlusStrictSubunitDomain ρ ρ<1 u u-bound)
 
 
 logTransformᶜ-one-path :
