@@ -16,4 +16,6 @@ open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct public
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation public
 open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative public
+open import Constructive.Analysis.Reals.PowerSeries.Recenter public
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeAnalytic public
 open import Constructive.Analysis.Reals.PowerSeries.Instances public
