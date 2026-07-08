@@ -44,7 +44,8 @@ For anomalously slow Agda checks, use `docs/PERFORMANCE.md`.
 - If Agda type checking is anomalously slow, follow the performance triage
   notes in `docs/PERFORMANCE.md` before assuming the proof is stuck.
 - Whenever you identify or fix an anomalous Agda type-checking issue, record
-  the pattern, trigger, and local response in `docs/PERFORMANCE.md`.
+  fixed case studies in `docs/PERFORMANCE_CASE_STUDIES.md`; keep unresolved
+  diagnostics in `docs/PERFORMANCE.md`.
 - If a file-level check is too slow, add `--lossy-unification` to that
   module's `{-# OPTIONS --safe #-}` pragma and report that the flag was added.
 - Run broader checks when changing shared interfaces, module paths, or
