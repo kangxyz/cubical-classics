@@ -81,8 +81,9 @@ closed-ball convergence, majorants, algebra, continuity, termwise
 differentiation, exponential/trigonometric instances, radius-one logarithm,
 atanh/atan subunit-ball instances, and the function-facing analytic predicates
 are exported through `PowerSeries.agda`.  The remaining planned work is Phase
-10-style evaluation and argument-reduction work, plus any future theorem that
-explicitly packages global reciprocal/composition domains for `log`.
+10-style evaluation and argument-reduction work, plus future theorem packages
+that turn the global reciprocal/composition domain for `log` into analytic
+expansion data away from a fixed center.
 
 ## Non-Goals
 
@@ -365,7 +366,10 @@ log x = 2 * atanh ((x - 1) / (x + 1))
 
 The checked Phase 8 API exposes the radius-one, domain-evidenced pieces:
 `Logarithm.agda` provides `logOnePlusPowerSeries` and its local within-ball
-function, while `Arctangent.agda` provides `atanhPowerSeries`,
+function, `Logarithm/DomainScaling.agda` provides the fixed positive
+denominator linear series and strict subunit radius scaling,
+`Logarithm/Global.agda` provides the positive-domain atanh-transform interface
+for logarithm values, while `Arctangent.agda` provides `atanhPowerSeries`,
 `atanPowerSeries`, their subunit-ball majorants, convergence/radius data,
 coefficient bounds, continuity wrappers, and analytic-within witnesses.
 
@@ -382,9 +386,13 @@ atan x = Σ (-1)^n x^(2n+1)/(2n+1), |x| < 1
 ```
 
 Global `atan` should wait for argument reduction.  Global `log` through the
-atanh transform should likewise be exposed only after the reciprocal/domain
-composition API can carry the positivity and bounded-away-from-zero evidence
-without hiding it.
+atanh transform is exposed with explicit positive denominator data, a
+positive-bounded-domain wrapper that automatically derives a subunit transform
+bound, data-independence lemmas for the transform denominator and chosen
+subunit radius/bound, and uniform continuity on every explicit positive window
+`lo ≤ x` and `|x| ≤ hi`.  A fully global analytic theorem for `log` still
+belongs with reciprocal-domain composition/re-centering rather than the local
+radius-one series itself.
 
 ## Phase 9: Analytic API
 

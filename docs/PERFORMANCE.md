@@ -334,6 +334,45 @@ did not finish after 90 seconds. Replacing the solver call with an explicit
 `add-assoc`/`add-comm` proof kept the target small and made the module check in
 about five seconds.
 
+`Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global` became
+slow after adding the automatic subunit bound for the atanh transform.  The
+trigger was a path-heavy ordered-ring proof combining rational radius
+transports, reciprocal identities, and commutative-ring solver normalizations;
+the local check did not finish after repeated 30 second waits.  Keeping the
+proof local to the global-log module and adding `--lossy-unification` reduced
+the cached file check to about 14 seconds.
+
+`Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision` became
+slow after adding the tight positive-reciprocal bound
+`reciprocalPositiveᶜ-posInv-bound`.  The trigger was the ordered-ring transport
+from `ε ≤ x` through multiplication by the reciprocal and the rational inverse
+identity.  The local check did not finish after repeated 30 second waits;
+adding `--lossy-unification` kept the cached file check under 10 seconds.
+
+`Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.DomainScaling`
+inherits the same path-heavy transport shape when packaging fixed-denominator
+division as a finite linear power series and strict subunit radius scaling.
+The module did not finish after repeated 30 second waits without lossy
+unification; keeping it small and adding `--lossy-unification` made the cached
+check complete in about 16 seconds.
+
+`Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation`
+became slow when the local log functional-equation proof imported
+`PowerSeries.CauchyProduct.Remainder` only to reuse
+`seriesSumFromFiniteTailBound-cong`, and it stayed slow after copying that
+congruence proof locally through sequence convergence uniqueness.  Both
+variants did not finish after repeated 30 second waits.  Keep this module on
+the small domain/algebra bridges for now; move the alternating-geometric
+`powerSeriesSumOnBall` to `realPower` sum bridge into a dedicated small module
+before using it in the full log identity.
+
+The same module also became slow when a public theorem type mentioned
+`atanhᶜFromSubunitBound` over a transported `logTransformᶜ (1 + u)` argument;
+isolating that wrapper in a small submodule still did not finish after a
+30 second wait.  Keep the checked bridge at the algebraic `logTransformᶜ`
+path level, and delay `atanhᶜFromSubunitBound` transport until the surrounding
+normal form is already fixed by a smaller theorem.
+
 ## Upstream References
 
 - [`agda/agda#4517`](https://github.com/agda/agda/issues/4517)

@@ -15,6 +15,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication pu
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing public
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing public
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Inverse public
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision public
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedHeytingField public
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition public
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice public

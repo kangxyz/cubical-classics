@@ -160,7 +160,8 @@ The code is split by whether it uses the library's classical `Oracle`.
   Dedekind-real API.
 - `Constructive/Analysis/Reals/CauchyReals/` specializes the generic Cauchy
   completion to the rational metric space, then builds additive group laws,
-  rational scalar, scalar-order, order-boundedness, global
+  rational scalar, scalar-order, order-boundedness, bounded positive division,
+  global
   multiplication, commutative-ring and ordered-commutative-ring structures,
   lattice operations, rational-separated strict order, apartness,
   magnitude/distance lemmas, and an ordered-Heyting-field instance built from
@@ -178,7 +179,10 @@ The code is split by whether it uses the library's classical `Oracle`.
   automatic termwise-derivative wrappers, transports, strict-subball
   re-centering and derivative-analyticity
   wrappers, the geometric power-series adapter, and formal
-  exponential/trigonometric/logarithmic/atanh/atan coefficients.
+  exponential/trigonometric/logarithmic/atanh/atan coefficients plus the
+  domain-evidenced global logarithm value interface with fixed-denominator
+  scaling series, automatic positive bounded-domain transform bounds, and
+  positive-window uniform continuity.
 - Generic Cauchy-completion, closeness, induction, recursion, completeness,
   nonexpanding, Lipschitz, and uniformly-continuous interfaces live under
   `Constructive/Analysis/`; the Cauchy-real aggregate reexports the generic
