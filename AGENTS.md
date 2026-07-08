@@ -6,7 +6,6 @@ Repository-wide operating rules for agents. For naming, comments,
 documentation tone, and module style, follow `STYLE.md`.
 For repository navigation, proof boundaries, and verification commands, use
 `docs/DEVELOPMENT.md`.
-For anomalously slow Agda checks, use `docs/PERFORMANCE.md`.
 
 ## Working Principles
 
@@ -41,13 +40,8 @@ For anomalously slow Agda checks, use `docs/PERFORMANCE.md`.
 
 - Type-check the module you touched and the nearest aggregate module when
   practical.
-- If Agda type checking is anomalously slow, follow the performance triage
-  notes in `docs/PERFORMANCE.md` before assuming the proof is stuck.
-- Whenever you identify or fix an anomalous Agda type-checking issue, record
-  fixed case studies in `docs/PERFORMANCE_CASE_STUDIES.md`; keep unresolved
-  diagnostics in `docs/PERFORMANCE.md`.
-- If a file-level check is too slow, add `--lossy-unification` to that
-  module's `{-# OPTIONS --safe #-}` pragma and report that the flag was added.
+- If an Agda type check is anomalous or too slow, follow the performance
+  triage notes in `docs/PERFORMANCE.md` before assuming the proof is stuck.
 - Run broader checks when changing shared interfaces, module paths, or
   foundational definitions.
 - Always run whitespace/diff checks before reporting completion.
