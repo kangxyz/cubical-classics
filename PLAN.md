@@ -6,6 +6,26 @@ explicit rational precision data: moduli of continuity, moduli of convergence,
 finite rational nets, and approximate conclusions where exact classical
 existence is not constructively valid.
 
+## Current Status
+
+This is a historical roadmap.  The implemented constructive-analysis namespace
+now lives under `Constructive.Analysis` and, for real-specific material, under
+`Constructive.Analysis.Reals`.  Several early phase targets have been completed
+or split into more precise modules:
+
+- the generic metric core is in `Constructive.Analysis.Metric`, with Cauchy
+  approximation and completeness interfaces in
+  `Constructive.Analysis.Metric.Cauchy` and the generic completion modules
+  under `Constructive.Analysis.Completions.CauchyCompletion`;
+- the Cauchy-real construction and algebra/order interface is
+  `Constructive.Analysis.Reals.CauchyReals`;
+- intervals, IVT, sequences, series, power series, and calculus live under the
+  plural `Constructive.Analysis.Reals` namespace.
+
+Read `README.md` and `docs/DEVELOPMENT.md` for the current public entry points.
+The remaining phase descriptions below should be read as design history unless
+they have a newer local `PLAN.md`.
+
 ## Literature Basis
 
 - The HoTT Book, Chapter 11, defines Cauchy reals by a higher
@@ -43,9 +63,10 @@ existence is not constructively valid.
 ## Scope
 
 The new library should live under `Constructive/Analysis/`.  The
-`Constructive/CauchyReals/` namespace should remain the public construction
-and algebra/order interface for `ℝᶜ`; analysis-specific notions should import
-that interface rather than being added back into the real-number construction.
+`Constructive/Analysis/Reals/CauchyReals/` namespace should remain the public
+construction and algebra/order interface for `ℝᶜ`; analysis-specific notions
+should import that interface rather than being added back into the real-number
+construction.
 
 The first target is not classical undergraduate real analysis verbatim.  It is
 the Bishop-compatible core:
@@ -77,7 +98,7 @@ Create:
 
 - `Constructive/Analysis/Metric.agda`
 - `Constructive/Analysis/Metric/Map.agda`
-- `Constructive/Analysis/Metric/Complete.agda`
+- `Constructive/Analysis/Metric/Cauchy.agda`
 - `Constructive/Analysis/Metric/TotallyBounded.agda`
 
 Define a precision-indexed metric interface compatible with current Cauchy
@@ -97,8 +118,9 @@ Then define:
 - Cauchy approximations indexed by `ℚ⁺`;
 - completeness as existence of limits for such approximations.
 
-Reuse `Constructive.CauchyReals.Completeness` where possible, but avoid thin
-aliases.  Promote genuinely generic definitions only if they shorten later
+Reuse the generic Cauchy-completion completeness theorem and
+`Constructive.Analysis.Metric.Instances.CauchyReals` where possible, but avoid
+thin aliases.  Promote genuinely generic definitions only if they shorten later
 analysis modules.
 
 Expected public theorem:
@@ -135,7 +157,8 @@ Expected public theorem set:
 - Cauchy with modulus has a limit in `ℝᶜ`;
 - sums/products of convergent sequences converge;
 - squeeze theorem in an approximate/order-apart form;
-- uniqueness of limits by `Constructive.CauchyReals.path`.
+- uniqueness of limits by the `path` principle exported from
+  `Constructive.Analysis.Reals.CauchyReals`.
 
 ## Phase 3: Series And Elementary Bounds
 
@@ -164,9 +187,9 @@ This phase supports later elementary functions and Banach fixed-point proofs.
 
 Create:
 
-- `Constructive/Analysis/Real/Interval.agda`
-- `Constructive/Analysis/Real/Interval/Grid.agda`
-- `Constructive/Analysis/Real/Interval/Compact.agda`
+- `Constructive/Analysis/Reals/Interval.agda`
+- `Constructive/Analysis/Reals/Interval/Grid.agda`
+- `Constructive/Analysis/Reals/Interval/Compact.agda`
 
 Define closed intervals as subtypes:
 
@@ -191,7 +214,7 @@ and locatedness assumptions needed to state them constructively.
 
 Create:
 
-- `Constructive/Analysis/Real/IVT/Approximate.agda`
+- `Constructive/Analysis/Reals/IVT/Approximate.agda`
 
 Target theorem:
 
@@ -253,7 +276,7 @@ nonconstructive compactness.
 Create:
 
 - `Constructive/Analysis/Metric/LipschitzExtension.agda`
-- `Constructive/Analysis/Real/UniformApproximation.agda`
+- `Constructive/Analysis/Reals/UniformApproximation.agda`
 
 Target theorem set:
 
@@ -263,16 +286,16 @@ Target theorem set:
 - Lipschitz functions are uniformly dense in uniformly continuous functions on
   totally bounded spaces, in the modulus-controlled form used by Petrakis.
 
-This should reuse the existing `Constructive.CauchyReals.Extension` and
-`Constructive.CauchyReals.Lipschitz` ideas, but the general metric-space
-statements belong under `Constructive/Analysis/Metric`.
+This should reuse the existing
+`Constructive.Analysis.Reals.CauchyReals.Extension` ideas, but the general
+metric-space statements belong under `Constructive/Analysis/Metric`.
 
 ## Phase 8: Elementary Functions
 
 Create:
 
-- `Constructive/Analysis/Real/PowerSeries.agda`
-- `Constructive/Analysis/Real/Elementary.agda`
+- `Constructive/Analysis/Reals/PowerSeries.agda`
+- `Constructive/Analysis/Reals/Elementary.agda`
 
 Start with functions whose constructive convergence proof is direct:
 
@@ -295,7 +318,7 @@ Each function should come with:
 Add aggregate modules only after the underlying modules stabilize:
 
 - `Constructive/Analysis.agda`
-- `Constructive/Analysis/Real.agda`
+- `Constructive/Analysis/Reals.agda`
 
 Update `README.md` when the new namespace becomes public.  The README should
 state exactly which results are constructive and approximate.  Classical

@@ -74,9 +74,9 @@ pattern, trigger, and local response in `docs/PERFORMANCE.md`.
   Cauchy approximations, maps, and total boundedness support.
 - `Classical.DedekindCut` is the Oracle-based cut completion of an
   Archimedean ordered field.
-- `Classical.Analysis.Real` and `Classical.Analysis.Function` contain the
-  classical real-analysis results, including exact compactness and IVT-style
-  theorems.
+- `Classical.Analysis.Real` and the modules under
+  `Classical/Analysis/Function/` contain the classical real-analysis results,
+  including exact compactness and IVT-style theorems.
 
 Prefer aggregate modules as public entry points.  When adding or moving a
 public module, update imports, aggregate modules, and `README.md` in the same

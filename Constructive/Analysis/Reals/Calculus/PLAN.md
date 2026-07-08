@@ -8,6 +8,12 @@ The intended namespace is `Constructive.Analysis.Reals.Calculus`.  The first
 target is constructive Bishop-style calculus with explicit rational precision
 data, not a classical copy of textbook real analysis.
 
+## Current Status
+
+This is a future-calculus roadmap.  The current implementation has derivative
+modules under `Constructive.Analysis.Reals.Calculus.Derivative`; the planned
+step-function, integral, and FTC modules below do not currently exist.
+
 ## Literature Basis
 
 - Bishop and Bridges, *Constructive Analysis* (1985), give the mathematical

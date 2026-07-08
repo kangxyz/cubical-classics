@@ -6,6 +6,14 @@ Approximate Intermediate Value Theorem*:
 
 https://arxiv.org/abs/1701.02227
 
+## Current Status
+
+This is a future-theorem plan.  The currently implemented IVT aggregate is
+`Constructive.Analysis.Reals.IVT`, which reexports `GridSearch`, `Uniform`, and
+the `Approximate` module cluster.  The `Pointwise` and `Frank` module names
+below are proposed names for a separate theorem family and do not currently
+exist.
+
 Frank proves that a pointwise continuous `f : [a,b] -> R` with
 `f a < 0 < f b` has values arbitrarily close to zero, without uniform
 continuity, countable choice, or inspecting rational approximants of real
