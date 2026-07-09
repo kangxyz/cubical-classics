@@ -16,3 +16,4 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.SecondDer
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.ErrorBounds public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem public
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Automatic public
+open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Within public

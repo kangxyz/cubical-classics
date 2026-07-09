@@ -14,4 +14,5 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.DomainScaling public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation public
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.LogOnePlusGlobal public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent public

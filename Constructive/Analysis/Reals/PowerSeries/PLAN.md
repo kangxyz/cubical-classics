@@ -372,6 +372,9 @@ denominator linear series and strict subunit radius scaling,
 for logarithm values, while `Arctangent.agda` provides `atanhPowerSeries`,
 `atanPowerSeries`, their subunit-ball majorants, convergence/radius data,
 coefficient bounds, continuity wrappers, and analytic-within witnesses.
+`Arctangent/GlobalAnalytic.agda` uses strict-interior re-centering to prove
+that the domain-evidenced `atanh` function is analytic at every point with an
+explicit strict subunit bound, rather than only at the zero center.
 
 The logarithm must carry domain data:
 
@@ -390,9 +393,11 @@ atanh transform is exposed with explicit positive denominator data, a
 positive-bounded-domain wrapper that automatically derives a subunit transform
 bound, data-independence lemmas for the transform denominator and chosen
 subunit radius/bound, and uniform continuity on every explicit positive window
-`lo ≤ x` and `|x| ≤ hi`.  A fully global analytic theorem for `log` still
-belongs with reciprocal-domain composition/re-centering rather than the local
-radius-one series itself.
+`lo ≤ x` and `|x| ≤ hi`.  The checked
+`logOnePlusᶜWithinSubunitBall-global-eq` theorem identifies the local
+`logOnePlus` series with the global atanh-transform value on every strict
+subunit ball.  A fully global analytic theorem for `log` still needs to
+transport and re-center this local expansion at arbitrary positive centers.
 
 ## Phase 9: Analytic API
 

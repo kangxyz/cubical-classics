@@ -239,6 +239,20 @@ private
             (powerSeriesFormalDerivativePartialSum-step-value a y n)
 
 
+merelyPowerSeriesPartialSumHasDerivativeOnBall :
+  (a : PowerSeries) →
+  (ρ : ℚ⁺) →
+  (n : ℕ) →
+  ∥ Σ[ μ ∈ PrecisionModulus ]
+      HasDerivativeOnBallWith
+        (λ y → powerSeriesPartialSum a y (suc n))
+        (λ y → powerSeriesPartialSum (derivativePowerSeries a) y n)
+        ρ
+        μ ∥₁
+merelyPowerSeriesPartialSumHasDerivativeOnBall =
+  finitePartialSumDerivativeOnBall
+
+
 isPropPowerSeriesPartialSumsHaveDerivativeWith :
   (a da : PowerSeries) →
   (x : ℝᶜ) →

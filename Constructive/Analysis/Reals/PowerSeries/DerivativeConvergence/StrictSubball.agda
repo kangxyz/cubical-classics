@@ -102,11 +102,29 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
     ; hasPowerSeriesOnBallFromTermBounds
     ; hasPowerSeriesOnBallWithFromBoundedTerms
     ; hasPowerSeriesOnBallWithFromTermBounds
+    ; powerSeriesMajorizedOnBallFromTermBounds
     )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+
+
+derivativePowerSeriesStrictSubballMajorant :
+  {ρ σ : ℚ⁺} →
+  radius ρ ℚOrder.< radius σ →
+  (ℕ → ℝᶜ) →
+  ℕ →
+  ℝᶜ
+derivativePowerSeriesStrictSubballMajorant
+  {ρ = ρ}
+  {σ = σ}
+  ρ<σ
+  v
+  n =
+  scalarMulᶜ
+    (radius (derivativeStrictSubballScale ρ σ ρ<σ))
+    (v (suc n))
 
 
 private
@@ -117,9 +135,12 @@ private
     ℕ →
     ℝᶜ
   derivativeStrictSubballMajorant {ρ = ρ} {σ = σ} ρ<σ v n =
-    scalarMulᶜ
-      (radius (derivativeStrictSubballScale ρ σ ρ<σ))
-      (v (suc n))
+    derivativePowerSeriesStrictSubballMajorant
+      {ρ = ρ}
+      {σ = σ}
+      ρ<σ
+      v
+      n
 
   derivativeStrictSubballMajorantNonnegative :
     {a : PowerSeries} →
@@ -129,7 +150,8 @@ private
     (ρ<σ : radius ρ ℚOrder.< radius σ) →
     PowerSeriesMajorizedOnBall a σ v ν →
     (n : ℕ) →
-    0ᶜ ≤ᶜ derivativeStrictSubballMajorant ρ<σ v n
+    0ᶜ ≤ᶜ
+      derivativeStrictSubballMajorant {ρ = ρ} {σ = σ} ρ<σ v n
   derivativeStrictSubballMajorantNonnegative
       {a = a}
       {ρ = ρ}
@@ -157,7 +179,7 @@ private
     (ρ<σ : radius ρ ℚOrder.< radius σ) →
     PowerSeriesMajorizedOnBall a σ v ν →
     TailBound
-      (derivativeStrictSubballMajorant ρ<σ v)
+      (derivativeStrictSubballMajorant {ρ = ρ} {σ = σ} ρ<σ v)
       (derivativeStrictSubballModulus {ρ = ρ} {σ = σ} ρ<σ ν)
   derivativeStrictSubballMajorTail
       {a = a}
@@ -201,7 +223,7 @@ private
 
     scaled-majorant-path :
       (λ n → rational scale ·ᶜ drop (suc zero) v n) ≡
-      derivativeStrictSubballMajorant ρ<σ v
+      derivativeStrictSubballMajorant {ρ = ρ} {σ = σ} ρ<σ v
     scaled-majorant-path =
       funExt
         (λ n →
@@ -514,6 +536,45 @@ derivativePowerSeriesOnStrictSubballWithFromMajorizedOnBall
       {ν = ν}
       ρ<σ
       majorized)
+
+
+derivativePowerSeriesMajorizedOnStrictSubballFromMajorizedOnBall :
+  {a : PowerSeries} →
+  {ρ σ : ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {ν : ℚ⁺ → ℕ} →
+  (ρ<σ : radius ρ ℚOrder.< radius σ) →
+  PowerSeriesMajorizedOnBall a σ v ν →
+  PowerSeriesMajorizedOnBall
+    (derivativePowerSeries a)
+    ρ
+    (derivativePowerSeriesStrictSubballMajorant
+      {ρ = ρ}
+      {σ = σ}
+      ρ<σ
+      v)
+    (derivativeStrictSubballModulus {ρ = ρ} {σ = σ} ρ<σ ν)
+derivativePowerSeriesMajorizedOnStrictSubballFromMajorizedOnBall
+  {a = a}
+  {ρ = ρ}
+  {σ = σ}
+  {v = v}
+  {ν = ν}
+  ρ<σ
+  majorized =
+  powerSeriesMajorizedOnBallFromTermBounds
+    (derivativeStrictSubballTermMajorized
+      {a = a} {ρ = ρ} {σ = σ} {v = v} {ν = ν}
+      ρ<σ majorized)
+    (derivativeStrictSubballMajorantNonnegative
+      {a = a} {ρ = ρ} {σ = σ} {v = v} {ν = ν}
+      ρ<σ majorized)
+    (derivativeStrictSubballMajorTail
+      {a = a} {ρ = ρ} {σ = σ} {v = v} {ν = ν}
+      ρ<σ majorized)
+    (derivativeStrictSubballMajorAntitone
+      {a = a} {ρ = ρ} {σ = σ} {v = v} {ν = ν}
+      ρ<σ majorized)
 
 
 derivativePowerSeriesOnStrictSubballFromMajorizedOnBall :

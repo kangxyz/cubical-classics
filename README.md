@@ -28,7 +28,8 @@ while modules under `Classical` may do so explicitly.
 - Cauchy-real series and power series with explicit tail or majorant data,
   algebraic operations, termwise differentiation, recentering, and elementary
   function instances. In particular, the `atanh` value is analytic throughout
-  its domain-evidenced strict subunit interval.
+  its domain-evidenced strict subunit interval, and the local `log(1+x)` series
+  agrees with the global positive logarithm on every strict subunit ball.
 
 ### Classical namespace and explicit `Oracle`
 

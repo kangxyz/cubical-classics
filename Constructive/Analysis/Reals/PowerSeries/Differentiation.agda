@@ -72,6 +72,15 @@ derivativePowerSeriesCoefficient a n =
   refl
 
 
+derivativePowerSeries-cong :
+  {a b : PowerSeries} →
+  ((n : ℕ) → a n ≡ b n) →
+  (n : ℕ) →
+  derivativePowerSeries a n ≡ derivativePowerSeries b n
+derivativePowerSeries-cong coeff n =
+  cong (naturalReal (suc n) ·ᶜ_) (coeff (suc n))
+
+
 primitivePowerSeriesCoefficient-zero :
   (a : PowerSeries) →
   primitivePowerSeries a zero ≡ 0ᶜ

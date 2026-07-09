@@ -177,6 +177,48 @@ module PowerSeriesMajorizedOnBall where
           (suc n))
 
 
+powerSeriesMajorizedOnBall-cong :
+  {a b : PowerSeries} →
+  {ρ : ℚ⁺} →
+  {v : ℕ → ℝᶜ} →
+  {μ : ℚ⁺ → ℕ} →
+  ((n : ℕ) → a n ≡ b n) →
+  PowerSeriesMajorizedOnBall a ρ v μ →
+  PowerSeriesMajorizedOnBall b ρ v μ
+powerSeriesMajorizedOnBall-cong
+  {a = a}
+  {b = b}
+  {ρ = ρ}
+  {v = v}
+  {μ = μ}
+  coeff
+  majorized =
+  (λ h h-bound →
+    subst
+      (λ u → SeriesMajorizedBy u v)
+      (powerSeriesTerm-cong-coefficients {a = a} {b = b} coeff h)
+      (PowerSeriesMajorizedOnBall.termMajorized
+        {a = a}
+        {ρ = ρ}
+        {v = v}
+        {μ = μ}
+        majorized
+        h
+        h-bound)) ,
+  PowerSeriesMajorizedOnBall.majorTail
+    {a = a}
+    {ρ = ρ}
+    {v = v}
+    {μ = μ}
+    majorized ,
+  PowerSeriesMajorizedOnBall.majorAntitone
+    {a = a}
+    {ρ = ρ}
+    {v = v}
+    {μ = μ}
+    majorized
+
+
 powerSeriesMajorizedOnBallFromTermBounds :
   {a : PowerSeries} →
   {ρ : ℚ⁺} →

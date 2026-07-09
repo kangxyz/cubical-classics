@@ -11,3 +11,5 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Bounds 
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Majorants public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Convergence public
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Analytic public
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative public
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.GlobalAnalytic public
