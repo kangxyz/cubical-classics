@@ -11,6 +11,56 @@ bounds, moduli, or majorants.  The point is not that every constructive
 epsilon-delta theorem must expose the same global modulus; it is that later
 formal constructions can only reuse data that is actually present in the type.
 
+This is a conceptual design note, not a replacement for the Agda API or the
+[architecture guide](ARCHITECTURE.md).  Code snippets below are schematic:
+they may omit options, imports, universe parameters, implicit arguments, or
+qualification to make the data distinction visible.  Follow the current Agda
+type when copying code.  If a snippet and its canonical definition disagree,
+update this note rather than adding a compatibility wrapper.
+
+## Canonical API Locations
+
+Import the public aggregate unless work on an implementation module requires a
+more specific import.
+
+- **HoTT Cauchy reals, closeness, and boundedness.**  Public aggregate:
+  [`Constructive.Analysis.Reals.CauchyReals`][cauchy-reals].  The relevant
+  definitions are in [`CauchyReals.Base`][cauchy-base] and
+  [`CauchyReals.Order.Bounded`][cauchy-bounded].
+- **Located Cauchy-real data.**  Public aggregate:
+  [`Constructive.Analysis.Reals.Locator`][locator].  `Locator` is defined in
+  [`Locator.Base`][locator-base].
+- **Precision moduli and uniformly continuous maps.**  Public aggregate:
+  [`Constructive.Analysis.Metric`][metric].  The definitions are in
+  [`Metric.Map`][metric-map].
+- **Power-series convergence and analytic-at predicates.**  Public aggregate:
+  [`Constructive.Analysis.Reals.PowerSeries`][power-series].  The core
+  definitions are in [`PowerSeries.Radius.Sum`][radius-sum] and
+  [`PowerSeries.Analytic.Core`][analytic-core].
+- **Coefficient bounds and continuity data.**  Public aggregate:
+  [`Constructive.Analysis.Reals.PowerSeries`][power-series].  The definitions
+  are in [`PowerSeries.Continuity.Core`][continuity-core].
+- **Majorant-bearing power series.**  Public aggregate:
+  [`Constructive.Analysis.Reals.PowerSeries`][power-series].  The definition
+  is in [`PowerSeries.Majorant`][majorant].
+
+The public aggregate is the stable consumer entry point.  Defining modules are
+listed so maintainers can inspect the exact record or alias without treating
+an internal proof module as a second public API.
+
+[cauchy-reals]: ../Constructive/Analysis/Reals/CauchyReals.agda
+[cauchy-base]: ../Constructive/Analysis/Reals/CauchyReals/Base.agda
+[cauchy-bounded]: ../Constructive/Analysis/Reals/CauchyReals/Order/Bounded.agda
+[locator]: ../Constructive/Analysis/Reals/Locator.agda
+[locator-base]: ../Constructive/Analysis/Reals/Locator/Base.agda
+[metric]: ../Constructive/Analysis/Metric.agda
+[metric-map]: ../Constructive/Analysis/Metric/Map.agda
+[power-series]: ../Constructive/Analysis/Reals/PowerSeries.agda
+[radius-sum]: ../Constructive/Analysis/Reals/PowerSeries/Radius/Sum.agda
+[analytic-core]: ../Constructive/Analysis/Reals/PowerSeries/Analytic/Core.agda
+[continuity-core]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Core.agda
+[majorant]: ../Constructive/Analysis/Reals/PowerSeries/Majorant.agda
+
 ## Cauchy Reals And Located Data
 
 The main Cauchy-real type is `ℝᶜ`.  It follows the HoTT Book and Gilbert

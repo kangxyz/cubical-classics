@@ -1,126 +1,190 @@
 # Development Guide
 
-This document is a compact map for contributors and agents.  It does not
-replace reading the modules near the change.  Use it to find the right entry
-point, keep assumptions on the correct side of a boundary, and choose the
-right checks before reporting work as done.
+This document is authoritative for contribution workflow, verification, and
+temporary work plans.  Read nearby code before changing it.  Use
+[Architecture](ARCHITECTURE.md) for ownership, assumption boundaries,
+dependency direction, and stable public entry points; use the
+[style guide](../STYLE.md) for code and prose shape.
 
-## First Checks
+The supported dependency setup and the shortest user-facing build command are
+recorded in the [README](../README.md).
 
-- Check the worktree before editing:
+## Standard Workflow
 
-  ```sh
-  git status --short
-  ```
+1. Record the starting worktree state:
 
-- Search with `rg` and read nearby modules before changing code.
-- Preserve user changes in the worktree.  Do not revert, delete, stage, or
-  commit unrelated files.
-- Follow `STYLE.md` for names, comments, documentation tone, and module
-  organization.
+   ```sh
+   git status --short
+   ```
 
-## Type Checking
+2. Locate the definition, its public aggregate, and its downstream users.
+   Prefer `rg --files` and `rg` over browsing the tree by guesswork.
+3. Read the nearby modules and the relevant boundary in
+   [Architecture](ARCHITECTURE.md).  For Cauchy-real, locatedness, modulus, or
+   power-series interface choices, also read
+   [HoTT and Bishop Analysis Interfaces](BISHOP_ANALYSIS.md).
+4. Name the smallest mathematical outcome.  For proof work, identify the hard
+   theorem or proof obligation before adding helpers or wrappers.
+5. Make the narrowest change that reaches that outcome.  Keep support
+   declarations private until reuse or a genuine interface boundary justifies
+   exporting them.
+6. Run the checks selected by the verification matrix below.
+7. Review the complete diff and final worktree state.  Separate pre-existing
+   changes from the paths changed for the current task.
 
-The known dependency setup is recorded in `README.md`.  The project tracks a
-recent development checkout of the Cubical Agda library, not the latest tagged
-release.
+Do not count aggregate imports, namespace copies, thin aliases, `With` or
+`From...` forwarding variants, argument-order shims, or solver plumbing as
+theorem progress.  They are support work and are justified only when they
+remove a concrete downstream proof burden.
 
-Useful checks:
+## Public Surface Changes
+
+Prefer the stable aggregate named in [Architecture](ARCHITECTURE.md) as the
+consumer import.  Before adding a public declaration, check whether existing
+infrastructure already expresses the result and search for real downstream
+use.
+
+When changing a public module path, aggregate export, assumption boundary, or
+foundational definition:
+
+- audit direct importers and old names with `rg`;
+- update affected aggregates and known downstream users in the same change;
+- update [Architecture](ARCHITECTURE.md) when ownership, dependency direction,
+  or stable entry points change;
+- update the [README](../README.md) only when the user-facing library story,
+  Quick Start, or stable public entry points change; and
+- run the broad checks required by the verification matrix.
+
+A new internal file or private helper does not by itself require a README
+edit.
+
+## Verification Matrix
+
+Every change gets the final worktree and whitespace checks in the next
+section.  Add the checks below according to the largest applicable blast
+radius.
+
+| Change | Required verification |
+| --- | --- |
+| Documentation | Check links and paths; render nontrivial layout. |
+| Local private code | Check the touched module and, when practical, its aggregate. |
+| New module or aggregate import | Check both; audit direct imports and public exports. |
+| Public theorem or declaration | Check touched modules, the aggregate, and known consumers. |
+| Public path, shared API, or foundation | Run targeted checks, then `agda --build-library`. |
+| Deletion, migration, or rename | Apply the matching row; search for stale names and imports. |
+| Performance-sensitive code or pragma | Apply the matching row and the performance runbook. |
+
+Typical targeted commands are:
 
 ```sh
-agda Constructive/Analysis/Metric.agda
-agda Constructive/Analysis/Reals.agda
-agda --build-library
-git diff --check
+agda path/to/Touched.agda
+agda path/to/NearestAggregate.agda
+rg 'OldName|Old\.Namespace' Constructive Classical
+rg 'postulate|\?|TODO|FIXME' path/to/touched/area
 ```
 
-For a narrow change, type-check the module touched and the nearest aggregate
-module when practical.  Run `agda --build-library` for changes to shared
-interfaces, public module paths, foundational definitions, or aggregate
-exports.  Always run `git diff --check` before reporting completion.
+Do not infer that a moved module is independent merely because a broad
+aggregate type-checks from cache.  Audit its direct imports and type-check the
+module itself.
 
-For anomalously slow Agda checks, follow `docs/PERFORMANCE.md` before changing
-proof shape or treating the slowdown as a proof failure.
-Whenever an anomalous type-checking issue is identified or fixed, record the
-fixed case study in `docs/PERFORMANCE_CASE_STUDIES.md`; keep unresolved
-diagnostics in `docs/PERFORMANCE.md`.  If the work uncovers a reusable slow
-pattern or response, add it to the `Slow Patterns And Responses` section of
-`docs/PERFORMANCE.md`.
+If a required check fails for a clearly unrelated pre-existing reason, record
+the exact command and first actionable error.  Continue with narrower checks
+that still validate the in-scope change; do not report the broader check as
+passed.
 
-## Boundaries
+## Complete Diff And Whitespace Checks
 
-- `Constructive/` is for code that does not use the library's classical
-  `Oracle`.  Do not import classical modules into constructive modules unless
-  the boundary is being deliberately redesigned and documented.
-- `Classical/` may use `Oracle`, excluded middle, choice, resizing, and
-  powerset-style classical interfaces.  Keep those assumptions explicit in the
-  module context or exported theorem.
-- `Constructive/Foundations/Powerset` is predicative support for constructive
-  cuts and order-completeness notions.  `Classical/Foundations/Powerset` is the
-  impredicative classical development.
-- Do not replace one notion with a stronger or weaker one without checking the
-  surrounding module.  This matters especially for locatedness, apartness,
-  trichotomy, MacNeille completeness, Cauchy completeness, and interval
-  compactness.
+Plain `git diff --check` covers only unstaged tracked changes.  Before
+reporting completion, cover every state explicitly:
 
-## Main Entry Points
+```sh
+git status --short
+git diff --check HEAD --
+git diff --cached --check
+```
 
-- `Constructive.Analysis.Completions.CauchyCompletion` is the generic
-  HoTT-style completion interface.
-- `Constructive.Analysis.Reals.CauchyReals` is the rational Cauchy-real
-  instance and public construction/algebra/order interface.
-- `Constructive.Analysis.Completions.DedekindCompletion` is the generic
-  constructive two-sided located-cut completion.
-- `Constructive.Analysis.Reals.DedekindReals` is the rational instance of the
-  constructive Dedekind completion.
-- `Constructive.Analysis.Metric` owns the precision-indexed metric interface,
-  Cauchy approximations, maps, and total boundedness support.
-- `Classical.DedekindCut` is the Oracle-based cut completion of an
-  Archimedean ordered field.
-- `Classical.Analysis.Real` and the modules under
-  `Classical/Analysis/Function/` contain the classical real-analysis results,
-  including exact compactness and IVT-style theorems.
+`git diff --check HEAD --` checks all tracked working-tree content against
+`HEAD`, including staged and unstaged changes.  The cached form checks the
+exact staged snapshot before a commit.
 
-Prefer aggregate modules as public entry points.  When adding or moving a
-public module, update imports, aggregate modules, and `README.md` in the same
-change.
+Untracked files have no diff base and are omitted from both commands.  Inspect
+every in-scope path listed by `git status --short`.  This zsh loop applies
+Git's whitespace checker to all untracked files without modifying the index:
 
-## Constructive Analysis Conventions
+```sh
+while IFS= read -r -d '' file; do
+  git diff --no-index --check -- /dev/null "$file"
+  exit_code=$?
+  if (( exit_code > 1 )); then
+    exit "$exit_code"
+  fi
+done < <(git ls-files --others --exclude-standard -z)
+```
 
-- Use explicit positive-rational precision data for constructive analysis:
-  moduli of continuity, moduli of convergence, finite nets, and approximate
-  conclusions.
-- Keep exact classical claims in `Classical/Analysis`.  Do not move exact IVT,
-  arbitrary Bolzano-Weierstrass, arbitrary suprema, or pointwise-continuity
-  compactness principles into `Constructive/Analysis` without adding the
-  necessary assumptions.
-- Generic metric notions belong under `Constructive/Analysis/Metric`.
-  Real-specific interval, locator, sequence, and IVT material belongs under
-  `Constructive/Analysis/Reals`.
-- The Cauchy-real construction should not absorb analysis-specific APIs unless
-  they are part of the construction, algebra, order, or generic completion
-  interface.
+For `git diff --no-index`, status `1` means an ordinary content difference
+from the empty file; a status greater than `1` indicates a check error such as
+trailing whitespace.  Restrict the `git ls-files` command with `-- <paths>`
+when unrelated untracked user work exists, and still inspect that worktree
+state so it is not accidentally staged or reported as agent output.
 
-## Proof Engineering
+## Performance Triage
 
-- Reuse existing infrastructure before adding local helper APIs.
-- Avoid thin aliases that merely rename an existing definition.
-- Promote a helper only when it clarifies a repeated pattern or a real public
-  interface boundary.
-- Prefer explicit qualification over import-order fixes when names collide.
-- Use solvers only for the fragments they cover, and leave the remaining
-  reasoning explicit.
-- Check universe levels and implicit arguments early in generic modules.
+If Agda checking is anomalously slow, follow the
+[performance runbook](performance/RUNBOOK.md) before changing proof shape,
+adding `--lossy-unification`, or treating a timeout as a proof failure.
 
-## Common Pitfalls
+- Put resolved, reproducible investigations in
+  [case studies](performance/CASE_STUDIES.md).
+- Put stable timing and memory measurements in
+  [baselines](performance/BASELINES.md).
+- Put durable external issue, manual, and paper links in
+  [references](performance/REFERENCES.md).
+- Keep unresolved one-off diagnostic notes in the task's temporary work note
+  or issue, not in the permanent runbook.
 
-- The constructive and classical real developments are related but separate.
-  A theorem true under `Oracle` is not automatically a constructive theorem.
-- Precision-indexed Cauchy completeness is not the same statement as
-  completeness for arbitrary unmodulated `Nat`-indexed Cauchy sequences.
-- Located cuts, lower/upper predicates, order-apartness, and trichotomy carry
-  different assumptions.  Match the local vocabulary before reusing a lemma.
-- A module path in the tree is not public just because the file exists.  Check
-  the aggregate module before using it as a public dependency.
-- If a new result changes the public story of constructive or classical
-  analysis, update `README.md`.
+Report any newly added performance pragma and the evidence that made it
+necessary.
+
+## Temporary `PLAN.md` Files
+
+`PLAN.md` files are disposable work notes, not part of the documentation tree.
+Do not add them to the documentation index or create an archive for them.  A
+small, local change does not need a plan.
+
+Create a plan only when a multi-step task needs coordination or when a hard
+proof target and its non-goals would otherwise be easy to lose.  Put this
+header at the top:
+
+```text
+Status: Draft | Active | Blocked
+Scope: <paths and mathematical area in scope>
+Hard theorem target: <closed result that counts as progress>
+Non-goals: <explicit exclusions>
+Acceptance checks: <exact commands or observable completion criteria>
+```
+
+For a non-theorem task, write `Hard theorem target: N/A` and name the concrete
+outcome under `Scope`.  For theorem work, wrappers, aliases, reexports, API
+plumbing, and proof scaffolding do not satisfy the hard theorem target.
+
+Delete the plan when the task is completed or abandoned.  Move only durable
+conclusions to their authoritative home:
+
+- ownership, dependency, and public API decisions to
+  [Architecture](ARCHITECTURE.md);
+- constructive-analysis interface reasoning to
+  [HoTT and Bishop Analysis Interfaces](BISHOP_ANALYSIS.md);
+- reusable profiling procedures and evidence to the relevant
+  [performance document](performance/RUNBOOK.md); and
+- local proof rationale to comments next to the code when it will help future
+  readers.
+
+Do not churn existing plan files merely to retrofit this format.
+
+## Completion Report
+
+Report the mathematical or user-facing outcome, not the volume of scaffolding.
+List changed paths, exact checks, any public declarations kept or removed, and
+remaining blockers.  Recheck `git status --short` immediately before staging
+or committing, and stage explicit paths or hunks so unrelated user work stays
+untouched.

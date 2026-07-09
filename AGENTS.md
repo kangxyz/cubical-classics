@@ -1,69 +1,59 @@
 # Agent Notes
 
-DO NOT send optional commentary
+This file contains rules specific to automated agents.  Repository policy has
+one authoritative home for each other concern:
 
-Repository-wide operating rules for agents. For naming, comments,
-documentation tone, and module style, follow `STYLE.md`.
-For repository navigation, proof boundaries, and verification commands, use
-`docs/DEVELOPMENT.md`.
+- [Documentation index](docs/README.md) for task-oriented navigation.
+- [Architecture](docs/ARCHITECTURE.md) for ownership, assumption boundaries,
+  dependency direction, and stable public entry points.
+- [Style guide](STYLE.md) for names, module and proof shape, comments, and
+  documentation tone.
+- [Development guide](docs/DEVELOPMENT.md) for contribution workflow, plans,
+  verification, and completion reporting.
+- [Performance runbook](docs/performance/RUNBOOK.md) for anomalous Agda checks.
 
-## Skills
+Read the relevant authority and nearby code before making a change.  Do not
+copy its rules into this file.
 
-- Use `$agda-theorem-first-curation` for Agda theorem-library curation,
-  generated-code cleanup, meaningful theorem migration, public API slimming,
-  or review work where thin aliases, reexports, wrappers, or proof plumbing
-  might be mistaken for theorem progress. Apply its minimal loop for small
-  proof edits and its curation loop for module migration or API cleanup.
+## Communication
 
-## Working Principles
+- Do not send routine progress commentary for expected searches, reads, or
+  edits.
+- Send an interim message only when the runtime requires one, the user asks
+  for status, an approval or material clarification is required, or a
+  long-running operation needs a status update under the runtime rules.
+- Keep required updates factual: current action, discovered blocker, or next
+  verification step.  Do not narrate routine searches and edits.
+- In the final response, lead with the outcome and list the exact checks run.
+  Distinguish passed, failed, and skipped checks, and give the exact blocker
+  for any incomplete verification.
 
-- Read the relevant code before changing it.
-- Keep changes narrowly scoped to the user's request. Avoid unrelated
+## Agda Curation Skill
+
+- Use `$agda-theorem-first-curation` for Agda proof edits, generated-code
+  cleanup, theorem migration, public API slimming, and reviews or plans where
+  aliases, reexports, wrappers, or proof plumbing could be mistaken for
+  theorem progress.
+- Use its minimal loop for a local proof change, its curation loop for module
+  cleanup or migration, and its broad API loop for exported interfaces,
+  foundational definitions, or public module paths.
+- A prose-only change does not require the skill unless it evaluates theorem
+  progress or the public Agda surface.
+- If the skill is unavailable, continue with the theorem-first rules in the
+  [development guide](docs/DEVELOPMENT.md): name the hard result, keep support
+  work subordinate, and verify according to blast radius.  Report that
+  fallback in the final response.
+
+## Worktree Safety
+
+- Check `git status --short` before editing and before any commit or staging
+  operation.
+- Treat existing tracked modifications and untracked files as user work.
+  Preserve them unless the user explicitly puts them in scope.
+- Do not revert, delete, stage, or commit unrelated paths.  Stage explicit
+  paths or hunks when a file mixes user changes with agent changes.
+- Do not run destructive cleanup commands unless the user explicitly requests
+  them.  Remove empty directories only when they result from an in-scope move
+  or deletion.
+- Keep edits narrowly scoped.  Do not combine requested work with unrelated
   refactors, formatting churn, or opportunistic cleanup.
-- Preserve public APIs and user-facing behavior when possible.
-- When changing public module paths, exported interfaces, or the library
-  layout, update `README.md` in the same change.
-
-## Boundaries And Assumptions
-
-- Respect established boundaries between parts of the repository.
-- Do not move assumptions across a boundary without making them explicit in the
-  type, module context, or documentation.
-- Do not replace one mathematical notion with a stronger or weaker one unless
-  the surrounding code justifies it.
-
-## Proof Engineering
-
-- Reuse existing infrastructure before adding local helper APIs.
-- Do not add thin aliases that merely repeat an existing definition without
-  shortening code, clarifying a real boundary, or fixing a local universe or
-  implicit-argument policy.
-- Add shared lemmas only when they clarify a repeated pattern or real
-  interface boundary.
-- Use solvers only for the fragments they cover; keep the remaining reasoning
-  explicit.
-- In generic code, check universe levels and implicit arguments early.
-
-## Verification
-
-- Type-check the module you touched and the nearest aggregate module when
-  practical.
-- If an Agda type check is anomalous or too slow, follow the performance
-  triage notes in `docs/PERFORMANCE.md` before assuming the proof is stuck.
-- Run broader checks when changing shared interfaces, module paths, or
-  foundational definitions.
-- Always run whitespace/diff checks before reporting completion.
-- If a check fails for an unrelated pre-existing reason, record the exact
-  blocker and still verify the part you changed as far as possible.
-
-## Git Hygiene
-
-- Check the worktree state before editing and before committing.
-- The worktree may contain user changes. Do not revert, delete, stage, or
-  commit unrelated work.
-- Stage explicit paths or hunks. Be especially careful with files that contain
-  both your changes and pre-existing changes.
-- Do not leave empty directories behind after moving or deleting files. Clean
-  them up when they are part of your change.
-- Do not run destructive cleanup commands unless the user explicitly asks for
-  them.
