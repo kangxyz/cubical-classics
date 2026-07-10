@@ -40,8 +40,8 @@ open import Constructive.Analysis.Reals.Series
     ; seriesMajorizedByTerms
     ; tailBound-drop
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using (bounded-byᶜ-abs)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+  using (bounded-byᶜ-abs≤rational)
 open import Constructive.Analysis.GeometricDecay
   using (positivePower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
@@ -441,7 +441,7 @@ private
     d-power≤majorant :
       absᶜ (realPower d (suc k)) ≤ᶜ rational δpow
     d-power≤majorant =
-      bounded-byᶜ-abs
+      bounded-byᶜ-abs≤rational
         (realPowerBoundsFromBound δ d d-bound (suc k))
 
     coefficient-power≤majorant :

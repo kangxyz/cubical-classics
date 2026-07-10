@@ -23,20 +23,12 @@ import Constructive.Data.Rationals as Rational
 open import Constructive.Analysis.GeometricDecay.Rational
 
 
-realRationalPower :
-  ℚ →
-  ℕ →
-  ℝᶜ
-realRationalPower r n =
-  rational (rationalPower r n)
-
-
 rationalGeometricTerm :
   ℚ →
   ℕ →
   ℝᶜ
-rationalGeometricTerm =
-  realRationalPower
+rationalGeometricTerm r n =
+  rational (rationalPower r n)
 
 
 rationalGeometricPartialSumᶜ :

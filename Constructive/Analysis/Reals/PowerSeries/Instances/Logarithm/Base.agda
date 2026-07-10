@@ -20,16 +20,14 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using (bounded-byᶜ-abs)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+  using (bounded-byᶜ-abs≤rational)
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPower
+    ( realPower
+    ; realPowerBoundsFromBound
     )
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
@@ -101,14 +99,6 @@ logOnePlusPowerSeriesCoefficient-zero =
   refl
 
 
-logOnePlusPowerSeriesCoefficient-suc :
-  (n : ℕ) →
-  logOnePlusPowerSeries (suc n) ≡
-  inverseSucReal n ·ᶜ alternatingGeometricPowerSeries n
-logOnePlusPowerSeriesCoefficient-suc n =
-  refl
-
-
 derivativePowerSeries-logOnePlus :
   (n : ℕ) →
   derivativePowerSeries logOnePlusPowerSeries n ≡
@@ -117,21 +107,6 @@ derivativePowerSeries-logOnePlus n =
   naturalTimesInverseSucReal-cancel
     n
     (alternatingGeometricPowerSeries n)
-
-
-primitivePowerSeries-alternatingGeometric-zero :
-  primitivePowerSeries alternatingGeometricPowerSeries zero ≡
-  logOnePlusPowerSeries zero
-primitivePowerSeries-alternatingGeometric-zero =
-  refl
-
-
-primitivePowerSeries-alternatingGeometric-suc :
-  (n : ℕ) →
-  primitivePowerSeries alternatingGeometricPowerSeries (suc n) ≡
-  logOnePlusPowerSeries (suc n)
-primitivePowerSeries-alternatingGeometric-suc n =
-  refl
 
 
 primitivePowerSeries-alternatingGeometric :
@@ -293,28 +268,6 @@ logOnePlusPowerSeriesCoefficientBounds =
   logOnePlusPowerSeriesCoefficientBoundOne
 
 
-logOnePlusPowerSeriesIteratedFormalPartialDerivativeBounds :
-  (σ : ℚ⁺) →
-  {x : ℝᶜ} →
-  BoundedByᶜ σ x →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    logOnePlusPowerSeries
-    x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) Rational.1ℚ) *⁺
-          1⁺ *⁺
-          positivePower σ k)
-        n)
-logOnePlusPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
-  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-    σ
-    x-bound
-    (λ _ → 1⁺)
-    logOnePlusPowerSeriesCoefficientBoundOne
-
-
 logOnePlusPowerSeriesTermBoundFromPowerBound :
   (ρ : ℚ⁺) →
   (h : ℝᶜ) →
@@ -334,89 +287,6 @@ logOnePlusPowerSeriesTermBoundFromPowerBound ρ h n powerBound =
       powerBound)
 
 
-LogOnePlusGeometricMajorant :
-  ℚ⁺ →
-  Type₀
-LogOnePlusGeometricMajorant ρ =
-  (h : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  SeriesMajorizedBy
-    (powerSeriesTerm logOnePlusPowerSeries h)
-    (positiveGeometricTerm ρ)
-
-
-LogOnePlusPowerBoundsOnBall :
-  ℚ⁺ →
-  Type₀
-LogOnePlusPowerBoundsOnBall ρ =
-  (h : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  (n : ℕ) →
-  BoundedByᶜ (positivePower ρ n) (realPower h n)
-
-
-logOnePlusPowerSeriesGeometricMajorantFromPowerBounds :
-  (ρ : ℚ⁺) →
-  LogOnePlusPowerBoundsOnBall ρ →
-  LogOnePlusGeometricMajorant ρ
-logOnePlusPowerSeriesGeometricMajorantFromPowerBounds ρ powerBounds h h-bound =
-  seriesMajorizedByTerms
-    (λ n →
-      bounded-byᶜ-abs
-        (logOnePlusPowerSeriesTermBoundFromPowerBound
-          ρ
-          h
-          n
-          (powerBounds h h-bound n)))
-    (positiveGeometricTerm-nonnegative ρ)
-
-
-logOnePlusPowerSeriesPowerBoundsFromBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  LogOnePlusPowerBoundsOnBall ρ
-logOnePlusPowerSeriesPowerBoundsFromBall ρ ρ<1 h h-bound n =
-  RealGeometricPowerBounds.powerBound
-    (realGeometricPowerBoundsFromBound h bound)
-    n
-  where
-  bound : RealGeometricBound h
-  bound =
-    ρ , ρ<1 , h-bound
-
-
-logOnePlusPowerSeriesGeometricMajorant :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  LogOnePlusGeometricMajorant ρ
-logOnePlusPowerSeriesGeometricMajorant ρ ρ<1 =
-  logOnePlusPowerSeriesGeometricMajorantFromPowerBounds
-    ρ
-    (logOnePlusPowerSeriesPowerBoundsFromBall ρ ρ<1)
-
-
-logOnePlusPowerSeriesMajorizedOnBallFromGeometric :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  LogOnePlusGeometricMajorant ρ →
-  PowerSeriesMajorizedOnBall
-    logOnePlusPowerSeries
-    ρ
-    (positiveGeometricTerm ρ)
-    (positiveGeometricPowerModulus ρ ρ<1)
-logOnePlusPowerSeriesMajorizedOnBallFromGeometric ρ ρ<1 majorant =
-  majorant ,
-  (λ ε m k μ≤m →
-    positiveGeometricFiniteTailBoundFromRatio ρ ρ<1 ε m k μ≤m) ,
-  (λ {ε} {δ} ε≤δ →
-    positiveGeometricPowerModulus-antitone
-      ρ
-      ρ<1
-      {ε = ε}
-      {δ = δ}
-      ε≤δ)
-
-
 logOnePlusPowerSeriesMajorizedOnBall :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
@@ -426,23 +296,33 @@ logOnePlusPowerSeriesMajorizedOnBall :
     (positiveGeometricTerm ρ)
     (positiveGeometricPowerModulus ρ ρ<1)
 logOnePlusPowerSeriesMajorizedOnBall ρ ρ<1 =
-  logOnePlusPowerSeriesMajorizedOnBallFromGeometric
-    ρ
-    ρ<1
-    (logOnePlusPowerSeriesGeometricMajorant ρ ρ<1)
-
-
-logOnePlusPowerSeriesOnBallWithFromGeometricMajorant :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  LogOnePlusGeometricMajorant ρ →
-  HasPowerSeriesOnBallWith
-    logOnePlusPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-logOnePlusPowerSeriesOnBallWithFromGeometricMajorant ρ ρ<1 majorant =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    (logOnePlusPowerSeriesMajorizedOnBallFromGeometric ρ ρ<1 majorant)
+  termMajorant ,
+  (λ ε m k μ≤m →
+    positiveGeometricFiniteTailBoundFromRatio ρ ρ<1 ε m k μ≤m) ,
+  (λ {ε} {δ} ε≤δ →
+    positiveGeometricPowerModulus-antitone
+      ρ
+      ρ<1
+      {ε = ε}
+      {δ = δ}
+      ε≤δ)
+  where
+  termMajorant :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    SeriesMajorizedBy
+      (powerSeriesTerm logOnePlusPowerSeries h)
+      (positiveGeometricTerm ρ)
+  termMajorant h h-bound =
+    seriesMajorizedByTerms
+      (λ n →
+        bounded-byᶜ-abs≤rational
+          (logOnePlusPowerSeriesTermBoundFromPowerBound
+            ρ
+            h
+            n
+            (realPowerBoundsFromBound ρ h h-bound n)))
+      (positiveGeometricTerm-nonnegative ρ)
 
 
 logOnePlusPowerSeriesOnSubunitBallWith :
@@ -640,16 +520,6 @@ logOnePlusᶜAnalyticWithinAtZero ρ ρ<1 =
     (logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1)
 
 
-logOnePlusPowerSeriesOnBallFromGeometricMajorant :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  LogOnePlusGeometricMajorant ρ →
-  HasPowerSeriesOnBall logOnePlusPowerSeries ρ
-logOnePlusPowerSeriesOnBallFromGeometricMajorant ρ ρ<1 majorant =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  logOnePlusPowerSeriesOnBallWithFromGeometricMajorant ρ ρ<1 majorant
-
-
 logOnePlusPowerSeriesOnSubunitBall :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
@@ -689,19 +559,3 @@ primitiveAlternatingGeometricPowerSeriesRadius =
     {b = logOnePlusPowerSeries}
     primitivePowerSeries-alternatingGeometric
     logOnePlusPowerSeriesRadius
-
-
-logOnePlusPowerSeriesRadiusFromGeometricMajorants :
-  ((ρ : ℚ⁺) →
-    radius ρ ℚOrder.< Rational.1ℚ →
-    LogOnePlusGeometricMajorant ρ) →
-  HasPowerSeriesRadius logOnePlusPowerSeries 1⁺
-logOnePlusPowerSeriesRadiusFromGeometricMajorants majorants =
-  hasPowerSeriesRadius
-    {a = logOnePlusPowerSeries}
-    {R = 1⁺}
-    (λ ρ ρ<1 →
-      logOnePlusPowerSeriesOnBallFromGeometricMajorant
-        ρ
-        ρ<1
-        (majorants ρ ρ<1))

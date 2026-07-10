@@ -31,9 +31,8 @@ open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using
     ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realGeometricPowerTailBoundFromPowerBounds
+    ; real-geometric-bound
+    ; realGeometricPowerTailBound
     ; realPower
     )
 open import Constructive.Analysis.Reals.PowerSeries.Base
@@ -82,20 +81,6 @@ alternatingGeometricPowerSeries (suc n) =
   -ᶜ alternatingGeometricPowerSeries n
 
 
-alternatingGeometricPowerSeriesCoefficient-zero :
-  alternatingGeometricPowerSeries zero ≡ 1ᶜ
-alternatingGeometricPowerSeriesCoefficient-zero =
-  refl
-
-
-alternatingGeometricPowerSeriesCoefficient-suc :
-  (n : ℕ) →
-  alternatingGeometricPowerSeries (suc n) ≡
-  -ᶜ alternatingGeometricPowerSeries n
-alternatingGeometricPowerSeriesCoefficient-suc n =
-  refl
-
-
 alternatingGeometricPowerSeriesTerm :
   (h : ℝᶜ) →
   (n : ℕ) →
@@ -121,128 +106,6 @@ alternatingGeometricPowerSeriesTermPath h =
   funExt (alternatingGeometricPowerSeriesTerm h)
 
 
-realGeometricBoundOnBall :
-  (ρ : ℚ⁺) →
-  radius ρ ℚOrder.< Rational.1ℚ →
-  (h : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  RealGeometricBound h
-realGeometricBoundOnBall ρ ρ<1 h h-bound =
-  ρ , ρ<1 , h-bound
-
-
-alternatingRealGeometricBoundOnBall :
-  (ρ : ℚ⁺) →
-  radius ρ ℚOrder.< Rational.1ℚ →
-  (h : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  RealGeometricBound (-ᶜ h)
-alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound =
-  realGeometricBoundOnBall
-    ρ
-    ρ<1
-    (-ᶜ h)
-    (bounded-byᶜ-neg ρ h h-bound)
-
-
-geometricPowerSeriesTailBoundFromPowerBounds :
-  (h : ℝᶜ) →
-  (bound : RealGeometricBound h) →
-  RealGeometricPowerBounds h bound →
-  PowerSeriesTailBound
-    geometricPowerSeries
-    h
-    (positiveGeometricPowerModulus
-      (RealGeometricBound.ratioBound bound)
-      (RealGeometricBound.ratioBound<1 bound))
-geometricPowerSeriesTailBoundFromPowerBounds h bound powerBounds =
-  subst
-    (λ u → TailBound u μ)
-    (sym (geometricPowerSeriesTermPath h))
-    (realGeometricPowerTailBoundFromPowerBounds h bound powerBounds)
-  where
-  μ : ℚ⁺ → ℕ
-  μ =
-    positiveGeometricPowerModulus
-      (RealGeometricBound.ratioBound bound)
-      (RealGeometricBound.ratioBound<1 bound)
-
-
-alternatingGeometricPowerSeriesTailBoundFromPowerBounds :
-  (h : ℝᶜ) →
-  (bound : RealGeometricBound (-ᶜ h)) →
-  RealGeometricPowerBounds (-ᶜ h) bound →
-  PowerSeriesTailBound
-    alternatingGeometricPowerSeries
-    h
-    (positiveGeometricPowerModulus
-      (RealGeometricBound.ratioBound bound)
-      (RealGeometricBound.ratioBound<1 bound))
-alternatingGeometricPowerSeriesTailBoundFromPowerBounds h bound powerBounds =
-  subst
-    (λ u → TailBound u μ)
-    (sym (alternatingGeometricPowerSeriesTermPath h))
-    (realGeometricPowerTailBoundFromPowerBounds
-      (-ᶜ h)
-      bound
-      powerBounds)
-  where
-  μ : ℚ⁺ → ℕ
-  μ =
-    positiveGeometricPowerModulus
-      (RealGeometricBound.ratioBound bound)
-      (RealGeometricBound.ratioBound<1 bound)
-
-
-geometricPowerSeriesOnBallWithFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  ((h : ℝᶜ) →
-    (h-bound : BoundedByᶜ ρ h) →
-    RealGeometricPowerBounds h
-      (realGeometricBoundOnBall ρ ρ<1 h h-bound)) →
-  HasPowerSeriesOnBallWith
-    geometricPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-geometricPowerSeriesOnBallWithFromPowerBounds ρ ρ<1 powerBounds =
-  hasPowerSeriesOnBallWith
-    {a = geometricPowerSeries}
-    {ρ = ρ}
-    {μ = positiveGeometricPowerModulus ρ ρ<1}
-    (positiveGeometricPowerModulus-antitone ρ ρ<1)
-    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ ρ h) →
-      geometricPowerSeriesTailBoundFromPowerBounds
-        h
-        (realGeometricBoundOnBall ρ ρ<1 h h-bound)
-        (powerBounds h h-bound))
-
-
-alternatingGeometricPowerSeriesOnBallWithFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  ((h : ℝᶜ) →
-    (h-bound : BoundedByᶜ ρ h) →
-    RealGeometricPowerBounds
-      (-ᶜ h)
-      (alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound)) →
-  HasPowerSeriesOnBallWith
-    alternatingGeometricPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-alternatingGeometricPowerSeriesOnBallWithFromPowerBounds ρ ρ<1 powerBounds =
-  hasPowerSeriesOnBallWith
-    {a = alternatingGeometricPowerSeries}
-    {ρ = ρ}
-    {μ = positiveGeometricPowerModulus ρ ρ<1}
-    (positiveGeometricPowerModulus-antitone ρ ρ<1)
-    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ ρ h) →
-      alternatingGeometricPowerSeriesTailBoundFromPowerBounds
-        h
-        (alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound)
-        (powerBounds h h-bound))
-
-
 geometricPowerSeriesOnBallWith :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
@@ -251,13 +114,29 @@ geometricPowerSeriesOnBallWith :
     ρ
     (positiveGeometricPowerModulus ρ ρ<1)
 geometricPowerSeriesOnBallWith ρ ρ<1 =
-  geometricPowerSeriesOnBallWithFromPowerBounds
-    ρ
-    ρ<1
-    λ h h-bound →
-      realGeometricPowerBoundsFromBound
-        h
-        (realGeometricBoundOnBall ρ ρ<1 h h-bound)
+  hasPowerSeriesOnBallWith
+    {a = geometricPowerSeries}
+    {ρ = ρ}
+    {μ = positiveGeometricPowerModulus ρ ρ<1}
+    (positiveGeometricPowerModulus-antitone ρ ρ<1)
+    tailBound
+  where
+  tailBound :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    PowerSeriesTailBound
+      geometricPowerSeries
+      h
+      (positiveGeometricPowerModulus ρ ρ<1)
+  tailBound h h-bound =
+    subst
+      (λ u → TailBound u (positiveGeometricPowerModulus ρ ρ<1))
+      (sym (geometricPowerSeriesTermPath h))
+      (realGeometricPowerTailBound h bound)
+    where
+    bound : RealGeometricBound h
+    bound =
+      real-geometric-bound ρ ρ<1 h-bound
 
 
 alternatingGeometricPowerSeriesOnBallWith :
@@ -268,43 +147,32 @@ alternatingGeometricPowerSeriesOnBallWith :
     ρ
     (positiveGeometricPowerModulus ρ ρ<1)
 alternatingGeometricPowerSeriesOnBallWith ρ ρ<1 =
-  alternatingGeometricPowerSeriesOnBallWithFromPowerBounds
-    ρ
-    ρ<1
-    λ h h-bound →
-      realGeometricPowerBoundsFromBound
-        (-ᶜ h)
-        (alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound)
-
-
-geometricPowerSeriesOnBallFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  ((h : ℝᶜ) →
-    (h-bound : BoundedByᶜ ρ h) →
-    RealGeometricPowerBounds h
-      (realGeometricBoundOnBall ρ ρ<1 h h-bound)) →
-  HasPowerSeriesOnBall geometricPowerSeries ρ
-geometricPowerSeriesOnBallFromPowerBounds ρ ρ<1 powerBounds =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  geometricPowerSeriesOnBallWithFromPowerBounds ρ ρ<1 powerBounds
-
-
-alternatingGeometricPowerSeriesOnBallFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  ((h : ℝᶜ) →
-    (h-bound : BoundedByᶜ ρ h) →
-    RealGeometricPowerBounds
-      (-ᶜ h)
-      (alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound)) →
-  HasPowerSeriesOnBall alternatingGeometricPowerSeries ρ
-alternatingGeometricPowerSeriesOnBallFromPowerBounds ρ ρ<1 powerBounds =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  alternatingGeometricPowerSeriesOnBallWithFromPowerBounds
-    ρ
-    ρ<1
-    powerBounds
+  hasPowerSeriesOnBallWith
+    {a = alternatingGeometricPowerSeries}
+    {ρ = ρ}
+    {μ = positiveGeometricPowerModulus ρ ρ<1}
+    (positiveGeometricPowerModulus-antitone ρ ρ<1)
+    tailBound
+  where
+  tailBound :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    PowerSeriesTailBound
+      alternatingGeometricPowerSeries
+      h
+      (positiveGeometricPowerModulus ρ ρ<1)
+  tailBound h h-bound =
+    subst
+      (λ u → TailBound u (positiveGeometricPowerModulus ρ ρ<1))
+      (sym (alternatingGeometricPowerSeriesTermPath h))
+      (realGeometricPowerTailBound (-ᶜ h) bound)
+    where
+    bound : RealGeometricBound (-ᶜ h)
+    bound =
+      real-geometric-bound
+        ρ
+        ρ<1
+        (bounded-byᶜ-neg ρ h h-bound)
 
 
 geometricPowerSeriesOnBall :

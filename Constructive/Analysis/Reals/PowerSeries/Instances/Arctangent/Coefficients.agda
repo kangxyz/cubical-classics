@@ -53,54 +53,9 @@ atanPowerSeries =
   primitivePowerSeries alternatingEvenGeometricPowerSeries
 
 
-evenGeometricPowerSeriesCoefficient-zero :
-  evenGeometricPowerSeries zero ≡ 1ᶜ
-evenGeometricPowerSeriesCoefficient-zero =
-  refl
-
-
-evenGeometricPowerSeriesCoefficient-one :
-  evenGeometricPowerSeries (suc zero) ≡ 0ᶜ
-evenGeometricPowerSeriesCoefficient-one =
-  refl
-
-
-evenGeometricPowerSeriesCoefficient-suc-suc :
-  (n : ℕ) →
-  evenGeometricPowerSeries (suc (suc n)) ≡ evenGeometricPowerSeries n
-evenGeometricPowerSeriesCoefficient-suc-suc n =
-  refl
-
-
-alternatingEvenGeometricPowerSeriesCoefficient-zero :
-  alternatingEvenGeometricPowerSeries zero ≡ 1ᶜ
-alternatingEvenGeometricPowerSeriesCoefficient-zero =
-  refl
-
-
-alternatingEvenGeometricPowerSeriesCoefficient-one :
-  alternatingEvenGeometricPowerSeries (suc zero) ≡ 0ᶜ
-alternatingEvenGeometricPowerSeriesCoefficient-one =
-  refl
-
-
-alternatingEvenGeometricPowerSeriesCoefficient-suc-suc :
-  (n : ℕ) →
-  alternatingEvenGeometricPowerSeries (suc (suc n)) ≡
-  -ᶜ alternatingEvenGeometricPowerSeries n
-alternatingEvenGeometricPowerSeriesCoefficient-suc-suc n =
-  refl
-
-
 atanhPowerSeriesCoefficient-zero :
   atanhPowerSeries zero ≡ 0ᶜ
 atanhPowerSeriesCoefficient-zero =
-  refl
-
-
-atanPowerSeriesCoefficient-zero :
-  atanPowerSeries zero ≡ 0ᶜ
-atanPowerSeriesCoefficient-zero =
   refl
 
 

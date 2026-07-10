@@ -553,6 +553,54 @@ bounded-byᶜ-scale-rational-bound a κ μ x a-bound x-bound =
           x-bound))
 
 
+bounded-byᶜ-scale-rational-closed-bound :
+  (a : ℚ) (κ μ : ℚ⁺) (x : ℝᶜ) →
+  RationalClosedBoundᶜ μ a →
+  BoundedByᶜ κ x →
+  BoundedByᶜ (μ *⁺ κ) (scalarMulᶜ a x)
+bounded-byᶜ-scale-rational-closed-bound a κ μ x a-bound x-bound =
+  Sum.rec negativeCase nonnegativeCase (Rational.negative-or-nonnegative a)
+  where
+  scalar-a≡neg-scale--a :
+    scalarMulᶜ a x ≡ -ᶜ (scalarMulᶜ (ℚ.- a) x)
+  scalar-a≡neg-scale--a =
+    sym (cong (λ s → scalarMulᶜ s x) (ℚ.-Invol a)) ∙
+    scalarMulᶜ-neg-scalar (ℚ.- a) x
+
+  nonnegativeCase :
+    0ℚ ℚOrder.≤ a →
+    BoundedByᶜ (μ *⁺ κ) (scalarMulᶜ a x)
+  nonnegativeCase 0≤a =
+    bounded-byᶜ-scale-nonnegative
+      a
+      κ
+      μ
+      x
+      0≤a
+      (upper≤ℚ {κ = μ} {q = a} a-bound)
+      x-bound
+
+  negativeCase :
+    a ℚOrder.< 0ℚ →
+    BoundedByᶜ (μ *⁺ κ) (scalarMulᶜ a x)
+  negativeCase a<0 =
+    subst
+      (BoundedByᶜ (μ *⁺ κ))
+      (sym scalar-a≡neg-scale--a)
+      (bounded-byᶜ-neg
+        (μ *⁺ κ)
+        (scalarMulᶜ (ℚ.- a) x)
+        (bounded-byᶜ-scale-nonnegative
+          (ℚ.- a)
+          κ
+          μ
+          x
+          (Rational.<→≤ {p = 0ℚ} {q = ℚ.- a}
+            (Rational.neg-positive {q = a} a<0))
+          (lower≤ℚ {κ = μ} {q = a} a-bound)
+          x-bound))
+
+
 bounded-approximation-rational-boundᶜ :
   (κ φ η θ : ℚ⁺) (x : ℝᶜ) (q : ℚ) →
   θ <⁺ φ →

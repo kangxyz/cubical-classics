@@ -33,13 +33,7 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -131,26 +125,6 @@ mutual
     1ᶜ
   cosPowerSeries (suc n) =
     -ᶜ (inverseSucReal n ·ᶜ sinPowerSeries n)
-
-
-sinPowerSeriesCoefficient-zero :
-  sinPowerSeries zero ≡ 0ᶜ
-sinPowerSeriesCoefficient-zero =
-  refl
-
-
-sinPowerSeriesCoefficient-suc :
-  (n : ℕ) →
-  sinPowerSeries (suc n) ≡
-  inverseSucReal n ·ᶜ cosPowerSeries n
-sinPowerSeriesCoefficient-suc n =
-  refl
-
-
-cosPowerSeriesCoefficient-zero :
-  cosPowerSeries zero ≡ 1ᶜ
-cosPowerSeriesCoefficient-zero =
-  refl
 
 
 cosPowerSeriesCoefficient-suc :

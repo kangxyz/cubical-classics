@@ -12,13 +12,10 @@ open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.CommRing.Instances.Rationals using (ℚCommRing)
 import Cubical.Data.Nat as Nat
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
-import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
-import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
@@ -29,27 +26,11 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
   using (_≤ᶜ_ ; ≤ᶜ-refl)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
-open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Base
-  using (HasDerivativeAtWith)
 open import Constructive.Analysis.Reals.Calculus.Derivative.Rules
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using
-    ( bounded-byᶜ-abs
-    ; bounded-byᶜ-scale-rational-closed-bound
-    )
-open import Constructive.Analysis.GeometricDecay
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPowerBoundsFromBound)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -140,20 +121,6 @@ derivativePowerSeries-exp n =
   naturalTimesInverseSucReal-cancel n (expPowerSeries n)
 
 
-primitivePowerSeries-exp-zero :
-  primitivePowerSeries expPowerSeries zero ≡ 0ᶜ
-primitivePowerSeries-exp-zero =
-  refl
-
-
-primitivePowerSeries-exp-suc :
-  (n : ℕ) →
-  primitivePowerSeries expPowerSeries (suc n) ≡
-  expPowerSeries (suc n)
-primitivePowerSeries-exp-suc n =
-  refl
-
-
 primitivePowerSeries-exp :
   (n : ℕ) →
   primitivePowerSeries expPowerSeries n ≡
@@ -164,69 +131,14 @@ primitivePowerSeries-exp (suc n) =
   sym (add-zero-right (expPowerSeries (suc n)))
 
 
-ExpPowerSeriesMajorizedOnBall :
-  ℚ⁺ →
-  (ℕ → ℝᶜ) →
-  (ℚ⁺ → ℕ) →
-  Type₀
-ExpPowerSeriesMajorizedOnBall ρ v μ =
-  PowerSeriesMajorizedOnBall expPowerSeries ρ v μ
-
-
-ExpPowerSeriesPowerBoundsOnBall :
-  ℚ⁺ →
-  Type₀
-ExpPowerSeriesPowerBoundsOnBall ρ =
-  (h : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  (n : ℕ) →
-  BoundedByᶜ (positivePower ρ n) (realPower h n)
-
-
-ExpPositiveMajorantTailBound :
-  ℚ⁺ →
-  (ℚ⁺ → ℕ) →
-  Type₀
-ExpPositiveMajorantTailBound ρ μ =
-  TailBound (expPositiveMajorantTerm ρ) μ
-
-
-ExpPositiveMajorantDoubledUpper :
-  ℚ⁺ →
-  (ℚ⁺ → ℕ) →
-  Type₀
-ExpPositiveMajorantDoubledUpper ρ μ =
-  (ε : ℚ⁺) →
-  (m : ℕ) →
-  NatOrder._≤_ (μ ε) m →
-  expPositiveMajorantTerm ρ m +ᶜ expPositiveMajorantTerm ρ m
-    ≤ᶜ rational (radius ε)
-
-
-expPositiveMajorantTailBoundFromDoubledUpper :
+expPowerSeriesFactorialMajorized :
   (ρ : ℚ⁺) →
-  (cutoff : ExpMajorantRatioCutoff ρ) →
-  {μ : ℚ⁺ → ℕ} →
-  ((ε : ℚ⁺) → NatOrder._≤_ (cutoff .fst) (μ ε)) →
-  ExpPositiveMajorantDoubledUpper ρ μ →
-  ExpPositiveMajorantTailBound ρ μ
-expPositiveMajorantTailBoundFromDoubledUpper ρ cutoff cutoff≤μ doubledUpper =
-  eventual-ratio-half-tailBound
-    (expPositiveMajorantTerm-nonnegative ρ)
-    (cutoff .fst)
-    (expPositiveMajorantTerm-eventual-ratio-half ρ cutoff)
-    cutoff≤μ
-    doubledUpper
-
-
-expPowerSeriesFactorialMajorizedFromPowerBounds :
-  (ρ : ℚ⁺) →
-  {μ : ℚ⁺ → ℕ} →
-  ExpPowerSeriesPowerBoundsOnBall ρ →
-  ExpPositiveMajorantTailBound ρ μ →
-  AntitoneNatModulus μ →
-  ExpPowerSeriesMajorizedOnBall ρ (expPositiveMajorantTerm ρ) μ
-expPowerSeriesFactorialMajorizedFromPowerBounds ρ powerBounds tailBound antitone =
+  PowerSeriesMajorizedOnBall
+    expPowerSeries
+    ρ
+    (expPositiveMajorantTerm ρ)
+    (expPositiveMajorantFactorialModulus ρ)
+expPowerSeriesFactorialMajorized ρ =
   powerSeriesMajorizedOnBallFromBoundedTerms
     {a = expPowerSeries}
     {ρ = ρ}
@@ -237,77 +149,9 @@ expPowerSeriesFactorialMajorizedFromPowerBounds ρ powerBounds tailBound antiton
         ρ
         h
         n
-        (powerBounds h h-bound n))
+        (realPowerBoundsFromBound ρ h h-bound n))
     (λ n → ≤ᶜ-refl (expPositiveMajorantTerm ρ n))
     (expPositiveMajorantTerm-nonnegative ρ)
-    tailBound
-    antitone
-
-
-expPowerSeriesSubunitMajorizedFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : ℚOrder._<_ (Constructive.Data.PositiveRationals.radius ρ) RationalBase.1ℚ) →
-  ExpPowerSeriesPowerBoundsOnBall ρ →
-  ExpPowerSeriesMajorizedOnBall
-    ρ
-    (positiveGeometricTerm ρ)
-    (positiveGeometricPowerModulus ρ ρ<1)
-expPowerSeriesSubunitMajorizedFromPowerBounds ρ ρ<1 powerBounds =
-  powerSeriesMajorizedOnBallFromBoundedTerms
-    {a = expPowerSeries}
-    {ρ = ρ}
-    {κ = positivePower ρ}
-    {v = positiveGeometricTerm ρ}
-    (λ h h-bound n →
-      expPowerSeriesTermBoundFromPowerBound
-        ρ
-        h
-        n
-        (powerBounds h h-bound n))
-    (λ n → ≤ᶜ-refl (positiveGeometricTerm ρ n))
-    (positiveGeometricTerm-nonnegative ρ)
-    (λ ε m k μ≤m →
-      positiveGeometricFiniteTailBoundFromRatio ρ ρ<1 ε m k μ≤m)
-    (λ {ε} {δ} ε≤δ →
-      positiveGeometricPowerModulus-antitone
-        ρ
-        ρ<1
-        {ε = ε}
-        {δ = δ}
-        ε≤δ)
-
-
-expPowerSeriesPowerBoundsFromBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  ExpPowerSeriesPowerBoundsOnBall ρ
-expPowerSeriesPowerBoundsFromBall ρ ρ<1 h h-bound n =
-  RealGeometricPowerBounds.powerBound
-    (realGeometricPowerBoundsFromBound h bound)
-    n
-  where
-  bound : RealGeometricBound h
-  bound =
-    ρ , ρ<1 , h-bound
-
-
-expPowerSeriesPowerBoundsOnAnyBall :
-  (ρ : ℚ⁺) →
-  ExpPowerSeriesPowerBoundsOnBall ρ
-expPowerSeriesPowerBoundsOnAnyBall ρ h h-bound n =
-  realPowerBoundsFromBound ρ h h-bound n
-
-
-expPowerSeriesFactorialMajorized :
-  (ρ : ℚ⁺) →
-  ExpPowerSeriesMajorizedOnBall
-    ρ
-    (expPositiveMajorantTerm ρ)
-    (expPositiveMajorantFactorialModulus ρ)
-expPowerSeriesFactorialMajorized ρ =
-  expPowerSeriesFactorialMajorizedFromPowerBounds
-    ρ
-    (expPowerSeriesPowerBoundsOnAnyBall ρ)
     (expPositiveMajorantFactorialTailBound ρ)
     (λ {ε} {δ} ε≤δ →
       expPositiveMajorantFactorialModulusAntitone
@@ -315,64 +159,6 @@ expPowerSeriesFactorialMajorized ρ =
         {ε = ε}
         {δ = δ}
         ε≤δ)
-
-
-expPowerSeriesSubunitMajorized :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  ExpPowerSeriesMajorizedOnBall
-    ρ
-    (positiveGeometricTerm ρ)
-    (positiveGeometricPowerModulus ρ ρ<1)
-expPowerSeriesSubunitMajorized ρ ρ<1 =
-  expPowerSeriesSubunitMajorizedFromPowerBounds
-    ρ
-    ρ<1
-    (expPowerSeriesPowerBoundsFromBall ρ ρ<1)
-
-
-expPowerSeriesOnSubunitBallWithFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : ℚOrder._<_ (Constructive.Data.PositiveRationals.radius ρ) RationalBase.1ℚ) →
-  ExpPowerSeriesPowerBoundsOnBall ρ →
-  HasPowerSeriesOnBallWith
-    expPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-expPowerSeriesOnSubunitBallWithFromPowerBounds ρ ρ<1 powerBounds =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    (expPowerSeriesSubunitMajorizedFromPowerBounds ρ ρ<1 powerBounds)
-
-
-expPowerSeriesOnSubunitBallWith :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  HasPowerSeriesOnBallWith
-    expPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-expPowerSeriesOnSubunitBallWith ρ ρ<1 =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    (expPowerSeriesSubunitMajorized ρ ρ<1)
-
-
-expPowerSeriesOnSubunitBallFromPowerBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : ℚOrder._<_ (Constructive.Data.PositiveRationals.radius ρ) RationalBase.1ℚ) →
-  ExpPowerSeriesPowerBoundsOnBall ρ →
-  HasPowerSeriesOnBall expPowerSeries ρ
-expPowerSeriesOnSubunitBallFromPowerBounds ρ ρ<1 powerBounds =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  expPowerSeriesOnSubunitBallWithFromPowerBounds ρ ρ<1 powerBounds
-
-
-expPowerSeriesOnSubunitBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  HasPowerSeriesOnBall expPowerSeries ρ
-expPowerSeriesOnSubunitBall ρ ρ<1 =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  expPowerSeriesOnSubunitBallWith ρ ρ<1
 
 
 expPowerSeriesOnBallWith :

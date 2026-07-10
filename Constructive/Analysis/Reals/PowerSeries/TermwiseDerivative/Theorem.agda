@@ -696,188 +696,6 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTa
     partialModulus-large
 
 
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (derivativeRadius :
-    HasInfinitePowerSeriesRadius (derivativePowerSeries a)) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    a
-    (centeredDisplacement c x)
-    δ →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativeRadius σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      derivativeRadius
-      x)
-    μ
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-  {a = a}
-  radiusData
-  derivativeRadius =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    {a = a}
-    {b = derivativePowerSeries a}
-    (λ _ → refl)
-    radiusData
-    derivativeRadius
-    derivativeRadius
-
-
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformModulus→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    a
-    (centeredDisplacement c x)
-    δ →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    μ
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformModulus→hasDerivativeAtWith
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {δ = δ}
-  radiusData
-  x-displacement-bound
-  margin
-  derivative-bounds
-  uniformModulus =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {δ = δ}
-    radiusData
-    derivativeRadius
-    x-displacement-bound
-    margin
-    derivative-bounds
-    (powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus
-      {χ =
-        termwiseConvergenceIndex
-          (radiusData ρ .fst)
-          (derivativeRadius σ .fst)}
-      {μ = μ}
-      {ω = powerSeriesFormalPartialSumsDerivativeModulus σ δ}
-      uniformModulus)
-  where
-  derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)
-  derivativeRadius =
-    derivativePowerSeriesInfiniteRadius radiusData
-
-
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ ν : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin :
-    (ε : ℚ⁺) →
-    radius (σ +⁺ min⁺ (μ ε) (ν ε)) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    a
-    (centeredDisplacement c x)
-    δ →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    ν
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    (λ ε → min⁺ (μ ε) (ν ε))
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {ν = ν}
-  {δ = δ}
-  radiusData
-  x-displacement-bound
-  margin
-  derivative-bounds
-  uniformModulus =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = λ ε → min⁺ (μ ε) (ν ε)}
-    {δ = δ}
-    radiusData
-    derivativeRadius
-    x-displacement-bound
-    margin
-    derivative-bounds
-    (powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus
-      {χ =
-        termwiseConvergenceIndex
-          (radiusData ρ .fst)
-          (derivativeRadius σ .fst)}
-      μ
-      ν
-      {ω = powerSeriesFormalPartialSumsDerivativeModulus σ δ}
-      uniformModulus)
-  where
-  derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)
-  derivativeRadius =
-    derivativePowerSeriesInfiniteRadius radiusData
-
 
 centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromUniformPartialSumsOnSubballCanonicalIndex→hasDerivativeAtWith :
   {a : PowerSeries} →
@@ -999,274 +817,67 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromSecondDerivativePart
       secondDerivativeBound)
 
 
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (derivativeRadius :
-    HasInfinitePowerSeriesRadius (derivativePowerSeries a)) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativeRadius σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      derivativeRadius
-      x)
-    μ
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  derivativeRadius
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  partialModulus-large =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    {a = a}
+
+private
+  transportCenteredDerivative :
+    {f : ℝᶜ → ℝᶜ} →
+    {a : PowerSeries} →
+    {c x d : ℝᶜ} →
+    {ρ σ : ℚ⁺} →
+    {seriesModulus : ℚ⁺ → ℕ} →
+    {μ : PrecisionModulus} →
+    (radiusData : HasInfinitePowerSeriesRadius a) →
+    HasPowerSeriesAtWith f c a ρ seriesModulus →
+    (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
+    ((ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
+    HasDerivativeAtWith
+      (centeredPowerSeriesSumEverywhere a c radiusData)
+      x
+      d
+      μ →
+    HasDerivativeAtWith f x d μ
+  transportCenteredDerivative
     {c = c}
     {x = x}
     {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {δ = powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ}
-    radiusData
-    derivativeRadius
-    x-displacement-bound
-    margin
-    (powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-      σ
-      x-displacement-bound
-      κ
-      coefficientBounds)
-    partialModulus-large
-
-
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballUniformModulus→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    μ
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballUniformModulus→hasDerivativeAtWith
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  uniformModulus =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformModulus→hasDerivativeAtWith
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {δ = powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ}
-    radiusData
-    x-displacement-bound
-    margin
-    (powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-      σ
-      x-displacement-bound
-      κ
-      coefficientBounds)
-    uniformModulus
-
-
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ ν : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin :
-    (ε : ℚ⁺) →
-    radius (σ +⁺ min⁺ (μ ε) (ν ε)) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    ν
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    (λ ε → min⁺ (μ ε) (ν ε))
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {ν = ν}
-  radiusData
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  uniformModulus =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {ν = ν}
-    {δ = powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ}
-    radiusData
-    x-displacement-bound
-    margin
-    (powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-      σ
-      x-displacement-bound
-      κ
-      coefficientBounds)
-    uniformModulus
-
-
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex→hasDerivativeAtWith :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  (coefficientBounds : (n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  (derivativeMajorants :
-    (τ : ℚ⁺) → DerivativePowerSeriesBoundMajorantOnBall κ τ) →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
-        {a = a}
-        κ
-        coefficientBounds
-        derivativeMajorants
-        σ
-        .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    (centeredPowerSeriesSumEverywhere a c radiusData)
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
-        {a = a}
-        κ
-        coefficientBounds
-        derivativeMajorants)
-      x)
-    μ
-centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex→hasDerivativeAtWith
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  derivativeMajorants
-  partialModulus-large =
-  centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
     {μ = μ}
     radiusData
-    derivativeRadius
+    expansion
     x-displacement-bound
-    margin
-    κ
-    coefficientBounds
-    partialModulus-large
-  where
-  derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)
-  derivativeRadius =
-    derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
-      {a = a}
-      κ
-      coefficientBounds
-      derivativeMajorants
+    margin =
+    hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
+      radiusData
+      expansion
+      x-inBall
+      forward-inBall
+    where
+    x-inBall : InPowerSeriesBall c ρ x
+    x-inBall =
+      record
+        { displacementBound =
+            powerSeriesCenterInBallFromMargin x-displacement-bound margin
+        }
+
+    forward-inBall :
+      (ε η : ℚ⁺) →
+      radius η ℚOrder.≤ radius (μ ε) →
+      (h : ℝᶜ) →
+      BoundedByᶜ η h →
+      InPowerSeriesBall c ρ (x +ᶜ h)
+    forward-inBall ε η η≤με h h-bound =
+      subst
+        (InPowerSeriesBall c ρ)
+        (add-center-centeredDisplacement-forward c x h)
+        (inPowerSeriesBallAtCenterPlusFromBound
+          c
+          (powerSeriesForwardInBallFromCenterMargin
+            x-displacement-bound
+            margin
+            ε
+            η
+            η≤με
+            h
+            h-bound))
 
 
 hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex :
@@ -1317,11 +928,11 @@ hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndI
   margin
   derivative-bounds
   partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
+  transportCenteredDerivative
     radiusData
     expansion
-    x-inBall
-    forward-inBall
+    x-displacement-bound
+    margin
     (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
       {a = a}
       {b = b}
@@ -1338,313 +949,6 @@ hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndI
       margin
       derivative-bounds
       partialModulus-large)
-  where
-  x-inBall : InPowerSeriesBall c ρ x
-  x-inBall =
-    record
-      { displacementBound =
-          powerSeriesCenterInBallFromMargin x-displacement-bound margin
-      }
-
-  forward-inBall :
-    (ε η : ℚ⁺) →
-    radius η ℚOrder.≤ radius (μ ε) →
-    (h : ℝᶜ) →
-    BoundedByᶜ η h →
-    InPowerSeriesBall c ρ (x +ᶜ h)
-  forward-inBall ε η η≤με h h-bound =
-    subst
-      (InPowerSeriesBall c ρ)
-      (add-center-centeredDisplacement-forward c x h)
-      (inPowerSeriesBallAtCenterPlusFromBound
-        c
-        (powerSeriesForwardInBallFromCenterMargin
-          x-displacement-bound
-          margin
-          ε
-          η
-          η≤με
-          h
-          h-bound))
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformModulus :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    a
-    (centeredDisplacement c x)
-    δ →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    μ
-hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformModulus
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {δ = δ}
-  radiusData
-  expansion
-  x-displacement-bound
-  margin
-  derivative-bounds
-  uniformModulus =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
-    radiusData
-    expansion
-    x-inBall
-    forward-inBall
-    (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformModulus→hasDerivativeAtWith
-      {a = a}
-      {c = c}
-      {x = x}
-      {ρ = ρ}
-      {σ = σ}
-      {μ = μ}
-      {δ = δ}
-      radiusData
-      x-displacement-bound
-      margin
-      derivative-bounds
-      uniformModulus)
-  where
-  x-inBall : InPowerSeriesBall c ρ x
-  x-inBall =
-    record
-      { displacementBound =
-          powerSeriesCenterInBallFromMargin x-displacement-bound margin
-      }
-
-  forward-inBall :
-    (ε η : ℚ⁺) →
-    radius η ℚOrder.≤ radius (μ ε) →
-    (h : ℝᶜ) →
-    BoundedByᶜ η h →
-    InPowerSeriesBall c ρ (x +ᶜ h)
-  forward-inBall ε η η≤με h h-bound =
-    subst
-      (InPowerSeriesBall c ρ)
-      (add-center-centeredDisplacement-forward c x h)
-      (inPowerSeriesBallAtCenterPlusFromBound
-        c
-        (powerSeriesForwardInBallFromCenterMargin
-          x-displacement-bound
-          margin
-          ε
-          η
-          η≤με
-          h
-          h-bound))
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformSubmodulus :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ ν : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin :
-    (ε : ℚ⁺) →
-    radius (σ +⁺ min⁺ (μ ε) (ν ε)) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    a
-    (centeredDisplacement c x)
-    δ →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    ν
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    (λ ε → min⁺ (μ ε) (ν ε))
-hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformSubmodulus
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {ν = ν}
-  {δ = δ}
-  radiusData
-  expansion
-  x-displacement-bound
-  margin
-  derivative-bounds
-  uniformModulus =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
-    radiusData
-    expansion
-    x-inBall
-    forward-inBall
-    (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromIteratedBoundsOnSubballUniformSubmodulus→hasDerivativeAtWith
-      {a = a}
-      {c = c}
-      {x = x}
-      {ρ = ρ}
-      {σ = σ}
-      {μ = μ}
-      {ν = ν}
-      {δ = δ}
-      radiusData
-      x-displacement-bound
-      margin
-      derivative-bounds
-      uniformModulus)
-  where
-  x-inBall : InPowerSeriesBall c ρ x
-  x-inBall =
-    record
-      { displacementBound =
-          powerSeriesCenterInBallFromMargin x-displacement-bound margin
-      }
-
-  forward-inBall :
-    (ε η : ℚ⁺) →
-    radius η ℚOrder.≤ radius (min⁺ (μ ε) (ν ε)) →
-    (h : ℝᶜ) →
-    BoundedByᶜ η h →
-    InPowerSeriesBall c ρ (x +ᶜ h)
-  forward-inBall ε η η≤με h h-bound =
-    subst
-      (InPowerSeriesBall c ρ)
-      (add-center-centeredDisplacement-forward c x h)
-      (inPowerSeriesBallAtCenterPlusFromBound
-        c
-        (powerSeriesForwardInBallFromCenterMargin
-          x-displacement-bound
-          margin
-          ε
-          η
-          η≤με
-          h
-          h-bound))
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromUniformPartialSumsOnSubballCanonicalIndex :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin :
-    (ε : ℚ⁺) →
-    radius (σ +⁺ partialSumsDerivativeTargetModulus μ ε)
-      ℚOrder.≤ radius ρ) →
-  PowerSeriesFormalPartialSumsHaveDerivativeWith
-    a
-    (centeredDisplacement c x)
-    (λ _ → μ) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    (partialSumsDerivativeTargetModulus μ)
-hasPowerSeriesAtWith→hasDerivativeAtWithFromUniformPartialSumsOnSubballCanonicalIndex
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  expansion
-  x-displacement-bound
-  margin
-  partialDerivative =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
-    radiusData
-    expansion
-    x-inBall
-    forward-inBall
-    (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromUniformPartialSumsOnSubballCanonicalIndex→hasDerivativeAtWith
-      {a = a}
-      {c = c}
-      {x = x}
-      {ρ = ρ}
-      {σ = σ}
-      {μ = μ}
-      radiusData
-      x-displacement-bound
-      margin
-      partialDerivative)
-  where
-  targetModulus : PrecisionModulus
-  targetModulus =
-    partialSumsDerivativeTargetModulus μ
-
-  x-inBall : InPowerSeriesBall c ρ x
-  x-inBall =
-    record
-      { displacementBound =
-          powerSeriesCenterInBallFromMargin x-displacement-bound margin
-      }
-
-  forward-inBall :
-    (ε η : ℚ⁺) →
-    radius η ℚOrder.≤ radius (targetModulus ε) →
-    (h : ℝᶜ) →
-    BoundedByᶜ η h →
-    InPowerSeriesBall c ρ (x +ᶜ h)
-  forward-inBall ε η η≤με h h-bound =
-    subst
-      (InPowerSeriesBall c ρ)
-      (add-center-centeredDisplacement-forward c x h)
-      (inPowerSeriesBallAtCenterPlusFromBound
-        c
-        (powerSeriesForwardInBallFromCenterMargin
-          x-displacement-bound
-          margin
-        ε
-        η
-        η≤με
-        h
-        h-bound))
 
 
 hasPowerSeriesAtWith→hasDerivativeAtWithFromSecondDerivativePartialSumsBoundOnSubballCanonicalIndex :
@@ -1690,21 +994,20 @@ hasPowerSeriesAtWith→hasDerivativeAtWithFromSecondDerivativePartialSumsBoundOn
   x-displacement-bound
   margin
   secondDerivativeBound =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromUniformPartialSumsOnSubballCanonicalIndex
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = powerSeriesFormalPartialSumsDerivativeModulusFromSecondBound Γ}
+  transportCenteredDerivative
     radiusData
     expansion
     x-displacement-bound
     margin
-    (powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBound
-      σ
-      Γ
+    (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromSecondDerivativePartialSumsBoundOnSubballCanonicalIndex→hasDerivativeAtWith
+      {a = a}
+      {c = c}
+      {x = x}
+      {ρ = ρ}
+      {σ = σ}
+      radiusData
       x-displacement-bound
+      margin
       secondDerivativeBound)
 
 
@@ -1757,11 +1060,11 @@ hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndC
   κ
   coefficientBounds
   partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
+  transportCenteredDerivative
     radiusData
     expansion
-    x-inBall
-    forward-inBall
+    x-displacement-bound
+    margin
     (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
       {a = a}
       {b = b}
@@ -1778,397 +1081,3 @@ hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndC
       κ
       coefficientBounds
       partialModulus-large)
-  where
-  x-inBall : InPowerSeriesBall c ρ x
-  x-inBall =
-    record
-      { displacementBound =
-          powerSeriesCenterInBallFromMargin x-displacement-bound margin
-      }
-
-  forward-inBall :
-    (ε η : ℚ⁺) →
-    radius η ℚOrder.≤ radius (μ ε) →
-    (h : ℝᶜ) →
-    BoundedByᶜ η h →
-    InPowerSeriesBall c ρ (x +ᶜ h)
-  forward-inBall ε η η≤με h h-bound =
-    subst
-      (InPowerSeriesBall c ρ)
-      (add-center-centeredDisplacement-forward c x h)
-      (inPowerSeriesBallAtCenterPlusFromBound
-        c
-        (powerSeriesForwardInBallFromCenterMargin
-          x-displacement-bound
-          margin
-          ε
-          η
-          η≤με
-          h
-          h-bound))
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  (derivativeRadius :
-    HasInfinitePowerSeriesRadius (derivativePowerSeries a)) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativeRadius σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      derivativeRadius
-      x)
-    μ
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  derivativeRadius
-  expansion
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel
-    radiusData
-    expansion
-    x-inBall
-    forward-inBall
-    (centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-      {a = a}
-      {c = c}
-      {x = x}
-      {ρ = ρ}
-      {σ = σ}
-      {μ = μ}
-      radiusData
-      derivativeRadius
-      x-displacement-bound
-      margin
-      κ
-      coefficientBounds
-      partialModulus-large)
-  where
-  x-inBall : InPowerSeriesBall c ρ x
-  x-inBall =
-    record
-      { displacementBound =
-          powerSeriesCenterInBallFromMargin x-displacement-bound margin
-      }
-
-  forward-inBall :
-    (ε η : ℚ⁺) →
-    radius η ℚOrder.≤ radius (μ ε) →
-    (h : ℝᶜ) →
-    BoundedByᶜ η h →
-    InPowerSeriesBall c ρ (x +ᶜ h)
-  forward-inBall ε η η≤με h h-bound =
-    subst
-      (InPowerSeriesBall c ρ)
-      (add-center-centeredDisplacement-forward c x h)
-      (inPowerSeriesBallAtCenterPlusFromBound
-        c
-        (powerSeriesForwardInBallFromCenterMargin
-          x-displacement-bound
-          margin
-          ε
-          η
-          η≤με
-          h
-          h-bound))
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformModulus :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    μ
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformModulus
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  expansion
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  uniformModulus =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformModulus
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {δ = powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ}
-    radiusData
-    expansion
-    x-displacement-bound
-    margin
-    (powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-      σ
-      x-displacement-bound
-      κ
-      coefficientBounds)
-    uniformModulus
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformSubmodulus :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ ν : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin :
-    (ε : ℚ⁺) →
-    radius (σ +⁺ min⁺ (μ ε) (ν ε)) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  ((n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  PowerSeriesPartialSumsDerivativeUniformModulus
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadius radiusData σ .fst))
-    ν
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadius radiusData)
-      x)
-    (λ ε → min⁺ (μ ε) (ν ε))
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballUniformSubmodulus
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {ν = ν}
-  radiusData
-  expansion
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  uniformModulus =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromIteratedBoundsOnSubballUniformSubmodulus
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {ν = ν}
-    {δ = powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds σ κ}
-    radiusData
-    expansion
-    x-displacement-bound
-    margin
-    (powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-      σ
-      x-displacement-bound
-      κ
-      coefficientBounds)
-    uniformModulus
-
-
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {seriesModulus : ℚ⁺ → ℕ} →
-  {μ : PrecisionModulus} →
-  (radiusData : HasInfinitePowerSeriesRadius a) →
-  HasPowerSeriesAtWith f c a ρ seriesModulus →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement c x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  (κ : ℕ → ℚ⁺) →
-  (coefficientBounds : (n : ℕ) → BoundedByᶜ (κ n) (a n)) →
-  (derivativeMajorants :
-    (τ : ℚ⁺) → DerivativePowerSeriesBoundMajorantOnBall κ τ) →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (radiusData ρ .fst)
-      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
-        {a = a}
-        κ
-        coefficientBounds
-        derivativeMajorants
-        σ
-        .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus
-      σ
-      (powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
-        σ
-        κ)) →
-  HasDerivativeAtWith
-    f
-    x
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      (derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
-        {a = a}
-        κ
-        coefficientBounds
-        derivativeMajorants)
-      x)
-    μ
-hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsAndDerivativeMajorantsOnSubballCanonicalIndex
-  {a = a}
-  {c = c}
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  radiusData
-  expansion
-  x-displacement-bound
-  margin
-  κ
-  coefficientBounds
-  derivativeMajorants
-  partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientBoundsOnSubballCanonicalIndex
-    {a = a}
-    {c = c}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    radiusData
-    derivativeRadius
-    expansion
-    x-displacement-bound
-    margin
-    κ
-    coefficientBounds
-    partialModulus-large
-  where
-  derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)
-  derivativeRadius =
-    derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
-      {a = a}
-      κ
-      coefficientBounds
-      derivativeMajorants
-
-
-PowerSeriesTermwiseDerivativeAt :
-  (ℝᶜ → ℝᶜ) →
-  PowerSeries →
-  PowerSeries →
-  ℝᶜ →
-  ℝᶜ →
-  Type₀
-PowerSeriesTermwiseDerivativeAt f a da x d =
-  Σ[ χ ∈ TermwiseDerivativeIndex ]
-    Σ[ μ ∈ PrecisionModulus ]
-      PowerSeriesTermwiseDerivativeAtWith f a da x d χ μ
-
-
-PowerSeriesFormalTermwiseDerivativeAtWith :
-  (ℝᶜ → ℝᶜ) →
-  PowerSeries →
-  (x d : ℝᶜ) →
-  TermwiseDerivativeIndex →
-  PrecisionModulus →
-  Type₀
-PowerSeriesFormalTermwiseDerivativeAtWith f a =
-  PowerSeriesTermwiseDerivativeAtWith f a (derivativePowerSeries a)
-
-
-PowerSeriesFormalTermwiseDerivativeAt :
-  (ℝᶜ → ℝᶜ) →
-  PowerSeries →
-  ℝᶜ →
-  ℝᶜ →
-  Type₀
-PowerSeriesFormalTermwiseDerivativeAt f a =
-  PowerSeriesTermwiseDerivativeAt f a (derivativePowerSeries a)
-
-
-powerSeriesTermwiseDerivativeAt→hasDerivativeAt :
-  {f : ℝᶜ → ℝᶜ} →
-  {a : PowerSeries} →
-  {da : PowerSeries} →
-  {x d : ℝᶜ} →
-  PowerSeriesTermwiseDerivativeAt f a da x d →
-  HasDerivativeAt f x d
-powerSeriesTermwiseDerivativeAt→hasDerivativeAt (χ , μ , derivativeData) =
-  μ ,
-  powerSeriesTermwiseDerivativeAtWith→hasDerivativeAtWith
-    {χ = χ}
-    derivativeData

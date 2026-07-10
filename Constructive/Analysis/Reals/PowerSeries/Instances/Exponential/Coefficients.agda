@@ -34,21 +34,10 @@ open import Constructive.Analysis.Reals.Calculus.Derivative.Base
 open import Constructive.Analysis.Reals.Calculus.Derivative.Rules
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using
-    ( bounded-byᶜ-abs
-    ; bounded-byᶜ-scale-rational-closed-bound
-    )
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -126,20 +115,6 @@ expPowerSeries (suc n) =
   inverseSucReal n ·ᶜ expPowerSeries n
 
 
-expPowerSeriesCoefficient-zero :
-  expPowerSeries zero ≡ 1ᶜ
-expPowerSeriesCoefficient-zero =
-  refl
-
-
-expPowerSeriesCoefficient-suc :
-  (n : ℕ) →
-  expPowerSeries (suc n) ≡
-  inverseSucReal n ·ᶜ expPowerSeries n
-expPowerSeriesCoefficient-suc n =
-  refl
-
-
 inverseSucReal-rational :
   (n : ℕ) →
   (q : ℚ) →
@@ -181,15 +156,6 @@ expPowerSeries-reciprocalFactorial (suc n) =
     (inverseSucReal n ·ᶜ_)
     (expPowerSeries-reciprocalFactorial n) ∙
   inverseSucReal-rational n (Factorial.reciprocalFactorial n)
-
-
-expPowerSeries-divideByFactorial :
-  (n : ℕ) →
-  expPowerSeries n ≡
-  rational (Factorial.divideByFactorial RationalBase.1ℚ n)
-expPowerSeries-divideByFactorial n =
-  expPowerSeries-reciprocalFactorial n ∙
-  cong rational (sym (Factorial.divideByFactorial-one n))
 
 
 reciprocalFactorialClosedBoundOne :

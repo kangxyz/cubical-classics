@@ -222,17 +222,18 @@ and multiplicative endpoint transport explicit, reduced the file profile to
 about 10 seconds. In the fixed cold aggregate, the module was about
 7.2 seconds.
 
-### Series.Instances.Geometric.Real: unpack several proof-data records
+### Series.Instances.Geometric.Real: remove redundant proof-data layers
 
 `Constructive.Analysis.Reals.Series.Instances.Geometric.Real` looked like
 `Miscellaneous` in a definitions profile, but `--profile=internal` showed
-about 36 seconds under `Positivity`. The hot declarations were proof/data
-records such as `RealGeometricBound`, `RealGeometricTerms`,
-`RealGeometricPowerMajorant`, and `RealGeometricPowerBounds`. Replacing them
-with transparent `Σ` packages or function aliases, while keeping projection
-modules with the same names, reduced `Positivity` to about 10 milliseconds and
-the standalone internal profile to about 5 seconds. In the fixed cold
-aggregate, the module was about 1 second.
+about 36 seconds under `Positivity`. The hot declarations were nested
+proof-data layers around the ratio bound, term family, power bounds, and
+majorant. The first performance fix made those layers transparent. A later
+API cleanup went further: it kept one `RealGeometricBound` record, derived
+power bounds directly from that record, and removed the intermediate term and
+majorant packages. This avoids both positivity overhead and a large family of
+thin forwarding theorems. In the fixed cold aggregate measured at the time,
+the module was about 1 second.
 
 ### Interval.Grid: retain public parameters in a `Σ` package
 

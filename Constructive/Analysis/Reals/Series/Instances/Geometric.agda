@@ -8,5 +8,4 @@ module Constructive.Analysis.Reals.Series.Instances.Geometric where
 
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational public
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive public
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant public
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real public

@@ -757,10 +757,10 @@ neg-mulᶜ≤abs-product x y =
 
 
 bounded-byᶜ-abs≤rational :
-  (κ : ℚ⁺) (x : ℝᶜ) →
+  {κ : ℚ⁺} {x : ℝᶜ} →
   BoundedByᶜ κ x →
   absᶜ x ≤ᶜ rational (radius κ)
-bounded-byᶜ-abs≤rational κ x x-bound =
+bounded-byᶜ-abs≤rational {κ = κ} {x = x} x-bound =
   absᶜ-least
     x
     (rational (radius κ))
@@ -799,8 +799,8 @@ bounded-byᶜ-mul κ μ x y x-bound y-bound =
     CauchyRealsOrdered.·-PosPres≥
       (absᶜ-nonnegative x)
       (absᶜ-nonnegative y)
-      (bounded-byᶜ-abs≤rational κ x x-bound)
-      (bounded-byᶜ-abs≤rational μ y y-bound)
+      (bounded-byᶜ-abs≤rational x-bound)
+      (bounded-byᶜ-abs≤rational y-bound)
 
   absProduct≤bound :
     absᶜ x ·ᶜ absᶜ y ≤ᶜ rational (radius (κ *⁺ μ))

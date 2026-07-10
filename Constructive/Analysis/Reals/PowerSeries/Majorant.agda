@@ -25,8 +25,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude using (absᶜ)
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using (bounded-byᶜ-abs)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+  using (bounded-byᶜ-abs≤rational)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Core
   using (bounded-byᶜ-zero)
@@ -282,7 +282,7 @@ powerSeriesMajorizedOnBallFromBoundedTerms
         {x = absᶜ (powerSeriesTerm a h n)}
         {y = rational (radius (κ n))}
         {z = v n}
-        (bounded-byᶜ-abs
+        (bounded-byᶜ-abs≤rational
           {κ = κ n}
           {x = powerSeriesTerm a h n}
           (termBounds h h-bound n))

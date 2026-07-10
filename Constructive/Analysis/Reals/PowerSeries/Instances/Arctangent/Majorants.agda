@@ -22,10 +22,8 @@ open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPower
+    ( realPower
+    ; realPowerBoundsFromBound
     )
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
@@ -58,29 +56,17 @@ unitCoefficientPowerSeriesTermBoundFromPowerBound
       powerBound)
 
 
-UnitCoefficientPowerBoundsOnBall :
-  ℚ⁺ →
-  Type₀
-UnitCoefficientPowerBoundsOnBall ρ =
-  (h : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  (n : ℕ) →
-  BoundedByᶜ (positivePower ρ n) (realPower h n)
-
-
-unitCoefficientPowerSeriesMajorizedOnBallFromPowerBounds :
+unitCoefficientPowerSeriesMajorizedOnBall :
   (a : PowerSeries) →
   ((n : ℕ) → BoundedByᶜ 1⁺ (a n)) →
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  UnitCoefficientPowerBoundsOnBall ρ →
   PowerSeriesMajorizedOnBall
     a
     ρ
     (positiveGeometricTerm ρ)
     (positiveGeometricPowerModulus ρ ρ<1)
-unitCoefficientPowerSeriesMajorizedOnBallFromPowerBounds
-    a coefficientBound ρ ρ<1 powerBounds =
+unitCoefficientPowerSeriesMajorizedOnBall a coefficientBound ρ ρ<1 =
   powerSeriesMajorizedOnBallFromBoundedTerms
     {a = a}
     {ρ = ρ}
@@ -93,7 +79,7 @@ unitCoefficientPowerSeriesMajorizedOnBallFromPowerBounds
         ρ
         h
         n
-        (powerBounds h h-bound n))
+        (realPowerBoundsFromBound ρ h h-bound n))
     (λ n → ≤ᶜ-refl (positiveGeometricTerm ρ n))
     (positiveGeometricTerm-nonnegative ρ)
     (λ ε m k μ≤m →
@@ -105,41 +91,6 @@ unitCoefficientPowerSeriesMajorizedOnBallFromPowerBounds
         {ε = ε}
         {δ = δ}
         ε≤δ)
-
-
-unitCoefficientPowerSeriesPowerBoundsFromBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  UnitCoefficientPowerBoundsOnBall ρ
-unitCoefficientPowerSeriesPowerBoundsFromBall ρ ρ<1 h h-bound n =
-  RealGeometricPowerBounds.powerBound
-    (realGeometricPowerBoundsFromBound h bound)
-    n
-  where
-  bound : RealGeometricBound h
-  bound =
-    ρ , ρ<1 , h-bound
-
-
-unitCoefficientPowerSeriesMajorizedOnBall :
-  (a : PowerSeries) →
-  ((n : ℕ) → BoundedByᶜ 1⁺ (a n)) →
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  PowerSeriesMajorizedOnBall
-    a
-    ρ
-    (positiveGeometricTerm ρ)
-    (positiveGeometricPowerModulus ρ ρ<1)
-unitCoefficientPowerSeriesMajorizedOnBall a coefficientBound ρ ρ<1 =
-  unitCoefficientPowerSeriesMajorizedOnBallFromPowerBounds
-    a
-    coefficientBound
-    ρ
-    ρ<1
-    (unitCoefficientPowerSeriesPowerBoundsFromBall ρ ρ<1)
-
-
 evenGeometricPowerSeriesMajorizedOnBall :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
@@ -154,20 +105,6 @@ evenGeometricPowerSeriesMajorizedOnBall =
     evenGeometricPowerSeriesCoefficientBoundOne
 
 
-alternatingEvenGeometricPowerSeriesMajorizedOnBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  PowerSeriesMajorizedOnBall
-    alternatingEvenGeometricPowerSeries
-    ρ
-    (positiveGeometricTerm ρ)
-    (positiveGeometricPowerModulus ρ ρ<1)
-alternatingEvenGeometricPowerSeriesMajorizedOnBall =
-  unitCoefficientPowerSeriesMajorizedOnBall
-    alternatingEvenGeometricPowerSeries
-    alternatingEvenGeometricPowerSeriesCoefficientBoundOne
-
-
 atanhPowerSeriesMajorizedOnBall :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
@@ -180,17 +117,3 @@ atanhPowerSeriesMajorizedOnBall =
   unitCoefficientPowerSeriesMajorizedOnBall
     atanhPowerSeries
     atanhPowerSeriesCoefficientBoundOne
-
-
-atanPowerSeriesMajorizedOnBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  PowerSeriesMajorizedOnBall
-    atanPowerSeries
-    ρ
-    (positiveGeometricTerm ρ)
-    (positiveGeometricPowerModulus ρ ρ<1)
-atanPowerSeriesMajorizedOnBall =
-  unitCoefficientPowerSeriesMajorizedOnBall
-    atanPowerSeries
-    atanPowerSeriesCoefficientBoundOne

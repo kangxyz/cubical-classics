@@ -6,6 +6,9 @@ Quantitative estimates for bounded Cauchy-real arithmetic
 {-# OPTIONS --safe --lossy-unification #-}
 module Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates where
 
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+  public
+  using (bounded-byᶜ-abs≤rational)
 open import
   Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedMultiplication
   public
@@ -27,3 +30,6 @@ open import
     ; boundedReciprocalᶜ-continuous
     ; boundedReciprocalᶜ-bound
     )
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+  public
+  using (bounded-byᶜ-scale-rational-closed-bound)

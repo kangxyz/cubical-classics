@@ -35,21 +35,12 @@ open import Constructive.Analysis.Reals.Calculus.Derivative.Base
 open import Constructive.Analysis.Reals.Calculus.Derivative.Rules
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using
-    ( bounded-byᶜ-abs
-    ; bounded-byᶜ-scale-rational-closed-bound
-    )
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+  using (bounded-byᶜ-scale-rational-closed-bound)
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using

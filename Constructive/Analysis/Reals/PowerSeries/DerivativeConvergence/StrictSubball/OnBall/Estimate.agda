@@ -48,8 +48,8 @@ open import Constructive.Analysis.Reals.Series
     ; drop-index
     ; tailSum-one
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using (bounded-byᶜ-abs)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+  using (bounded-byᶜ-abs≤rational)
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.GeometricDecay.Rational
@@ -505,7 +505,7 @@ derivativeStrictSubballTermMajorizedFromProbeBound
   probe≤1 :
     absᶜ probe ≤ᶜ rational Rational.1ℚ
   probe≤1 =
-    bounded-byᶜ-abs probe-bound
+    bounded-byᶜ-abs≤rational probe-bound
 
   coefficient≤majorant :
     absᶜ (a (suc n)) ≤ᶜ
@@ -531,7 +531,7 @@ derivativeStrictSubballTermMajorizedFromProbeBound
   h-power≤majorant :
     absᶜ (realPower h n) ≤ᶜ rational ρpow
   h-power≤majorant =
-    bounded-byᶜ-abs
+    bounded-byᶜ-abs≤rational
       (realPowerBoundsFromBound ρ h h-bound n)
 
   derivative-coefficient-majorant-nonnegative :

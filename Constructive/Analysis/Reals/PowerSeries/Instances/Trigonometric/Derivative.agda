@@ -33,13 +33,7 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -377,7 +371,7 @@ SinPowerSeriesMajorants =
   (ρ : ℚ⁺) →
   Σ[ v ∈ (ℕ → ℝᶜ) ]
   Σ[ μ ∈ (ℚ⁺ → ℕ) ]
-    SinPowerSeriesMajorizedOnBall ρ v μ
+    PowerSeriesMajorizedOnBall sinPowerSeries ρ v μ
 
 
 CosPowerSeriesMajorants :
@@ -386,7 +380,7 @@ CosPowerSeriesMajorants =
   (ρ : ℚ⁺) →
   Σ[ v ∈ (ℕ → ℝᶜ) ]
   Σ[ μ ∈ (ℚ⁺ → ℕ) ]
-    CosPowerSeriesMajorizedOnBall ρ v μ
+    PowerSeriesMajorizedOnBall cosPowerSeries ρ v μ
 
 
 sinPowerSeriesInfiniteRadiusFromMajorants :
@@ -403,7 +397,7 @@ sinPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
   μ =
     majorants ρ .snd .fst
 
-  majorant : SinPowerSeriesMajorizedOnBall ρ v μ
+  majorant : PowerSeriesMajorizedOnBall sinPowerSeries ρ v μ
   majorant =
     majorants ρ .snd .snd
 
@@ -422,6 +416,6 @@ cosPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
   μ =
     majorants ρ .snd .fst
 
-  majorant : CosPowerSeriesMajorizedOnBall ρ v μ
+  majorant : PowerSeriesMajorizedOnBall cosPowerSeries ρ v μ
   majorant =
     majorants ρ .snd .snd

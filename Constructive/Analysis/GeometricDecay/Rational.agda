@@ -26,21 +26,6 @@ rationalPower r (suc n) =
   r ℚ.· rationalPower r n
 
 
-rationalPower-zero :
-  (r : ℚ) →
-  rationalPower r zero ≡ Rational.1ℚ
-rationalPower-zero r =
-  refl
-
-
-rationalPower-suc :
-  (r : ℚ) →
-  (n : ℕ) →
-  rationalPower r (suc n) ≡ r ℚ.· rationalPower r n
-rationalPower-suc r n =
-  refl
-
-
 rationalGeometricPartialSumℚ :
   ℚ →
   ℕ →
@@ -49,22 +34,6 @@ rationalGeometricPartialSumℚ r zero =
   Rational.0ℚ
 rationalGeometricPartialSumℚ r (suc n) =
   rationalGeometricPartialSumℚ r n ℚ.+ rationalPower r n
-
-
-rationalGeometricPartialSumℚ-zero :
-  (r : ℚ) →
-  rationalGeometricPartialSumℚ r zero ≡ Rational.0ℚ
-rationalGeometricPartialSumℚ-zero r =
-  refl
-
-
-rationalGeometricPartialSumℚ-suc :
-  (r : ℚ) →
-  (n : ℕ) →
-  rationalGeometricPartialSumℚ r (suc n) ≡
-  rationalGeometricPartialSumℚ r n ℚ.+ rationalPower r n
-rationalGeometricPartialSumℚ-suc r n =
-  refl
 
 
 rationalGeometricFiniteIdentity :

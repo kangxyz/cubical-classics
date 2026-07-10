@@ -34,21 +34,10 @@ open import Constructive.Analysis.Reals.Calculus.Derivative.Base
 open import Constructive.Analysis.Reals.Calculus.Derivative.Rules
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
-  using
-    ( bounded-byᶜ-abs
-    ; bounded-byᶜ-scale-rational-closed-bound
-    )
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -263,7 +252,7 @@ expPowerSeriesOnBallWithFromMajorant :
   {ρ : ℚ⁺} →
   {v : ℕ → ℝᶜ} →
   {μ : ℚ⁺ → ℕ} →
-  ExpPowerSeriesMajorizedOnBall ρ v μ →
+  PowerSeriesMajorizedOnBall expPowerSeries ρ v μ →
   HasPowerSeriesOnBallWith expPowerSeries ρ μ
 expPowerSeriesOnBallWithFromMajorant =
   majorizedOnBall→hasPowerSeriesOnBallWith
@@ -273,7 +262,7 @@ expPowerSeriesOnBallFromMajorant :
   {ρ : ℚ⁺} →
   {v : ℕ → ℝᶜ} →
   {μ : ℚ⁺ → ℕ} →
-  ExpPowerSeriesMajorizedOnBall ρ v μ →
+  PowerSeriesMajorizedOnBall expPowerSeries ρ v μ →
   HasPowerSeriesOnBall expPowerSeries ρ
 expPowerSeriesOnBallFromMajorant =
   majorizedOnBall→hasPowerSeriesOnBall
@@ -285,7 +274,7 @@ ExpPowerSeriesMajorants =
   (ρ : ℚ⁺) →
   Σ[ v ∈ (ℕ → ℝᶜ) ]
   Σ[ μ ∈ (ℚ⁺ → ℕ) ]
-    ExpPowerSeriesMajorizedOnBall ρ v μ
+    PowerSeriesMajorizedOnBall expPowerSeries ρ v μ
 
 
 expPowerSeriesInfiniteRadiusFromMajorants :
@@ -302,6 +291,6 @@ expPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
   μ =
     majorants ρ .snd .fst
 
-  majorant : ExpPowerSeriesMajorizedOnBall ρ v μ
+  majorant : PowerSeriesMajorizedOnBall expPowerSeries ρ v μ
   majorant =
     majorants ρ .snd .snd

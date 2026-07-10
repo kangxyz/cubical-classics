@@ -203,26 +203,15 @@ positiveGeometricPower-linear-bound ρ ρ<1 (suc n) =
     SolverHelpers.power-linear-step ℚCommRing q p N gap
 
 
-PositiveGeometricPowerScaledUpperBound :
-  ℚ⁺ →
-  (ℚ⁺ → ℕ) →
-  Type₀
-PositiveGeometricPowerScaledUpperBound ρ μ =
-  (ε : ℚ⁺) →
-  (m : ℕ) →
-  NatOrder._≤_ (μ ε) m →
-  rationalPower (radius ρ) m
-  ℚOrder.≤
-  radius ε ℚ.· positiveGeometricGap ρ
-
-
-positiveGeometricPowerScaledUpperBoundFromRatio :
+positiveGeometricPowerScaledUpperBound :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  PositiveGeometricPowerScaledUpperBound
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-positiveGeometricPowerScaledUpperBoundFromRatio ρ ρ<1 ε m μ≤m =
+  (ε : ℚ⁺) →
+  (m : ℕ) →
+  NatOrder._≤_ (positiveGeometricPowerModulus ρ ρ<1 ε) m →
+  rationalPower (radius ρ) m ℚOrder.≤
+  radius ε ℚ.· positiveGeometricGap ρ
+positiveGeometricPowerScaledUpperBound ρ ρ<1 ε m μ≤m =
   Rational.<→≤
     {p = rationalPower q m}
     {q = target}
@@ -366,83 +355,23 @@ positiveGeometricScaledSegment≤power ρ m k =
     rationalGeometricSegmentFiniteIdentity q m k
 
 
-PositiveGeometricScaledSegmentUpperBound :
-  ℚ⁺ →
-  (ℚ⁺ → ℕ) →
-  Type₀
-PositiveGeometricScaledSegmentUpperBound ρ μ =
-  (ε : ℚ⁺) →
-  (m k : ℕ) →
-  NatOrder._≤_ (μ ε) m →
-  rationalGeometricSegmentSumℚ (radius ρ) m k
-    ℚ.· positiveGeometricGap ρ
-  ℚOrder.≤
-  radius ε ℚ.· positiveGeometricGap ρ
-
-
-positiveGeometricScaledSegmentUpperBoundFromPower :
-  (ρ : ℚ⁺) →
-  {μ : ℚ⁺ → ℕ} →
-  PositiveGeometricPowerScaledUpperBound ρ μ →
-  PositiveGeometricScaledSegmentUpperBound ρ μ
-positiveGeometricScaledSegmentUpperBoundFromPower ρ powerUpper ε m k μ≤m =
-  Rational.≤-trans
-    {p = rationalGeometricSegmentSumℚ (radius ρ) m k
-      ℚ.· positiveGeometricGap ρ}
-    {q = rationalPower (radius ρ) m}
-    {r = radius ε ℚ.· positiveGeometricGap ρ}
-    (positiveGeometricScaledSegment≤power ρ m k)
-    (powerUpper ε m μ≤m)
-
-
-positiveGeometricScaledSegmentUpperBoundFromRatio :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  PositiveGeometricScaledSegmentUpperBound
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-positiveGeometricScaledSegmentUpperBoundFromRatio ρ ρ<1 =
-  positiveGeometricScaledSegmentUpperBoundFromPower
-    ρ
-    (positiveGeometricPowerScaledUpperBoundFromRatio ρ ρ<1)
-
-
-PositiveGeometricSegmentUpperBound :
-  ℚ⁺ →
-  (ℚ⁺ → ℕ) →
-  Type₀
-PositiveGeometricSegmentUpperBound ρ μ =
-  (ε : ℚ⁺) →
-  (m k : ℕ) →
-  NatOrder._≤_ (μ ε) m →
-  rationalGeometricSegmentSumℚ (radius ρ) m k
-  ℚOrder.≤
-  radius ε
-
-
-positiveGeometricSegmentUpperBoundFromScaled :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  {μ : ℚ⁺ → ℕ} →
-  PositiveGeometricScaledSegmentUpperBound ρ μ →
-  PositiveGeometricSegmentUpperBound ρ μ
-positiveGeometricSegmentUpperBoundFromScaled ρ ρ<1 scaledUpper ε m k μ≤m =
-  Rational.mul-right-cancel-positive-≤
-    (positiveGeometricGap-positive ρ ρ<1)
-    (scaledUpper ε m k μ≤m)
-
-
 positiveGeometricSegmentUpperBoundFromRatio :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  PositiveGeometricSegmentUpperBound
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-positiveGeometricSegmentUpperBoundFromRatio ρ ρ<1 =
-  positiveGeometricSegmentUpperBoundFromScaled
-    ρ
-    ρ<1
-    (positiveGeometricScaledSegmentUpperBoundFromRatio ρ ρ<1)
+  (ε : ℚ⁺) →
+  (m k : ℕ) →
+  NatOrder._≤_ (positiveGeometricPowerModulus ρ ρ<1 ε) m →
+  rationalGeometricSegmentSumℚ (radius ρ) m k ℚOrder.≤ radius ε
+positiveGeometricSegmentUpperBoundFromRatio ρ ρ<1 ε m k μ≤m =
+  Rational.mul-right-cancel-positive-≤
+    (positiveGeometricGap-positive ρ ρ<1)
+    (Rational.≤-trans
+      {p = rationalGeometricSegmentSumℚ (radius ρ) m k
+        ℚ.· positiveGeometricGap ρ}
+      {q = rationalPower (radius ρ) m}
+      {r = radius ε ℚ.· positiveGeometricGap ρ}
+      (positiveGeometricScaledSegment≤power ρ m k)
+      (positiveGeometricPowerScaledUpperBound ρ ρ<1 ε m μ≤m))
 
 
 scaledGeometricSegmentModulus :

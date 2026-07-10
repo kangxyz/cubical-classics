@@ -33,13 +33,7 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using
-    ( RealGeometricBound
-    ; RealGeometricPowerBounds
-    ; realGeometricPowerBoundsFromBound
-    ; realPowerBoundsFromBound
-    ; realPower
-    )
+  using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -135,7 +129,7 @@ sinPowerSeriesOnBallWithFromMajorant :
   {ρ : ℚ⁺} →
   {v : ℕ → ℝᶜ} →
   {μ : ℚ⁺ → ℕ} →
-  SinPowerSeriesMajorizedOnBall ρ v μ →
+  PowerSeriesMajorizedOnBall sinPowerSeries ρ v μ →
   HasPowerSeriesOnBallWith sinPowerSeries ρ μ
 sinPowerSeriesOnBallWithFromMajorant =
   majorizedOnBall→hasPowerSeriesOnBallWith
@@ -145,41 +139,17 @@ cosPowerSeriesOnBallWithFromMajorant :
   {ρ : ℚ⁺} →
   {v : ℕ → ℝᶜ} →
   {μ : ℚ⁺ → ℕ} →
-  CosPowerSeriesMajorizedOnBall ρ v μ →
+  PowerSeriesMajorizedOnBall cosPowerSeries ρ v μ →
   HasPowerSeriesOnBallWith cosPowerSeries ρ μ
 cosPowerSeriesOnBallWithFromMajorant =
   majorizedOnBall→hasPowerSeriesOnBallWith
-
-
-sinPowerSeriesOnSubunitBallWith :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  HasPowerSeriesOnBallWith
-    sinPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-sinPowerSeriesOnSubunitBallWith ρ ρ<1 =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    (sinPowerSeriesSubunitMajorized ρ ρ<1)
-
-
-cosPowerSeriesOnSubunitBallWith :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  HasPowerSeriesOnBallWith
-    cosPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-cosPowerSeriesOnSubunitBallWith ρ ρ<1 =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    (cosPowerSeriesSubunitMajorized ρ ρ<1)
 
 
 sinPowerSeriesOnBallFromMajorant :
   {ρ : ℚ⁺} →
   {v : ℕ → ℝᶜ} →
   {μ : ℚ⁺ → ℕ} →
-  SinPowerSeriesMajorizedOnBall ρ v μ →
+  PowerSeriesMajorizedOnBall sinPowerSeries ρ v μ →
   HasPowerSeriesOnBall sinPowerSeries ρ
 sinPowerSeriesOnBallFromMajorant =
   majorizedOnBall→hasPowerSeriesOnBall
@@ -189,28 +159,10 @@ cosPowerSeriesOnBallFromMajorant :
   {ρ : ℚ⁺} →
   {v : ℕ → ℝᶜ} →
   {μ : ℚ⁺ → ℕ} →
-  CosPowerSeriesMajorizedOnBall ρ v μ →
+  PowerSeriesMajorizedOnBall cosPowerSeries ρ v μ →
   HasPowerSeriesOnBall cosPowerSeries ρ
 cosPowerSeriesOnBallFromMajorant =
   majorizedOnBall→hasPowerSeriesOnBall
-
-
-sinPowerSeriesOnSubunitBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  HasPowerSeriesOnBall sinPowerSeries ρ
-sinPowerSeriesOnSubunitBall ρ ρ<1 =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  sinPowerSeriesOnSubunitBallWith ρ ρ<1
-
-
-cosPowerSeriesOnSubunitBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< RationalBase.1ℚ) →
-  HasPowerSeriesOnBall cosPowerSeries ρ
-cosPowerSeriesOnSubunitBall ρ ρ<1 =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  cosPowerSeriesOnSubunitBallWith ρ ρ<1
 
 
 sinPowerSeriesOnBallWith :
