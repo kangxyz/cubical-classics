@@ -29,7 +29,9 @@ while modules under `Classical` may do so explicitly.
   algebraic operations, termwise differentiation, recentering, and elementary
   function instances. In particular, the `atanh` value is analytic throughout
   its domain-evidenced strict subunit interval, and the local `log(1+x)` series
-  agrees with the global positive logarithm on every strict subunit ball.
+  agrees with the global positive logarithm on every strict subunit ball. The
+  global positive logarithm is analytic at every point carrying explicit
+  positive bounded-domain evidence.
 
 ### Classical namespace and explicit `Oracle`
 

@@ -12,4 +12,5 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra.Pointwise public
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Sums public
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Additive public
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Scaling public
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.InputScaling public
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Radius public

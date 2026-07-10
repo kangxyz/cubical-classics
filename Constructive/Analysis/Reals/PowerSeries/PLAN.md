@@ -81,9 +81,9 @@ closed-ball convergence, majorants, algebra, continuity, termwise
 differentiation, exponential/trigonometric instances, radius-one logarithm,
 atanh/atan subunit-ball instances, and the function-facing analytic predicates
 are exported through `PowerSeries.agda`.  The remaining planned work is Phase
-10-style evaluation and argument-reduction work, plus future theorem packages
-that turn the global reciprocal/composition domain for `log` into analytic
-expansion data away from a fixed center.
+10-style evaluation and argument-reduction work.  The global positive
+logarithm now has analytic expansion data at every center carrying explicit
+`PositiveBoundedDomainᶜ` evidence.
 
 ## Non-Goals
 
@@ -396,8 +396,9 @@ subunit radius/bound, and uniform continuity on every explicit positive window
 `lo ≤ x` and `|x| ≤ hi`.  The checked
 `logOnePlusᶜWithinSubunitBall-global-eq` theorem identifies the local
 `logOnePlus` series with the global atanh-transform value on every strict
-subunit ball.  A fully global analytic theorem for `log` still needs to
-transport and re-center this local expansion at arbitrary positive centers.
+subunit ball.  Input scaling and the local additive identity then give a
+checked analytic expansion for the global positive logarithm at every point
+carrying `PositiveBoundedDomainᶜ` evidence.
 
 ## Phase 9: Analytic API
 
