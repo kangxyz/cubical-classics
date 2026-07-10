@@ -47,27 +47,30 @@ benchmark.
 
 ### PowerSeries Aggregate
 
-- **Date:** unknown (current PowerSeries profiling pass; not recorded in the
-  original entry)
-- **Repository state:** after the `Recenter.Majorant` and finite partial-sum
-  cleanup
-- **Agda:** unknown (not recorded)
+- **Date:** 2026-07-10
+- **Repository state:** working tree after the PowerSeries RHS cleanup
+  described in [case studies](CASE_STUDIES.md)
+- **Agda:** 2.8.0; `--profile=modules`
 - **Cubical:** unknown (not recorded)
-- **Environment:** unknown (not recorded)
+- **Environment:** macOS local sandbox; CPU and memory not recorded
 - **Recipe:** cold local aggregate profile
-- **Command:** the exact command was not recorded; target aggregate was
-  `Constructive.Analysis.Reals.PowerSeries`
-- **Result:** about 34.7 seconds; RSS not recorded
+- **Command:** fresh temporary copy via the runbook recipe, then
+  `agda --profile=modules Constructive/Analysis/Reals/PowerSeries.agda`
+- **Result:** about 99.8 seconds; RSS not recorded
 - **Profile signal:**
   - `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem`:
-    about 5.6 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global`:
-    about 1.3 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Recenter.StripFinite`:
-    about 1.2 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Radius.Centered`:
-    about 1.1 seconds
-- **Status:** no anomalously slow PowerSeries files remained from that pass
+    about 4.1 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.GlobalDerivative`:
+    about 3.6 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.QuotientDerivative`:
+    about 3.4 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.GlobalAnalytic`:
+    about 2.9 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.LogOnePlusGlobal`:
+    about 1.0 seconds
+- **Status:** no confirmed anomalously slow PowerSeries files remain. The
+  residual PowerSeries costs are RHS/reflection-heavy proof bridges, not
+  positivity or record-packaging outliers.
 
 ### Constructive Reals Aggregate
 

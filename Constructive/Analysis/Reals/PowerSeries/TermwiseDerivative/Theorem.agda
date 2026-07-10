@@ -341,6 +341,10 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
   z =
     centeredDisplacement c x
 
+  translatedSum : ℝᶜ → ℝᶜ
+  translatedSum y =
+    centeredPowerSeriesSumEverywhere a c radiusData (c +ᶜ y)
+
   derivativeLocalValue : ℝᶜ
   derivativeLocalValue =
     centeredPowerSeriesSumOnBall
@@ -370,7 +374,7 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
     (η≤με : radius η ℚOrder.≤ radius (μ ε)) →
     (h : ℝᶜ) →
     (h-bound : BoundedByᶜ η h) →
-    centeredPowerSeriesSumEverywhere a c radiusData (c +ᶜ (z +ᶜ h)) ≡
+    translatedSum (z +ᶜ h) ≡
     powerSeriesSumOnBall
       a
       ρ
@@ -397,7 +401,7 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
       forwardInBall ε η η≤με h h-bound
 
   centerExpansion :
-    centeredPowerSeriesSumEverywhere a c radiusData (c +ᶜ z) ≡
+    translatedSum z ≡
     powerSeriesSumOnBall a ρ ν convergence z centerBound
   centerExpansion =
     centeredPowerSeriesSumEverywhere-bound-path
@@ -415,7 +419,7 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
 
   forwardBound :
     PowerSeriesTermwiseForwardErrorBoundWith
-      (λ y → centeredPowerSeriesSumEverywhere a c radiusData (c +ᶜ y))
+      translatedSum
       a
       z
       χ
@@ -429,7 +433,7 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
 
   centerErrorBound :
     PowerSeriesTermwiseCenterErrorBoundWith
-      (λ y → centeredPowerSeriesSumEverywhere a c radiusData (c +ᶜ y))
+      translatedSum
       a
       z
       χ
@@ -467,7 +471,7 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
 
   translatedDerivative :
     HasDerivativeAtWith
-      (λ y → centeredPowerSeriesSumEverywhere a c radiusData (c +ᶜ y))
+      translatedSum
       z
       derivativeLocalValue
       μ

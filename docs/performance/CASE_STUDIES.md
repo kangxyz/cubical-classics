@@ -281,3 +281,29 @@ it through `powerSeriesSumOnBall-center-path`. This avoids forcing Agda to
 normalize the `powerSeriesSumOnBall` definition under `subst`; the small module
 and the importing functional-equation module both check in under 10 seconds in
 cached mode.
+
+### PowerSeries residual RHS cleanup: name local proof targets
+
+A 2026-07-10 cold local `PowerSeries` aggregate profile with Agda 2.8.0 found
+no remaining positivity or proof-data record outlier. The largest PowerSeries
+modules were RHS/reflection-heavy bridge files:
+`TermwiseDerivative.Theorem`,
+`Logarithm.FunctionalEquation.GlobalDerivative`,
+`Logarithm.FunctionalEquation.QuotientDerivative`, and
+`Logarithm.GlobalAnalytic`.
+
+Direct isolated definitions profiles pointed at local RHS work rather than
+large public signatures. Naming the translated centered sum in
+`TermwiseDerivative.Theorem` kept repeated derivative-bound targets smaller
+and reduced the direct definitions profile from about 8.7 seconds to about
+8.5 seconds. Naming the reciprocal-error cancellation subproof as
+`error-terms-zero` in the two logarithmic fractional-derivative modules shrank
+their hot `remainder-path` checks: `GlobalDerivative` went from about
+9.9 seconds to about 9.2 seconds, and `QuotientDerivative` went from about
+9.6 seconds to about 8.7 seconds.
+
+A broader attempt to extract the shared second-order reciprocal remainder
+bound into a helper module was tested and rejected: the helper checked at
+about 4.4 seconds and made both importers slower. In these bridge proofs,
+prefer small local named subproofs with explicit targets over new shared
+abstractions unless a profile shows a net win.

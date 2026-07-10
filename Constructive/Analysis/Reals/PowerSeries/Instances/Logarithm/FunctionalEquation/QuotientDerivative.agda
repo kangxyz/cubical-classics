@@ -496,6 +496,18 @@ logTransformQuotientHasDerivativeWithinDomainAtWith
       ((-ᶜ ((1ᶜ +ᶜ 1ᶜ) ·ᶜ r)) +ᶜ
        ((((1ᶜ +ᶜ 1ᶜ) ·ᶜ r) ·ᶜ r) ·ᶜ h))
 
+  error-terms-zero :
+    target +ᶜ ((error₁ ·ᶜ coefficient₁) +ᶜ (error₂ ·ᶜ coefficient₂)) ≡
+    target
+  error-terms-zero =
+    cong₂
+      (λ E₁ E₂ →
+        target +ᶜ ((E₁ ·ᶜ coefficient₁) +ᶜ (E₂ ·ᶜ coefficient₂)))
+      error₁-zero
+      error₂-zero ∙
+    SolverHelpers.remove-errors
+      CauchyRealsCommRing target coefficient₁ coefficient₂
+
   remainder-path :
     withinDomainLinearRemainder
       (logTransformQuotient ρ rho<1)
@@ -508,10 +520,4 @@ logTransformQuotientHasDerivativeWithinDomainAtWith
   remainder-path =
     SolverHelpers.quotient-remainder-decomposition
       CauchyRealsCommRing x h r s ∙
-    cong₂
-      (λ E₁ E₂ →
-        target +ᶜ ((E₁ ·ᶜ coefficient₁) +ᶜ (E₂ ·ᶜ coefficient₂)))
-      error₁-zero
-      error₂-zero ∙
-    SolverHelpers.remove-errors
-      CauchyRealsCommRing target coefficient₁ coefficient₂
+    error-terms-zero
