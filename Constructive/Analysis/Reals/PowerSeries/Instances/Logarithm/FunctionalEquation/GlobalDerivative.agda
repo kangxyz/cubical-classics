@@ -262,20 +262,6 @@ logTransformWindow lo hi x window =
         (positiveWindowDomain lo hi x window)))
 
 
-logTransformWindow-data-independent :
-  (lo hi : ℚ⁺) →
-  DomainValueIndependent (logTransformWindow lo hi)
-logTransformWindow-data-independent lo hi x left right =
-  logTransformᶜ-data-independent
-    x
-    (lo +⁺ 1⁺)
-    (lo +⁺ 1⁺)
-    (lowerBound
-      (positiveBoundedDomain-add-one
-        (positiveWindowDomain lo hi x left)))
-    (lowerBound
-      (positiveBoundedDomain-add-one
-        (positiveWindowDomain lo hi x right)))
 
 
 logTransformWindowBound :

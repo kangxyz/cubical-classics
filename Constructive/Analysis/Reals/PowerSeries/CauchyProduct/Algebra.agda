@@ -93,14 +93,6 @@ cauchyProductPowerSeries-cong-left a≡c =
   cauchyProductPowerSeries-cong a≡c (λ _ → refl)
 
 
-cauchyProductPowerSeries-cong-right :
-  {a b d : PowerSeries} →
-  ((n : ℕ) → b n ≡ d n) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a b n ≡
-  cauchyProductPowerSeries a d n
-cauchyProductPowerSeries-cong-right b≡d =
-  cauchyProductPowerSeries-cong (λ _ → refl) b≡d
 
 
 cauchyProductPowerSeries-zero-left :
@@ -191,24 +183,8 @@ cauchyProductPowerSeries-comm a b (suc n) =
     (b zero ·ᶜ a (suc n))
 
 
-cauchyProductPowerSeries-constant-right :
-  (c : ℝᶜ) →
-  (a : PowerSeries) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a (constantPowerSeries c) n ≡ a n ·ᶜ c
-cauchyProductPowerSeries-constant-right c a n =
-  cauchyProductPowerSeries-comm a (constantPowerSeries c) n ∙
-  cauchyProductPowerSeries-constant-left c a n ∙
-  mulᶜ-comm c (a n)
 
 
-cauchyProductPowerSeries-one-right :
-  (a : PowerSeries) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a (constantPowerSeries 1ᶜ) n ≡ a n
-cauchyProductPowerSeries-one-right a n =
-  cauchyProductPowerSeries-constant-right 1ᶜ a n ∙
-  mulᶜ-one-right (a n)
 
 
 cauchyProductPowerSeries-add-left :
@@ -238,19 +214,6 @@ cauchyProductPowerSeries-add-left a b c (suc n) =
     (cauchyProductPowerSeries (shiftPowerSeries b) c n)
 
 
-cauchyProductPowerSeries-add-right :
-  (a b c : PowerSeries) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a (addPowerSeries b c) n ≡
-  cauchyProductPowerSeries a b n +ᶜ
-  cauchyProductPowerSeries a c n
-cauchyProductPowerSeries-add-right a b c n =
-  cauchyProductPowerSeries-comm a (addPowerSeries b c) n ∙
-  cauchyProductPowerSeries-add-left b c a n ∙
-  cong₂
-    _+ᶜ_
-    (cauchyProductPowerSeries-comm b a n)
-    (cauchyProductPowerSeries-comm c a n)
 
 
 cauchyProductPowerSeries-neg-left :
@@ -274,15 +237,6 @@ cauchyProductPowerSeries-neg-left a b (suc n) =
       (cauchyProductPowerSeries (shiftPowerSeries a) b n))
 
 
-cauchyProductPowerSeries-neg-right :
-  (a b : PowerSeries) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a (negPowerSeries b) n ≡
-  negPowerSeries (cauchyProductPowerSeries a b) n
-cauchyProductPowerSeries-neg-right a b n =
-  cauchyProductPowerSeries-comm a (negPowerSeries b) n ∙
-  cauchyProductPowerSeries-neg-left b a n ∙
-  cong -ᶜ_ (cauchyProductPowerSeries-comm b a n)
 
 
 cauchyProductPowerSeries-sub-left :
@@ -300,19 +254,6 @@ cauchyProductPowerSeries-sub-left a b c n =
     (cauchyProductPowerSeries-neg-left b c n)
 
 
-cauchyProductPowerSeries-sub-right :
-  (a b c : PowerSeries) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a (subPowerSeries b c) n ≡
-  subPowerSeries
-    (cauchyProductPowerSeries a b)
-    (cauchyProductPowerSeries a c)
-    n
-cauchyProductPowerSeries-sub-right a b c n =
-  cauchyProductPowerSeries-add-right a b (negPowerSeries c) n ∙
-  cong
-    (cauchyProductPowerSeries a b n +ᶜ_)
-    (cauchyProductPowerSeries-neg-right a c n)
 
 
 cauchyProductPowerSeries-rationalScale-left :
@@ -340,17 +281,3 @@ cauchyProductPowerSeries-rationalScale-left q a b (suc n) =
       q
       (a zero ·ᶜ b (suc n))
       (cauchyProductPowerSeries (shiftPowerSeries a) b n))
-
-
-cauchyProductPowerSeries-rationalScale-right :
-  (q : ℚ) →
-  (a b : PowerSeries) →
-  (n : ℕ) →
-  cauchyProductPowerSeries a (rationalScalePowerSeries q b) n ≡
-  rationalScalePowerSeries q (cauchyProductPowerSeries a b) n
-cauchyProductPowerSeries-rationalScale-right q a b n =
-  cauchyProductPowerSeries-comm a (rationalScalePowerSeries q b) n ∙
-  cauchyProductPowerSeries-rationalScale-left q b a n ∙
-  cong
-    (rational q ·ᶜ_)
-    (cauchyProductPowerSeries-comm b a n)

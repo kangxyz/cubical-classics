@@ -43,7 +43,9 @@ more specific import.
   [`PowerSeries.Core`][power-series-core] and
   [`PowerSeries.Calculus`][power-series-calculus].  The definitions are in
   [`PowerSeries.Bounds`][power-series-bounds] and
-  [`PowerSeries.Continuity.Core`][continuity-core].
+  [`PowerSeries.Continuity.PartialSums`][continuity-partial-sums],
+  [`PowerSeries.Continuity.Limit`][continuity-limit], and
+  [`PowerSeries.Continuity.Theorem`][continuity-theorem].
 - **Majorant-bearing power series.**  Public aggregate:
   [`PowerSeries.Core`][power-series-core].  The definition is in
   [`PowerSeries.Majorant`][majorant].
@@ -65,7 +67,9 @@ an internal proof module as a second public API.
 [power-series-bounds]: ../Constructive/Analysis/Reals/PowerSeries/Bounds.agda
 [radius-sum]: ../Constructive/Analysis/Reals/PowerSeries/Radius/Sum.agda
 [analytic-core]: ../Constructive/Analysis/Reals/PowerSeries/Analytic/Core.agda
-[continuity-core]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Core.agda
+[continuity-partial-sums]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/PartialSums.agda
+[continuity-limit]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Limit.agda
+[continuity-theorem]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Theorem.agda
 [majorant]: ../Constructive/Analysis/Reals/PowerSeries/Majorant.agda
 
 ## Cauchy Reals And Located Data

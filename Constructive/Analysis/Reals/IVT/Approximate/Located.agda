@@ -144,30 +144,6 @@ approximate-IVTΣ-with-locators-and-gap-bound {a = a} {b = b}
     gridData .snd .snd
 
 
-approximate-IVTΣ-with-gap-bound :
-  {a b : ℝᶜ} →
-  (a≤b : a ≤ᶜ b) →
-  (κ : ℚ⁺) →
-  BoundedByᶜ κ (gapᶜ a b) →
-  (f : [ a , b ]ᶜ → ℝᶜ) →
-  (located : LocatedMap f) →
-  (uc : isUniformlyContinuousOnInterval a b f) →
-  (targetPrecision : ℚ⁺) →
-  f (leftEndpoint {a = a} {b = b} a≤b) <ᶜ 0ᶜ →
-  0ᶜ <ᶜ f (rightEndpoint {a = a} {b = b} a≤b) →
-  Σ[ x ∈ [ a , b ]ᶜ ] absᶜ (f x) <ᶜ rational (radius targetPrecision)
-approximate-IVTΣ-with-gap-bound {a = a} {b = b}
-    a≤b κ gap-bound f located uc =
-  approximate-IVTΣ-with-locators-and-gap-bound
-    a≤b
-    κ
-    gap-bound
-    f
-    (locatedIVTFunctionData {a = a} {b = b} {f = f} located uc)
-    (LocatedMap.locatorAt located (leftEndpoint {a = a} {b = b} a≤b))
-    (LocatedMap.locatorAt located (rightEndpoint {a = a} {b = b} a≤b))
-
-
 approximate-IVTΣ-with-locators :
   {a b : ℝᶜ} →
   Locator a →

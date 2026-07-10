@@ -14,4 +14,4 @@ open import Constructive.Analysis.Reals.Locator public
 open import Constructive.Analysis.Reals.Interval public
 open import Constructive.Analysis.Reals.IVT public
 open import Constructive.Analysis.Reals.Series public
-open import Constructive.Analysis.Reals.Series.Instances public
+open import Constructive.Analysis.Reals.Series.Instances.Geometric public

@@ -73,19 +73,6 @@ PositiveGeometricPowerModulusTest ρ ε n =
   Rational.1ℚ ℚOrder.< Rational.natMul n (positiveGeometricPowerStep ρ ε)
 
 
-positiveGeometricPowerModulusTest-zero :
-  (ρ : ℚ⁺) →
-  (ε : ℚ⁺) →
-  ¬ PositiveGeometricPowerModulusTest ρ ε zero
-positiveGeometricPowerModulusTest-zero ρ ε test =
-  ℚOrder.isAsym<
-    Rational.0ℚ
-    Rational.1ℚ
-    Rational.0<1
-    (subst
-      (λ q → Rational.1ℚ ℚOrder.< q)
-      (Rational.natMul-zero (positiveGeometricPowerStep ρ ε))
-      test)
 
 
 positiveGeometricPowerModulusLeast :

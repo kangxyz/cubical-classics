@@ -70,8 +70,8 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
-    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
+    ; hasPowerSeriesDerivativeFromIteratedBounds
+    ; hasPowerSeriesDerivativeFromCoefficientBounds
     ; positivePartialSum
     ; powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
@@ -96,7 +96,6 @@ import Constructive.Data.Rationals.Archimedean as Rational
 import Constructive.Data.Rationals.Factorial as Factorial
 import Constructive.Data.Rationals.Multiplication as RationalMul
 
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Coefficients
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Tail
@@ -112,73 +111,8 @@ derivativeExpPowerSeriesInfiniteRadius =
     expPowerSeriesInfiniteRadius
 
 
-expPowerSeriesIteratedFormalPartialDerivativeBounds :
-  (σ : ℚ⁺) →
-  {x : ℝᶜ} →
-  BoundedByᶜ σ x →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    expPowerSeries
-    x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) RationalBase.1ℚ) *⁺
-          1⁺ *⁺
-          positivePower σ k)
-        n)
-expPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
-  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-    σ
-    x-bound
-    (λ _ → 1⁺)
-    expPowerSeriesCoefficientBoundOne
 
 
-expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball :
-  {x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement 0ᶜ x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    expPowerSeries
-    (centeredDisplacement 0ᶜ x)
-    δ →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (expPowerSeriesInfiniteRadius ρ .fst)
-      (derivativeExpPowerSeriesInfiniteRadius σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith expᶜ x (expᶜ x) μ
-expᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {δ = δ}
-  x-displacement-bound
-  margin
-  derivative-bounds
-  partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
-    {a = expPowerSeries}
-    {b = expPowerSeries}
-    {c = 0ᶜ}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {δ = δ}
-    derivativePowerSeries-exp
-    expPowerSeriesInfiniteRadius
-    expPowerSeriesInfiniteRadius
-    (expᶜHasPowerSeriesAtWithZero ρ)
-    x-displacement-bound
-    margin
-    derivative-bounds
-    partialModulus-large
 
 
 expᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball :
@@ -206,7 +140,7 @@ expᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
   x-displacement-bound
   margin
   partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
+  hasPowerSeriesDerivativeFromCoefficientBounds
     {a = expPowerSeries}
     {b = expPowerSeries}
     {c = 0ᶜ}
@@ -223,43 +157,3 @@ expᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
     (λ _ → 1⁺)
     expPowerSeriesCoefficientBoundOne
     partialModulus-large
-
-
-primitiveExpPowerSeriesInfiniteRadius :
-  HasInfinitePowerSeriesRadius (primitivePowerSeries expPowerSeries)
-primitiveExpPowerSeriesInfiniteRadius =
-  primitivePowerSeriesInfiniteRadiusFromCoefficientPath
-    {a = expPowerSeries}
-    {b = subPowerSeries expPowerSeries (constantPowerSeries 1ᶜ)}
-    primitivePowerSeries-exp
-    (subPowerSeriesInfiniteRadius
-      expPowerSeriesInfiniteRadius
-      (constantPowerSeriesInfiniteRadius 1ᶜ))
-
-
-ExpPowerSeriesMajorants :
-  Type₀
-ExpPowerSeriesMajorants =
-  (ρ : ℚ⁺) →
-  Σ[ v ∈ (ℕ → ℝᶜ) ]
-  Σ[ μ ∈ (ℚ⁺ → ℕ) ]
-    PowerSeriesMajorizedOnBall expPowerSeries ρ v μ
-
-
-expPowerSeriesInfiniteRadiusFromMajorants :
-  ExpPowerSeriesMajorants →
-  HasInfinitePowerSeriesRadius expPowerSeries
-expPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
-  μ , majorizedOnBall→hasPowerSeriesOnBallWith majorant
-  where
-  v : ℕ → ℝᶜ
-  v =
-    majorants ρ .fst
-
-  μ : ℚ⁺ → ℕ
-  μ =
-    majorants ρ .snd .fst
-
-  majorant : PowerSeriesMajorizedOnBall expPowerSeries ρ v μ
-  majorant =
-    majorants ρ .snd .snd

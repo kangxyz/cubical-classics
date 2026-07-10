@@ -60,8 +60,8 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    ; hasDerivativeAtWith-derivative-path
+    ; centeredPowerSeriesHasDerivativeFromIteratedBounds
+    ; hasDerivativeAtWith-congDerivative
     ; positivePartialSum
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     ; powerSeriesFormalPartialSumsDerivativeModulus
@@ -384,50 +384,6 @@ mutual
           (sinPowerSeries n)
           (inverseSucRealBoundOne n)
           (sinPowerSeriesCoefficientBoundOne n)))
-
-
-sinPowerSeriesIteratedFormalPartialDerivativeBounds :
-  (σ : ℚ⁺) →
-  {x : ℝᶜ} →
-  BoundedByᶜ σ x →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    sinPowerSeries
-    x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) RationalBase.1ℚ) *⁺
-          1⁺ *⁺
-          positivePower σ k)
-        n)
-sinPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
-  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-    σ
-    x-bound
-    (λ _ → 1⁺)
-    sinPowerSeriesCoefficientBoundOne
-
-
-cosPowerSeriesIteratedFormalPartialDerivativeBounds :
-  (σ : ℚ⁺) →
-  {x : ℝᶜ} →
-  BoundedByᶜ σ x →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    cosPowerSeries
-    x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) RationalBase.1ℚ) *⁺
-          1⁺ *⁺
-          positivePower σ k)
-        n)
-cosPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
-  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-    σ
-    x-bound
-    (λ _ → 1⁺)
-    cosPowerSeriesCoefficientBoundOne
 
 
 mutual

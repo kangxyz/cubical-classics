@@ -55,7 +55,3 @@ record MetricSpace (ℓ ℓ' : Level) : Type (ℓ-suc (ℓ-max ℓ ℓ')) where
 
 module MetricSpaceStr (𝓜 : MetricSpace ℓ ℓ') where
   open MetricSpace 𝓜 public
-
-
-CarrierOf : MetricSpace ℓ ℓ' → Type ℓ
-CarrierOf = MetricSpace.Carrier

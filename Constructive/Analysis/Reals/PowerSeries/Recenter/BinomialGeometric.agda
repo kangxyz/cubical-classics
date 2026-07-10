@@ -268,15 +268,6 @@ binomialGeometricGap-inv-cancel q q<1 =
     positiveGeometricGap-positive q q<1
 
 
-binomialGeometricBoundScale-step :
-  (q : ℚ⁺) →
-  (q<1 : radius q ℚOrder.< Rational.1ℚ) →
-  (n : ℕ) →
-  radius (binomialGeometricBoundScale q q<1 (suc n)) ≡
-  radius (binomialGeometricBoundScale q q<1 n) ℚ.·
-  radius (posInv⁺ (binomialGeometricGap q q<1))
-binomialGeometricBoundScale-step q q<1 n =
-  refl
 
 
 binomialGeometricGap≤1 :

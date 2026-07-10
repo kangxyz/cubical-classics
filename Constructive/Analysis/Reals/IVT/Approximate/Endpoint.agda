@@ -150,16 +150,6 @@ private
     ℚField.dec< 0ℚ (searchValue x loc n ℚ.- radius (searchCutoffPrecision n))
 
 
-EndpointSignData :
-  {a b : ℝᶜ} →
-  (a≤b : a ≤ᶜ b) →
-  ([ a , b ]ᶜ → ℝᶜ) →
-  Type₀
-EndpointSignData {a = a} {b = b} a≤b f =
-  SignData
-    (f (leftEndpoint {a = a} {b = b} a≤b))
-    (f (rightEndpoint {a = a} {b = b} a≤b))
-
 
 negativeStrictMargins :
   (x : ℝᶜ) →

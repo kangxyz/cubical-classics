@@ -102,18 +102,8 @@ atanPowerSeriesCoefficientBoundOne =
     alternatingEvenGeometricPowerSeriesCoefficientBoundOne
 
 
-evenGeometricPowerSeriesCoefficientBounds :
-  PowerSeriesCoefficientBounds evenGeometricPowerSeries
-evenGeometricPowerSeriesCoefficientBounds =
-  (λ _ → 1⁺) ,
-  evenGeometricPowerSeriesCoefficientBoundOne
 
 
-alternatingEvenGeometricPowerSeriesCoefficientBounds :
-  PowerSeriesCoefficientBounds alternatingEvenGeometricPowerSeries
-alternatingEvenGeometricPowerSeriesCoefficientBounds =
-  (λ _ → 1⁺) ,
-  alternatingEvenGeometricPowerSeriesCoefficientBoundOne
 
 
 atanhPowerSeriesCoefficientBounds :
@@ -121,54 +111,3 @@ atanhPowerSeriesCoefficientBounds :
 atanhPowerSeriesCoefficientBounds =
   (λ _ → 1⁺) ,
   atanhPowerSeriesCoefficientBoundOne
-
-
-atanPowerSeriesCoefficientBounds :
-  PowerSeriesCoefficientBounds atanPowerSeries
-atanPowerSeriesCoefficientBounds =
-  (λ _ → 1⁺) ,
-  atanPowerSeriesCoefficientBoundOne
-
-
-atanhPowerSeriesIteratedFormalPartialDerivativeBounds :
-  (σ : ℚ⁺) →
-  {x : ℝᶜ} →
-  BoundedByᶜ σ x →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    atanhPowerSeries
-    x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) Rational.1ℚ) *⁺
-          1⁺ *⁺
-          positivePower σ k)
-        n)
-atanhPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
-  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-    σ
-    x-bound
-    (λ _ → 1⁺)
-    atanhPowerSeriesCoefficientBoundOne
-
-
-atanPowerSeriesIteratedFormalPartialDerivativeBounds :
-  (σ : ℚ⁺) →
-  {x : ℝᶜ} →
-  BoundedByᶜ σ x →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    atanPowerSeries
-    x
-    (λ s n →
-      positivePartialSum
-        (λ k →
-          scalar-bound (Rational.natMul (suc k) Rational.1ℚ) *⁺
-          1⁺ *⁺
-          positivePower σ k)
-        n)
-atanPowerSeriesIteratedFormalPartialDerivativeBounds σ x-bound =
-  powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
-    σ
-    x-bound
-    (λ _ → 1⁺)
-    atanPowerSeriesCoefficientBoundOne

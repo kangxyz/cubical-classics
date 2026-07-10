@@ -192,63 +192,8 @@ onePlusStrictSubunitDomain ρ ρ<1 u u-bound =
       u-bound
 
 
-divideByPositiveᶜ-strictSubunitInBallZero :
-  (ρ cLower : ℚ⁺) →
-  radius ρ ℚOrder.< radius cLower →
-  (h c : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  (c-bound : BoundedAwayPositiveᶜ cLower c) →
-  InPowerSeriesBall
-    0ᶜ
-    (divideByPositiveStrictSubunitRadius ρ cLower)
-    (divideByPositiveᶜ h cLower c c-bound)
-divideByPositiveᶜ-strictSubunitInBallZero
-    ρ
-    cLower
-    ρ<cLower
-    h
-    c
-    h-bound
-    c-bound =
-  inPowerSeriesBallAtZeroFromBound
-    (divideByPositiveᶜ-strictSubunitBound
-      ρ
-      cLower
-      ρ<cLower
-      h
-      c
-      h-bound
-      c-bound)
 
 
-onePlusDivideByPositiveᶜ-domain :
-  (ρ cLower : ℚ⁺) →
-  radius ρ ℚOrder.< radius cLower →
-  (h c : ℝᶜ) →
-  BoundedByᶜ ρ h →
-  (c-bound : BoundedAwayPositiveᶜ cLower c) →
-  PositiveBoundedDomainᶜ
-    (1ᶜ +ᶜ divideByPositiveᶜ h cLower c c-bound)
-onePlusDivideByPositiveᶜ-domain
-    ρ
-    cLower
-    ρ<cLower
-    h
-    c
-    h-bound
-    c-bound =
-  onePlusStrictSubunitDomain
-    (divideByPositiveStrictSubunitRadius ρ cLower)
-    (divideByPositiveStrictSubunitRadius<1 ρ cLower ρ<cLower)
-    (divideByPositiveᶜ h cLower c c-bound)
-    (divideByPositiveᶜ-strictSubunitBound
-      ρ
-      cLower
-      ρ<cLower
-      h
-      c
-      h-bound
-      c-bound)
 
 
 positiveDivision-denominatorMulOnePlus-path :
@@ -273,34 +218,8 @@ positiveDivision-denominatorMulOnePlus-path cLower c h c-bound =
     reciprocalPositiveᶜ cLower c c-bound
 
 
-positiveDivision-add-numerator-path :
-  (cLower : ℚ⁺) →
-  (c h : ℝᶜ) →
-  (c-bound : BoundedAwayPositiveᶜ cLower c) →
-  divideByPositiveᶜ (c +ᶜ h) cLower c c-bound ≡
-  1ᶜ +ᶜ divideByPositiveᶜ h cLower c c-bound
-positiveDivision-add-numerator-path cLower c h c-bound =
-  SolverHelpers.divide-add-numerator
-    CauchyRealsCommRing
-    c
-    h
-    r ∙
-  cong (_+ᶜ (h ·ᶜ r))
-    (reciprocalPositiveᶜ-right cLower c c-bound)
-  where
-  r : ℝᶜ
-  r =
-    reciprocalPositiveᶜ cLower c c-bound
 
 
-positiveDivision-onePlusQuotient-path :
-  (cLower : ℚ⁺) →
-  (c h : ℝᶜ) →
-  (c-bound : BoundedAwayPositiveᶜ cLower c) →
-  1ᶜ +ᶜ divideByPositiveᶜ h cLower c c-bound ≡
-  divideByPositiveᶜ (c +ᶜ h) cLower c c-bound
-positiveDivision-onePlusQuotient-path cLower c h c-bound =
-  sym (positiveDivision-add-numerator-path cLower c h c-bound)
 
 
 logTransformᶜ-onePlus-path :
@@ -331,43 +250,8 @@ logTransformᶜ-onePlus-path u denomLower denomBound =
       u)
 
 
-logTransformᶜ-onePlus-denominator-path :
-  (u : ℝᶜ) →
-  ((1ᶜ +ᶜ u) +ᶜ 1ᶜ) ≡ twoᶜ +ᶜ u
-logTransformᶜ-onePlus-denominator-path u =
-  SolverHelpers.log-transform-one-plus-denominator
-    CauchyRealsCommRing
-    u ∙
-  cong (_+ᶜ u) (add-rational Rational.1ℚ Rational.1ℚ)
 
 
-logTransformᶜ-onePlus-twoPlus-path :
-  (u : ℝᶜ) →
-  (denomLower : ℚ⁺) →
-  (denomBound :
-    BoundedAwayPositiveᶜ denomLower ((1ᶜ +ᶜ u) +ᶜ 1ᶜ)) →
-  logTransformᶜ
-    (1ᶜ +ᶜ u)
-    denomLower
-    denomBound
-  ≡
-  divideByPositiveᶜ
-    u
-    denomLower
-    (twoᶜ +ᶜ u)
-    (subst
-      (BoundedAwayPositiveᶜ denomLower)
-      (logTransformᶜ-onePlus-denominator-path u)
-      denomBound)
-logTransformᶜ-onePlus-twoPlus-path u denomLower denomBound =
-  logTransformᶜ-onePlus-path u denomLower denomBound ∙
-  divideByPositiveᶜ-denominator-path
-    u
-    denomLower
-    ((1ᶜ +ᶜ u) +ᶜ 1ᶜ)
-    (twoᶜ +ᶜ u)
-    (logTransformᶜ-onePlus-denominator-path u)
-    denomBound
 
 
 logOnePlusᶜWithinSubunitBall-global :
@@ -417,15 +301,3 @@ logOnePlusᶜWithinSubunitBall-global ρ ρ<1 u u-bound =
     log-domain-from-positive-boundedᶜ
       (1ᶜ +ᶜ u)
       (onePlusStrictSubunitDomain ρ ρ<1 u u-bound)
-
-
-logTransformᶜ-one-path :
-  (denomLower : ℚ⁺) →
-  (denomBound : BoundedAwayPositiveᶜ denomLower (1ᶜ +ᶜ 1ᶜ)) →
-  logTransformᶜ 1ᶜ denomLower denomBound ≡ 0ᶜ
-logTransformᶜ-one-path denomLower denomBound =
-  cong
-    (λ numerator →
-      divideByPositiveᶜ numerator denomLower (1ᶜ +ᶜ 1ᶜ) denomBound)
-    (SolverHelpers.one-minus-one CauchyRealsCommRing) ∙
-  divideByPositiveᶜ-zero-left denomLower (1ᶜ +ᶜ 1ᶜ) denomBound

@@ -18,7 +18,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.StrictSubball.OnBall
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.StrictSubball.OnBall.Tail
   using (derivativePowerSeriesOnStrictSubball)
 
 
@@ -83,17 +83,6 @@ derivativePowerSeriesInfiniteRadius {a = a} radiusData ρ =
     (radiusData (ρ +⁺ 1⁺))
 
 
-derivativePowerSeriesRadiusFromCoefficientPath :
-  {a b : PowerSeries} →
-  {R : ℚ⁺} →
-  ((n : ℕ) → derivativePowerSeries a n ≡ b n) →
-  HasPowerSeriesRadius b R →
-  HasPowerSeriesRadius (derivativePowerSeries a) R
-derivativePowerSeriesRadiusFromCoefficientPath {a = a} {b = b} coeff≡ =
-  hasPowerSeriesRadius-cong
-    {a = b}
-    {b = derivativePowerSeries a}
-    (λ n → sym (coeff≡ n))
 
 
 derivativePowerSeriesInfiniteRadiusFromCoefficientPath :
@@ -108,17 +97,6 @@ derivativePowerSeriesInfiniteRadiusFromCoefficientPath {a = a} {b = b} coeff≡ 
     (λ n → sym (coeff≡ n))
 
 
-primitivePowerSeriesRadiusFromCoefficientPath :
-  {a b : PowerSeries} →
-  {R : ℚ⁺} →
-  ((n : ℕ) → primitivePowerSeries a n ≡ b n) →
-  HasPowerSeriesRadius b R →
-  HasPowerSeriesRadius (primitivePowerSeries a) R
-primitivePowerSeriesRadiusFromCoefficientPath {a = a} {b = b} coeff≡ =
-  hasPowerSeriesRadius-cong
-    {a = b}
-    {b = primitivePowerSeries a}
-    (λ n → sym (coeff≡ n))
 
 
 primitivePowerSeriesInfiniteRadiusFromCoefficientPath :

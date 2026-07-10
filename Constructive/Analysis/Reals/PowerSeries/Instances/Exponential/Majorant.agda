@@ -68,7 +68,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; centeredPowerSeriesHasDerivativeFromIteratedBounds
     ; positivePartialSum
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     ; powerSeriesFormalPartialSumsDerivativeModulus
@@ -92,8 +92,24 @@ import Constructive.Data.Rationals.Archimedean as Rational
 import Constructive.Data.Rationals.Factorial as Factorial
 import Constructive.Data.Rationals.Multiplication as RationalMul
 
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Coefficients
+
+
+private
+  module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
+    open CommRingStr (𝓡 .snd)
+
+    exp-majorant-step :
+      (ρ p r u : 𝓡 .fst) →
+      (ρ · p) · (r · u) ≡ (ρ · u) · (p · r)
+    exp-majorant-step _ _ _ _ =
+      solve! 𝓡
+
+    exp-geometric-scale-step :
+      (h s p : 𝓡 .fst) →
+      h · (s · p) ≡ s · (h · p)
+    exp-geometric-scale-step _ _ _ =
+      solve! 𝓡
 
 expPositiveMajorantRadius :
   ℚ⁺ →
@@ -140,30 +156,6 @@ expPositiveMajorantRadius-step ρ n =
     Rational.unitFraction n
 
 
-expPositiveMajorantTerm-step :
-  (ρ : ℚ⁺) →
-  (n : ℕ) →
-  expPositiveMajorantTerm ρ (suc n) ≡
-  scalarMulᶜ
-    (radius ρ ℚ.· Rational.unitFraction n)
-    (expPositiveMajorantTerm ρ n)
-expPositiveMajorantTerm-step ρ n =
-  cong rational radius-step ∙
-  sym (scalarMulᶜ-rational coefficient base)
-  where
-  coefficient : ℚ
-  coefficient =
-    radius ρ ℚ.· Rational.unitFraction n
-
-  base : ℚ
-  base =
-    radius (expPositiveMajorantRadius ρ n)
-
-  radius-step :
-    radius (expPositiveMajorantRadius ρ (suc n)) ≡
-    coefficient ℚ.· base
-  radius-step =
-    expPositiveMajorantRadius-step ρ n
 
 
 expPositiveMajorantTerm-nonnegative :
@@ -277,62 +269,6 @@ expMajorantCoefficient≤half ρ n double≤natural =
       coefficient-double≤1
 
 
-expPositiveMajorantTerm-ratio-half :
-  (ρ : ℚ⁺) →
-  (n : ℕ) →
-  (radius ρ ℚ.+ radius ρ) ℚOrder.≤
-    Rational.natMul (suc n) RationalBase.1ℚ →
-  expPositiveMajorantTerm ρ (suc n) +ᶜ
-  expPositiveMajorantTerm ρ (suc n) ≤ᶜ
-  expPositiveMajorantTerm ρ n
-expPositiveMajorantTerm-ratio-half ρ n double≤natural =
-  subst
-    (λ x → x ≤ᶜ term)
-    (sym doubled-step-path)
-    scaled≤term
-  where
-  coefficient : ℚ
-  coefficient =
-    radius ρ ℚ.· Rational.unitFraction n
-
-  term : ℝᶜ
-  term =
-    expPositiveMajorantTerm ρ n
-
-  coefficient-double≤1 :
-    coefficient ℚ.+ coefficient ℚOrder.≤ RationalBase.1ℚ
-  coefficient-double≤1 =
-    expMajorantCoefficientDouble≤1 ρ n double≤natural
-
-  doubled-step-path :
-    expPositiveMajorantTerm ρ (suc n) +ᶜ
-    expPositiveMajorantTerm ρ (suc n) ≡
-    scalarMulᶜ (coefficient ℚ.+ coefficient) term
-  doubled-step-path =
-    cong₂
-      _+ᶜ_
-      (expPositiveMajorantTerm-step ρ n)
-      (expPositiveMajorantTerm-step ρ n) ∙
-    sym (scalarMulᶜ-distrib-scalar-add coefficient coefficient term)
-
-  scaled≤one-scaled :
-    scalarMulᶜ (coefficient ℚ.+ coefficient) term ≤ᶜ
-    scalarMulᶜ RationalBase.1ℚ term
-  scaled≤one-scaled =
-    scalarMulᶜ-pres≤ᶜ-scalar
-      {a = coefficient ℚ.+ coefficient}
-      {b = RationalBase.1ℚ}
-      coefficient-double≤1
-      {x = term}
-      (expPositiveMajorantTerm-nonnegative ρ n)
-
-  scaled≤term :
-    scalarMulᶜ (coefficient ℚ.+ coefficient) term ≤ᶜ term
-  scaled≤term =
-    subst
-      (λ x → scalarMulᶜ (coefficient ℚ.+ coefficient) term ≤ᶜ x)
-      (scalarMulᶜ-one term)
-      scaled≤one-scaled
 
 
 ExpMajorantRatioCutoff :
@@ -388,17 +324,6 @@ expMajorantRatioCutoff ρ =
         (NatOrder.≤-trans N≤n (suc zero , refl)))
 
 
-expPositiveMajorantTerm-eventual-ratio-half :
-  (ρ : ℚ⁺) →
-  (cutoff : ExpMajorantRatioCutoff ρ) →
-  (n : ℕ) →
-  NatOrder._≤_ (cutoff .fst) n →
-  expPositiveMajorantTerm ρ (suc n) +ᶜ
-  expPositiveMajorantTerm ρ (suc n) ≤ᶜ
-  expPositiveMajorantTerm ρ n
-expPositiveMajorantTerm-eventual-ratio-half ρ cutoff n cutoff≤n =
-  expPositiveMajorantTerm-ratio-half ρ n
-    (cutoff .snd n cutoff≤n)
 
 
 expPositiveHalfRatio :

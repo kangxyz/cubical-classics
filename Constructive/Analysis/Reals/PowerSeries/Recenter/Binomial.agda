@@ -155,15 +155,6 @@ binomialᶜ-natural (suc n) (suc k) =
     Rational.natMul rightℕ Rational.1ℚ
 
 
-binomialᶜ-above-diagonal :
-  (n k : ℕ) →
-  binomialᶜ n (suc (n Nat.+ k)) ≡ 0ᶜ
-binomialᶜ-above-diagonal n k =
-  binomialᶜ-natural n (suc (n Nat.+ k)) ∙
-  cong
-    (λ m → rational (Rational.natMul m Rational.1ℚ))
-    (binomialℕ-above-diagonal n k) ∙
-  cong rational (Rational.natMul-zero Rational.1ℚ)
 
 
 binomialᶜ-diagonal :
@@ -177,26 +168,10 @@ binomialᶜ-diagonal n =
   cong rational (Rational.natMul-one Rational.1ℚ)
 
 
-binomialᶜ-zero-right :
-  (n : ℕ) →
-  binomialᶜ n zero ≡ 1ᶜ
-binomialᶜ-zero-right n =
-  refl
 
 
-binomialᶜ-zero-suc :
-  (k : ℕ) →
-  binomialᶜ zero (suc k) ≡ 0ᶜ
-binomialᶜ-zero-suc k =
-  refl
 
 
-binomialᶜ-suc-suc :
-  (n k : ℕ) →
-  binomialᶜ (suc n) (suc k) ≡
-  binomialᶜ n (suc k) +ᶜ binomialᶜ n k
-binomialᶜ-suc-suc n k =
-  refl
 
 
 ringPowerᶜ≡realPower :
@@ -269,18 +244,8 @@ triangularDiagonalsSumᶜ u N =
   partialSum (antiDiagonalSumᶜ u) N
 
 
-triangularRowsSumᶜ-zero :
-  (u : ℕ → ℕ → ℝᶜ) →
-  triangularRowsSumᶜ u zero ≡ 0ᶜ
-triangularRowsSumᶜ-zero u =
-  refl
 
 
-triangularDiagonalsSumᶜ-zero :
-  (u : ℕ → ℕ → ℝᶜ) →
-  triangularDiagonalsSumᶜ u zero ≡ 0ᶜ
-triangularDiagonalsSumᶜ-zero u =
-  refl
 
 
 triangularRowsSumᶜ-suc :

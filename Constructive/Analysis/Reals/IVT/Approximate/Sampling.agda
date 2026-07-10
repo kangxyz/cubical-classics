@@ -472,7 +472,6 @@ adjacentSampleValuesClose {a = a} {b = b} {a≤b = a≤b} {f = f} ivtData {n = n
       (close-triangle (close-sym left-sample-close) movement-close)
       right-sample-close
 
-
 adjacentSampleValuesCloseWithValues :
   {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
   (uc : isUniformlyContinuousOnInterval a b f) →
@@ -535,33 +534,3 @@ adjacentSampleValuesCloseWithValues {a = a} {b = b} {a≤b = a≤b} {f = f}
     close-triangle
       (close-triangle (close-sym left-sample-close) movement-close)
       right-sample-close
-
-
-sampleNearZeroCandidate :
-  {a b : ℝᶜ} {a≤b : a ≤ᶜ b} {f : [ a , b ]ᶜ → ℝᶜ} →
-  (ivtData : IVTFunctionData a b f) →
-  {n : ℕ} →
-  (G : Grid a b a≤b (suc n)) →
-  (samplePrecision movementPrecision : ℚ⁺) →
-  AdjacentClose G
-    (uniformModulus {a = a} {b = b} {f = f}
-      (IVTFunctionData.uniformlyContinuous {a = a} {b = b} {f = f} ivtData)
-      movementPrecision) →
-  gridSampleValues {a = a} {b = b} {f = f}
-    ivtData G samplePrecision Fin.zero ℚOrder.< 0ℚ →
-  0ℚ ℚOrder.≤
-    gridSampleValues {a = a} {b = b} {f = f}
-      ivtData G samplePrecision (Fin.fromℕ (suc n)) →
-  Σ[ i ∈ Fin (suc n) ]
-    NearZeroCandidate
-      (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
-      ((samplePrecision +⁺ movementPrecision) +⁺ samplePrecision)
-      i
-sampleNearZeroCandidate {a = a} {b = b} {f = f} ivtData G samplePrecision
-    movementPrecision adjacentClose =
-  gridNearZeroCandidate
-    _
-    (gridSampleValues {a = a} {b = b} {f = f} ivtData G samplePrecision)
-    ((samplePrecision +⁺ movementPrecision) +⁺ samplePrecision)
-    (adjacentSampleValuesClose {a = a} {b = b} {f = f}
-      ivtData G samplePrecision movementPrecision adjacentClose)

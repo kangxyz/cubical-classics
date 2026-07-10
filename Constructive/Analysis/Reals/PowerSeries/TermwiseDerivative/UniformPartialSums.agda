@@ -250,33 +250,8 @@ merelyPowerSeriesPartialSumHasDerivativeOnBall =
   finitePartialSumDerivativeOnBall
 
 
-isPropPowerSeriesPartialSumsHaveDerivativeWith :
-  (a da : PowerSeries) →
-  (x : ℝᶜ) →
-  (ω : ℕ → PrecisionModulus) →
-  isProp (PowerSeriesPartialSumsHaveDerivativeWith a da x ω)
-isPropPowerSeriesPartialSumsHaveDerivativeWith a da x ω =
-  isPropΠ λ n →
-    isPropHasDerivativeAtWith
-      (λ y → powerSeriesPartialSum a y (suc n))
-      x
-      (powerSeriesPartialSum da x n)
-      (ω n)
 
 
-powerSeriesPartialSumsHaveDerivativeWith-submodulus :
-  {a da : PowerSeries} →
-  {x : ℝᶜ} →
-  {ω ν : ℕ → PrecisionModulus} →
-  ((n : ℕ) →
-    (ε : ℚ⁺) →
-    radius (ν n ε) ℚOrder.≤ radius (ω n ε)) →
-  PowerSeriesPartialSumsHaveDerivativeWith a da x ω →
-  PowerSeriesPartialSumsHaveDerivativeWith a da x ν
-powerSeriesPartialSumsHaveDerivativeWith-submodulus ν≤ω derivative n =
-  hasDerivativeAtWith-submodulus
-    (ν≤ω n)
-    (derivative n)
 
 
 powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBound :
@@ -366,30 +341,6 @@ powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBound
         x-bound
 
 
-powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBoundSubmodulus :
-  {a : PowerSeries} →
-  {x : ℝᶜ} →
-  {μ : PrecisionModulus} →
-  (σ Γ : ℚ⁺) →
-  BoundedByᶜ σ x →
-  ((ε : ℚ⁺) →
-    radius (μ ε) ℚOrder.≤
-    radius (powerSeriesFormalPartialSumsDerivativeModulusFromSecondBound Γ ε)) →
-  PowerSeriesSecondDerivativePartialSumsBoundOnBallWith a (σ +⁺ 1⁺) Γ →
-  PowerSeriesFormalPartialSumsHaveDerivativeWith a x (λ _ → μ)
-powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBoundSubmodulus
-  σ
-  Γ
-  x-bound
-  μ≤canonical
-  secondBound =
-  powerSeriesPartialSumsHaveDerivativeWith-submodulus
-    (λ _ ε → μ≤canonical ε)
-    (powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBound
-      σ
-      Γ
-      x-bound
-      secondBound)
 
 
 partialSumsDerivativeTargetModulus :
@@ -413,31 +364,6 @@ powerSeriesPartialSumsDerivativeUniformModulus-constant
   Rational.≤-refl (radius (μ (quarter⁺ ε)))
 
 
-powerSeriesPartialDerivativeRemainderBoundFromUniformPartialSumsDerivative :
-  {a da : PowerSeries} →
-  {x : ℝᶜ} →
-  {χ : TermwiseDerivativeIndex} →
-  {μ : PrecisionModulus} →
-  PowerSeriesPartialSumsHaveDerivativeWith a da x (λ _ → μ) →
-  PowerSeriesPartialDerivativeRemainderBoundWith
-    a
-    da
-    x
-    χ
-    (partialSumsDerivativeTargetModulus μ)
-powerSeriesPartialDerivativeRemainderBoundFromUniformPartialSumsDerivative
-  {χ = χ}
-  {μ = μ}
-  partialDerivative =
-  powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative
-    partialDerivative
-    (powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus
-      {χ = χ}
-      {μ = partialSumsDerivativeTargetModulus μ}
-      {ω = λ _ → μ}
-      (powerSeriesPartialSumsDerivativeUniformModulus-constant
-        {χ = χ}
-        {μ = μ}))
 
 
 powerSeriesFormalPartialDerivativeRemainderBoundFromUniformPartialSumsDerivative :

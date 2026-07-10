@@ -42,7 +42,7 @@ open import Constructive.Analysis.Reals.IVT.Uniform
 open import Constructive.Analysis.Reals.Locator.Base using (Locator)
 open import Constructive.Analysis.Reals.Locator.Map using (LocatedMap)
 open import Constructive.Data.PositiveRationals
-import Constructive.Analysis.Reals.IVT.Approximate.Proofs as Proofs
+import Constructive.Analysis.Reals.IVT.Approximate.Located as Proofs
 
 
 -- Standard uniformly-continuous constructive approximate IVT.  The conclusion

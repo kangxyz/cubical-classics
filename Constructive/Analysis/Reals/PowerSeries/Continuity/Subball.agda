@@ -18,8 +18,8 @@ open import Constructive.Analysis.Reals.PowerSeries.Bounds
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Continuity.Theorem
   using
-    ( centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
-    ; powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+    ( centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
+    ; powerSeriesSumUniformlyContinuousFromCoefficientBounds
     )
 open import Constructive.Data.PositiveRationals
 
@@ -42,7 +42,7 @@ hasPowerSeriesOnBallWith→uniformlyContinuousOnSubball
   {convergence = convergence}
   ρ<σ
   bounds =
-  powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+  powerSeriesSumUniformlyContinuousFromCoefficientBounds
     { ρ = ρ }
     { convergence =
         hasPowerSeriesOnSmallerBallWith
@@ -74,7 +74,7 @@ centeredPowerSeriesSumUniformlyContinuousOnSubball
   {convergence = convergence}
   ρ<σ
   bounds =
-  centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+  centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
     { ρ = ρ }
     { convergence =
         hasPowerSeriesOnSmallerBallWith

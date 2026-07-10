@@ -35,7 +35,7 @@ open import Constructive.Data.PositiveRationals
 
 
 private
-  powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith :
+  powerSeriesSumUniformlyContinuousFromCoefficientBoundsWith :
     {a : PowerSeries} →
     {ρ : ℚ⁺} →
     {μ : ℚ⁺ → ℕ} →
@@ -51,7 +51,7 @@ private
         κ
         ρ
         (powerSeriesLimitApproximationIndex μ))
-  powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith
+  powerSeriesSumUniformlyContinuousFromCoefficientBoundsWith
     {μ = μ}
     coeffBounds =
     powerSeriesSumUniformlyContinuousFromPartialSums
@@ -86,14 +86,14 @@ private
       (add-close-left x∼y (-ᶜ c))
 
 
-powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical :
+powerSeriesSumUniformlyContinuousFromCoefficientBounds :
   {a : PowerSeries} →
   {ρ : ℚ⁺} →
   {μ : ℚ⁺ → ℕ} →
   {convergence : HasPowerSeriesOnBallWith a ρ μ} →
   PowerSeriesCoefficientBounds a →
   PowerSeriesSumUniformlyContinuousOnBall a ρ μ convergence
-powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+powerSeriesSumUniformlyContinuousFromCoefficientBounds
   {ρ = ρ}
   {μ = μ}
   (κ , coeffBounds) =
@@ -101,11 +101,11 @@ powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
     κ
     ρ
     (powerSeriesLimitApproximationIndex μ) ,
-  powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonicalWith
+  powerSeriesSumUniformlyContinuousFromCoefficientBoundsWith
     coeffBounds
 
 
-centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical :
+centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds :
   {a : PowerSeries} →
   {c : ℝᶜ} →
   {ρ : ℚ⁺} →
@@ -113,7 +113,7 @@ centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical :
   {convergence : HasPowerSeriesOnBallWith a ρ μ} →
   PowerSeriesCoefficientBounds a →
   CenteredPowerSeriesSumUniformlyContinuousOnBall a c ρ μ convergence
-centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
+centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
   {a = a}
   {c = c}
   {ρ = ρ}
@@ -126,4 +126,4 @@ centeredPowerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical
   ordinary :
     PowerSeriesSumUniformlyContinuousOnBall a ρ μ convergence
   ordinary =
-    powerSeriesSumUniformlyContinuousFromCoefficientBoundsCanonical bounds
+    powerSeriesSumUniformlyContinuousFromCoefficientBounds bounds

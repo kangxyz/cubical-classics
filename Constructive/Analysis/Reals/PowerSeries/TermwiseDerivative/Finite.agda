@@ -126,26 +126,8 @@ powerSeriesConstantPartialSumHasDerivativeAtWith
     (bounded-byᶜ-zero (ε *⁺ η))
 
 
-powerSeriesPartialSum-two :
-  (a : PowerSeries) →
-  (y : ℝᶜ) →
-  powerSeriesPartialSum a y (suc (suc zero)) ≡
-  a zero +ᶜ y ·ᶜ a (suc zero)
-powerSeriesPartialSum-two a y =
-  powerSeriesPartialSum-shift a y (suc zero) ∙
-  cong
-    (λ tail → a zero +ᶜ y ·ᶜ tail)
-    (powerSeriesPartialSum-one (shiftPowerSeries a) y)
 
 
-formalDerivativePartialSum-one :
-  (a : PowerSeries) →
-  (x : ℝᶜ) →
-  powerSeriesPartialSum (derivativePowerSeries a) x (suc zero) ≡
-  a (suc zero)
-formalDerivativePartialSum-one a x =
-  powerSeriesPartialSum-one (derivativePowerSeries a) x ∙
-  mulᶜ-one-left (a (suc zero))
 
 
 naturalReal-suc :
@@ -232,58 +214,3 @@ powerSeriesFormalDerivativePartialSum-step-value a x n =
   derivativeShiftSum : ℝᶜ
   derivativeShiftSum =
     powerSeriesPartialSum (derivativePowerSeries (shiftPowerSeries a)) x n
-
-
-powerSeriesLinearPartialSumRemainder-zero :
-  (a : PowerSeries) →
-  (x h : ℝᶜ) →
-  linearRemainder
-    (λ y → powerSeriesPartialSum a y (suc (suc zero)))
-    x
-    (powerSeriesPartialSum (derivativePowerSeries a) x (suc zero))
-    h
-  ≡ 0ᶜ
-powerSeriesLinearPartialSumRemainder-zero a x h =
-  cong₂
-    (λ u v →
-      (u +ᶜ (-ᶜ v)) +ᶜ
-      (-ᶜ
-        (powerSeriesPartialSum (derivativePowerSeries a) x (suc zero)
-          ·ᶜ h)))
-    (powerSeriesPartialSum-two a (x +ᶜ h))
-    (powerSeriesPartialSum-two a x) ∙
-  cong
-    (λ d →
-      ((a zero +ᶜ (x +ᶜ h) ·ᶜ a (suc zero)) +ᶜ
-        (-ᶜ (a zero +ᶜ x ·ᶜ a (suc zero)))) +ᶜ
-      (-ᶜ (d ·ᶜ h)))
-    (formalDerivativePartialSum-one a x) ∙
-  SolverHelpers.linear-partial-sum-remainder-zero
-    CauchyRealsCommRing
-    (a zero)
-    (a (suc zero))
-    x
-    h
-
-
-powerSeriesLinearPartialSumHasDerivativeAtWith :
-  {a : PowerSeries} →
-  {x : ℝᶜ} →
-  {μ : PrecisionModulus} →
-  HasDerivativeAtWith
-    (λ y → powerSeriesPartialSum a y (suc (suc zero)))
-    x
-    (powerSeriesPartialSum (derivativePowerSeries a) x (suc zero))
-    μ
-powerSeriesLinearPartialSumHasDerivativeAtWith
-  {a = a}
-  {x = x}
-  ε
-  η
-  _
-  h
-  _ =
-  subst
-    (BoundedByᶜ (ε *⁺ η))
-    (sym (powerSeriesLinearPartialSumRemainder-zero a x h))
-    (bounded-byᶜ-zero (ε *⁺ η))

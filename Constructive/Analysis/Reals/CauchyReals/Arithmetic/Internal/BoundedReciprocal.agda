@@ -244,14 +244,6 @@ record BoundedAwayPositiveᶜ (ε : ℚ⁺) (x : ℝᶜ) : Type₀ where
     lowerᶜ : rational (radius ε) ≤ᶜ x
 
 
-isPropBoundedAwayPositiveᶜ :
-  (ε : ℚ⁺) (x : ℝᶜ) →
-  isProp (BoundedAwayPositiveᶜ ε x)
-isPropBoundedAwayPositiveᶜ ε x a b i .BoundedAwayPositiveᶜ.lowerᶜ =
-  isProp≤ᶜ (rational (radius ε)) x
-    (a .BoundedAwayPositiveᶜ.lowerᶜ)
-    (b .BoundedAwayPositiveᶜ.lowerᶜ)
-    i
 
 
 private
@@ -353,15 +345,6 @@ rationalInv₊ᶜ q 0<q =
   rational (Rational.posInv q 0<q)
 
 
-rationalInv₊ᶜ-positive :
-  (q : ℚ) →
-  (0<q : 0ℚ ℚOrder.< q) →
-  0ᶜ <ᶜ rationalInv₊ᶜ q 0<q
-rationalInv₊ᶜ-positive q 0<q =
-  <ℚ→<ᶜ
-    {q = 0ℚ}
-    {r = Rational.posInv q 0<q}
-    (Rational.posInv-positive {q = q} 0<q)
 
 
 rationalInv₊ᶜ-right :
@@ -373,13 +356,6 @@ rationalInv₊ᶜ-right q 0<q =
   cong rational (Rational.posInv-right q 0<q)
 
 
-rationalInv₊ᶜ-left :
-  (q : ℚ) →
-  (0<q : 0ℚ ℚOrder.< q) →
-  rationalInv₊ᶜ q 0<q ·ᶜ rational q ≡ 1ᶜ
-rationalInv₊ᶜ-left q 0<q =
-  mulᶜ-rational-rational (Rational.posInv q 0<q) q ∙
-  cong rational (Rational.posInv-left q 0<q)
 
 
 rationalInv₊ᶜ-closed-bound-positive :
@@ -458,31 +434,6 @@ rationalInv₊ᶜ-closed-bound ε q ε≤q =
       ε≤q
 
 
-rationalInv₊ᶜ-bound :
-  (ε : ℚ⁺) (q : ℚ) →
-  (ε≤q : radius ε ℚOrder.≤ q) →
-  BoundedByᶜ (posInv⁺ ε)
-    (rationalInv₊ᶜ q
-      (Rational.<≤-trans
-        {p = 0ℚ}
-        {q = radius ε}
-        {r = q}
-        (ε .snd)
-        ε≤q))
-rationalInv₊ᶜ-bound ε q ε≤q =
-  rational-closed-bound→boundedᶜ
-    (posInv⁺ ε)
-    (Rational.posInv q 0<q)
-    (rationalInv₊ᶜ-closed-bound ε q ε≤q)
-  where
-  0<q : 0ℚ ℚOrder.< q
-  0<q =
-    Rational.<≤-trans
-      {p = 0ℚ}
-      {q = radius ε}
-      {r = q}
-      (ε .snd)
-      ε≤q
 
 
 reciprocalLipschitzBase⁺ : ℚ⁺ → ℚ⁺
@@ -771,22 +722,6 @@ clampedRationalInv₊ᶜ-lipschitz ε p q δ p∼q =
     (clampedRationalInv-close ε p q δ p∼q)
 
 
-clampedRationalInv₊ᶜ-bound :
-  (ε : ℚ⁺) (q : ℚ) →
-  BoundedByᶜ
-    (reciprocalLipschitzBase⁺ ε)
-    (clampedRationalInv₊ᶜ ε q)
-clampedRationalInv₊ᶜ-bound ε q =
-  rational-closed-bound→boundedᶜ
-    (reciprocalLipschitzBase⁺ ε)
-    (Rational.posInv
-      (clampLower ε q)
-      (clampLower-positive ε q))
-    (reciprocalBound-closed
-      ε
-      (clampLower ε q)
-      (clampLower-positive ε q)
-      (clampLower-bound ε q))
 
 
 boundedReciprocalᶜ :
@@ -832,16 +767,6 @@ boundedReciprocalᶜ-rational-right ε q 0<q ε≤q =
   rationalInv₊ᶜ-right q 0<q
 
 
-boundedReciprocalᶜ-rational-left :
-  (ε : ℚ⁺) (q : ℚ) →
-  (0<q : 0ℚ ℚOrder.< q) →
-  (ε≤q : radius ε ℚOrder.≤ q) →
-  boundedReciprocalᶜ ε (rational q) ·ᶜ rational q ≡ 1ᶜ
-boundedReciprocalᶜ-rational-left ε q 0<q ε≤q =
-  cong
-    (_·ᶜ rational q)
-    (boundedReciprocalᶜ-rational-stable ε q 0<q ε≤q) ∙
-  rationalInv₊ᶜ-left q 0<q
 
 
 boundedReciprocalᶜ-lipschitz :
@@ -1271,59 +1196,3 @@ boundedAwayReciprocalᶜ-left :
 boundedAwayReciprocalᶜ-left ε x x-bound =
   mulᶜ-comm (boundedAwayReciprocalᶜ ε x x-bound) x ∙
   boundedAwayReciprocalᶜ-right ε x x-bound
-
-
-boundedAwayReciprocalᶜ-rational-right :
-  (ε : ℚ⁺) (q : ℚ) →
-  (0<q : 0ℚ ℚOrder.< q) →
-  (ε≤q : radius ε ℚOrder.≤ q) →
-  rational q ·ᶜ
-    boundedAwayReciprocalᶜ ε (rational q)
-      (bounded-away-positiveᶜ
-        (≤ℚ→rational≤ᶜ
-          {q = radius ε}
-          {r = q}
-          ε≤q))
-    ≡ 1ᶜ
-boundedAwayReciprocalᶜ-rational-right ε q 0<q ε≤q =
-  boundedReciprocalᶜ-rational-right
-    (half⁺ ε)
-    q
-    0<q
-    (Rational.<→≤
-      {p = radius (half⁺ ε)}
-      {q = q}
-      (Rational.<≤-trans
-        {p = radius (half⁺ ε)}
-        {q = radius ε}
-        {r = q}
-        (half< ε)
-        ε≤q))
-
-
-boundedAwayReciprocalᶜ-rational-left :
-  (ε : ℚ⁺) (q : ℚ) →
-  (0<q : 0ℚ ℚOrder.< q) →
-  (ε≤q : radius ε ℚOrder.≤ q) →
-  boundedAwayReciprocalᶜ ε (rational q)
-    (bounded-away-positiveᶜ
-      (≤ℚ→rational≤ᶜ
-        {q = radius ε}
-        {r = q}
-        ε≤q))
-    ·ᶜ rational q
-    ≡ 1ᶜ
-boundedAwayReciprocalᶜ-rational-left ε q 0<q ε≤q =
-  boundedReciprocalᶜ-rational-left
-    (half⁺ ε)
-    q
-    0<q
-    (Rational.<→≤
-      {p = radius (half⁺ ε)}
-      {q = q}
-      (Rational.<≤-trans
-        {p = radius (half⁺ ε)}
-        {q = radius ε}
-        {r = q}
-        (half< ε)
-        ε≤q))

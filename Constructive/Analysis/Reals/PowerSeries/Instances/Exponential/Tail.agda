@@ -68,7 +68,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; centeredPowerSeriesHasDerivativeFromIteratedBounds
     ; positivePartialSum
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     ; powerSeriesFormalPartialSumsDerivativeModulus
@@ -92,7 +92,6 @@ import Constructive.Data.Rationals.Archimedean as Rational
 import Constructive.Data.Rationals.Factorial as Factorial
 import Constructive.Data.Rationals.Multiplication as RationalMul
 
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Coefficients
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Majorant
 
@@ -213,31 +212,6 @@ expPowerSeriesTerm-scalarReciprocal h n =
     (realPower h n)
 
 
-expPowerSeriesTermBoundFromPowerBound :
-  (ρ : ℚ⁺) →
-  (h : ℝᶜ) →
-  (n : ℕ) →
-  BoundedByᶜ (positivePower ρ n) (realPower h n) →
-  BoundedByᶜ (positivePower ρ n) (powerSeriesTerm expPowerSeries h n)
-expPowerSeriesTermBoundFromPowerBound ρ h n powerBound =
-  subst2
-    BoundedByᶜ
-    (*⁺-identity-left (positivePower ρ n))
-    (sym (expPowerSeriesTerm-scalarReciprocal h n))
-    scaledBound
-  where
-  scaledBound :
-    BoundedByᶜ
-      (1⁺ *⁺ positivePower ρ n)
-      (scalarMulᶜ (Factorial.reciprocalFactorial n) (realPower h n))
-  scaledBound =
-    bounded-byᶜ-scale-rational-closed-bound
-      (Factorial.reciprocalFactorial n)
-      (positivePower ρ n)
-      1⁺
-      (realPower h n)
-      (reciprocalFactorialClosedBoundOne n)
-      powerBound
 
 
 expPowerSeriesTermBoundByPositiveMajorant :

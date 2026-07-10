@@ -367,14 +367,6 @@ boundedScalarMulᶜ a κ a<κ -a<κ =
         (scale-close-bound a κ a<κ -a<κ q r ε q∼r))
 
 
-boundedScalarMulᶜ-rational :
-  (a : ℚ) (κ : ℚ⁺)
-  (a<κ : a ℚOrder.< radius κ)
-  (-a<κ : ℚ.- a ℚOrder.< radius κ)
-  (q : ℚ) →
-  boundedScalarMulᶜ a κ a<κ -a<κ (rational q) ≡ rational (a ℚ.· q)
-boundedScalarMulᶜ-rational a κ a<κ -a<κ q =
-  refl
 
 
 boundedScalarMulᶜ-close :
@@ -489,66 +481,12 @@ boundedScalarMulᶜ-distrib-real-add a κ a<κ -a<κ x y =
     x
 
 
-boundedScalarMulᶜ-zero-right :
-  (a : ℚ) (κ : ℚ⁺)
-  (a<κ : a ℚOrder.< radius κ)
-  (-a<κ : ℚ.- a ℚOrder.< radius κ) →
-  boundedScalarMulᶜ a κ a<κ -a<κ 0ᶜ ≡ 0ᶜ
-boundedScalarMulᶜ-zero-right a κ a<κ -a<κ =
-  cong rational (SolverHelpers.scale-zero-right ℚCommRing a)
 
 
-boundedScalarMulᶜ-zero-scalar :
-  (κ : ℚ⁺)
-  (0<κ : 0ℚ ℚOrder.< radius κ)
-  (0<κ' : ℚ.- 0ℚ ℚOrder.< radius κ)
-  (x : ℝᶜ) →
-  boundedScalarMulᶜ 0ℚ κ 0<κ 0<κ' x ≡ 0ᶜ
-boundedScalarMulᶜ-zero-scalar κ 0<κ 0<κ' =
-  continuous-constant-equal
-    (boundedScalarMulᶜ 0ℚ κ 0<κ 0<κ')
-    0ᶜ
-    (boundedScalarMulᶜ-continuous 0ℚ κ 0<κ 0<κ')
-    (λ q → cong rational (ℚ.·AnnihilL q))
 
 
-boundedScalarMulᶜ-neg-real :
-  (a : ℚ) (κ : ℚ⁺)
-  (a<κ : a ℚOrder.< radius κ)
-  (-a<κ : ℚ.- a ℚOrder.< radius κ)
-  (x : ℝᶜ) →
-  boundedScalarMulᶜ a κ a<κ -a<κ (-ᶜ x) ≡
-  -ᶜ (boundedScalarMulᶜ a κ a<κ -a<κ x)
-boundedScalarMulᶜ-neg-real a κ a<κ -a<κ =
-  continuous-equal
-    (λ x → boundedScalarMulᶜ a κ a<κ -a<κ (-ᶜ x))
-    (λ x → -ᶜ (boundedScalarMulᶜ a κ a<κ -a<κ x))
-    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
-      (boundedScalarMulᶜ-continuous a κ a<κ -a<κ)
-      neg-continuous)
-    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
-      neg-continuous
-      (boundedScalarMulᶜ-continuous a κ a<κ -a<κ))
-    (λ q → cong rational (SolverHelpers.scale-neg-right ℚCommRing a q))
 
 
-boundedScalarMulᶜ-neg-scalar :
-  (a : ℚ) (κ : ℚ⁺)
-  (a<κ : a ℚOrder.< radius κ)
-  (-a<κ : ℚ.- a ℚOrder.< radius κ)
-  (negneg-a<κ : ℚ.- (ℚ.- a) ℚOrder.< radius κ)
-  (x : ℝᶜ) →
-  boundedScalarMulᶜ (ℚ.- a) κ -a<κ negneg-a<κ x ≡
-  -ᶜ (boundedScalarMulᶜ a κ a<κ -a<κ x)
-boundedScalarMulᶜ-neg-scalar a κ a<κ -a<κ negneg-a<κ =
-  continuous-equal
-    (boundedScalarMulᶜ (ℚ.- a) κ -a<κ negneg-a<κ)
-    (λ x → -ᶜ (boundedScalarMulᶜ a κ a<κ -a<κ x))
-    (boundedScalarMulᶜ-continuous (ℚ.- a) κ -a<κ negneg-a<κ)
-    (comp-uniformlyContinuous {𝓧 = CauchyRealsMetricSpace} {𝓨 = CauchyRealsMetricSpace} {𝓩 = CauchyRealsMetricSpace}
-      neg-continuous
-      (boundedScalarMulᶜ-continuous a κ a<κ -a<κ))
-    (λ q → cong rational (SolverHelpers.scale-neg-left ℚCommRing a q))
 
 
 scalarMulᶜ : ℚ → ℝᶜ → ℝᶜ

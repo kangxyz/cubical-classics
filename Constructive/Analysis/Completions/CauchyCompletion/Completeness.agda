@@ -12,7 +12,7 @@ import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.ReflexiveSymmetric
-open import Constructive.Analysis.Completions.CauchyCompletion.Extension.Unary
+open import Constructive.Analysis.Completions.CauchyCompletion.Extension.Unary.Core
 open import Constructive.Analysis.Completions.CauchyCompletion.MetricSpace
 open import Constructive.Data.PositiveRationals
 

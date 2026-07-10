@@ -65,9 +65,9 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; hasDerivativeAtWith-derivative-path
-    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
-    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
+    ; hasDerivativeAtWith-congDerivative
+    ; hasPowerSeriesDerivativeFromIteratedBounds
+    ; hasPowerSeriesDerivativeFromCoefficientBounds
     ; positivePartialSum
     ; powerSeriesFormalPartialDerivativeBoundFromSeriesCoefficientBounds
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
@@ -125,51 +125,6 @@ derivativeCosPowerSeriesInfiniteRadius =
     (negPowerSeriesInfiniteRadius sinPowerSeriesInfiniteRadius)
 
 
-sinᶜHasDerivativeAtWithFromIteratedBoundsOnSubball :
-  {x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement 0ᶜ x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    sinPowerSeries
-    (centeredDisplacement 0ᶜ x)
-    δ →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (sinPowerSeriesInfiniteRadius ρ .fst)
-      (derivativeSinPowerSeriesInfiniteRadius σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith sinᶜ x (cosᶜ x) μ
-sinᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {δ = δ}
-  x-displacement-bound
-  margin
-  derivative-bounds
-  partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
-    {a = sinPowerSeries}
-    {b = cosPowerSeries}
-    {c = 0ᶜ}
-    {x = x}
-    {ρ = ρ}
-    {σ = σ}
-    {μ = μ}
-    {δ = δ}
-    derivativePowerSeries-sin
-    sinPowerSeriesInfiniteRadius
-    cosPowerSeriesInfiniteRadius
-    (sinᶜHasPowerSeriesAtWithZero ρ)
-    x-displacement-bound
-    margin
-    derivative-bounds
-    partialModulus-large
 
 
 sinᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball :
@@ -197,7 +152,7 @@ sinᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
   x-displacement-bound
   margin
   partialModulus-large =
-  hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
+  hasPowerSeriesDerivativeFromCoefficientBounds
     {a = sinPowerSeries}
     {b = cosPowerSeries}
     {c = 0ᶜ}
@@ -216,63 +171,6 @@ sinᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
     partialModulus-large
 
 
-cosᶜHasDerivativeAtWithFromIteratedBoundsOnSubball :
-  {x : ℝᶜ} →
-  {ρ σ : ℚ⁺} →
-  {μ : PrecisionModulus} →
-  {δ : ℕ → ℕ → ℚ⁺} →
-  (x-displacement-bound : BoundedByᶜ σ (centeredDisplacement 0ᶜ x)) →
-  (margin : (ε : ℚ⁺) → radius (σ +⁺ μ ε) ℚOrder.≤ radius ρ) →
-  PowerSeriesIteratedFormalPartialDerivativeBounds
-    cosPowerSeries
-    (centeredDisplacement 0ᶜ x)
-    δ →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    (termwiseConvergenceIndex
-      (cosPowerSeriesInfiniteRadius ρ .fst)
-      (derivativeCosPowerSeriesInfiniteRadius σ .fst))
-    μ
-    (powerSeriesFormalPartialSumsDerivativeModulus σ δ) →
-  HasDerivativeAtWith cosᶜ x (-ᶜ sinᶜ x) μ
-cosᶜHasDerivativeAtWithFromIteratedBoundsOnSubball
-  {x = x}
-  {ρ = ρ}
-  {σ = σ}
-  {μ = μ}
-  {δ = δ}
-  x-displacement-bound
-  margin
-  derivative-bounds
-  partialModulus-large =
-  hasDerivativeAtWith-derivative-path
-    {f = cosᶜ}
-    {x = x}
-    {d = negSinᶜ x}
-    {e = -ᶜ sinᶜ x}
-    {μ = μ}
-    (negSinᶜ-path x)
-    derivative
-  where
-  derivative :
-    HasDerivativeAtWith cosᶜ x (negSinᶜ x) μ
-  derivative =
-    hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
-      {a = cosPowerSeries}
-      {b = negPowerSeries sinPowerSeries}
-      {c = 0ᶜ}
-      {x = x}
-      {ρ = ρ}
-      {σ = σ}
-      {μ = μ}
-      {δ = δ}
-      derivativePowerSeries-cos
-      cosPowerSeriesInfiniteRadius
-      (negPowerSeriesInfiniteRadius sinPowerSeriesInfiniteRadius)
-      (cosᶜHasPowerSeriesAtWithZero ρ)
-      x-displacement-bound
-      margin
-      derivative-bounds
-      partialModulus-large
 
 
 cosᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball :
@@ -300,7 +198,7 @@ cosᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
   x-displacement-bound
   margin
   partialModulus-large =
-  hasDerivativeAtWith-derivative-path
+  hasDerivativeAtWith-congDerivative
     {f = cosᶜ}
     {x = x}
     {d = negSinᶜ x}
@@ -312,7 +210,7 @@ cosᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
   derivative :
     HasDerivativeAtWith cosᶜ x (negSinᶜ x) μ
   derivative =
-    hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
+    hasPowerSeriesDerivativeFromCoefficientBounds
       {a = cosPowerSeries}
       {b = negPowerSeries sinPowerSeries}
       {c = 0ᶜ}
@@ -329,81 +227,3 @@ cosᶜHasDerivativeAtWithFromCoefficientBoundsOnSubball
       (λ _ → 1⁺)
       cosPowerSeriesCoefficientBoundOne
       partialModulus-large
-
-
-primitiveCosPowerSeriesInfiniteRadius :
-  HasInfinitePowerSeriesRadius (primitivePowerSeries cosPowerSeries)
-primitiveCosPowerSeriesInfiniteRadius =
-  primitivePowerSeriesInfiniteRadiusFromCoefficientPath
-    {a = cosPowerSeries}
-    {b = sinPowerSeries}
-    primitivePowerSeries-cos
-    sinPowerSeriesInfiniteRadius
-
-
-primitiveSinPowerSeriesInfiniteRadius :
-  HasInfinitePowerSeriesRadius (primitivePowerSeries sinPowerSeries)
-primitiveSinPowerSeriesInfiniteRadius =
-  primitivePowerSeriesInfiniteRadiusFromCoefficientPath
-    {a = sinPowerSeries}
-    {b = subPowerSeries (constantPowerSeries 1ᶜ) cosPowerSeries}
-    primitivePowerSeries-sin
-    (subPowerSeriesInfiniteRadius
-      (constantPowerSeriesInfiniteRadius 1ᶜ)
-      cosPowerSeriesInfiniteRadius)
-
-
-SinPowerSeriesMajorants :
-  Type₀
-SinPowerSeriesMajorants =
-  (ρ : ℚ⁺) →
-  Σ[ v ∈ (ℕ → ℝᶜ) ]
-  Σ[ μ ∈ (ℚ⁺ → ℕ) ]
-    PowerSeriesMajorizedOnBall sinPowerSeries ρ v μ
-
-
-CosPowerSeriesMajorants :
-  Type₀
-CosPowerSeriesMajorants =
-  (ρ : ℚ⁺) →
-  Σ[ v ∈ (ℕ → ℝᶜ) ]
-  Σ[ μ ∈ (ℚ⁺ → ℕ) ]
-    PowerSeriesMajorizedOnBall cosPowerSeries ρ v μ
-
-
-sinPowerSeriesInfiniteRadiusFromMajorants :
-  SinPowerSeriesMajorants →
-  HasInfinitePowerSeriesRadius sinPowerSeries
-sinPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
-  μ , majorizedOnBall→hasPowerSeriesOnBallWith majorant
-  where
-  v : ℕ → ℝᶜ
-  v =
-    majorants ρ .fst
-
-  μ : ℚ⁺ → ℕ
-  μ =
-    majorants ρ .snd .fst
-
-  majorant : PowerSeriesMajorizedOnBall sinPowerSeries ρ v μ
-  majorant =
-    majorants ρ .snd .snd
-
-
-cosPowerSeriesInfiniteRadiusFromMajorants :
-  CosPowerSeriesMajorants →
-  HasInfinitePowerSeriesRadius cosPowerSeries
-cosPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
-  μ , majorizedOnBall→hasPowerSeriesOnBallWith majorant
-  where
-  v : ℕ → ℝᶜ
-  v =
-    majorants ρ .fst
-
-  μ : ℚ⁺ → ℕ
-  μ =
-    majorants ρ .snd .fst
-
-  majorant : PowerSeriesMajorizedOnBall cosPowerSeries ρ v μ
-  majorant =
-    majorants ρ .snd .snd

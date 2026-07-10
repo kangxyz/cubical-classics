@@ -159,12 +159,6 @@ recenterPowerSeriesWith a d recenterData n =
   recenterCoefficientSumWith a d n (coefficientData recenterData n)
 
 
-recenterCoefficientTerm-at-zero-zero :
-  (a : PowerSeries) →
-  (n : ℕ) →
-  recenterCoefficientTerm a 0ᶜ n zero ≡ a n
-recenterCoefficientTerm-at-zero-zero a n =
-  refl
 
 
 recenterCoefficientTerm-at-zero-suc :

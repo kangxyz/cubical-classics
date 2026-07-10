@@ -9,7 +9,6 @@ module Constructive.Analysis.Reals.PowerSeries.Analytic.Continuity where
 open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
-open import Cubical.HITs.PropositionalTruncation using (∥_∥₁ ; ∣_∣₁)
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Metric
@@ -45,32 +44,8 @@ HasPowerSeriesAtUniformlyContinuousOnBall f c ρ =
     HasPowerSeriesAtUniformlyContinuousOnBallWith f c ρ ν
 
 
-HasPowerSeriesAtMerelyUniformlyContinuousOnBall :
-  (ℝᶜ → ℝᶜ) →
-  ℝᶜ →
-  ℚ⁺ →
-  Type₀
-HasPowerSeriesAtMerelyUniformlyContinuousOnBall f c ρ =
-  (ε : ℚ⁺) →
-  ∥ Σ[ δ ∈ ℚ⁺ ]
-      ({x y : ℝᶜ} →
-       (x-inBall : InPowerSeriesBall c ρ x) →
-       (y-inBall : InPowerSeriesBall c ρ y) →
-       MetricSpace.Close CauchyRealsMetricSpace x δ y →
-       MetricSpace.Close CauchyRealsMetricSpace (f x) ε (f y))
-  ∥₁
 
 
-hasPowerSeriesAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall :
-  {f : ℝᶜ → ℝᶜ} →
-  {c : ℝᶜ} →
-  {ρ : ℚ⁺} →
-  HasPowerSeriesAtUniformlyContinuousOnBall f c ρ →
-  HasPowerSeriesAtMerelyUniformlyContinuousOnBall f c ρ
-hasPowerSeriesAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall
-  (ν , uniform)
-  ε =
-  ∣ ν ε , uniform ε ∣₁
 
 
 HasPowerSeriesAtContinuousAtWith :
@@ -101,33 +76,8 @@ HasPowerSeriesAtContinuousAt f c ρ x x-inBall =
     HasPowerSeriesAtContinuousAtWith f c ρ x x-inBall ν
 
 
-HasPowerSeriesAtMerelyContinuousAt :
-  (f : ℝᶜ → ℝᶜ) →
-  (c : ℝᶜ) →
-  (ρ : ℚ⁺) →
-  (x : ℝᶜ) →
-  InPowerSeriesBall c ρ x →
-  Type₀
-HasPowerSeriesAtMerelyContinuousAt f c ρ x x-inBall =
-  (ε : ℚ⁺) →
-  ∥ Σ[ δ ∈ ℚ⁺ ]
-      ({y : ℝᶜ} →
-       (y-inBall : InPowerSeriesBall c ρ y) →
-       MetricSpace.Close CauchyRealsMetricSpace x δ y →
-       MetricSpace.Close CauchyRealsMetricSpace (f x) ε (f y))
-  ∥₁
 
 
-hasPowerSeriesAtContinuousAt→merelyContinuousAt :
-  {f : ℝᶜ → ℝᶜ} →
-  {c : ℝᶜ} →
-  {ρ : ℚ⁺} →
-  {x : ℝᶜ} →
-  {x-inBall : InPowerSeriesBall c ρ x} →
-  HasPowerSeriesAtContinuousAt f c ρ x x-inBall →
-  HasPowerSeriesAtMerelyContinuousAt f c ρ x x-inBall
-hasPowerSeriesAtContinuousAt→merelyContinuousAt (ν , continuous) ε =
-  ∣ ν ε , continuous ε ∣₁
 
 
 HasPowerSeriesWithinAtUniformlyContinuousOnBallWith :
@@ -164,41 +114,8 @@ HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ =
     HasPowerSeriesWithinAtUniformlyContinuousOnBallWith {D = D} f c ρ ν
 
 
-HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall :
-  {ℓ : Level} →
-  {D : ℝᶜ → Type ℓ} →
-  ((x : ℝᶜ) → D x → ℝᶜ) →
-  ℝᶜ →
-  ℚ⁺ →
-  Type ℓ
-HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall {D = D} f c ρ =
-  (ε : ℚ⁺) →
-  ∥ Σ[ δ ∈ ℚ⁺ ]
-      ({x y : ℝᶜ} →
-       (x-domain : D x) →
-       (y-domain : D y) →
-       (x-inBall : InPowerSeriesBall c ρ x) →
-       (y-inBall : InPowerSeriesBall c ρ y) →
-       MetricSpace.Close CauchyRealsMetricSpace x δ y →
-       MetricSpace.Close CauchyRealsMetricSpace
-         (f x x-domain)
-         ε
-         (f y y-domain))
-  ∥₁
 
 
-hasPowerSeriesWithinAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall :
-  {ℓ : Level} →
-  {D : ℝᶜ → Type ℓ} →
-  {f : (x : ℝᶜ) → D x → ℝᶜ} →
-  {c : ℝᶜ} →
-  {ρ : ℚ⁺} →
-  HasPowerSeriesWithinAtUniformlyContinuousOnBall {D = D} f c ρ →
-  HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall {D = D} f c ρ
-hasPowerSeriesWithinAtUniformlyContinuousOnBall→merelyUniformlyContinuousOnBall
-  (ν , uniform)
-  ε =
-  ∣ ν ε , uniform ε ∣₁
 
 
 HasPowerSeriesWithinAtContinuousAtWith :
@@ -245,49 +162,3 @@ HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall =
       x-domain
       x-inBall
       ν
-
-
-HasPowerSeriesWithinAtMerelyContinuousAt :
-  {ℓ : Level} →
-  {D : ℝᶜ → Type ℓ} →
-  (f : (x : ℝᶜ) → D x → ℝᶜ) →
-  (c : ℝᶜ) →
-  (ρ : ℚ⁺) →
-  (x : ℝᶜ) →
-  D x →
-  InPowerSeriesBall c ρ x →
-  Type ℓ
-HasPowerSeriesWithinAtMerelyContinuousAt
-  {D = D}
-  f
-  c
-  ρ
-  x
-  x-domain
-  x-inBall =
-  (ε : ℚ⁺) →
-  ∥ Σ[ δ ∈ ℚ⁺ ]
-      ({y : ℝᶜ} →
-       (y-domain : D y) →
-       (y-inBall : InPowerSeriesBall c ρ y) →
-       MetricSpace.Close CauchyRealsMetricSpace x δ y →
-       MetricSpace.Close CauchyRealsMetricSpace
-         (f x x-domain)
-         ε
-         (f y y-domain))
-  ∥₁
-
-
-hasPowerSeriesWithinAtContinuousAt→merelyContinuousAt :
-  {ℓ : Level} →
-  {D : ℝᶜ → Type ℓ} →
-  {f : (x : ℝᶜ) → D x → ℝᶜ} →
-  {c : ℝᶜ} →
-  {ρ : ℚ⁺} →
-  {x : ℝᶜ} →
-  {x-domain : D x} →
-  {x-inBall : InPowerSeriesBall c ρ x} →
-  HasPowerSeriesWithinAtContinuousAt {D = D} f c ρ x x-domain x-inBall →
-  HasPowerSeriesWithinAtMerelyContinuousAt {D = D} f c ρ x x-domain x-inBall
-hasPowerSeriesWithinAtContinuousAt→merelyContinuousAt (ν , continuous) ε =
-  ∣ ν ε , continuous ε ∣₁

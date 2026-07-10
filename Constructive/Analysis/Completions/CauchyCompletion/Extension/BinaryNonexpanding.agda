@@ -19,7 +19,7 @@ open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Compute
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Prelength
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Rounded
 open import Constructive.Analysis.Completions.CauchyCompletion.Completeness
-open import Constructive.Analysis.Completions.CauchyCompletion.Extension.Unary
+open import Constructive.Analysis.Completions.CauchyCompletion.Extension.Unary.Core
 open import Constructive.Analysis.Completions.CauchyCompletion.Induction
 open import Constructive.Analysis.Completions.CauchyCompletion.MetricSpace
 open import Constructive.Data.PositiveRationals

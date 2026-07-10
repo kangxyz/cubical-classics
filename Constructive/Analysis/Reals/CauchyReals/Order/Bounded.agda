@@ -269,72 +269,12 @@ rational-bound→closedᶜ κ q bound =
     (ℚOrder.<Weaken≤ (ℚ.- q) (radius κ) (lowerℚ {κ = κ} {q = q} bound))
 
 
-rational-boundᶜ-monotone :
-  {κ μ : ℚ⁺} {q : ℚ} →
-  radius κ ℚOrder.≤ radius μ →
-  RationalBoundᶜ κ q →
-  RationalBoundᶜ μ q
-rational-boundᶜ-monotone {κ = κ} {μ = μ} {q = q} κ≤μ bound =
-  rational-boundᶜ {κ = μ} {q = q}
-    (Rational.<≤-trans
-      {p = q}
-      {q = radius κ}
-      {r = radius μ}
-      (upperℚ {κ = κ} {q = q} bound)
-      κ≤μ)
-    (Rational.<≤-trans
-      {p = ℚ.- q}
-      {q = radius κ}
-      {r = radius μ}
-      (lowerℚ {κ = κ} {q = q} bound)
-      κ≤μ)
 
 
-rational-closed-boundᶜ-monotone :
-  {κ μ : ℚ⁺} {q : ℚ} →
-  radius κ ℚOrder.≤ radius μ →
-  RationalClosedBoundᶜ κ q →
-  RationalClosedBoundᶜ μ q
-rational-closed-boundᶜ-monotone {κ = κ} {μ = μ} {q = q} κ≤μ bound =
-  rational-closed-boundᶜ {κ = μ} {q = q}
-    (Rational.≤-trans
-      {p = q}
-      {q = radius κ}
-      {r = radius μ}
-      (upper≤ℚ {κ = κ} {q = q} bound)
-      κ≤μ)
-    (Rational.≤-trans
-      {p = ℚ.- q}
-      {q = radius κ}
-      {r = radius μ}
-      (lower≤ℚ {κ = κ} {q = q} bound)
-      κ≤μ)
 
 
-rational-boundᶜ-neg :
-  (κ : ℚ⁺) (q : ℚ) →
-  RationalBoundᶜ κ q →
-  RationalBoundᶜ κ (ℚ.- q)
-rational-boundᶜ-neg κ q bound =
-  rational-boundᶜ {κ = κ} {q = ℚ.- q}
-    (lowerℚ {κ = κ} {q = q} bound)
-    (subst
-      (λ r → r ℚOrder.< radius κ)
-      (sym (ℚ.-Invol q))
-      (upperℚ {κ = κ} {q = q} bound))
 
 
-rational-closed-boundᶜ-neg :
-  (κ : ℚ⁺) (q : ℚ) →
-  RationalClosedBoundᶜ κ q →
-  RationalClosedBoundᶜ κ (ℚ.- q)
-rational-closed-boundᶜ-neg κ q bound =
-  rational-closed-boundᶜ {κ = κ} {q = ℚ.- q}
-    (lower≤ℚ {κ = κ} {q = q} bound)
-    (subst
-      (λ r → r ℚOrder.≤ radius κ)
-      (sym (ℚ.-Invol q))
-      (upper≤ℚ {κ = κ} {q = q} bound))
 
 
 rational-bound→boundedᶜ :
@@ -359,14 +299,6 @@ rational-closed-bound→boundedᶜ κ q bound =
     (≤ℚ→rational≤ᶜ (lower≤ℚ {κ = κ} {q = q} bound))
 
 
-bounded-rational→closed-boundᶜ :
-  (κ : ℚ⁺) (q : ℚ) →
-  BoundedByᶜ κ (rational q) →
-  RationalClosedBoundᶜ κ q
-bounded-rational→closed-boundᶜ κ q bound =
-  rational-closed-boundᶜ {κ = κ} {q = q}
-    (rational≤ᶜ→≤ℚ (upperᶜ {κ = κ} {x = rational q} bound))
-    (rational≤ᶜ→≤ℚ (lowerᶜ {κ = κ} {x = rational q} bound))
 
 
 bounded-byᶜ-monotone :

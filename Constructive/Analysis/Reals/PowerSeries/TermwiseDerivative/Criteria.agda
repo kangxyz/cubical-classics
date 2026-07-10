@@ -20,8 +20,8 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.PartialSu
   using (PowerSeriesPartialSumsDerivativeModulusLarge)
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem public
   using
-    ( centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
-    ; hasDerivativeAtWith-derivative-path
-    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndCoefficientBoundsOnSubballCanonicalIndex
-    ; hasPowerSeriesAtWith→hasDerivativeAtWithFromCoefficientPathAndTargetRadiusAndIteratedBoundsOnSubballCanonicalIndex
+    ( centeredPowerSeriesHasDerivativeFromIteratedBounds
+    ; hasDerivativeAtWith-congDerivative
+    ; hasPowerSeriesDerivativeFromCoefficientBounds
+    ; hasPowerSeriesDerivativeFromIteratedBounds
     )

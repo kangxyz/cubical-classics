@@ -410,39 +410,6 @@ mulᶜ-continuous-rational-left q =
       (scalar-close ε x∼y)
 
 
-mulᶜ-continuous-rational-right :
-  (q : ℚ) →
-  IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (λ x → x ·ᶜ rational q)
-mulᶜ-continuous-rational-right q =
-  δ , closeAt
-  where
-  scalar-cont : IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (scalarMulᶜ q)
-  scalar-cont =
-    scalarMulᶜ-continuous q
-
-  δ : ℚ⁺ → ℚ⁺
-  δ =
-    fst scalar-cont
-
-  scalar-close :
-    (ε : ℚ⁺) →
-    {x y : ℝᶜ} →
-    x ∼[ δ ε ] y →
-    scalarMulᶜ q x ∼[ ε ] scalarMulᶜ q y
-  scalar-close =
-    snd scalar-cont
-
-  closeAt :
-    (ε : ℚ⁺) →
-    {x y : ℝᶜ} →
-    x ∼[ δ ε ] y →
-    x ·ᶜ rational q ∼[ ε ] y ·ᶜ rational q
-  closeAt ε {x = x} {y = y} x∼y =
-    subst2
-      (λ u v → u ∼[ ε ] v)
-      (sym (mulᶜ-rational-right x q))
-      (sym (mulᶜ-rational-right y q))
-      (scalar-close ε x∼y)
 
 
 mulᶜ-continuous-right-with-bound :

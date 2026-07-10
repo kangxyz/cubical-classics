@@ -66,13 +66,6 @@ powerSeriesTerm-cong-coefficients {a = a} {b = b} coeff h =
   powerSeriesTerm-cong {a = a} {b = b} {h = h} {k = h} coeff refl
 
 
-powerSeriesTerm-cong-center :
-  (a : PowerSeries) →
-  {h k : ℝᶜ} →
-  h ≡ k →
-  powerSeriesTerm a h ≡ powerSeriesTerm a k
-powerSeriesTerm-cong-center a {h = h} {k = k} h≡k =
-  powerSeriesTerm-cong {a = a} {b = a} {h = h} {k = k} (λ _ → refl) h≡k
 
 
 powerSeriesPartialSum-cong :
@@ -97,13 +90,6 @@ PowerSeriesTailBound a h μ =
   TailBound (powerSeriesTerm a h) μ
 
 
-PowerSeriesSeriesTailBound :
-  PowerSeries →
-  ℝᶜ →
-  (ℚ⁺ → ℕ) →
-  Type₀
-PowerSeriesSeriesTailBound a h μ =
-  SeriesTailBound (powerSeriesTerm a h) μ
 
 
 powerSeriesSumFromFiniteTailBound :

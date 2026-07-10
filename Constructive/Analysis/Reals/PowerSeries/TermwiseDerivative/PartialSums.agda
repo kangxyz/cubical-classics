@@ -417,39 +417,6 @@ powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus
     (uniformModulus ε η)
 
 
-powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus :
-  {χ : TermwiseDerivativeIndex} →
-  (μ ν : PrecisionModulus) →
-  {ω : ℕ → PrecisionModulus} →
-  PowerSeriesPartialSumsDerivativeUniformModulus χ ν ω →
-  PowerSeriesPartialSumsDerivativeModulusLarge
-    χ
-    (λ ε → min⁺ (μ ε) (ν ε))
-    ω
-powerSeriesPartialSumsDerivativeModulusLargeFromUniformSubmodulus
-  {χ = χ}
-  μ
-  ν
-  {ω = ω}
-  uniformModulus
-  ε
-  η
-  η≤min =
-  Rational.≤-trans
-    {p = radius η}
-    {q = radius (ν ε)}
-    {r = radius (ω (χ ε η) (quarter⁺ ε))}
-    η≤ν
-    (uniformModulus ε η)
-  where
-  η≤ν : radius η ℚOrder.≤ radius (ν ε)
-  η≤ν =
-    Rational.≤-trans
-      {p = radius η}
-      {q = radius (min⁺ (μ ε) (ν ε))}
-      {r = radius (ν ε)}
-      η≤min
-      (min⁺≤right (μ ε) (ν ε))
 
 
 PowerSeriesPartialSumsHaveDerivativeWith :

@@ -65,7 +65,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
   using
     ( PowerSeriesIteratedFormalPartialDerivativeBounds
     ; PowerSeriesPartialSumsDerivativeModulusLarge
-    ; centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndIteratedBoundsOnSubballCanonicalIndex→hasDerivativeAtWith
+    ; centeredPowerSeriesHasDerivativeFromIteratedBounds
     ; positivePartialSum
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     ; powerSeriesFormalPartialSumsDerivativeModulus
@@ -88,8 +88,6 @@ import Constructive.Data.Rationals.Base as RationalBase
 import Constructive.Data.Rationals.Archimedean as Rational
 import Constructive.Data.Rationals.Factorial as Factorial
 import Constructive.Data.Rationals.Multiplication as RationalMul
-
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Exponential.Internal
 
 expPowerSeries :
   PowerSeries

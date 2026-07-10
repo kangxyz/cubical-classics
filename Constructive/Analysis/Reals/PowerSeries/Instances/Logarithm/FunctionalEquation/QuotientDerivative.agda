@@ -191,22 +191,6 @@ logTransformQuotient ρ rho<1 x x-bound =
     (logTransformQuotientDenominatorAway ρ rho<1 x x-bound)
 
 
-logTransformQuotient-data-independent :
-  (ρ : ℚ⁺) →
-  (rho<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  DomainValueIndependent (logTransformQuotient ρ rho<1)
-logTransformQuotient-data-independent ρ rho<1 x left right =
-  divideByPositiveᶜ-data-independent
-    x
-    denominatorLower
-    denominatorLower
-    ((1ᶜ +ᶜ x) +ᶜ 1ᶜ)
-    (logTransformQuotientDenominatorAway ρ rho<1 x left)
-    (logTransformQuotientDenominatorAway ρ rho<1 x right)
-  where
-  denominatorLower : ℚ⁺
-  denominatorLower =
-    logTransformQuotientDenominatorLower ρ rho<1
 
 
 logTransformQuotient-zero :

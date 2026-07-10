@@ -147,15 +147,3 @@ coefficientData
     n =
   recenterCoefficientConvergenceDataFromMajorant
     (coefficientMajorantData coefficientMajorants n)
-
-
-recenterPowerSeriesFromCoefficientMajorants :
-  (a : PowerSeries) →
-  (d : ℝᶜ) →
-  RecenterCoefficientMajorants a d →
-  PowerSeries
-recenterPowerSeriesFromCoefficientMajorants a d coefficientMajorants =
-  recenterPowerSeriesWith
-    a
-    d
-    (recenterPowerSeriesDataFromCoefficientMajorants coefficientMajorants)
