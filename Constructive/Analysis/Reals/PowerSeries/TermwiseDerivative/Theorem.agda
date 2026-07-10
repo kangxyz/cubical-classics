@@ -56,10 +56,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; shiftPowerSeries
     )
 open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
-  using
-    ( HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
+  using (HasPowerSeriesAtWith)
 open import Constructive.Analysis.Reals.PowerSeries.Analytic.Consequences
   using (hasPowerSeriesAtWith→hasDerivativeAtWithFromEverywhereModel)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
@@ -74,9 +71,7 @@ open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
   using
     ( DerivativePowerSeriesBoundMajorantOnBall
     ; derivativePowerSeriesInfiniteRadius
-    ; derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants
     ; derivativePowerSeriesInfiniteRadiusFromCoefficientPath
-    ; derivativePrimitivePowerSeriesInfiniteRadius
     )
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
@@ -464,7 +459,7 @@ centeredPowerSeriesSumEverywhereFormalTermwiseDerivativeFromCoefficientPathAndPa
   derivativeValueBound :
     PowerSeriesFormalDerivativeValueErrorBoundWith a z derivativeLocalValue χ μ
   derivativeValueBound =
-    powerSeriesFormalDerivativeValueErrorBoundFromConvergence
+    powerSeriesTermwiseDerivativeValueErrorBoundFromConvergence
       derivativeConvergence
       x-displacement-bound
       derivativeValueAtZeroPath

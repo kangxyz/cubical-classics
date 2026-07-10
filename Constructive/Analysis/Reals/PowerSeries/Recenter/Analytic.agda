@@ -33,7 +33,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.Base
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.StrictSubball
-  using (recenterStrictSubballModulus ; recenterShiftedDisplacementBound)
+  using (recenterShiftedDisplacementBound)
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.Theorem
   using
     ( centeredPowerSeriesSumRecenteredOnStrictSubball
@@ -89,7 +89,7 @@ centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWithFromMajorized :
         margin
         majorized))
     τ
-    (recenterStrictSubballModulus δ τ σ ν)
+    (ν)
 centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWithFromMajorized
     {a = a}
     {c = c}
@@ -118,7 +118,7 @@ centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWithFromMajorized
     HasPowerSeriesOnBallWith
       (recenterPowerSeriesWith a (centeredDisplacement c x) recenterData)
       τ
-      (recenterStrictSubballModulus δ τ σ ν)
+      (ν)
   newConvergence =
     recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
       d-bound
@@ -142,7 +142,7 @@ centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWithFromMajorized
       (recenterPowerSeriesWith a (centeredDisplacement c x) recenterData)
       x
       τ
-      (recenterStrictSubballModulus δ τ σ ν)
+      (ν)
       newConvergence
       y
       y-inBall
@@ -218,7 +218,7 @@ centeredPowerSeriesWithinBallAnalyticWithinAtFromMajorized
       margin
       majorized) ,
   τ ,
-  recenterStrictSubballModulus δ τ σ ν ,
+  ν ,
   centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWithFromMajorized
     d-bound
     margin

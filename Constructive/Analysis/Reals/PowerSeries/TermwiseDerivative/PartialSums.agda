@@ -55,11 +55,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; powerSeriesPartialSum-shift
     ; shiftPowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
-  using
-    ( HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using
@@ -68,8 +63,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Differentiation
     ; naturalReal
     ; primitivePowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using (derivativePrimitivePowerSeriesInfiniteRadius)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 

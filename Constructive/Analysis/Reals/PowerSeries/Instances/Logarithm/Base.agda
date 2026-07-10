@@ -32,19 +32,11 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using (centeredPowerSeriesSumOnBall-center)
-open import Constructive.Analysis.Reals.PowerSeries.Bounds
-  using (PowerSeriesCoefficientBounds)
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using
     ( derivativePowerSeries
     ; inverseSucReal
     ; naturalTimesInverseSucReal-cancel
-    ; primitivePowerSeries
-    )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using
-    ( derivativePowerSeriesRadiusFromCoefficientPath
-    ; primitivePowerSeriesRadiusFromCoefficientPath
     )
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Geometric
   using
@@ -60,23 +52,10 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
 open import Constructive.Analysis.Reals.PowerSeries.Analytic
   using
     ( AnalyticWithinAt
-    ; HasPowerSeriesWithinAt
-    ; HasPowerSeriesWithinAtContinuousAt
-    ; HasPowerSeriesWithinAtMerelyContinuousAt
-    ; HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall
-    ; HasPowerSeriesWithinAtOnBall
-    ; HasPowerSeriesWithinAtUniformlyContinuousOnBall
     ; HasPowerSeriesWithinAtWith
-    ; HasPowerSeriesWithinAtWithBounds
     ; centeredPowerSeriesWithinBallAnalyticWithinAt
     ; centeredPowerSeriesWithinBallFunction
-    ; centeredPowerSeriesWithinBallHasPowerSeriesWithinAt
-    ; centeredPowerSeriesWithinBallHasPowerSeriesWithinAtOnBall
     ; centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWith
-    ; hasPowerSeriesWithinAtWithBounds→continuousAt
-    ; hasPowerSeriesWithinAtWithBounds→merelyContinuousAt
-    ; hasPowerSeriesWithinAtWithBounds→merelyUniformlyContinuousOnBall
-    ; hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnBall
     )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
@@ -107,16 +86,6 @@ derivativePowerSeries-logOnePlus n =
   naturalTimesInverseSucReal-cancel
     n
     (alternatingGeometricPowerSeries n)
-
-
-primitivePowerSeries-alternatingGeometric :
-  (n : ℕ) →
-  primitivePowerSeries alternatingGeometricPowerSeries n ≡
-  logOnePlusPowerSeries n
-primitivePowerSeries-alternatingGeometric zero =
-  refl
-primitivePowerSeries-alternatingGeometric (suc n) =
-  refl
 
 
 logZeroBoundOne :
@@ -261,13 +230,6 @@ logOnePlusPowerSeriesCoefficientBoundOne (suc n) =
       (alternatingGeometricPowerSeriesCoefficientBoundOne n))
 
 
-logOnePlusPowerSeriesCoefficientBounds :
-  PowerSeriesCoefficientBounds logOnePlusPowerSeries
-logOnePlusPowerSeriesCoefficientBounds =
-  (λ _ → 1⁺) ,
-  logOnePlusPowerSeriesCoefficientBoundOne
-
-
 logOnePlusPowerSeriesTermBoundFromPowerBound :
   (ρ : ℚ⁺) →
   (h : ℝᶜ) →
@@ -382,129 +344,6 @@ logOnePlusᶜHasPowerSeriesWithinAtWithZero ρ ρ<1 =
     (logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1)
 
 
-logOnePlusᶜHasPowerSeriesWithinAtWithBoundsZero :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesWithinAtWithBounds
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    logOnePlusPowerSeries
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-logOnePlusᶜHasPowerSeriesWithinAtWithBoundsZero ρ ρ<1 =
-  logOnePlusᶜHasPowerSeriesWithinAtWithZero ρ ρ<1 ,
-  logOnePlusPowerSeriesCoefficientBounds
-
-
-logOnePlusᶜWithinSubunitBallUniformlyContinuousFromCoefficientBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesWithinAtUniformlyContinuousOnBall
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    ρ
-logOnePlusᶜWithinSubunitBallUniformlyContinuousFromCoefficientBounds
-  ρ
-  ρ<1 =
-  hasPowerSeriesWithinAtWithBounds→uniformlyContinuousOnBall
-    (logOnePlusᶜHasPowerSeriesWithinAtWithBoundsZero ρ ρ<1)
-
-
-logOnePlusᶜWithinSubunitBallMerelyUniformlyContinuousFromBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesWithinAtMerelyUniformlyContinuousOnBall
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    ρ
-logOnePlusᶜWithinSubunitBallMerelyUniformlyContinuousFromBounds
-  ρ
-  ρ<1 =
-  hasPowerSeriesWithinAtWithBounds→merelyUniformlyContinuousOnBall
-    (logOnePlusᶜHasPowerSeriesWithinAtWithBoundsZero ρ ρ<1)
-
-
-logOnePlusᶜWithinSubunitBallContinuousAtFromCoefficientBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  (x : ℝᶜ) →
-  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
-  HasPowerSeriesWithinAtContinuousAt
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    ρ
-    x
-    x-inBall
-    x-inBall
-logOnePlusᶜWithinSubunitBallContinuousAtFromCoefficientBounds
-  ρ
-  ρ<1
-  x
-  x-inBall =
-  hasPowerSeriesWithinAtWithBounds→continuousAt
-    (logOnePlusᶜHasPowerSeriesWithinAtWithBoundsZero ρ ρ<1)
-    x
-    x-inBall
-    x-inBall
-
-
-logOnePlusᶜWithinSubunitBallMerelyContinuousAtFromBounds :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  (x : ℝᶜ) →
-  (x-inBall : InPowerSeriesBall 0ᶜ ρ x) →
-  HasPowerSeriesWithinAtMerelyContinuousAt
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    ρ
-    x
-    x-inBall
-    x-inBall
-logOnePlusᶜWithinSubunitBallMerelyContinuousAtFromBounds
-  ρ
-  ρ<1
-  x
-  x-inBall =
-  hasPowerSeriesWithinAtWithBounds→merelyContinuousAt
-    (logOnePlusᶜHasPowerSeriesWithinAtWithBoundsZero ρ ρ<1)
-    x
-    x-inBall
-    x-inBall
-
-
-logOnePlusᶜHasPowerSeriesWithinAtOnBallZero :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesWithinAtOnBall
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    logOnePlusPowerSeries
-    ρ
-logOnePlusᶜHasPowerSeriesWithinAtOnBallZero ρ ρ<1 =
-  centeredPowerSeriesWithinBallHasPowerSeriesWithinAtOnBall
-    logOnePlusPowerSeries
-    0ᶜ
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-    (logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1)
-
-
-logOnePlusᶜHasPowerSeriesWithinAtZero :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesWithinAt
-    (logOnePlusᶜWithinSubunitBall ρ ρ<1)
-    0ᶜ
-    logOnePlusPowerSeries
-logOnePlusᶜHasPowerSeriesWithinAtZero ρ ρ<1 =
-  centeredPowerSeriesWithinBallHasPowerSeriesWithinAt
-    logOnePlusPowerSeries
-    0ᶜ
-    ρ
-    (positiveGeometricPowerModulus ρ ρ<1)
-    (logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1)
-
-
 logOnePlusᶜAnalyticWithinAtZero :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
@@ -520,42 +359,8 @@ logOnePlusᶜAnalyticWithinAtZero ρ ρ<1 =
     (logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1)
 
 
-logOnePlusPowerSeriesOnSubunitBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesOnBall logOnePlusPowerSeries ρ
-logOnePlusPowerSeriesOnSubunitBall ρ ρ<1 =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1
-
-
 logOnePlusPowerSeriesRadius :
   HasPowerSeriesRadius logOnePlusPowerSeries 1⁺
-logOnePlusPowerSeriesRadius =
-  hasPowerSeriesRadius
-    {a = logOnePlusPowerSeries}
-    {R = 1⁺}
-    (λ ρ ρ<1 →
-      logOnePlusPowerSeriesOnSubunitBall ρ ρ<1)
-
-
-derivativeLogOnePlusPowerSeriesRadius :
-  HasPowerSeriesRadius (derivativePowerSeries logOnePlusPowerSeries) 1⁺
-derivativeLogOnePlusPowerSeriesRadius =
-  derivativePowerSeriesRadiusFromCoefficientPath
-    {a = logOnePlusPowerSeries}
-    {b = alternatingGeometricPowerSeries}
-    derivativePowerSeries-logOnePlus
-    alternatingGeometricPowerSeriesRadius
-
-
-primitiveAlternatingGeometricPowerSeriesRadius :
-  HasPowerSeriesRadius
-    (primitivePowerSeries alternatingGeometricPowerSeries)
-    1⁺
-primitiveAlternatingGeometricPowerSeriesRadius =
-  primitivePowerSeriesRadiusFromCoefficientPath
-    {a = alternatingGeometricPowerSeries}
-    {b = logOnePlusPowerSeries}
-    primitivePowerSeries-alternatingGeometric
-    logOnePlusPowerSeriesRadius
+logOnePlusPowerSeriesRadius ρ ρ<1 =
+  positiveGeometricPowerModulus ρ ρ<1 ,
+  logOnePlusPowerSeriesOnSubunitBallWith ρ ρ<1

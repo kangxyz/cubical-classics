@@ -55,11 +55,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; powerSeriesPartialSum-shift
     ; shiftPowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
-  using
-    ( HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using
@@ -68,8 +63,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Differentiation
     ; naturalReal
     ; primitivePowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using (derivativePrimitivePowerSeriesInfiniteRadius)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
@@ -470,24 +463,6 @@ powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative
     modulus-large ε η η≤με
 
 
-powerSeriesFormalPartialDerivativeRemainderBoundFromPartialSumsDerivative :
-  {a : PowerSeries} →
-  {x : ℝᶜ} →
-  {χ : TermwiseDerivativeIndex} →
-  {μ : PrecisionModulus} →
-  {ω : ℕ → PrecisionModulus} →
-  PowerSeriesFormalPartialSumsHaveDerivativeWith a x ω →
-  PowerSeriesPartialSumsDerivativeModulusLarge χ μ ω →
-  PowerSeriesPartialDerivativeRemainderBoundWith
-    a
-    (derivativePowerSeries a)
-    x
-    χ
-    μ
-powerSeriesFormalPartialDerivativeRemainderBoundFromPartialSumsDerivative =
-  powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative
-
-
 powerSeriesFormalPartialDerivativeRemainderBoundFromIteratedBounds :
   (σ : ℚ⁺) →
   {a : PowerSeries} →
@@ -512,7 +487,7 @@ powerSeriesFormalPartialDerivativeRemainderBoundFromIteratedBounds
   x-bound
   derivative-bounds
   partialModulus-large =
-  powerSeriesFormalPartialDerivativeRemainderBoundFromPartialSumsDerivative
+  powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative
     (powerSeriesFormalPartialSumsHaveDerivativeWithFromIteratedBounds
       σ
       x-bound

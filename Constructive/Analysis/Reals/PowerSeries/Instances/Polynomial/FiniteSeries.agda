@@ -37,31 +37,13 @@ open import Constructive.Analysis.Reals.PowerSeries.Analytic
     ; HasPowerSeriesAtOnBall
     ; HasPowerSeriesAtWith
     )
-open import Constructive.Analysis.Reals.PowerSeries.Differentiation
-  using
-    ( derivativePowerSeries
-    ; inverseSucReal
-    ; naturalReal
-    ; primitivePowerSeries
-    )
-open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct
-  using (cauchyProductPowerSeries)
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
-    ( bounded-byᶜ-zero
-    ; addPowerSeries
-    ; constantPowerSeries
-    ; negPowerSeries
-    ; powerSeriesPartialSum-shift
-    ; rationalScalePowerSeries
+    ( powerSeriesPartialSum-shift
     ; shiftPowerSeries
-    ; subPowerSeries
-    ; tailSum-zero-sequence
-    ; zeroPowerSeries
     )
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Polynomial.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Polynomial.FiniteSupport
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Polynomial.Closure
 

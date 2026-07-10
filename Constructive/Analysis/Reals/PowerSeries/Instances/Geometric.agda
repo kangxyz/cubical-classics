@@ -175,39 +175,15 @@ alternatingGeometricPowerSeriesOnBallWith ρ ρ<1 =
         (bounded-byᶜ-neg ρ h h-bound)
 
 
-geometricPowerSeriesOnBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesOnBall geometricPowerSeries ρ
-geometricPowerSeriesOnBall ρ ρ<1 =
+geometricPowerSeriesRadius :
+  HasPowerSeriesRadius geometricPowerSeries 1⁺
+geometricPowerSeriesRadius ρ ρ<1 =
   positiveGeometricPowerModulus ρ ρ<1 ,
   geometricPowerSeriesOnBallWith ρ ρ<1
 
 
-alternatingGeometricPowerSeriesOnBall :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesOnBall alternatingGeometricPowerSeries ρ
-alternatingGeometricPowerSeriesOnBall ρ ρ<1 =
-  positiveGeometricPowerModulus ρ ρ<1 ,
-  alternatingGeometricPowerSeriesOnBallWith ρ ρ<1
-
-
-geometricPowerSeriesRadius :
-  HasPowerSeriesRadius geometricPowerSeries 1⁺
-geometricPowerSeriesRadius =
-  hasPowerSeriesRadius
-    {a = geometricPowerSeries}
-    {R = 1⁺}
-    (λ ρ ρ<1 →
-      geometricPowerSeriesOnBall ρ ρ<1)
-
-
 alternatingGeometricPowerSeriesRadius :
   HasPowerSeriesRadius alternatingGeometricPowerSeries 1⁺
-alternatingGeometricPowerSeriesRadius =
-  hasPowerSeriesRadius
-    {a = alternatingGeometricPowerSeries}
-    {R = 1⁺}
-    (λ ρ ρ<1 →
-      alternatingGeometricPowerSeriesOnBall ρ ρ<1)
+alternatingGeometricPowerSeriesRadius ρ ρ<1 =
+  positiveGeometricPowerModulus ρ ρ<1 ,
+  alternatingGeometricPowerSeriesOnBallWith ρ ρ<1

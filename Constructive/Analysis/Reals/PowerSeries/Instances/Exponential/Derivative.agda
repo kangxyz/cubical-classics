@@ -64,17 +64,6 @@ open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
     ( derivativePowerSeriesInfiniteRadiusFromCoefficientPath
     ; primitivePowerSeriesInfiniteRadiusFromCoefficientPath
     )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic
-  using
-    ( AnalyticAt
-    ; HasPowerSeriesAt
-    ; HasPowerSeriesAtOnBall
-    ; HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereAnalyticAt
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
@@ -248,26 +237,6 @@ primitiveExpPowerSeriesInfiniteRadius =
       (constantPowerSeriesInfiniteRadius 1ᶜ))
 
 
-expPowerSeriesOnBallWithFromMajorant :
-  {ρ : ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {μ : ℚ⁺ → ℕ} →
-  PowerSeriesMajorizedOnBall expPowerSeries ρ v μ →
-  HasPowerSeriesOnBallWith expPowerSeries ρ μ
-expPowerSeriesOnBallWithFromMajorant =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-
-
-expPowerSeriesOnBallFromMajorant :
-  {ρ : ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {μ : ℚ⁺ → ℕ} →
-  PowerSeriesMajorizedOnBall expPowerSeries ρ v μ →
-  HasPowerSeriesOnBall expPowerSeries ρ
-expPowerSeriesOnBallFromMajorant =
-  majorizedOnBall→hasPowerSeriesOnBall
-
-
 ExpPowerSeriesMajorants :
   Type₀
 ExpPowerSeriesMajorants =
@@ -281,7 +250,7 @@ expPowerSeriesInfiniteRadiusFromMajorants :
   ExpPowerSeriesMajorants →
   HasInfinitePowerSeriesRadius expPowerSeries
 expPowerSeriesInfiniteRadiusFromMajorants majorants ρ =
-  μ , expPowerSeriesOnBallWithFromMajorant majorant
+  μ , majorizedOnBall→hasPowerSeriesOnBallWith majorant
   where
   v : ℕ → ℝᶜ
   v =

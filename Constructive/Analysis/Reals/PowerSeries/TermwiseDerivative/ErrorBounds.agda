@@ -55,11 +55,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; powerSeriesPartialSum-shift
     ; shiftPowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
-  using
-    ( HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using
@@ -68,8 +63,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Differentiation
     ; naturalReal
     ; primitivePowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using (derivativePrimitivePowerSeriesInfiniteRadius)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
@@ -340,29 +333,6 @@ powerSeriesTermwiseDerivativeValueErrorBoundFromConvergence
       x-bound
       n
       (index-large ε η)
-
-
-powerSeriesFormalDerivativeValueErrorBoundFromConvergence :
-  {a : PowerSeries} →
-  {x d : ℝᶜ} →
-  {ρ : ℚ⁺} →
-  {ν : ℚ⁺ → ℕ} →
-  {χ : TermwiseDerivativeIndex} →
-  {μ : PrecisionModulus} →
-  (convergence : HasPowerSeriesOnBallWith (derivativePowerSeries a) ρ ν) →
-  (x-bound : BoundedByᶜ ρ x) →
-  d ≡
-  powerSeriesSumOnBall
-    (derivativePowerSeries a)
-    ρ
-    ν
-    convergence
-    x
-    x-bound →
-  PowerSeriesTermwiseDerivativeValueIndexLarge ν χ →
-  PowerSeriesFormalDerivativeValueErrorBoundWith a x d χ μ
-powerSeriesFormalDerivativeValueErrorBoundFromConvergence =
-  powerSeriesTermwiseDerivativeValueErrorBoundFromConvergence
 
 
 derivativeValueErrorBound→linearErrorBound :

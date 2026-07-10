@@ -47,10 +47,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Finite
     ; powerSeriesFormalDerivativePartialSum-step-value
     )
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.IteratedBounds
-  using
-    ( powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative
-    ; powerSeriesFormalPartialDerivativeRemainderBoundFromPartialSumsDerivative
-    )
+  using (powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative)
 
 
 powerSeriesFormalPartialSumsDerivativeModulusFromSecondBound :
@@ -267,19 +264,6 @@ isPropPowerSeriesPartialSumsHaveDerivativeWith a da x ω =
       (ω n)
 
 
-isPropPowerSeriesFormalPartialSumsHaveDerivativeWith :
-  (a : PowerSeries) →
-  (x : ℝᶜ) →
-  (ω : ℕ → PrecisionModulus) →
-  isProp (PowerSeriesFormalPartialSumsHaveDerivativeWith a x ω)
-isPropPowerSeriesFormalPartialSumsHaveDerivativeWith a x ω =
-  isPropPowerSeriesPartialSumsHaveDerivativeWith
-    a
-    (derivativePowerSeries a)
-    x
-    ω
-
-
 powerSeriesPartialSumsHaveDerivativeWith-submodulus :
   {a da : PowerSeries} →
   {x : ℝᶜ} →
@@ -293,19 +277,6 @@ powerSeriesPartialSumsHaveDerivativeWith-submodulus ν≤ω derivative n =
   hasDerivativeAtWith-submodulus
     (ν≤ω n)
     (derivative n)
-
-
-powerSeriesFormalPartialSumsHaveDerivativeWith-submodulus :
-  {a : PowerSeries} →
-  {x : ℝᶜ} →
-  {ω ν : ℕ → PrecisionModulus} →
-  ((n : ℕ) →
-    (ε : ℚ⁺) →
-    radius (ν n ε) ℚOrder.≤ radius (ω n ε)) →
-  PowerSeriesFormalPartialSumsHaveDerivativeWith a x ω →
-  PowerSeriesFormalPartialSumsHaveDerivativeWith a x ν
-powerSeriesFormalPartialSumsHaveDerivativeWith-submodulus =
-  powerSeriesPartialSumsHaveDerivativeWith-submodulus
 
 
 powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBound :
@@ -412,7 +383,7 @@ powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBoundSubmodulu
   x-bound
   μ≤canonical
   secondBound =
-  powerSeriesFormalPartialSumsHaveDerivativeWith-submodulus
+  powerSeriesPartialSumsHaveDerivativeWith-submodulus
     (λ _ ε → μ≤canonical ε)
     (powerSeriesFormalPartialSumsHaveDerivativeWithFromSecondDerivativeBound
       σ
@@ -485,7 +456,7 @@ powerSeriesFormalPartialDerivativeRemainderBoundFromUniformPartialSumsDerivative
   {χ = χ}
   {μ = μ}
   partialDerivative =
-  powerSeriesFormalPartialDerivativeRemainderBoundFromPartialSumsDerivative
+  powerSeriesPartialDerivativeRemainderBoundFromPartialSumsDerivative
     partialDerivative
     (powerSeriesPartialSumsDerivativeModulusLargeFromUniformModulus
       {χ = χ}

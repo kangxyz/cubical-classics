@@ -62,22 +62,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Differentiation
     ; naturalTimesInverseSucReal-cancel
     ; primitivePowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using
-    ( derivativePowerSeriesInfiniteRadiusFromCoefficientPath
-    ; primitivePowerSeriesInfiniteRadiusFromCoefficientPath
-    )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic
-  using
-    ( AnalyticAt
-    ; HasPowerSeriesAt
-    ; HasPowerSeriesAtOnBall
-    ; HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereAnalyticAt
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative

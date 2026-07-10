@@ -8,14 +8,9 @@ module Constructive.Analysis.Reals.PowerSeries.Radius.Centered where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.Data.Nat using (ℕ ; max)
-import Cubical.Data.Nat.Order as NatOrder
-import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
-open import Cubical.HITs.PropositionalTruncation as Prop
-  using (∥_∥₁ ; ∣_∣₁)
+open import Cubical.Data.Nat using (ℕ)
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
-import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
@@ -27,11 +22,9 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
   using (neg-zeroᶜ)
-open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Radius.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Radius.Sum
 open import Constructive.Analysis.Reals.PowerSeries.Radius.Everywhere
 
@@ -133,16 +126,6 @@ inPowerSeriesBallAtCenterPlusFromBound {ρ = ρ} c {x = x} x-bound =
           (sym (centeredDisplacement-center-plus c x))
           x-bound
     }
-
-
-centeredPowerSeriesTerm :
-  PowerSeries →
-  ℝᶜ →
-  ℝᶜ →
-  ℕ →
-  ℝᶜ
-centeredPowerSeriesTerm a c x =
-  powerSeriesTerm a (centeredDisplacement c x)
 
 
 centeredPowerSeriesSumOnBall :
@@ -253,34 +236,6 @@ centeredPowerSeriesSumOnBall-data-independent left right x x-inBall y-inBall =
     (InPowerSeriesBall.displacementBound y-inBall)
 
 
-centeredPowerSeriesConvergesOnBall :
-  (a : PowerSeries) →
-  (c : ℝᶜ) →
-  (ρ : ℚ⁺) →
-  (μ : ℚ⁺ → ℕ) →
-  (convergence : HasPowerSeriesOnBallWith a ρ μ) →
-  (x : ℝᶜ) →
-  (inBall : InPowerSeriesBall c ρ x) →
-  MetricCauchy.ConvergesTo
-    (seriesCauchyApproximationFromFiniteTailBound
-      (centeredPowerSeriesTerm a c x)
-      μ
-      (HasPowerSeriesOnBallWith.tailBound
-        convergence
-        (centeredDisplacement c x)
-        (InPowerSeriesBall.displacementBound inBall))
-      (HasPowerSeriesOnBallWith.antitoneModulus convergence))
-    (centeredPowerSeriesSumOnBall a c ρ μ convergence x inBall)
-centeredPowerSeriesConvergesOnBall a c ρ μ convergence x inBall =
-  powerSeriesConvergesOnBall
-    a
-    ρ
-    μ
-    convergence
-    (centeredDisplacement c x)
-    (InPowerSeriesBall.displacementBound inBall)
-
-
 centeredPowerSeriesSumOnBallFrom :
   (a : PowerSeries) →
   (c : ℝᶜ) →
@@ -371,27 +326,6 @@ centeredPowerSeriesSumEverywhere-coefficients-path
     leftRadius
     rightRadius
     (centeredDisplacement c x)
-
-
-centeredPowerSeriesConvergesOnBallFrom :
-  (a : PowerSeries) →
-  (c : ℝᶜ) →
-  (ρ : ℚ⁺) →
-  (convergence : HasPowerSeriesOnBall a ρ) →
-  (x : ℝᶜ) →
-  (inBall : InPowerSeriesBall c ρ x) →
-  MetricCauchy.ConvergesTo
-    (seriesCauchyApproximationFromFiniteTailBound
-      (centeredPowerSeriesTerm a c x)
-      (fst convergence)
-      (HasPowerSeriesOnBallWith.tailBound
-        (snd convergence)
-        (centeredDisplacement c x)
-        (InPowerSeriesBall.displacementBound inBall))
-      (HasPowerSeriesOnBallWith.antitoneModulus (snd convergence)))
-    (centeredPowerSeriesSumOnBallFrom a c ρ convergence x inBall)
-centeredPowerSeriesConvergesOnBallFrom a c ρ (μ , convergence) x inBall =
-  centeredPowerSeriesConvergesOnBall a c ρ μ convergence x inBall
 
 
 centeredPowerSeriesSumOnBall-constantModulusPartialSum :

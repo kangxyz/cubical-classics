@@ -10,14 +10,10 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Nat using (ℕ)
 open import Cubical.Data.Rationals using (ℚ)
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
+open import Cubical.Data.Sigma using (_,_)
 
-open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Reals.CauchyReals.Metric
-  using (CauchyRealsMetricSpace)
-open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
-  using (_+ᶜ_ ; add-close-left)
+  using (_+ᶜ_)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
   using (_·ᶜ_)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
@@ -65,9 +61,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Continuity
 
 hasPowerSeriesAtWith-congFunction :
   {f g : ℝᶜ → ℝᶜ} →

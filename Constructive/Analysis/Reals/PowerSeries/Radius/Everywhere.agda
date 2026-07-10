@@ -31,7 +31,6 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Radius.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Radius.Sum
 
 HasInfinitePowerSeriesRadius :
@@ -46,10 +45,8 @@ hasInfinitePowerSeriesRadius→radius :
   (R : ℚ⁺) →
   HasInfinitePowerSeriesRadius a →
   HasPowerSeriesRadius a R
-hasInfinitePowerSeriesRadius→radius R radiusData =
-  hasPowerSeriesRadius
-    (λ ρ _ →
-      radiusData ρ)
+hasInfinitePowerSeriesRadius→radius R radiusData ρ _ =
+  radiusData ρ
 
 
 hasPowerSeriesRadius-cong :
@@ -58,12 +55,8 @@ hasPowerSeriesRadius-cong :
   ((n : ℕ) → a n ≡ b n) →
   HasPowerSeriesRadius a R →
   HasPowerSeriesRadius b R
-hasPowerSeriesRadius-cong coeff≡ radiusData =
-  hasPowerSeriesRadius
-    (λ ρ ρ<R →
-      hasPowerSeriesOnBall-cong
-        coeff≡
-        (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R))
+hasPowerSeriesRadius-cong coeff≡ radiusData ρ ρ<R =
+  hasPowerSeriesOnBall-cong coeff≡ (radiusData ρ ρ<R)
 
 
 hasInfinitePowerSeriesRadius-cong :

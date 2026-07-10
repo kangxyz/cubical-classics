@@ -54,22 +54,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Differentiation
     ; naturalTimesInverseSucReal-cancel
     ; primitivePowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using
-    ( derivativePowerSeriesInfiniteRadiusFromCoefficientPath
-    ; primitivePowerSeriesInfiniteRadiusFromCoefficientPath
-    )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic
-  using
-    ( AnalyticAt
-    ; HasPowerSeriesAt
-    ; HasPowerSeriesAtOnBall
-    ; HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereAnalyticAt
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAt
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtOnBall
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
@@ -109,7 +93,6 @@ import Constructive.Data.Rationals.Archimedean as Rational
 import Constructive.Data.Rationals.Base as RationalBase
 import Constructive.Data.Rationals.Factorial as Factorial
 
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Trigonometric.Internal
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Trigonometric.Coefficients
 
 zeroBoundOne :

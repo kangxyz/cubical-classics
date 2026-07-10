@@ -57,7 +57,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Recenter.FiniteIdentity
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.PrefixLimit
   using (recenterPrefixTriangleDifferenceBoundFromMajorizedOnStrictSubballLimit)
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.StrictSubball
-  using (recenterStrictSubballModulus ; recenterShiftedDisplacementBound)
+  using (recenterShiftedDisplacementBound)
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.StripFinite
   using (recenterOuterTailApproxBoundFromMajorizedOnStrictSubball)
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.StripTail
@@ -141,7 +141,7 @@ recenterPowerSeriesOnStrictSubballFromMajorizedOnBall :
         margin
         majorized))
     τ
-    (recenterStrictSubballModulus δ τ σ ν)
+    (ν)
 recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
     {a = a}
     {δ = δ}
@@ -156,7 +156,7 @@ recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
   hasPowerSeriesOnBallWith
     {a = recenterPowerSeriesWith a d recenterData}
     {ρ = τ}
-    {μ = recenterStrictSubballModulus δ τ σ ν}
+    {μ = ν}
     (PowerSeriesMajorizedOnBall.majorAntitone
       {a = a}
       {ρ = σ}
@@ -218,7 +218,7 @@ centeredPowerSeriesSumRecenteredOnStrictSubball :
         margin
         majorized))
     τ
-    (recenterStrictSubballModulus δ τ σ ν)
+    (ν)
     (recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
       d-bound
       margin
@@ -259,7 +259,7 @@ centeredPowerSeriesSumRecenteredOnStrictSubball
     HasPowerSeriesOnBallWith
       (recenterPowerSeriesWith a d recenterData)
       τ
-      (recenterStrictSubballModulus δ τ σ ν)
+      (ν)
   newConvergence =
     recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
       d-bound
@@ -291,7 +291,7 @@ centeredPowerSeriesSumRecenteredOnStrictSubball
     powerSeriesSumOnBall
       (recenterPowerSeriesWith a d recenterData)
       τ
-      (recenterStrictSubballModulus δ τ σ ν)
+      (ν)
       newConvergence
       h
       h-bound
@@ -422,7 +422,7 @@ centeredPowerSeriesSumRecenteredOnStrictSubball
     new-tail =
       seriesSumFromFiniteTailBoundConvergesAt
         (powerSeriesTerm (recenterPowerSeriesWith a d recenterData) h)
-        (recenterStrictSubballModulus δ τ σ ν)
+        (ν)
         (HasPowerSeriesOnBallWith.tailBound
           newConvergence
           h
