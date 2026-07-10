@@ -30,19 +30,20 @@ copy its rules into this file.
 
 ## Agda Curation Skill
 
-- Use `$agda-theorem-first-curation` for Agda proof edits, generated-code
-  cleanup, theorem migration, public API slimming, and reviews or plans where
-  aliases, reexports, wrappers, or proof plumbing could be mistaken for
-  theorem progress.
-- Use its minimal loop for a local proof change, its curation loop for module
-  cleanup or migration, and its broad API loop for exported interfaces,
-  foundational definitions, or public module paths.
-- A prose-only change does not require the skill unless it evaluates theorem
-  progress or the public Agda surface.
+- Use `$agda-theorem-first-curation` only when work requires deciding what
+  counts as theorem progress or what belongs in the public Agda surface:
+  generated or duplicated module cleanup, theorem-content selection or
+  migration, API slimming, or review of wrapper, reexport, namespace-copy, or
+  proof-plumbing inflation.
+- Do not invoke it for routine proof fixes, import repairs, performance triage,
+  mechanical moves or renames, or ordinary documentation.  Start with the
+  standard development workflow and invoke the skill only if the task expands
+  into theorem-selection or public-surface decisions.
 - If the skill is unavailable, continue with the theorem-first rules in the
-  [development guide](docs/DEVELOPMENT.md): name the hard result, keep support
-  work subordinate, and verify according to blast radius.  Report that
-  fallback in the final response.
+  [development guide](docs/DEVELOPMENT.md): name the results to prove or
+  preserve, or the concrete cleanup outcome; keep support work subordinate and
+  verify according to blast radius.  Report that fallback in the final
+  response.
 
 ## Worktree Safety
 
