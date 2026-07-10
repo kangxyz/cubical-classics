@@ -47,11 +47,9 @@ hasInfinitePowerSeriesRadius→radius :
   HasInfinitePowerSeriesRadius a →
   HasPowerSeriesRadius a R
 hasInfinitePowerSeriesRadius→radius R radiusData =
-  record
-    { onSubball =
-        λ ρ _ →
-          radiusData ρ
-    }
+  hasPowerSeriesRadius
+    (λ ρ _ →
+      radiusData ρ)
 
 
 hasPowerSeriesRadius-cong :
@@ -61,13 +59,11 @@ hasPowerSeriesRadius-cong :
   HasPowerSeriesRadius a R →
   HasPowerSeriesRadius b R
 hasPowerSeriesRadius-cong coeff≡ radiusData =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          hasPowerSeriesOnBall-cong
-            coeff≡
-            (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    (λ ρ ρ<R →
+      hasPowerSeriesOnBall-cong
+        coeff≡
+        (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R))
 
 
 hasInfinitePowerSeriesRadius-cong :

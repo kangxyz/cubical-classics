@@ -58,7 +58,7 @@ private
           (negᶜ-pres≤ᶜ
             {x = -ᶜ x}
             {y = rational (radius κ)}
-            (lowerᶜ bound))
+            (lowerᶜ {κ = κ} {x = x} bound))
 
       q<-κ : q ℚOrder.< ℚ.- radius κ
       q<-κ =
@@ -99,7 +99,7 @@ private
           x
           (rational (radius κ))
           (rational q)
-          (upperᶜ bound)
+          (upperᶜ {κ = κ} {x = x} bound)
           (<ℚ→<ᶜ {q = radius κ} {r = q} κ<q)
 
 

@@ -63,20 +63,17 @@ rationalScalePowerSeriesOnBallWith :
     ρ
     (rationalScaleModulus q μ)
 rationalScalePowerSeriesOnBallWith q {a = a} {μ = μ} convergence =
-  record
-    { antitoneModulus =
-        rationalScaleModulus-antitone
+  hasPowerSeriesOnBallWith
+    (rationalScaleModulus-antitone
+      q
+      (HasPowerSeriesOnBallWith.antitoneModulus convergence))
+    (λ h h-bound →
+      subst
+        (λ u → TailBound u (rationalScaleModulus q μ))
+        (sym (funExt (rationalScalePowerSeriesTerm q a h)))
+        (rationalScaleTailBound
           q
-          (HasPowerSeriesOnBallWith.antitoneModulus convergence)
-    ; tailBound =
-        λ h h-bound →
-          subst
-            (λ u → TailBound u (rationalScaleModulus q μ))
-            (sym (funExt (rationalScalePowerSeriesTerm q a h)))
-            (rationalScaleTailBound
-              q
-              (HasPowerSeriesOnBallWith.tailBound convergence h h-bound))
-    }
+          (HasPowerSeriesOnBallWith.tailBound convergence h h-bound)))
 
 
 rationalScalePowerSeriesOnBall :
@@ -103,22 +100,19 @@ realScalePowerSeriesOnBallWith :
     ρ
     (realScaleModulus κ μ)
 realScalePowerSeriesOnBallWith x κ x-bound {a = a} {μ = μ} convergence =
-  record
-    { antitoneModulus =
-        realScaleModulus-antitone
+  hasPowerSeriesOnBallWith
+    (realScaleModulus-antitone
+      κ
+      (HasPowerSeriesOnBallWith.antitoneModulus convergence))
+    (λ h h-bound →
+      subst
+        (λ u → TailBound u (realScaleModulus κ μ))
+        (sym (funExt (realScalePowerSeriesTerm x a h)))
+        (realScaleTailBound
+          x
           κ
-          (HasPowerSeriesOnBallWith.antitoneModulus convergence)
-    ; tailBound =
-        λ h h-bound →
-          subst
-            (λ u → TailBound u (realScaleModulus κ μ))
-            (sym (funExt (realScalePowerSeriesTerm x a h)))
-            (realScaleTailBound
-              x
-              κ
-              x-bound
-              (HasPowerSeriesOnBallWith.tailBound convergence h h-bound))
-    }
+          x-bound
+          (HasPowerSeriesOnBallWith.tailBound convergence h h-bound)))
 
 
 realScalePowerSeriesOnBall :

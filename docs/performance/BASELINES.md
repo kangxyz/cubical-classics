@@ -45,6 +45,44 @@ benchmark.
 
 ## Current Baselines
 
+### Whole Constructive Aggregate
+
+- **Date:** 2026-07-10
+- **Repository state:** working tree after the whole-`Constructive`
+  proof-packaging cleanup described in [case studies](CASE_STUDIES.md)
+- **Agda:** 2.8.0; `--profile=modules`
+- **Cubical:** unknown (library registration from the invoking environment)
+- **Environment:** macOS Darwin 25.5.0 arm64 local sandbox; CPU and memory not
+  recorded
+- **Recipe:** cold local aggregate profile over every repository module under
+  `Constructive`
+- **Command:** fresh temporary copy via the runbook recipe, generate
+  `ConstructiveAllProfile.agda` importing every `Constructive/**/*.agda`, then
+  `agda --profile=modules ConstructiveAllProfile.agda`
+- **Result:** about 183.2 seconds; RSS not recorded. A matching
+  `/usr/bin/time -l agda ConstructiveAllProfile.agda` resource attempt
+  completed in about 186.6 seconds, but the sandbox rejected the resource
+  query with `sysctl kern.clockrate: Operation not permitted`.
+- **Profile signal:**
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global`:
+    about 11.3 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Radius.Centered`: about
+    9.0 seconds
+  - `Constructive.Analysis.Reals.Series.Instances.Geometric.Positive`:
+    about 7.8 seconds
+  - `Constructive.Data.Rationals.Archimedean`: about 7.1 seconds
+  - `Constructive.Analysis.Reals.Locator.Base`: about 5.7 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.GlobalDerivative`:
+    about 5.6 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.QuotientDerivative`:
+    about 5.4 seconds
+  - `Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision`:
+    about 5.1 seconds
+- **Status:** no confirmed whole-`Constructive` proof-packaging or positivity
+  outlier remains. `Constructive.Analysis.Reals.PowerSeries.Radius.Sum`,
+  which dominated the prior whole-`Constructive` profile at about 58.1
+  seconds, is now about 228 milliseconds.
+
 ### PowerSeries Aggregate
 
 - **Date:** 2026-07-10
@@ -101,11 +139,11 @@ benchmark.
 
 There are no confirmed anomalously slow files recorded at present.
 
-The largest residual Constructive Reals modules in the 2026-07-08 baseline
-are broad foundational modules rather than isolated proof-packaging outliers.
-Do not apply another structural change from aggregate rank alone. If one
-becomes a practical regression, profile it individually and record the exact
-symptom before choosing a response.
+The largest residual modules in the 2026-07-10 whole-`Constructive` baseline
+are broad foundational modules or path-heavy bridge modules rather than an
+isolated proof-packaging outlier. Do not apply another structural change from
+aggregate rank alone. If one becomes a practical regression, profile it
+individually and record the exact symptom before choosing a response.
 
 Add a future diagnostic here only with:
 

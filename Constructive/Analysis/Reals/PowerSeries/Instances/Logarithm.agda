@@ -669,11 +669,11 @@ logOnePlusPowerSeriesOnSubunitBall ρ ρ<1 =
 logOnePlusPowerSeriesRadius :
   HasPowerSeriesRadius logOnePlusPowerSeries 1⁺
 logOnePlusPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          logOnePlusPowerSeriesOnSubunitBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = logOnePlusPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      logOnePlusPowerSeriesOnSubunitBall ρ ρ<1)
 
 
 derivativeLogOnePlusPowerSeriesRadius :
@@ -704,11 +704,11 @@ logOnePlusPowerSeriesRadiusFromGeometricMajorants :
     LogOnePlusGeometricMajorant ρ) →
   HasPowerSeriesRadius logOnePlusPowerSeries 1⁺
 logOnePlusPowerSeriesRadiusFromGeometricMajorants majorants =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          logOnePlusPowerSeriesOnBallFromGeometricMajorant
-            ρ
-            ρ<1
-            (majorants ρ ρ<1)
-    }
+  hasPowerSeriesRadius
+    {a = logOnePlusPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      logOnePlusPowerSeriesOnBallFromGeometricMajorant
+        ρ
+        ρ<1
+        (majorants ρ ρ<1))

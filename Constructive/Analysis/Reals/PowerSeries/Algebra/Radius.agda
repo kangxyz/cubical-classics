@@ -59,12 +59,10 @@ negPowerSeriesRadius :
   HasPowerSeriesRadius a R →
   HasPowerSeriesRadius (negPowerSeries a) R
 negPowerSeriesRadius radiusData =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          negPowerSeriesOnBall
-            (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    (λ ρ ρ<R →
+      negPowerSeriesOnBall
+        (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R))
 
 
 addPowerSeriesRadius :
@@ -74,13 +72,11 @@ addPowerSeriesRadius :
   HasPowerSeriesRadius b R →
   HasPowerSeriesRadius (addPowerSeries a b) R
 addPowerSeriesRadius left right =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          addPowerSeriesOnBall
-            (HasPowerSeriesRadius.onSubball left ρ ρ<R)
-            (HasPowerSeriesRadius.onSubball right ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    (λ ρ ρ<R →
+      addPowerSeriesOnBall
+        (HasPowerSeriesRadius.onSubball left ρ ρ<R)
+        (HasPowerSeriesRadius.onSubball right ρ ρ<R))
 
 
 subPowerSeriesRadius :
@@ -90,13 +86,11 @@ subPowerSeriesRadius :
   HasPowerSeriesRadius b R →
   HasPowerSeriesRadius (subPowerSeries a b) R
 subPowerSeriesRadius left right =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          subPowerSeriesOnBall
-            (HasPowerSeriesRadius.onSubball left ρ ρ<R)
-            (HasPowerSeriesRadius.onSubball right ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    (λ ρ ρ<R →
+      subPowerSeriesOnBall
+        (HasPowerSeriesRadius.onSubball left ρ ρ<R)
+        (HasPowerSeriesRadius.onSubball right ρ ρ<R))
 
 
 rationalScalePowerSeriesRadius :
@@ -106,13 +100,11 @@ rationalScalePowerSeriesRadius :
   HasPowerSeriesRadius a R →
   HasPowerSeriesRadius (rationalScalePowerSeries q a) R
 rationalScalePowerSeriesRadius q radiusData =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          rationalScalePowerSeriesOnBall
-            q
-            (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    (λ ρ ρ<R →
+      rationalScalePowerSeriesOnBall
+        q
+        (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R))
 
 
 realScalePowerSeriesRadius :
@@ -124,15 +116,13 @@ realScalePowerSeriesRadius :
   HasPowerSeriesRadius a R →
   HasPowerSeriesRadius (realScalePowerSeries x a) R
 realScalePowerSeriesRadius x κ x-bound radiusData =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          realScalePowerSeriesOnBall
-            x
-            κ
-            x-bound
-            (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    (λ ρ ρ<R →
+      realScalePowerSeriesOnBall
+        x
+        κ
+        x-bound
+        (HasPowerSeriesRadius.onSubball radiusData ρ ρ<R))
 
 
 negPowerSeriesInfiniteRadius :

@@ -281,7 +281,10 @@ powerSeriesMajorizedOnBallFromBoundedTerms
         {x = absᶜ (powerSeriesTerm a h n)}
         {y = rational (radius (κ n))}
         {z = v n}
-        (bounded-byᶜ-abs (termBounds h h-bound n))
+        (bounded-byᶜ-abs
+          {κ = κ n}
+          {x = powerSeriesTerm a h n}
+          (termBounds h h-bound n))
         (bound≤majorant n))
     majorantNonnegative
     majorTail
@@ -297,21 +300,24 @@ majorizedOnBall→hasPowerSeriesOnBallWith :
   HasPowerSeriesOnBallWith a ρ μ
 majorizedOnBall→hasPowerSeriesOnBallWith {a = a} {ρ = ρ} {v = v} {μ = μ}
     majorized =
-  record
-    { antitoneModulus =
-        PowerSeriesMajorizedOnBall.majorAntitone
+  hasPowerSeriesOnBallWith
+    {a = a}
+    {ρ = ρ}
+    {μ = μ}
+    (PowerSeriesMajorizedOnBall.majorAntitone
+      {a = a} {ρ = ρ} {v = v} {μ = μ}
+      majorized)
+    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ ρ h) →
+      comparisonTest
+        {u = powerSeriesTerm a h}
+        {v = v}
+        (PowerSeriesMajorizedOnBall.termMajorized
           {a = a} {ρ = ρ} {v = v} {μ = μ}
-          majorized
-    ; tailBound =
-        λ h h-bound →
-          comparisonTest
-            (PowerSeriesMajorizedOnBall.termMajorized
-              {a = a} {ρ = ρ} {v = v} {μ = μ}
-              majorized h h-bound)
-            (PowerSeriesMajorizedOnBall.majorTail
-              {a = a} {ρ = ρ} {v = v} {μ = μ}
-              majorized)
-    }
+          majorized h h-bound)
+        {μ = μ}
+        (PowerSeriesMajorizedOnBall.majorTail
+          {a = a} {ρ = ρ} {v = v} {μ = μ}
+          majorized))
 
 
 majorizedOnBall→hasPowerSeriesOnBall :
@@ -321,8 +327,14 @@ majorizedOnBall→hasPowerSeriesOnBall :
   {μ : ℚ⁺ → ℕ} →
   PowerSeriesMajorizedOnBall a ρ v μ →
   HasPowerSeriesOnBall a ρ
-majorizedOnBall→hasPowerSeriesOnBall {μ = μ} majorized =
-  μ , majorizedOnBall→hasPowerSeriesOnBallWith majorized
+majorizedOnBall→hasPowerSeriesOnBall {a = a} {ρ = ρ} {v = v} {μ = μ} majorized =
+  μ ,
+  majorizedOnBall→hasPowerSeriesOnBallWith
+    {a = a}
+    {ρ = ρ}
+    {v = v}
+    {μ = μ}
+    majorized
 
 
 hasPowerSeriesOnBallWithFromTermBounds :
@@ -348,6 +360,10 @@ hasPowerSeriesOnBallWithFromTermBounds
   majorTail
   majorAntitone =
   majorizedOnBall→hasPowerSeriesOnBallWith
+    {a = a}
+    {ρ = ρ}
+    {v = v}
+    {μ = μ}
     (powerSeriesMajorizedOnBallFromTermBounds
       {a = a}
       {ρ = ρ}
@@ -420,6 +436,10 @@ hasPowerSeriesOnBallWithFromBoundedTerms
   majorTail
   majorAntitone =
   majorizedOnBall→hasPowerSeriesOnBallWith
+    {a = a}
+    {ρ = ρ}
+    {v = v}
+    {μ = μ}
     (powerSeriesMajorizedOnBallFromBoundedTerms
       {a = a}
       {ρ = ρ}

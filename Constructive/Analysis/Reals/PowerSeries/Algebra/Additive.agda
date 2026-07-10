@@ -59,19 +59,16 @@ addPowerSeriesOnBallWith :
   HasPowerSeriesOnBallWith b ρ μ →
   HasPowerSeriesOnBallWith (addPowerSeries a b) ρ (splitModulus μ)
 addPowerSeriesOnBallWith {a = a} {b = b} {μ = μ} left right =
-  record
-    { antitoneModulus =
-        splitTailModulus-antitone
-          (HasPowerSeriesOnBallWith.antitoneModulus left)
-    ; tailBound =
-        λ h h-bound →
-          subst
-            (λ u → TailBound u (splitModulus μ))
-            (sym (funExt (addPowerSeriesTerm a b h)))
-            (tailBound-add
-              (HasPowerSeriesOnBallWith.tailBound left h h-bound)
-              (HasPowerSeriesOnBallWith.tailBound right h h-bound))
-    }
+  hasPowerSeriesOnBallWith
+    (splitTailModulus-antitone
+      (HasPowerSeriesOnBallWith.antitoneModulus left))
+    (λ h h-bound →
+      subst
+        (λ u → TailBound u (splitModulus μ))
+        (sym (funExt (addPowerSeriesTerm a b h)))
+        (tailBound-add
+          (HasPowerSeriesOnBallWith.tailBound left h h-bound)
+          (HasPowerSeriesOnBallWith.tailBound right h h-bound)))
 
 
 addPowerSeriesOnBallWithMax :
@@ -101,23 +98,19 @@ addPowerSeriesOnBallWithMax
 
   leftMax : HasPowerSeriesOnBallWith a _ (maxModulus μ ν)
   leftMax =
-    record
-      { antitoneModulus = maxAntitone
-      ; tailBound =
-          λ h h-bound →
-            tailBound-max-left
-              (HasPowerSeriesOnBallWith.tailBound left h h-bound)
-      }
+    hasPowerSeriesOnBallWith
+      maxAntitone
+      (λ h h-bound →
+        tailBound-max-left
+          (HasPowerSeriesOnBallWith.tailBound left h h-bound))
 
   rightMax : HasPowerSeriesOnBallWith b _ (maxModulus μ ν)
   rightMax =
-    record
-      { antitoneModulus = maxAntitone
-      ; tailBound =
-          λ h h-bound →
-            tailBound-max-right
-              (HasPowerSeriesOnBallWith.tailBound right h h-bound)
-      }
+    hasPowerSeriesOnBallWith
+      maxAntitone
+      (λ h h-bound →
+        tailBound-max-right
+          (HasPowerSeriesOnBallWith.tailBound right h h-bound))
 
 
 addPowerSeriesOnBall :

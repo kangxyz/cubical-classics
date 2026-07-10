@@ -9,6 +9,7 @@ module Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedMultip
 open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Rationals as ℚ using (ℚ)
+import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Map
@@ -30,6 +31,34 @@ open RoundedOf RationalsMetricSpace
 
 
 private
+  upperBoundℚ :
+    (κ : ℚ⁺) (q : ℚ) →
+    RationalBoundᶜ κ q →
+    q ℚOrder.< radius κ
+  upperBoundℚ κ q =
+    upperℚ {κ = κ} {q = q}
+
+  lowerBoundℚ :
+    (κ : ℚ⁺) (q : ℚ) →
+    RationalBoundᶜ κ q →
+    ℚ.- q ℚOrder.< radius κ
+  lowerBoundℚ κ q =
+    lowerℚ {κ = κ} {q = q}
+
+  upperClosedBoundℚ :
+    (κ : ℚ⁺) (q : ℚ) →
+    RationalClosedBoundᶜ κ q →
+    q ℚOrder.≤ radius κ
+  upperClosedBoundℚ κ q =
+    upper≤ℚ {κ = κ} {q = q}
+
+  lowerClosedBoundℚ :
+    (κ : ℚ⁺) (q : ℚ) →
+    RationalClosedBoundᶜ κ q →
+    ℚ.- q ℚOrder.≤ radius κ
+  lowerClosedBoundℚ κ q =
+    lower≤ℚ {κ = κ} {q = q}
+
   diff-close-zero→close :
     {x y : ℝᶜ} {ε : ℚ⁺} →
     (x +ᶜ (-ᶜ y)) ∼[ ε ] 0ᶜ →
@@ -47,7 +76,7 @@ boundedMul-rational-leftᶜ :
   RationalBoundᶜ κ q →
   ℝᶜ → ℝᶜ
 boundedMul-rational-leftᶜ κ q bound =
-  boundedScalarMulᶜ q κ (upperℚ bound) (lowerℚ bound)
+  boundedScalarMulᶜ q κ (upperBoundℚ κ q bound) (lowerBoundℚ κ q bound)
 
 
 boundedMul-rational-leftᶜ-rational :
@@ -56,7 +85,7 @@ boundedMul-rational-leftᶜ-rational :
   boundedMul-rational-leftᶜ κ q bound (rational r) ≡
   rational (q ℚ.· r)
 boundedMul-rational-leftᶜ-rational κ q r bound =
-  boundedScalarMulᶜ-rational q κ (upperℚ bound) (lowerℚ bound) r
+  boundedScalarMulᶜ-rational q κ (upperBoundℚ κ q bound) (lowerBoundℚ κ q bound) r
 
 
 boundedMul-rational-leftᶜ-close :
@@ -68,7 +97,7 @@ boundedMul-rational-leftᶜ-close :
     ∼[ κ *⁺ ε ]
   boundedMul-rational-leftᶜ κ q bound y
 boundedMul-rational-leftᶜ-close κ q bound =
-  boundedScalarMulᶜ-close q κ (upperℚ bound) (lowerℚ bound)
+  boundedScalarMulᶜ-close q κ (upperBoundℚ κ q bound) (lowerBoundℚ κ q bound)
 
 
 scalarMulᶜ-close-rational-bound :
@@ -93,8 +122,8 @@ scalarMulᶜ-close-rational-bound q κ bound {x = x} {y = y} x∼y =
       κ
       (scalar-bound-upper q)
       (scalar-bound-lower q)
-      (upperℚ bound)
-      (lowerℚ bound)
+      (upperBoundℚ κ q bound)
+      (lowerBoundℚ κ q bound)
       x
 
   scalar≡bounded-y :
@@ -106,8 +135,8 @@ scalarMulᶜ-close-rational-bound q κ bound {x = x} {y = y} x∼y =
       κ
       (scalar-bound-upper q)
       (scalar-bound-lower q)
-      (upperℚ bound)
-      (lowerℚ bound)
+      (upperBoundℚ κ q bound)
+      (lowerBoundℚ κ q bound)
       y
 
 
@@ -116,7 +145,7 @@ boundedMul-rational-leftᶜ-lipschitz :
   (bound : RationalBoundᶜ κ q) →
   IsLipschitz CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMul-rational-leftᶜ κ q bound)
 boundedMul-rational-leftᶜ-lipschitz κ q bound =
-  boundedScalarMulᶜ-lipschitz q κ (upperℚ bound) (lowerℚ bound)
+  boundedScalarMulᶜ-lipschitz q κ (upperBoundℚ κ q bound) (lowerBoundℚ κ q bound)
 
 
 boundedMul-rational-leftᶜ-continuous :
@@ -124,7 +153,7 @@ boundedMul-rational-leftᶜ-continuous :
   (bound : RationalBoundᶜ κ q) →
   IsUniformlyContinuous CauchyRealsMetricSpace CauchyRealsMetricSpace (boundedMul-rational-leftᶜ κ q bound)
 boundedMul-rational-leftᶜ-continuous κ q bound =
-  boundedScalarMulᶜ-continuous q κ (upperℚ bound) (lowerℚ bound)
+  boundedScalarMulᶜ-continuous q κ (upperBoundℚ κ q bound) (lowerBoundℚ κ q bound)
 
 
 boundedMul-rational-leftᶜ-bound-independent :
@@ -139,10 +168,10 @@ boundedMul-rational-leftᶜ-bound-independent κ μ q κ-bound μ-bound =
     q
     κ
     μ
-    (upperℚ κ-bound)
-    (lowerℚ κ-bound)
-    (upperℚ μ-bound)
-    (lowerℚ μ-bound)
+    (upperBoundℚ κ q κ-bound)
+    (lowerBoundℚ κ q κ-bound)
+    (upperBoundℚ μ q μ-bound)
+    (lowerBoundℚ μ q μ-bound)
 
 
 boundedMul-rational-leftᶜ-distrib-real-add :
@@ -155,8 +184,8 @@ boundedMul-rational-leftᶜ-distrib-real-add κ q bound =
   boundedScalarMulᶜ-distrib-real-add
     q
     κ
-    (upperℚ bound)
-    (lowerℚ bound)
+    (upperBoundℚ κ q bound)
+    (lowerBoundℚ κ q bound)
 
 
 boundedMul-rational-leftᶜ-zero-right :
@@ -166,8 +195,8 @@ boundedMul-rational-leftᶜ-zero-right κ q bound =
   boundedScalarMulᶜ-zero-right
     q
     κ
-    (upperℚ bound)
-    (lowerℚ bound)
+    (upperBoundℚ κ q bound)
+    (lowerBoundℚ κ q bound)
 
 
 boundedMul-rational-leftᶜ-zero-left :
@@ -176,8 +205,8 @@ boundedMul-rational-leftᶜ-zero-left :
 boundedMul-rational-leftᶜ-zero-left κ bound =
   boundedScalarMulᶜ-zero-scalar
     κ
-    (upperℚ bound)
-    (lowerℚ bound)
+    (upperBoundℚ κ 0ℚ bound)
+    (lowerBoundℚ κ 0ℚ bound)
 
 
 boundedMul-rational-leftᶜ-neg-real :
@@ -189,8 +218,8 @@ boundedMul-rational-leftᶜ-neg-real κ q bound =
   boundedScalarMulᶜ-neg-real
     q
     κ
-    (upperℚ bound)
-    (lowerℚ bound)
+    (upperBoundℚ κ q bound)
+    (lowerBoundℚ κ q bound)
 
 
 boundedMul-rational-leftᶜ-neg-left :
@@ -202,9 +231,9 @@ boundedMul-rational-leftᶜ-neg-left κ q bound =
   boundedScalarMulᶜ-neg-scalar
     q
     κ
-    (upperℚ bound)
-    (lowerℚ bound)
-    (lowerℚ (rational-boundᶜ-neg κ q bound))
+    (upperBoundℚ κ q bound)
+    (lowerBoundℚ κ q bound)
+    (lowerBoundℚ κ (ℚ.- q) (rational-boundᶜ-neg κ q bound))
 
 
 RationalRightMultiplierᶜ :
@@ -557,7 +586,15 @@ rational-right-multiplier-closedᶜ κ q bound r s ε r∼s =
       (q ℚ.· r)
       (q ℚ.· s)
       (κ *⁺ ε)
-      (scale-close-closed-bound q κ (upper≤ℚ bound) (lower≤ℚ bound) r s ε r∼s))
+      (scale-close-closed-bound
+        q
+        κ
+        (upperClosedBoundℚ κ q bound)
+        (lowerClosedBoundℚ κ q bound)
+        r
+        s
+        ε
+        r∼s))
 
 
 rational-right-multiplierᶜ :

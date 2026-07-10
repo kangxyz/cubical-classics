@@ -151,38 +151,38 @@ atanPowerSeriesOnSubunitBall =
 evenGeometricPowerSeriesRadius :
   HasPowerSeriesRadius evenGeometricPowerSeries 1⁺
 evenGeometricPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          evenGeometricPowerSeriesOnSubunitBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = evenGeometricPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      evenGeometricPowerSeriesOnSubunitBall ρ ρ<1)
 
 
 alternatingEvenGeometricPowerSeriesRadius :
   HasPowerSeriesRadius alternatingEvenGeometricPowerSeries 1⁺
 alternatingEvenGeometricPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          alternatingEvenGeometricPowerSeriesOnSubunitBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = alternatingEvenGeometricPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      alternatingEvenGeometricPowerSeriesOnSubunitBall ρ ρ<1)
 
 
 atanhPowerSeriesRadius :
   HasPowerSeriesRadius atanhPowerSeries 1⁺
 atanhPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          atanhPowerSeriesOnSubunitBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = atanhPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      atanhPowerSeriesOnSubunitBall ρ ρ<1)
 
 
 atanPowerSeriesRadius :
   HasPowerSeriesRadius atanPowerSeries 1⁺
 atanPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          atanPowerSeriesOnSubunitBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = atanPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      atanPowerSeriesOnSubunitBall ρ ρ<1)

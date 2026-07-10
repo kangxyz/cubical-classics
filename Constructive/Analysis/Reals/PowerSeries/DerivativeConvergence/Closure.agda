@@ -116,19 +116,19 @@ derivativePowerSeriesRadius :
   HasPowerSeriesRadius a R →
   HasPowerSeriesRadius (derivativePowerSeries a) R
 derivativePowerSeriesRadius {a = a} {R = R} radiusData =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          derivativePowerSeriesOnStrictSubball
-            {a = a}
-            {ρ = ρ}
-            {σ = middleRadius ρ ρ<R}
-            (ρ<middle ρ ρ<R)
-            (HasPowerSeriesRadius.onSubball
-              radiusData
-              (middleRadius ρ ρ<R)
-              (middle<R ρ ρ<R))
-    }
+  hasPowerSeriesRadius
+    {a = derivativePowerSeries a}
+    {R = R}
+    (λ ρ ρ<R →
+      derivativePowerSeriesOnStrictSubball
+        {a = a}
+        {ρ = ρ}
+        {σ = middleRadius ρ ρ<R}
+        (ρ<middle ρ ρ<R)
+        (HasPowerSeriesRadius.onSubball
+          radiusData
+          (middleRadius ρ ρ<R)
+          (middle<R ρ ρ<R)))
   where
   middle-positive :
     (ρ : ℚ⁺) →
@@ -192,16 +192,15 @@ derivativePowerSeriesRadiusFromCoefficientBoundsAndMajorants
     κ
     coefficientBounds
     majorants =
-  record
-    { onSubball =
-        λ ρ ρ<R →
-          derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant
-            {a = a}
-            {ρ = ρ}
-            κ
-            coefficientBounds
-            (majorants ρ ρ<R)
-    }
+  hasPowerSeriesRadius
+    {a = derivativePowerSeries a}
+    (λ ρ ρ<R →
+      derivativePowerSeriesOnBallFromCoefficientBoundsAndBoundMajorant
+        {a = a}
+        {ρ = ρ}
+        κ
+        coefficientBounds
+        (majorants ρ ρ<R))
 
 
 derivativePowerSeriesInfiniteRadiusFromCoefficientBoundsAndMajorants :

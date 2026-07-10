@@ -196,17 +196,14 @@ negPowerSeriesOnBallWith :
   HasPowerSeriesOnBallWith a ρ μ →
   HasPowerSeriesOnBallWith (negPowerSeries a) ρ μ
 negPowerSeriesOnBallWith {a = a} {μ = μ} convergence =
-  record
-    { antitoneModulus =
-        HasPowerSeriesOnBallWith.antitoneModulus convergence
-    ; tailBound =
-        λ h h-bound →
-          subst
-            (λ u → TailBound u μ)
-            (sym (funExt (negPowerSeriesTerm a h)))
-            (tailBound-neg
-              (HasPowerSeriesOnBallWith.tailBound convergence h h-bound))
-    }
+  hasPowerSeriesOnBallWith
+    (HasPowerSeriesOnBallWith.antitoneModulus convergence)
+    (λ h h-bound →
+      subst
+        (λ u → TailBound u μ)
+        (sym (funExt (negPowerSeriesTerm a h)))
+        (tailBound-neg
+          (HasPowerSeriesOnBallWith.tailBound convergence h h-bound)))
 
 
 negPowerSeriesOnBall :

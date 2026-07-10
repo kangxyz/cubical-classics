@@ -82,10 +82,9 @@ zeroPowerSeriesOnBallWith :
   {ρ : ℚ⁺} →
   HasPowerSeriesOnBallWith zeroPowerSeries ρ (λ _ → zero)
 zeroPowerSeriesOnBallWith =
-  record
-    { antitoneModulus = λ _ → NatOrder.≤-refl
-    ; tailBound = λ h _ → zeroPowerSeriesTailBound h (λ _ → zero)
-    }
+  hasPowerSeriesOnBallWith
+    (λ _ → NatOrder.≤-refl)
+    (λ h _ → zeroPowerSeriesTailBound h (λ _ → zero))
 
 
 zeroPowerSeriesOnBall :
@@ -99,11 +98,9 @@ zeroPowerSeriesRadius :
   {R : ℚ⁺} →
   HasPowerSeriesRadius zeroPowerSeries R
 zeroPowerSeriesRadius =
-  record
-    { onSubball =
-        λ _ _ →
-          zeroPowerSeriesOnBall
-    }
+  hasPowerSeriesRadius
+    (λ _ _ →
+      zeroPowerSeriesOnBall)
 
 
 zeroPowerSeriesInfiniteRadius :
@@ -168,10 +165,9 @@ constantPowerSeriesOnBallWith :
   {ρ : ℚ⁺} →
   HasPowerSeriesOnBallWith (constantPowerSeries c) ρ (λ _ → suc zero)
 constantPowerSeriesOnBallWith c =
-  record
-    { antitoneModulus = λ _ → NatOrder.≤-refl
-    ; tailBound = λ h _ → constantPowerSeriesTailBound c h
-    }
+  hasPowerSeriesOnBallWith
+    (λ _ → NatOrder.≤-refl)
+    (λ h _ → constantPowerSeriesTailBound c h)
 
 
 constantPowerSeriesOnBall :
@@ -187,11 +183,9 @@ constantPowerSeriesRadius :
   {R : ℚ⁺} →
   HasPowerSeriesRadius (constantPowerSeries c) R
 constantPowerSeriesRadius c =
-  record
-    { onSubball =
-        λ _ _ →
-          constantPowerSeriesOnBall c
-    }
+  hasPowerSeriesRadius
+    (λ _ _ →
+      constantPowerSeriesOnBall c)
 
 
 constantPowerSeriesInfiniteRadius :

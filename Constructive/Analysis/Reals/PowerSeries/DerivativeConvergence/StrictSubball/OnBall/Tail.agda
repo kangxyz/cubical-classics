@@ -196,23 +196,23 @@ derivativePowerSeriesOnStrictSubballWith
     {μ = μ}
     ρ<σ
     convergence =
-  record
-    { antitoneModulus =
-        maxModulus-antitone
-          constantTailModulusAntitone
-          (derivativeStrictSubballFromOnBallMajorAntitone ρ<σ)
-    ; tailBound =
-        λ h h-bound →
-          derivativeStrictSubballTailBoundFromOnBall
-            {a = a}
-            {ρ = ρ}
-            {σ = σ}
-            {μ = μ}
-            ρ<σ
-            convergence
-            h
-            h-bound
-    }
+  hasPowerSeriesOnBallWith
+    {a = derivativePowerSeries a}
+    {ρ = ρ}
+    {μ = derivativeStrictSubballFromOnBallModulus {ρ = ρ} {σ = σ} ρ<σ μ}
+    (maxModulus-antitone
+      constantTailModulusAntitone
+      (derivativeStrictSubballFromOnBallMajorAntitone ρ<σ))
+    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ ρ h) →
+      derivativeStrictSubballTailBoundFromOnBall
+        {a = a}
+        {ρ = ρ}
+        {σ = σ}
+        {μ = μ}
+        ρ<σ
+        convergence
+        h
+        h-bound)
 
 
 derivativePowerSeriesOnStrictSubball :

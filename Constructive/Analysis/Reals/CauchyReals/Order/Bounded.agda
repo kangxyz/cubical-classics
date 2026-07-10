@@ -127,23 +127,57 @@ private
       (add-close-left diff∼0 y)
 
 
-record RationalBoundᶜ (κ : ℚ⁺) (q : ℚ) : Type₀ where
-  constructor rational-boundᶜ
+RationalBoundᶜ : ℚ⁺ → ℚ → Type₀
+RationalBoundᶜ κ q =
+  (q ℚOrder.< radius κ) × (ℚ.- q ℚOrder.< radius κ)
 
-  field
-    upperℚ : q ℚOrder.< radius κ
-    lowerℚ : ℚ.- q ℚOrder.< radius κ
+
+rational-boundᶜ :
+  {κ : ℚ⁺} {q : ℚ} →
+  q ℚOrder.< radius κ →
+  ℚ.- q ℚOrder.< radius κ →
+  RationalBoundᶜ κ q
+rational-boundᶜ upper lower =
+  upper , lower
+
+
+module RationalBoundᶜ {κ : ℚ⁺} {q : ℚ} (bound : RationalBoundᶜ κ q) where
+  upperℚ : q ℚOrder.< radius κ
+  upperℚ =
+    bound .fst
+
+  lowerℚ : ℚ.- q ℚOrder.< radius κ
+  lowerℚ =
+    bound .snd
 
 
 open RationalBoundᶜ public
 
 
-record RationalClosedBoundᶜ (κ : ℚ⁺) (q : ℚ) : Type₀ where
-  constructor rational-closed-boundᶜ
+RationalClosedBoundᶜ : ℚ⁺ → ℚ → Type₀
+RationalClosedBoundᶜ κ q =
+  (q ℚOrder.≤ radius κ) × (ℚ.- q ℚOrder.≤ radius κ)
 
-  field
-    upper≤ℚ : q ℚOrder.≤ radius κ
-    lower≤ℚ : ℚ.- q ℚOrder.≤ radius κ
+
+rational-closed-boundᶜ :
+  {κ : ℚ⁺} {q : ℚ} →
+  q ℚOrder.≤ radius κ →
+  ℚ.- q ℚOrder.≤ radius κ →
+  RationalClosedBoundᶜ κ q
+rational-closed-boundᶜ upper lower =
+  upper , lower
+
+
+module RationalClosedBoundᶜ
+    {κ : ℚ⁺} {q : ℚ}
+    (bound : RationalClosedBoundᶜ κ q) where
+  upper≤ℚ : q ℚOrder.≤ radius κ
+  upper≤ℚ =
+    bound .fst
+
+  lower≤ℚ : ℚ.- q ℚOrder.≤ radius κ
+  lower≤ℚ =
+    bound .snd
 
 
 open RationalClosedBoundᶜ public
@@ -152,27 +186,43 @@ open RationalClosedBoundᶜ public
 isPropRationalBoundᶜ :
   (κ : ℚ⁺) (q : ℚ) →
   isProp (RationalBoundᶜ κ q)
-isPropRationalBoundᶜ κ q b c i =
-  rational-boundᶜ
-    (ℚOrder.isProp< q (radius κ) (upperℚ b) (upperℚ c) i)
-    (ℚOrder.isProp< (ℚ.- q) (radius κ) (lowerℚ b) (lowerℚ c) i)
+isPropRationalBoundᶜ κ q =
+  isProp×
+    (ℚOrder.isProp< q (radius κ))
+    (ℚOrder.isProp< (ℚ.- q) (radius κ))
 
 
 isPropRationalClosedBoundᶜ :
   (κ : ℚ⁺) (q : ℚ) →
   isProp (RationalClosedBoundᶜ κ q)
-isPropRationalClosedBoundᶜ κ q b c i =
-  rational-closed-boundᶜ
-    (ℚOrder.isProp≤ q (radius κ) (upper≤ℚ b) (upper≤ℚ c) i)
-    (ℚOrder.isProp≤ (ℚ.- q) (radius κ) (lower≤ℚ b) (lower≤ℚ c) i)
+isPropRationalClosedBoundᶜ κ q =
+  isProp×
+    (ℚOrder.isProp≤ q (radius κ))
+    (ℚOrder.isProp≤ (ℚ.- q) (radius κ))
 
 
-record BoundedByᶜ (κ : ℚ⁺) (x : ℝᶜ) : Type₀ where
-  constructor bounded-byᶜ
+BoundedByᶜ : ℚ⁺ → ℝᶜ → Type₀
+BoundedByᶜ κ x =
+  (x ≤ᶜ rational (radius κ)) × ((-ᶜ x) ≤ᶜ rational (radius κ))
 
-  field
-    upperᶜ : x ≤ᶜ rational (radius κ)
-    lowerᶜ : (-ᶜ x) ≤ᶜ rational (radius κ)
+
+bounded-byᶜ :
+  {κ : ℚ⁺} {x : ℝᶜ} →
+  x ≤ᶜ rational (radius κ) →
+  (-ᶜ x) ≤ᶜ rational (radius κ) →
+  BoundedByᶜ κ x
+bounded-byᶜ upper lower =
+  upper , lower
+
+
+module BoundedByᶜ {κ : ℚ⁺} {x : ℝᶜ} (bound : BoundedByᶜ κ x) where
+  upperᶜ : x ≤ᶜ rational (radius κ)
+  upperᶜ =
+    bound .fst
+
+  lowerᶜ : (-ᶜ x) ≤ᶜ rational (radius κ)
+  lowerᶜ =
+    bound .snd
 
 
 open BoundedByᶜ public
@@ -181,17 +231,17 @@ open BoundedByᶜ public
 isPropBoundedByᶜ :
   (κ : ℚ⁺) (x : ℝᶜ) →
   isProp (BoundedByᶜ κ x)
-isPropBoundedByᶜ κ x b c i =
-  bounded-byᶜ
-    (isProp≤ᶜ x (rational (radius κ)) (upperᶜ b) (upperᶜ c) i)
-    (isProp≤ᶜ (-ᶜ x) (rational (radius κ)) (lowerᶜ b) (lowerᶜ c) i)
+isPropBoundedByᶜ κ x =
+  isProp×
+    (isProp≤ᶜ x (rational (radius κ)))
+    (isProp≤ᶜ (-ᶜ x) (rational (radius κ)))
 
 
 scalar-bound-rational-boundᶜ :
   (q : ℚ) →
   RationalBoundᶜ (scalar-bound q) q
 scalar-bound-rational-boundᶜ q =
-  rational-boundᶜ
+  rational-boundᶜ {κ = scalar-bound q} {q = q}
     (scalar-bound-upper q)
     (scalar-bound-lower q)
 
@@ -201,7 +251,7 @@ rational-diff-boundᶜ :
   Closeℚ q ε r →
   RationalBoundᶜ ε (q ℚ.- r)
 rational-diff-boundᶜ q r ε q∼r =
-  rational-boundᶜ
+  rational-boundᶜ {κ = ε} {q = q ℚ.- r}
     (q∼r .fst)
     (subst
       (λ s → s ℚOrder.< radius ε)
@@ -214,9 +264,9 @@ rational-bound→closedᶜ :
   RationalBoundᶜ κ q →
   RationalClosedBoundᶜ κ q
 rational-bound→closedᶜ κ q bound =
-  rational-closed-boundᶜ
-    (ℚOrder.<Weaken≤ q (radius κ) (upperℚ bound))
-    (ℚOrder.<Weaken≤ (ℚ.- q) (radius κ) (lowerℚ bound))
+  rational-closed-boundᶜ {κ = κ} {q = q}
+    (ℚOrder.<Weaken≤ q (radius κ) (upperℚ {κ = κ} {q = q} bound))
+    (ℚOrder.<Weaken≤ (ℚ.- q) (radius κ) (lowerℚ {κ = κ} {q = q} bound))
 
 
 rational-boundᶜ-monotone :
@@ -225,18 +275,18 @@ rational-boundᶜ-monotone :
   RationalBoundᶜ κ q →
   RationalBoundᶜ μ q
 rational-boundᶜ-monotone {κ = κ} {μ = μ} {q = q} κ≤μ bound =
-  rational-boundᶜ
+  rational-boundᶜ {κ = μ} {q = q}
     (Rational.<≤-trans
       {p = q}
       {q = radius κ}
       {r = radius μ}
-      (upperℚ bound)
+      (upperℚ {κ = κ} {q = q} bound)
       κ≤μ)
     (Rational.<≤-trans
       {p = ℚ.- q}
       {q = radius κ}
       {r = radius μ}
-      (lowerℚ bound)
+      (lowerℚ {κ = κ} {q = q} bound)
       κ≤μ)
 
 
@@ -246,18 +296,18 @@ rational-closed-boundᶜ-monotone :
   RationalClosedBoundᶜ κ q →
   RationalClosedBoundᶜ μ q
 rational-closed-boundᶜ-monotone {κ = κ} {μ = μ} {q = q} κ≤μ bound =
-  rational-closed-boundᶜ
+  rational-closed-boundᶜ {κ = μ} {q = q}
     (Rational.≤-trans
       {p = q}
       {q = radius κ}
       {r = radius μ}
-      (upper≤ℚ bound)
+      (upper≤ℚ {κ = κ} {q = q} bound)
       κ≤μ)
     (Rational.≤-trans
       {p = ℚ.- q}
       {q = radius κ}
       {r = radius μ}
-      (lower≤ℚ bound)
+      (lower≤ℚ {κ = κ} {q = q} bound)
       κ≤μ)
 
 
@@ -266,12 +316,12 @@ rational-boundᶜ-neg :
   RationalBoundᶜ κ q →
   RationalBoundᶜ κ (ℚ.- q)
 rational-boundᶜ-neg κ q bound =
-  rational-boundᶜ
-    (lowerℚ bound)
+  rational-boundᶜ {κ = κ} {q = ℚ.- q}
+    (lowerℚ {κ = κ} {q = q} bound)
     (subst
       (λ r → r ℚOrder.< radius κ)
       (sym (ℚ.-Invol q))
-      (upperℚ bound))
+      (upperℚ {κ = κ} {q = q} bound))
 
 
 rational-closed-boundᶜ-neg :
@@ -279,12 +329,12 @@ rational-closed-boundᶜ-neg :
   RationalClosedBoundᶜ κ q →
   RationalClosedBoundᶜ κ (ℚ.- q)
 rational-closed-boundᶜ-neg κ q bound =
-  rational-closed-boundᶜ
-    (lower≤ℚ bound)
+  rational-closed-boundᶜ {κ = κ} {q = ℚ.- q}
+    (lower≤ℚ {κ = κ} {q = q} bound)
     (subst
       (λ r → r ℚOrder.≤ radius κ)
       (sym (ℚ.-Invol q))
-      (upper≤ℚ bound))
+      (upper≤ℚ {κ = κ} {q = q} bound))
 
 
 rational-bound→boundedᶜ :
@@ -292,11 +342,11 @@ rational-bound→boundedᶜ :
   RationalBoundᶜ κ q →
   BoundedByᶜ κ (rational q)
 rational-bound→boundedᶜ κ q bound =
-  bounded-byᶜ
+  bounded-byᶜ {κ = κ} {x = rational q}
     (≤ℚ→rational≤ᶜ
-      (ℚOrder.<Weaken≤ q (radius κ) (upperℚ bound)))
+      (ℚOrder.<Weaken≤ q (radius κ) (upperℚ {κ = κ} {q = q} bound)))
     (≤ℚ→rational≤ᶜ
-      (ℚOrder.<Weaken≤ (ℚ.- q) (radius κ) (lowerℚ bound)))
+      (ℚOrder.<Weaken≤ (ℚ.- q) (radius κ) (lowerℚ {κ = κ} {q = q} bound)))
 
 
 rational-closed-bound→boundedᶜ :
@@ -304,9 +354,9 @@ rational-closed-bound→boundedᶜ :
   RationalClosedBoundᶜ κ q →
   BoundedByᶜ κ (rational q)
 rational-closed-bound→boundedᶜ κ q bound =
-  bounded-byᶜ
-    (≤ℚ→rational≤ᶜ (upper≤ℚ bound))
-    (≤ℚ→rational≤ᶜ (lower≤ℚ bound))
+  bounded-byᶜ {κ = κ} {x = rational q}
+    (≤ℚ→rational≤ᶜ (upper≤ℚ {κ = κ} {q = q} bound))
+    (≤ℚ→rational≤ᶜ (lower≤ℚ {κ = κ} {q = q} bound))
 
 
 bounded-rational→closed-boundᶜ :
@@ -314,9 +364,9 @@ bounded-rational→closed-boundᶜ :
   BoundedByᶜ κ (rational q) →
   RationalClosedBoundᶜ κ q
 bounded-rational→closed-boundᶜ κ q bound =
-  rational-closed-boundᶜ
-    (rational≤ᶜ→≤ℚ (upperᶜ bound))
-    (rational≤ᶜ→≤ℚ (lowerᶜ bound))
+  rational-closed-boundᶜ {κ = κ} {q = q}
+    (rational≤ᶜ→≤ℚ (upperᶜ {κ = κ} {x = rational q} bound))
+    (rational≤ᶜ→≤ℚ (lowerᶜ {κ = κ} {x = rational q} bound))
 
 
 bounded-byᶜ-monotone :
@@ -325,18 +375,18 @@ bounded-byᶜ-monotone :
   BoundedByᶜ κ x →
   BoundedByᶜ μ x
 bounded-byᶜ-monotone {κ = κ} {μ = μ} {x = x} κ≤μ bound =
-  bounded-byᶜ
+  bounded-byᶜ {κ = μ} {x = x}
     (≤ᶜ-trans
       {x = x}
       {y = rational (radius κ)}
       {z = rational (radius μ)}
-      (upperᶜ bound)
+      (upperᶜ {κ = κ} {x = x} bound)
       κ≤μᶜ)
     (≤ᶜ-trans
       {x = -ᶜ x}
       {y = rational (radius κ)}
       {z = rational (radius μ)}
-      (lowerᶜ bound)
+      (lowerᶜ {κ = κ} {x = x} bound)
       κ≤μᶜ)
   where
   κ≤μᶜ : rational (radius κ) ≤ᶜ rational (radius μ)
@@ -349,12 +399,12 @@ bounded-byᶜ-neg :
   BoundedByᶜ κ x →
   BoundedByᶜ κ (-ᶜ x)
 bounded-byᶜ-neg κ x bound =
-  bounded-byᶜ
-    (lowerᶜ bound)
+  bounded-byᶜ {κ = κ} {x = -ᶜ x}
+    (lowerᶜ {κ = κ} {x = x} bound)
     (subst
       (λ w → w ≤ᶜ rational (radius κ))
       (sym (neg-involutive x))
-      (upperᶜ bound))
+      (upperᶜ {κ = κ} {x = x} bound))
 
 
 bounded-byᶜ-add :
@@ -363,7 +413,7 @@ bounded-byᶜ-add :
   BoundedByᶜ μ y →
   BoundedByᶜ (κ +⁺ μ) (x +ᶜ y)
 bounded-byᶜ-add κ μ x y x-bound y-bound =
-  bounded-byᶜ
+  bounded-byᶜ {κ = κ +⁺ μ} {x = x +ᶜ y}
     (subst
       ((x +ᶜ y) ≤ᶜ_)
       (add-rational (radius κ) (radius μ))
@@ -372,8 +422,8 @@ bounded-byᶜ-add κ μ x y x-bound y-bound =
         {b = rational (radius κ)}
         {c = y}
         {d = rational (radius μ)}
-        (upperᶜ x-bound)
-        (upperᶜ y-bound)))
+        (upperᶜ {κ = κ} {x = x} x-bound)
+        (upperᶜ {κ = μ} {x = y} y-bound)))
     (subst2
       _≤ᶜ_
       (sym (neg-add x y))
@@ -383,8 +433,8 @@ bounded-byᶜ-add κ μ x y x-bound y-bound =
         {b = rational (radius κ)}
         {c = -ᶜ y}
         {d = rational (radius μ)}
-        (lowerᶜ x-bound)
-        (lowerᶜ y-bound)))
+        (lowerᶜ {κ = κ} {x = x} x-bound)
+        (lowerᶜ {κ = μ} {x = y} y-bound)))
 
 
 bounded-byᶜ-sub :
@@ -409,7 +459,7 @@ bounded-byᶜ-scale-nonnegative :
   BoundedByᶜ κ x →
   BoundedByᶜ (μ *⁺ κ) (scalarMulᶜ a x)
 bounded-byᶜ-scale-nonnegative a κ μ x 0≤a a≤μ x-bound =
-  bounded-byᶜ
+  bounded-byᶜ {κ = μ *⁺ κ} {x = scalarMulᶜ a x}
     (≤ᶜ-trans
       {x = scalarMulᶜ a x}
       {y = scalarMulᶜ a (rational (radius κ))}
@@ -419,7 +469,7 @@ bounded-byᶜ-scale-nonnegative a κ μ x 0≤a a≤μ x-bound =
         0≤a
         {x = x}
         {y = rational (radius κ)}
-        (upperᶜ x-bound))
+        (upperᶜ {κ = κ} {x = x} x-bound))
       upper-scale≤)
     (subst
       (λ w → w ≤ᶜ rational (radius (μ *⁺ κ)))
@@ -433,7 +483,7 @@ bounded-byᶜ-scale-nonnegative a κ μ x 0≤a a≤μ x-bound =
           0≤a
           {x = -ᶜ x}
           {y = rational (radius κ)}
-          (lowerᶜ x-bound))
+          (lowerᶜ {κ = κ} {x = x} x-bound))
         upper-scale≤))
   where
   aκ≤μκ : a ℚ.· radius κ ℚOrder.≤ radius μ ℚ.· radius κ
@@ -479,7 +529,7 @@ bounded-byᶜ-scale-rational-bound a κ μ x a-bound x-bound =
       μ
       x
       0≤a
-      (Rational.<→≤ {p = a} {q = radius μ} (upperℚ a-bound))
+      (Rational.<→≤ {p = a} {q = radius μ} (upperℚ {κ = μ} {q = a} a-bound))
       x-bound
 
   negativeCase :
@@ -499,7 +549,7 @@ bounded-byᶜ-scale-rational-bound a κ μ x a-bound x-bound =
           x
           (Rational.<→≤ {p = 0ℚ} {q = ℚ.- a}
             (Rational.neg-positive {q = a} a<0))
-          (Rational.<→≤ {p = ℚ.- a} {q = radius μ} (lowerℚ a-bound))
+          (Rational.<→≤ {p = ℚ.- a} {q = radius μ} (lowerℚ {κ = μ} {q = a} a-bound))
           x-bound))
 
 
@@ -511,7 +561,7 @@ bounded-approximation-rational-boundᶜ :
   x ∼[ θ ] rational q →
   RationalBoundᶜ (κ +⁺ η) q
 bounded-approximation-rational-boundᶜ κ φ η θ x q θ<φ φ<η bound x∼q =
-  rational-boundᶜ q<κ+η -q<κ+η
+  rational-boundᶜ {κ = κ +⁺ η} {q = q} q<κ+η -q<κ+η
   where
   κ+φ<κ+η : radius (κ +⁺ φ) ℚOrder.< radius (κ +⁺ η)
   κ+φ<κ+η =
@@ -528,7 +578,7 @@ bounded-approximation-rational-boundᶜ κ φ η θ x q θ<φ φ<η bound x∼q 
       {y = x}
       {z = rational (radius κ)}
       q-φ≤x
-      (upperᶜ bound)
+      (upperᶜ {κ = κ} {x = x} bound)
 
   q≤κ+φ : q ℚOrder.≤ radius (κ +⁺ φ)
   q≤κ+φ =
@@ -564,7 +614,7 @@ bounded-approximation-rational-boundᶜ κ φ η θ x q θ<φ φ<η bound x∼q 
       {y = -ᶜ x}
       {z = rational (radius κ)}
       -q-φ≤-x
-      (lowerᶜ bound)
+      (lowerᶜ {κ = κ} {x = x} bound)
 
   -q≤κ+φ : ℚ.- q ℚOrder.≤ radius (κ +⁺ φ)
   -q≤κ+φ =
@@ -668,7 +718,7 @@ bounded-byᶜ-close-zero κ μ x bound κ<μ =
         {y = x}
         {z = rational (radius κ)}
         q-φ≤x
-        (upperᶜ bound)
+        (upperᶜ {κ = κ} {x = x} bound)
 
     q≤κ+φ : q ℚOrder.≤ radius (κ +⁺ φ)
     q≤κ+φ =
@@ -695,7 +745,7 @@ bounded-byᶜ-close-zero κ μ x bound κ<μ =
         {y = -ᶜ x}
         {z = rational (radius κ)}
         -q-φ≤-x
-        (lowerᶜ bound)
+        (lowerᶜ {κ = κ} {x = x} bound)
 
     -q≤κ+φ : ℚ.- q ℚOrder.≤ radius (κ +⁺ φ)
     -q≤κ+φ =
@@ -749,7 +799,7 @@ bounded-small-scalar-close-zeroᶜ κ x x-bound a ε a-bound =
     Closeℚ a δ 0ℚ →
     RationalBoundᶜ δ a
   close-zero→bound δ a∼0 =
-    rational-boundᶜ
+    rational-boundᶜ {κ = δ} {q = a}
       (subst
         (λ ρ → ρ ℚOrder.< radius δ)
         (diff-zero-right a)
@@ -764,11 +814,11 @@ bounded-small-scalar-close-zeroᶜ κ x x-bound a ε a-bound =
     subst
       (λ ρ → ρ ℚOrder.< radius ε)
       (sym (diff-zero-right a))
-      (upperℚ a-bound) ,
+      (upperℚ {κ = ε} {q = a} a-bound) ,
     subst
       (λ ρ → ρ ℚOrder.< radius ε)
       (sym (zero-diff a))
-      (lowerℚ a-bound)
+      (lowerℚ {κ = ε} {q = a} a-bound)
 
   rounded-bound :
     ∥ Σ[ δ ∈ ℚ⁺ ] (δ <⁺ ε) × RationalBoundᶜ δ a ∥₁
@@ -795,7 +845,7 @@ rational-approximation-boundᶜ :
   x ∼[ half⁺ 1⁺ ] rational q →
   BoundedByᶜ (scalar-bound q) x
 rational-approximation-boundᶜ x q x∼q =
-  bounded-byᶜ
+  bounded-byᶜ {κ = scalar-bound q} {x = x}
     (≤ᶜ-trans
       {x = x}
       {y = rational (q ℚ.+ 1ℚ)}

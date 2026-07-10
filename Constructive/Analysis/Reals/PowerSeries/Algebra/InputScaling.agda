@@ -116,22 +116,19 @@ inputScalePowerSeriesOnBallWith
     {ρ = ρ}
     {μ = μ}
     convergence =
-  record
-    { antitoneModulus =
-        HasPowerSeriesOnBallWith.antitoneModulus convergence
-    ; tailBound =
-        λ h h-bound →
-          subst
-            (λ u → TailBound u μ)
-            (sym (funExt (inputScalePowerSeriesTerm r a h)))
-            (HasPowerSeriesOnBallWith.tailBound
-              convergence
-              (r ·ᶜ h)
-              (subst
-                (λ θ → BoundedByᶜ θ (r ·ᶜ h))
-                (*⁺-comm κ ρ)
-                (bounded-byᶜ-mul κ ρ r h r-bound h-bound)))
-    }
+  hasPowerSeriesOnBallWith
+    (HasPowerSeriesOnBallWith.antitoneModulus convergence)
+    (λ h h-bound →
+      subst
+        (λ u → TailBound u μ)
+        (sym (funExt (inputScalePowerSeriesTerm r a h)))
+        (HasPowerSeriesOnBallWith.tailBound
+          convergence
+          (r ·ᶜ h)
+          (subst
+            (λ θ → BoundedByᶜ θ (r ·ᶜ h))
+            (*⁺-comm κ ρ)
+            (bounded-byᶜ-mul κ ρ r h r-bound h-bound))))
 
 
 powerSeriesPartialSum-inputScale :

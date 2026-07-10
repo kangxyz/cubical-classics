@@ -160,13 +160,14 @@ finiteSupportPowerSeriesOnBallWith :
   PowerSeriesZeroAfter a N →
   {ρ : ℚ⁺} →
   HasPowerSeriesOnBallWith a ρ (λ _ → N)
-finiteSupportPowerSeriesOnBallWith N zeroAfter =
-  record
-    { antitoneModulus = λ _ → NatOrder.≤-refl
-    ; tailBound =
-        λ h _ →
-          finiteSupportPowerSeriesTailBound N zeroAfter h
-    }
+finiteSupportPowerSeriesOnBallWith {a = a} N zeroAfter {ρ = ρ} =
+  hasPowerSeriesOnBallWith
+    {a = a}
+    {ρ = ρ}
+    {μ = λ _ → N}
+    (λ _ → NatOrder.≤-refl)
+    (λ (h : ℝᶜ) _ →
+      finiteSupportPowerSeriesTailBound N zeroAfter h)
 
 
 finiteSupportPowerSeriesOnBall :

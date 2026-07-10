@@ -41,7 +41,12 @@ open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Intern
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using (PowerSeriesMajorizedOnBall ; majorizedOnBall→hasPowerSeriesOnBallWith)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
-  using (HasPowerSeriesOnBall ; HasPowerSeriesOnBallWith ; powerSeriesSumOnBall)
+  using
+    ( HasPowerSeriesOnBall
+    ; HasPowerSeriesOnBallWith
+    ; hasPowerSeriesOnBallWith
+    ; powerSeriesSumOnBall
+    )
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.Base
 open import Constructive.Analysis.Reals.PowerSeries.Recenter.Binomial
   using (triangularRowsSumᶜ)
@@ -148,31 +153,31 @@ recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
     d-bound
     margin
     majorized =
-  record
-    { antitoneModulus =
-        PowerSeriesMajorizedOnBall.majorAntitone
-          {a = a}
-          {ρ = σ}
-          {v = v}
-          {μ = ν}
-          majorized
-    ; tailBound =
-        λ h h-bound →
-          recenterTailBoundFromOuterApproxBounds
-            recenterData
+  hasPowerSeriesOnBallWith
+    {a = recenterPowerSeriesWith a d recenterData}
+    {ρ = τ}
+    {μ = recenterStrictSubballModulus δ τ σ ν}
+    (PowerSeriesMajorizedOnBall.majorAntitone
+      {a = a}
+      {ρ = σ}
+      {v = v}
+      {μ = ν}
+      majorized)
+    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ τ h) →
+      recenterTailBoundFromOuterApproxBounds
+        recenterData
+        h-bound
+        (λ ε m k N ν≤m →
+          recenterOuterTailApproxBoundFromMajorizedOnStrictSubball
+            d-bound
             h-bound
-            (λ ε m k N ν≤m →
-              recenterOuterTailApproxBoundFromMajorizedOnStrictSubball
-                d-bound
-                h-bound
-                probe-bound
-                majorized
-                ε
-                m
-                k
-                N
-                ν≤m)
-    }
+            probe-bound
+            majorized
+            ε
+            m
+            k
+            N
+            ν≤m))
   where
   recenterData : RecenterPowerSeriesData a d
   recenterData =

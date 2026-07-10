@@ -11,7 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ ; max)
 import Cubical.Data.Nat.Order as NatOrder
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
+open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd ; _×_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁)
 
@@ -34,20 +34,45 @@ open import Constructive.Data.PositiveRationals
 open import Constructive.Analysis.Reals.PowerSeries.Radius.Internal
 
 
-record HasPowerSeriesOnBallWith
-    (a : PowerSeries)
-    (ρ : ℚ⁺)
-    (μ : ℚ⁺ → ℕ) :
-    Type₀ where
-  no-eta-equality
+HasPowerSeriesOnBallWith :
+  PowerSeries →
+  ℚ⁺ →
+  (ℚ⁺ → ℕ) →
+  Type₀
+HasPowerSeriesOnBallWith a ρ μ =
+  AntitoneTailModulus μ ×
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    PowerSeriesTailBound a h μ)
 
-  field
-    antitoneModulus :
-      AntitoneTailModulus μ
-    tailBound :
-      (h : ℝᶜ) →
-      BoundedByᶜ ρ h →
-      PowerSeriesTailBound a h μ
+
+hasPowerSeriesOnBallWith :
+  {a : PowerSeries} {ρ : ℚ⁺} {μ : ℚ⁺ → ℕ} →
+  AntitoneTailModulus μ →
+  ((h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    PowerSeriesTailBound a h μ) →
+  HasPowerSeriesOnBallWith a ρ μ
+hasPowerSeriesOnBallWith antitone tail =
+  antitone , tail
+
+
+module HasPowerSeriesOnBallWith
+    {a : PowerSeries}
+    {ρ : ℚ⁺}
+    {μ : ℚ⁺ → ℕ}
+    (convergence : HasPowerSeriesOnBallWith a ρ μ) where
+  antitoneModulus :
+    AntitoneTailModulus μ
+  antitoneModulus =
+    convergence .fst
+
+  tailBound :
+    (h : ℝᶜ) →
+    BoundedByᶜ ρ h →
+    PowerSeriesTailBound a h μ
+  tailBound =
+    convergence .snd
 
 
 HasPowerSeriesOnBall :
@@ -588,16 +613,13 @@ hasPowerSeriesOnBallWith-cong :
   HasPowerSeriesOnBallWith a ρ μ →
   HasPowerSeriesOnBallWith b ρ μ
 hasPowerSeriesOnBallWith-cong {a = a} {b = b} {μ = μ} coeff≡ convergence =
-  record
-    { antitoneModulus =
-        HasPowerSeriesOnBallWith.antitoneModulus convergence
-    ; tailBound =
-        λ h h-bound →
-          subst
-            (λ u → TailBound u μ)
-            (powerSeriesTerm-cong-coefficients coeff≡ h)
-            (HasPowerSeriesOnBallWith.tailBound convergence h h-bound)
-    }
+  hasPowerSeriesOnBallWith
+    (HasPowerSeriesOnBallWith.antitoneModulus convergence)
+    (λ h h-bound →
+      subst
+        (λ u → TailBound u μ)
+        (powerSeriesTerm-cong-coefficients coeff≡ h)
+        (HasPowerSeriesOnBallWith.tailBound convergence h h-bound))
 
 
 hasPowerSeriesOnBall-cong :
@@ -618,16 +640,13 @@ hasPowerSeriesOnSubballWith :
   HasPowerSeriesOnBallWith a σ μ →
   HasPowerSeriesOnBallWith a ρ μ
 hasPowerSeriesOnSubballWith {ρ = ρ} {σ = σ} ρ≤σ convergence =
-  record
-    { antitoneModulus =
-        HasPowerSeriesOnBallWith.antitoneModulus convergence
-    ; tailBound =
-        λ h h-bound →
-          HasPowerSeriesOnBallWith.tailBound
-            convergence
-            h
-            (bounded-byᶜ-monotone ρ≤σ h-bound)
-    }
+  hasPowerSeriesOnBallWith
+    (HasPowerSeriesOnBallWith.antitoneModulus convergence)
+    (λ h h-bound →
+      HasPowerSeriesOnBallWith.tailBound
+        convergence
+        h
+        (bounded-byᶜ-monotone ρ≤σ h-bound))
 
 
 hasPowerSeriesOnSmallerBallWith :
@@ -663,14 +682,33 @@ hasPowerSeriesOnSmallerBall {ρ = ρ} {σ = σ} ρ<σ =
     (ℚOrder.<Weaken≤ (radius ρ) (radius σ) ρ<σ)
 
 
-record HasPowerSeriesRadius
-    (a : PowerSeries)
-    (R : ℚ⁺) :
-    Type₀ where
-  no-eta-equality
+HasPowerSeriesRadius :
+  PowerSeries →
+  ℚ⁺ →
+  Type₀
+HasPowerSeriesRadius a R =
+  (ρ : ℚ⁺) →
+  radius ρ ℚOrder.< radius R →
+  HasPowerSeriesOnBall a ρ
 
-  field
-    onSubball :
-      (ρ : ℚ⁺) →
-      radius ρ ℚOrder.< radius R →
-      HasPowerSeriesOnBall a ρ
+
+hasPowerSeriesRadius :
+  {a : PowerSeries} {R : ℚ⁺} →
+  ((ρ : ℚ⁺) →
+    radius ρ ℚOrder.< radius R →
+    HasPowerSeriesOnBall a ρ) →
+  HasPowerSeriesRadius a R
+hasPowerSeriesRadius onSubball =
+  onSubball
+
+
+module HasPowerSeriesRadius
+    {a : PowerSeries}
+    {R : ℚ⁺}
+    (radiusData : HasPowerSeriesRadius a R) where
+  onSubball :
+    (ρ : ℚ⁺) →
+    radius ρ ℚOrder.< radius R →
+    HasPowerSeriesOnBall a ρ
+  onSubball =
+    radiusData

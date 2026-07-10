@@ -38,6 +38,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Extension
     ; extendRationalLipschitzWithᶜ-continuous
     )
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+  hiding (upperᶜ ; lowerᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Density

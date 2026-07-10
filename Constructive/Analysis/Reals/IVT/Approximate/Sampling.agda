@@ -70,8 +70,8 @@ private
           {p = 0ℚ}
           {q = radius κ}
           (κ .snd)))
-      (upperᶜ bound)
-      (lowerᶜ bound)
+      (upperᶜ {κ = κ} {x = x} bound)
+      (lowerᶜ {κ = κ} {x = x} bound)
 
 
 nonnegativeSmallCloseBounded :
@@ -85,7 +85,11 @@ nonnegativeSmallCloseBounded :
   BoundedByᶜ (smallPrecision +⁺ boundPrecision) x
 nonnegativeSmallCloseBounded x q samplePrecision boundPrecision smallPrecision
     sample<bound 0≤q q<small x∼q =
-  bounded-byᶜ upperBounded lowerBounded
+  bounded-byᶜ
+    {κ = smallPrecision +⁺ boundPrecision}
+    {x = x}
+    upperBounded
+    lowerBounded
   where
   x≤q+bound : x ≤ᶜ rational (q ℚ.+ radius boundPrecision)
   x≤q+bound =

@@ -206,16 +206,16 @@ geometricPowerSeriesOnBallWithFromPowerBounds :
     ρ
     (positiveGeometricPowerModulus ρ ρ<1)
 geometricPowerSeriesOnBallWithFromPowerBounds ρ ρ<1 powerBounds =
-  record
-    { antitoneModulus =
-        positiveGeometricPowerModulus-antitone ρ ρ<1
-    ; tailBound =
-        λ h h-bound →
-          geometricPowerSeriesTailBoundFromPowerBounds
-            h
-            (realGeometricBoundOnBall ρ ρ<1 h h-bound)
-            (powerBounds h h-bound)
-    }
+  hasPowerSeriesOnBallWith
+    {a = geometricPowerSeries}
+    {ρ = ρ}
+    {μ = positiveGeometricPowerModulus ρ ρ<1}
+    (positiveGeometricPowerModulus-antitone ρ ρ<1)
+    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ ρ h) →
+      geometricPowerSeriesTailBoundFromPowerBounds
+        h
+        (realGeometricBoundOnBall ρ ρ<1 h h-bound)
+        (powerBounds h h-bound))
 
 
 alternatingGeometricPowerSeriesOnBallWithFromPowerBounds :
@@ -231,16 +231,16 @@ alternatingGeometricPowerSeriesOnBallWithFromPowerBounds :
     ρ
     (positiveGeometricPowerModulus ρ ρ<1)
 alternatingGeometricPowerSeriesOnBallWithFromPowerBounds ρ ρ<1 powerBounds =
-  record
-    { antitoneModulus =
-        positiveGeometricPowerModulus-antitone ρ ρ<1
-    ; tailBound =
-        λ h h-bound →
-          alternatingGeometricPowerSeriesTailBoundFromPowerBounds
-            h
-            (alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound)
-            (powerBounds h h-bound)
-    }
+  hasPowerSeriesOnBallWith
+    {a = alternatingGeometricPowerSeries}
+    {ρ = ρ}
+    {μ = positiveGeometricPowerModulus ρ ρ<1}
+    (positiveGeometricPowerModulus-antitone ρ ρ<1)
+    (λ (h : ℝᶜ) (h-bound : BoundedByᶜ ρ h) →
+      alternatingGeometricPowerSeriesTailBoundFromPowerBounds
+        h
+        (alternatingRealGeometricBoundOnBall ρ ρ<1 h h-bound)
+        (powerBounds h h-bound))
 
 
 geometricPowerSeriesOnBallWith :
@@ -328,18 +328,18 @@ alternatingGeometricPowerSeriesOnBall ρ ρ<1 =
 geometricPowerSeriesRadius :
   HasPowerSeriesRadius geometricPowerSeries 1⁺
 geometricPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          geometricPowerSeriesOnBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = geometricPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      geometricPowerSeriesOnBall ρ ρ<1)
 
 
 alternatingGeometricPowerSeriesRadius :
   HasPowerSeriesRadius alternatingGeometricPowerSeries 1⁺
 alternatingGeometricPowerSeriesRadius =
-  record
-    { onSubball =
-        λ ρ ρ<1 →
-          alternatingGeometricPowerSeriesOnBall ρ ρ<1
-    }
+  hasPowerSeriesRadius
+    {a = alternatingGeometricPowerSeries}
+    {R = 1⁺}
+    (λ ρ ρ<1 →
+      alternatingGeometricPowerSeriesOnBall ρ ρ<1)

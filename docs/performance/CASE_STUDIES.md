@@ -143,6 +143,57 @@ targets. Rewriting both splits as `Sum.rec` with named `left` and `right`
 branches reduced the module to about 171 milliseconds in the aggregate
 profile.
 
+### CauchyReals.Order.Bounded: unpack bound proof records
+
+`Constructive.Analysis.Reals.CauchyReals.Order.Bounded` stayed near the top of
+the full Constructive profile even though no single proof body dominated a
+definitions profile. An isolated target internal profile of the original
+module, using the runbook recipe with only this file's copied interface
+removed, checked in about 10.2 seconds with about 5.4 seconds under
+`Positivity`.
+
+The hot declarations were the public proof-data records `RationalBoundᶜ`,
+`RationalClosedBoundᶜ`, and `BoundedByᶜ`. They only package upper and lower
+bound proofs, but their dependent field types make the positivity checker
+revisit a large Cauchy-real order surface. Replacing them with transparent
+pair aliases, constructor-shaped helper functions, and projection modules
+kept the API shape but removed the record declarations. The same isolated
+target profile then checked in about 4.9 seconds, with `Positivity` at about
+13 milliseconds.
+
+This migration needed downstream cleanup: constructor helpers and projection
+functions no longer get record elaboration behavior, so some uses require
+explicit `{κ}`, `{q}`, or `{x}` arguments. Avoid exporting unqualified
+projection names into modules that declare their own fields with the same
+names; hide `upperᶜ` and `lowerᶜ` on import when a module defines a local
+`lowerᶜ` field.
+
+### PowerSeries.Radius.Sum: unpack radius convergence records
+
+A 2026-07-10 cold local aggregate over every `Constructive` module found
+`Constructive.Analysis.Reals.PowerSeries.Radius.Sum` as the largest outlier:
+about 58.1 seconds in a 251.6 second aggregate. An isolated target internal
+profile, using the runbook recipe with only the copied `Radius/Sum.agdai`
+removed, checked the original module in about 63.4 seconds with about
+58.8 seconds under `Positivity`.
+
+The hot declarations were not proof bodies. They were the public proof-data
+records `HasPowerSeriesOnBallWith` and `HasPowerSeriesRadius`, which package
+an antitone modulus, tail-bound function, and subball convergence function.
+Replacing `HasPowerSeriesOnBallWith` with a transparent pair alias and
+`HasPowerSeriesRadius` with a function alias removed the record declarations
+while keeping constructor-shaped helper functions and projection modules for
+call sites.
+
+The migration had a larger downstream surface than the local file: existing
+record literals had to become calls to `hasPowerSeriesOnBallWith` or
+`hasPowerSeriesRadius`, and several projection/helper uses needed explicit
+hidden arguments because record elaboration was no longer filling them in.
+After the migration, the same isolated target profile checked in about
+4.8 seconds and `Positivity` disappeared from the reported buckets. The next
+cold whole-`Constructive` aggregate checked in about 183.2 seconds, with
+`Radius.Sum` down to about 228 milliseconds.
+
 ## Constructive Reals Aggregate Pass
 
 ### Constructive.Analysis.Reals: aggregate before and after
