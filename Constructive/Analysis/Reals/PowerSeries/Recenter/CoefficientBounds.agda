@@ -16,11 +16,11 @@ open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positivePower ; positivePower-radius)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
+open import Constructive.Analysis.GeometricDecay.Rational
   using (rationalPower)
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
   using
     ( derivativeStrictSubballRatio
     ; derivativeStrictSubballRatio<1

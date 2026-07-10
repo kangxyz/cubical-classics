@@ -18,7 +18,7 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.HITs.PropositionalTruncation as Prop
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -31,9 +31,10 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower)
-open import Constructive.Analysis.Reals.Sequences.Base
+open import Constructive.Analysis.Modulus
   using
-    ( maxModulus
+    ( AntitoneNatModulus
+    ; maxModulus
     ; maxModulus-antitone
     ; maxModulus-left≤
     ; maxModulus-right≤
@@ -49,8 +50,8 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra.Internal
 
 splitTailModulus-antitone :
   {μ : ℚ⁺ → ℕ} →
-  AntitoneTailModulus μ →
-  AntitoneTailModulus (splitModulus μ)
+  AntitoneNatModulus μ →
+  AntitoneNatModulus (splitModulus μ)
 splitTailModulus-antitone μ-ant {ε = ε} {δ = δ} ε≤δ =
   μ-ant
     {ε = half⁺ ε}
@@ -60,9 +61,9 @@ splitTailModulus-antitone μ-ant {ε = ε} {δ = δ} ε≤δ =
 
 maxTailModulus-antitone :
   {μ ν : ℚ⁺ → ℕ} →
-  AntitoneTailModulus μ →
-  AntitoneTailModulus ν →
-  AntitoneTailModulus (maxModulus μ ν)
+  AntitoneNatModulus μ →
+  AntitoneNatModulus ν →
+  AntitoneNatModulus (maxModulus μ ν)
 maxTailModulus-antitone =
   maxModulus-antitone
 

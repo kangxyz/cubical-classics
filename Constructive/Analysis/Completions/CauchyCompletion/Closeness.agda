@@ -7,5 +7,5 @@ Closeness properties for Cauchy completions
 module Constructive.Analysis.Completions.CauchyCompletion.Closeness where
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.ReflexiveSymmetric public
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Computed public
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Computed public
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Rounded public

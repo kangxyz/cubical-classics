@@ -18,10 +18,11 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Data.Sum using (inl ; inr)
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
@@ -169,7 +170,7 @@ comparisonSeriesTailBound :
   SeriesMajorizedBy u v →
   {μ : ℚ⁺ → ℕ} →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   SeriesTailBound u (λ ε → μ (half⁺ ε))
 comparisonSeriesTailBound majorized v-tail μ-antitone =
   tailBound→SeriesTailBound
@@ -182,7 +183,7 @@ comparisonSeriesSum :
   SeriesMajorizedBy u v →
   (μ : ℚ⁺ → ℕ) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ℝᶜ
 comparisonSeriesSum {u = u} majorized μ v-tail μ-antitone =
   seriesSumFromFiniteTailBound

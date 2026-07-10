@@ -14,7 +14,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision
@@ -32,7 +32,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.DomainSc
     ; divideByPositiveStrictSubunitRadius<1
     ; divideByPositiveᶜ-strictSubunitBound
     )
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.Core
   using (onePlusStrictSubunitDomain)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational

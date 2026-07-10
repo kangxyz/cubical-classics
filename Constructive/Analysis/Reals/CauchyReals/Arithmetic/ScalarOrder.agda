@@ -15,7 +15,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Metric.Map
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Extension
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Data.PositiveRationals

@@ -4,7 +4,7 @@ Algebra helpers for geometric-series identities
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Analysis.Reals.Series.Instances.Geometric.Algebra where
+module Constructive.Analysis.GeometricDecay.Algebra where
 
 open import Cubical.Foundations.Prelude
 

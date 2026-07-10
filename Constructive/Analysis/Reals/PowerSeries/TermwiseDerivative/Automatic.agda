@@ -15,11 +15,11 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
   using (HasDerivativeAt ; HasDerivativeAtWith)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
-open import Constructive.Analysis.Reals.PowerSeries.Analytic
+open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
   using (HasPowerSeriesAtWith)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation

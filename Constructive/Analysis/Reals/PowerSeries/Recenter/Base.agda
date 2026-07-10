@@ -12,9 +12,10 @@ import Cubical.Data.Nat as Nat
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 import Cubical.Data.Nat.Order as NatOrder
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Metric.Base
   using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -24,8 +25,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; TailBound
+    ( TailBound
     ; drop
     ; drop-index
     ; partialSum
@@ -117,7 +117,7 @@ record RecenterCoefficientConvergenceData
       TailBound (recenterCoefficientTerm a d n) modulus
 
     modulus-antitone :
-      AntitoneTailModulus modulus
+      AntitoneNatModulus modulus
 
 
 open RecenterCoefficientConvergenceData public
@@ -230,7 +230,7 @@ recenterCoefficientTermAtZeroTailBound a n ε m k 1≤m =
 
 
 recenterCoefficientTermAtZeroModulusAntitone :
-  AntitoneTailModulus (λ _ → suc zero)
+  AntitoneNatModulus (λ _ → suc zero)
 recenterCoefficientTermAtZeroModulusAntitone _ =
   NatOrder.≤-refl
 

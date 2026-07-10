@@ -20,7 +20,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.Analysis.Metric.Base
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -34,8 +34,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Properties
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
   using (≤ᶜ→diffᶜ-nonnegative)
-open import Constructive.Analysis.Reals.Interval
-open import Constructive.Analysis.Reals.Interval.Grid
+open import Constructive.Analysis.Reals.Interval.Base
+open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Analysis.Reals.Interval.Grid.Cover
 open import Constructive.Analysis.Reals.Interval.Grid.Rational
   using (rationalExactStep ; rationalExactStepGridData)

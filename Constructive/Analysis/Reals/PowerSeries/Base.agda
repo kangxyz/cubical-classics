@@ -10,6 +10,7 @@ open import Cubical.Foundations.Prelude
 
 open import Cubical.Data.Nat using (ℕ)
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
@@ -110,7 +111,7 @@ powerSeriesSumFromFiniteTailBound :
   (h : ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   PowerSeriesTailBound a h μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ℝᶜ
 powerSeriesSumFromFiniteTailBound a h μ tailBound μ-antitone =
   seriesSumFromFiniteTailBound
@@ -125,7 +126,7 @@ powerSeriesConvergesFromFiniteTailBound :
   (h : ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : PowerSeriesTailBound a h μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   MetricCauchy.ConvergesTo
     (seriesCauchyApproximationFromFiniteTailBound
       (powerSeriesTerm a h)

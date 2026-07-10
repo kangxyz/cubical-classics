@@ -29,8 +29,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude using (neg-zeroᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
-open import Constructive.Analysis.Reals.Interval
-open import Constructive.Analysis.Reals.Interval.Grid
+open import Constructive.Analysis.Reals.Interval.Base
+open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Analysis.Reals.IVT.Approximate.Sampling
 open import Constructive.Analysis.Reals.IVT.Uniform
 open import Constructive.Analysis.Reals.Locator.Base

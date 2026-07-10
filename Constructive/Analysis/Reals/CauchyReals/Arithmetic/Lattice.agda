@@ -18,7 +18,7 @@ open ClosenessOf RationalsMetricSpace
 open ComputedOf RationalsMetricSpace
 open RoundedOf RationalsMetricSpace
 open import Constructive.Analysis.Metric.Map
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Extension
 import Constructive.Data.Rationals as Rational
 

@@ -13,6 +13,7 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
   using (0ᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
@@ -32,8 +33,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
   using (≤ℚ→rational≤ᶜ)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; drop
     ; drop-index
@@ -42,7 +42,7 @@ open import Constructive.Analysis.Reals.Series
     )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positivePower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)
@@ -53,7 +53,12 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra.Pointwise
     ; rationalScaleTailBound
     )
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
+  using
+    ( positiveRationalSelfBounded
+    ; powerSeriesCoefficientFromRationalProbe
+    )
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
   using
     ( absᶜ-mul≤product
     ; absᶜ-rational-nonnegative
@@ -61,8 +66,6 @@ open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Intern
     ; derivativeStrictSubballRatio
     ; derivativeStrictSubballRatio<1
     ; mulᶜ-nonnegative
-    ; positiveRationalSelfBounded
-    ; powerSeriesCoefficientFromRationalProbe
     ; tripleScalarProductPath
     )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
@@ -588,7 +591,7 @@ private
     (δ<σ : radius δ ℚOrder.< radius σ) →
     PowerSeriesMajorizedOnBall a σ v ν →
     (n : ℕ) →
-    AntitoneTailModulus
+    AntitoneNatModulus
       (rationalScaleModulus
         (radius (recenterCoefficientScale δ σ δ<σ n))
         ν)

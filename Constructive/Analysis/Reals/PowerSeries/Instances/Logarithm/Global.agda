@@ -17,7 +17,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 import Constructive.Algebra.OrderedCommRing.Properties as OrderedProperties
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -51,7 +51,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Radius
     ; powerSeriesSumOnBall
     ; powerSeriesSumOnBall-data-independent
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational

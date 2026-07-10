@@ -15,7 +15,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁)
 
 open import Constructive.Data.PositiveRationals
-open import Constructive.Analysis.Metric
+open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Map
 
 private

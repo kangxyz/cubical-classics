@@ -39,7 +39,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Bounds
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Coefficients
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Convergence
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational

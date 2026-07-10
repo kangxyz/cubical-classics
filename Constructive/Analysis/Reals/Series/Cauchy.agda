@@ -20,8 +20,10 @@ open import Cubical.Data.Sum using (inl ; inr)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base
+open import Constructive.Analysis.Modulus
+  using (AntitoneNatModulus ; NatModulus ; half-mono-≤)
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
@@ -42,24 +44,11 @@ open ClosenessOf RationalsMetricSpace
 
 open import Constructive.Analysis.Reals.Series.Finite
 open import Constructive.Analysis.Reals.Series.Tail
-open import Constructive.Analysis.Reals.Sequences.Base using (Sequence ; NatModulus)
+open import Constructive.Analysis.Reals.Sequences.Base using (Sequence)
 import Constructive.Analysis.Reals.Sequences.Algebra as SeqAlg
 import Constructive.Analysis.Reals.Sequences.Cauchy as SeqCauchy
 import Constructive.Analysis.Reals.Sequences.Convergence as SeqConv
 import Constructive.Analysis.Reals.Sequences.Order as SeqOrder
-
-private
-  half-mono-≤ :
-    {ε δ : ℚ⁺} →
-    radius ε ℚOrder.≤ radius δ →
-    radius (half⁺ ε) ℚOrder.≤ radius (half⁺ δ)
-  half-mono-≤ {ε = ε} {δ = δ} ε≤δ =
-    ℚOrder.≤-·o
-      (radius ε)
-      (radius δ)
-      Rational.1/2
-      (ℚOrder.<Weaken≤ 0ℚ Rational.1/2 Rational.0<1/2)
-      ε≤δ
 
 partialSumSequence :
   (ℕ → ℝᶜ) →
@@ -91,7 +80,7 @@ abstract
   tailBound→SeriesTailBound :
     {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
     TailBound u μ →
-    AntitoneTailModulus μ →
+    AntitoneNatModulus μ →
     SeriesTailBound u (λ ε → μ (half⁺ ε))
   tailBound→SeriesTailBound {u = u} {μ = μ} tailBound μ-antitone ε δ =
     tailBound-pair
@@ -173,7 +162,7 @@ seriesCauchyApproximationFromFiniteTailBound :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   TailBound u μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   MetricCauchy.CauchyApproximation CauchyRealsMetricSpace
 seriesCauchyApproximationFromFiniteTailBound u μ tailBound μ-antitone =
   seriesCauchyApproximationFromTailBound
@@ -198,7 +187,7 @@ seriesSumFromFiniteTailBound :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   TailBound u μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ℝᶜ
 seriesSumFromFiniteTailBound u μ tailBound μ-antitone =
   seriesSum
@@ -225,7 +214,7 @@ seriesSumFromFiniteTailBoundConverges :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   MetricCauchy.ConvergesTo
     (seriesCauchyApproximationFromFiniteTailBound u μ tailBound μ-antitone)
     (seriesSumFromFiniteTailBound u μ tailBound μ-antitone)
@@ -240,7 +229,7 @@ seriesSumFromFiniteTailBoundConvergesAt :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   (ε : ℚ⁺) →
   (n : ℕ) →
   NatOrder._≤_ (μ (quarter⁺ (half⁺ ε))) n →
@@ -329,7 +318,7 @@ seriesSumFromFiniteTailBoundConvergesTo :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   SeqConv.ConvergesTo
     (partialSumSequence u)
     (seriesSumFromFiniteTailBound u μ tailBound μ-antitone)
@@ -361,7 +350,7 @@ seriesSumFromFiniteTailBound-mul-left-convergesAt :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   (ε : ℚ⁺) →
   (n : ℕ) →
   NatOrder._≤_
@@ -408,7 +397,7 @@ seriesSumFromFiniteTailBound-drop :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   (m : ℕ) →
   seriesSumFromFiniteTailBound u μ tailBound μ-antitone ≡
   partialSum u m +ᶜ
@@ -507,7 +496,7 @@ seriesSumFromFiniteTailBound-drop u μ tailBound μ-antitone m =
 absoluteSummable→SeriesTailBound :
   {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
   AbsolutelySummableWith u μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   SeriesTailBound u (λ ε → μ (half⁺ ε))
 absoluteSummable→SeriesTailBound absTail μ-antitone =
   tailBound→SeriesTailBound
@@ -519,7 +508,7 @@ absoluteSummable→seriesSum :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   AbsolutelySummableWith u μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ℝᶜ
 absoluteSummable→seriesSum u μ absTail μ-antitone =
   seriesSumFromFiniteTailBound
@@ -533,7 +522,7 @@ seriesSumFromFiniteTailBound-unique :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   (x : ℝᶜ) →
   SeqConv.ConvergesTo (partialSumSequence u) x →
   x ≡ seriesSumFromFiniteTailBound u μ tailBound μ-antitone
@@ -547,7 +536,7 @@ seriesSumFromFiniteTailBound-neg :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   seriesSumFromFiniteTailBound
     (λ n → -ᶜ u n)
     μ
@@ -613,7 +602,7 @@ seriesSumFromFiniteTailBound-add :
   (uTailBound : TailBound u μ) →
   (vTailBound : TailBound v μ) →
   (sumTailBound : TailBound (λ n → u n +ᶜ v n) μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   seriesSumFromFiniteTailBound
     (λ n → u n +ᶜ v n)
     μ

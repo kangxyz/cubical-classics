@@ -11,11 +11,11 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ)
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; comparisonTest
     )
@@ -39,7 +39,7 @@ RecenterCoefficientMajorantData a d n =
             coefficientMajorant ]
         Σ[ coefficientMajorTail ∈
             TailBound coefficientMajorant coefficientModulus ]
-          AntitoneTailModulus coefficientModulus
+          AntitoneNatModulus coefficientModulus
 
 
 module RecenterCoefficientMajorantData where
@@ -90,7 +90,7 @@ module RecenterCoefficientMajorantData where
     {d : ℝᶜ} →
     {n : ℕ} →
     (majorantData : RecenterCoefficientMajorantData a d n) →
-    AntitoneTailModulus (coefficientModulus majorantData)
+    AntitoneNatModulus (coefficientModulus majorantData)
   coefficientMajorAntitone majorantData =
     majorantData .snd .snd .snd .snd
 

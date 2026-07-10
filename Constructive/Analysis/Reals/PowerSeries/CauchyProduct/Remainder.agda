@@ -19,7 +19,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -64,8 +64,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
   using (diffᶜ-nonnegative→≤ᶜ ; ≤ᶜ-add)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; comparisonTest
     ; diff-close-zero→close
@@ -119,8 +118,13 @@ open ClosenessOf RationalsMetricSpace
 import Constructive.Analysis.Reals.Sequences.Algebra as SeqAlg
 import Constructive.Analysis.Reals.Sequences.Convergence as SeqConv
 import Constructive.Analysis.Reals.Sequences.Order as SeqOrder
-open import Constructive.Analysis.Reals.Sequences.Base
-  using (maxModulus ; maxModulus-left≤ ; maxModulus-right≤)
+open import Constructive.Analysis.Modulus
+  using
+    ( AntitoneNatModulus
+    ; maxModulus
+    ; maxModulus-left≤
+    ; maxModulus-right≤
+    )
 
 open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Internal
 open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Core
@@ -130,7 +134,7 @@ seriesSumFromFiniteTailBound-cong :
   {μ : ℚ⁺ → ℕ} →
   (u≡v : u ≡ v) →
   (uTail : TailBound u μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   seriesSumFromFiniteTailBound u μ uTail μ-antitone ≡
   seriesSumFromFiniteTailBound
     v
@@ -194,9 +198,9 @@ sequenceCauchyProductPartialSumsConvergeToProductFromRemainderConvergence :
   (ν τ χ β : ℚ⁺ → ℕ) →
   (κ ι : ℚ⁺) →
   (uTail : TailBound u ν) →
-  (ν-antitone : AntitoneTailModulus ν) →
+  (ν-antitone : AntitoneNatModulus ν) →
   (vTail : TailBound v τ) →
-  (τ-antitone : AntitoneTailModulus τ) →
+  (τ-antitone : AntitoneNatModulus τ) →
   BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone) →
   SeqAlg.EventuallyBoundedByWith β κ (partialSumSequence v) →
   SeqConv.ConvergesWithModulus
@@ -345,11 +349,11 @@ sequenceCauchyProductSumProductFromRemainderConvergence :
   (ν τ μ χ β : ℚ⁺ → ℕ) →
   (κ ι : ℚ⁺) →
   (uTail : TailBound u ν) →
-  (ν-antitone : AntitoneTailModulus ν) →
+  (ν-antitone : AntitoneNatModulus ν) →
   (vTail : TailBound v τ) →
-  (τ-antitone : AntitoneTailModulus τ) →
+  (τ-antitone : AntitoneNatModulus τ) →
   (productTail : TailBound (sequenceCauchyProduct u v) μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone) →
   SeqAlg.EventuallyBoundedByWith β κ (partialSumSequence v) →
   SeqConv.ConvergesWithModulus
@@ -529,11 +533,11 @@ sequenceCauchyProductSumProductFromRemainderBound :
   (ν τ μ χ β : ℚ⁺ → ℕ) →
   (κ ι : ℚ⁺) →
   (uTail : TailBound u ν) →
-  (ν-antitone : AntitoneTailModulus ν) →
+  (ν-antitone : AntitoneNatModulus ν) →
   (vTail : TailBound v τ) →
-  (τ-antitone : AntitoneTailModulus τ) →
+  (τ-antitone : AntitoneNatModulus τ) →
   (productTail : TailBound (sequenceCauchyProduct u v) μ) →
-  (μ-antitone : AntitoneTailModulus μ) →
+  (μ-antitone : AntitoneNatModulus μ) →
   BoundedByᶜ ι (seriesSumFromFiniteTailBound u ν uTail ν-antitone) →
   SeqAlg.EventuallyBoundedByWith β κ (partialSumSequence v) →
   ((ε : ℚ⁺) →

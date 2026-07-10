@@ -14,9 +14,9 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment
+open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Base
   using (bounded-byᶜ-scale-unitInterval ; bounded-byᶜ-zero ; segmentPoint)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
 open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.BoundedSegment
   using (zeroDerivativeWithinDomainSegment)
 open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Rules
@@ -40,7 +40,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
   using (≤ᶜ-add ; negᶜ-pres≤ᶜ)
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using (powerSeriesSumOnBall-zero)
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Base
   using
     ( logOnePlusPowerSeries
     ; logOnePlusPowerSeriesCoefficient-zero
@@ -48,7 +48,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
     ; logOnePlusᶜWithinSubunitBall
     )
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.DomainScaling
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.Core
   using
     ( onePlusStrictSubunitDomain
     ; positiveDivision-denominatorMulOnePlus-path
@@ -64,7 +64,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Function
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global
   using (logᶜ-positive-bounded)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational

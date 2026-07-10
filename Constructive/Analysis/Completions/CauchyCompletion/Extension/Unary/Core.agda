@@ -4,7 +4,7 @@ Extension helpers for Cauchy completions
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Completions.CauchyCompletion.Extension.Internal.Unary where
+module Constructive.Analysis.Completions.CauchyCompletion.Extension.Unary.Core where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -26,8 +26,8 @@ open import Constructive.Analysis.Metric.Map
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Completions.CauchyCompletion.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.ReflexiveSymmetric
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Computed
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Prelength
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Computed
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Prelength
 open import Constructive.Analysis.Completions.CauchyCompletion.Induction
 open import Constructive.Analysis.Completions.CauchyCompletion.Recursion
 open import Constructive.Data.PositiveRationals

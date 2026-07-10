@@ -13,8 +13,9 @@ open import Cubical.Data.Nat using (ℕ ; suc ; zero)
 import Cubical.Data.Nat.Order as NatOrder
 import Cubical.Data.Rationals.Order as ℚOrder
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Metric.Base
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision
@@ -40,7 +41,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Geometric
     ; alternatingGeometricPowerSeriesTerm
     ; alternatingGeometricPowerSeriesTermPath
     )
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Base
   using
     ( derivativePowerSeries-logOnePlus
     ; logOnePlusPowerSeries
@@ -56,14 +57,13 @@ open import Constructive.Analysis.Reals.PowerSeries.Radius
     )
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; TailBound
+    ( TailBound
     ; partialSum
     ; seriesSumFromFiniteTailBound-mul-left-convergesAt
     ; tailSum
     ; tailSum-one
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using
     ( positiveGeometricPowerModulus
     ; positiveGeometricPowerModulus-antitone
@@ -140,7 +140,7 @@ alternatingGeometricPowerSeriesNeumannRightInverseOnBall
   μ =
     positiveGeometricPowerModulus ρ ρ<1
 
-  μ-antitone : AntitoneTailModulus μ
+  μ-antitone : AntitoneNatModulus μ
   μ-antitone =
     positiveGeometricPowerModulus-antitone ρ ρ<1
 

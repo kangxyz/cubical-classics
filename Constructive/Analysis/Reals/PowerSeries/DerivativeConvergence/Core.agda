@@ -16,6 +16,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
   using (0ᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
@@ -72,15 +73,14 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
   using (≤ℚ→rational≤ᶜ)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; drop
     ; tailBound-drop
     )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using
     ( positiveGeometricGap
     ; positiveGeometricPower-linear-bound
@@ -88,7 +88,7 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
     ; positivePower-radius
     ; positiveRationalPower-nonnegative
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
+open import Constructive.Analysis.GeometricDecay.Rational
   using (rationalPower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)
@@ -106,7 +106,8 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
+  using (naturalRealBound)
 
 
 derivativePowerSeriesTermBoundPrecision :
@@ -133,7 +134,7 @@ DerivativePowerSeriesBoundMajorantOnBall κ ρ =
             v n) ]
         Σ[ majorantNonnegative ∈ ((n : ℕ) → 0ᶜ ≤ᶜ v n) ]
           Σ[ majorTail ∈ TailBound v μ ]
-            AntitoneTailModulus μ
+            AntitoneNatModulus μ
 
 
 derivativePowerSeriesTermBoundsFromCoefficientBoundsWith :
@@ -189,7 +190,7 @@ derivativePowerSeriesOnBallWithFromCoefficientBoundsAndMajorant :
     v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBallWith (derivativePowerSeries a) ρ μ
 derivativePowerSeriesOnBallWithFromCoefficientBoundsAndMajorant
     {a = a}
@@ -230,7 +231,7 @@ derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant :
     v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBall (derivativePowerSeries a) ρ
 derivativePowerSeriesOnBallFromCoefficientBoundsAndMajorant
     {a = a}

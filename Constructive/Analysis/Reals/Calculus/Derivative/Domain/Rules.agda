@@ -14,7 +14,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing

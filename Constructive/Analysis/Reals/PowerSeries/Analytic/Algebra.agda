@@ -13,7 +13,7 @@ open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -26,9 +26,9 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.Series
-  using (AntitoneTailModulus ; TailBound)
-open import Constructive.Analysis.Reals.Sequences.Base
-  using (maxModulus ; splitModulus)
+  using (TailBound)
+open import Constructive.Analysis.Modulus
+  using (AntitoneNatModulus ; maxModulus ; splitModulus)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using
@@ -240,7 +240,7 @@ hasPowerSeriesAtWith-cauchyProductFromMajorants :
   PowerSeriesMajorizedOnBall a ρ A ν →
   PowerSeriesMajorizedOnBall b ρ B τ →
   TailBound (sequenceCauchyProduct A B) μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesAtWith
     (λ x → f x ·ᶜ g x)
     c
@@ -381,7 +381,7 @@ hasPowerSeriesWithinAtWith-cauchyProductFromMajorants :
   PowerSeriesMajorizedOnBall a ρ A ν →
   PowerSeriesMajorizedOnBall b ρ B τ →
   TailBound (sequenceCauchyProduct A B) μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesWithinAtWith
     {D = D}
     (λ x domain → f x domain ·ᶜ g x domain)

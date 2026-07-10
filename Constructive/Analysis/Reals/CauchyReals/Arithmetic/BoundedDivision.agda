@@ -14,7 +14,7 @@ open import Cubical.Relation.Nullary using (¬_)
 
 import Constructive.Algebra.OrderedCommRing.Properties as OrderedProperties
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup

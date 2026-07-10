@@ -15,7 +15,8 @@ open import Cubical.Algebra.OrderedCommRing
 import Constructive.Algebra.OrderedHeytingField.Base as OrderedHeytingField
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
-open import Constructive.Analysis.Completions.DedekindCompletion
+open import Constructive.Analysis.Completions.DedekindCompletion.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Order
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Multiplication
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Order

@@ -29,8 +29,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Density
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
-open import Constructive.Analysis.Reals.Interval
-open import Constructive.Analysis.Reals.Interval.Grid
+open import Constructive.Analysis.Reals.Interval.Base
+open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Analysis.Reals.IVT.GridSearch
 open import Constructive.Analysis.Reals.IVT.Uniform
 open import Constructive.Data.PositiveRationals

@@ -15,10 +15,10 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
   using (bounded-byᶜ-mul)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positivePower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.Continuity
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
   using (PowerSeriesCoefficientBounds)
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using (inverseSucReal ; primitivePowerSeries)
@@ -29,7 +29,7 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
     ; powerSeriesIteratedFormalPartialDerivativeBoundsFromSeriesCoefficientBounds
     )
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Coefficients
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Base
   using
     ( logInverseSucRealBoundOne
     ; logOneBoundOne

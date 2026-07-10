@@ -12,7 +12,7 @@ open import Constructive.Analysis.Completions.CauchyCompletion.Definitions publi
 open import Constructive.Analysis.Completions.CauchyCompletion.Induction public
 open import Constructive.Analysis.Completions.CauchyCompletion.Recursion public
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness public
-open import Constructive.Analysis.Metric.Instances.CauchyReals public
+open import Constructive.Analysis.Reals.CauchyReals.Metric public
   using (CauchyRealsIsCauchyComplete)
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Base public

@@ -1,93 +1,26 @@
 {-
 
-Positive-rational rates for contraction arguments
+Positive-rational geometric decay rates
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Analysis.FixedPoint.Rate where
+module Constructive.Analysis.GeometricDecay.Rate where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.CommRing.Instances.Rationals using (ℚCommRing)
 import Cubical.Data.Nat as Nat
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; _×_)
-open import Cubical.Tactics.CommRingSolver.Reflection
-open import Cubical.Relation.Nullary using (¬_)
 
+open import Constructive.Analysis.GeometricDecay.Algebra
+open import Constructive.Analysis.GeometricDecay.Modulus
+open import Constructive.Analysis.GeometricDecay.Rational
+open import Constructive.Analysis.Modulus
 open import Constructive.Data.PositiveRationals
-open import Constructive.Preliminary.Nat.BoundedSearch
 import Constructive.Data.Rationals as Rational
-
-
-private
-  module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
-    open CommRingStr (𝓡 .snd)
-
-    segment-zero :
-      (r p : 𝓡 .fst) →
-      (1r - r) · 0r ≡ p - p
-    segment-zero _ _ =
-      solve! 𝓡
-
-    segment-distrib :
-      (r p s : 𝓡 .fst) →
-      (1r - r) · (p + s) ≡ ((1r - r) · p) + ((1r - r) · s)
-    segment-distrib _ _ _ =
-      solve! 𝓡
-
-    segment-step :
-      (r p t : 𝓡 .fst) →
-      ((1r - r) · p) + ((r · p) - t) ≡ p - t
-    segment-step _ _ _ =
-      solve! 𝓡
-
-    linear-zero :
-      1r · (1r + 0r) ≡ 1r
-    linear-zero =
-      solve! 𝓡
-
-    linear-factor-step :
-      (q N : 𝓡 .fst) →
-      q · ((1r + N) + (1r - q)) ≡
-      (1r + N) - ((1r - q) · (N + (1r - q)))
-    linear-factor-step _ _ =
-      solve! 𝓡
-
-    power-linear-step :
-      (q p N d : 𝓡 .fst) →
-      (q · p) · (1r + (N + d)) ≡
-      p · (q · ((1r + N) + d))
-    power-linear-step _ _ _ _ =
-      solve! 𝓡
-
-
-NatModulus : Type₀
-NatModulus =
-  ℚ⁺ → ℕ
-
-
-AntitoneNatModulus :
-  NatModulus →
-  Type₀
-AntitoneNatModulus μ =
-  {ε δ : ℚ⁺} →
-  radius ε ℚOrder.≤ radius δ →
-  NatOrder._≤_ (μ δ) (μ ε)
-
-
-rationalPower :
-  ℚ →
-  ℕ →
-  ℚ
-rationalPower r zero =
-  Rational.1ℚ
-rationalPower r (suc n) =
-  r ℚ.· rationalPower r n
 
 
 positivePower :
@@ -110,11 +43,11 @@ positivePower-radius ρ (suc n) =
   cong (radius ρ ℚ.·_) (positivePower-radius ρ n)
 
 
-rationalPower-nonnegative :
+positiveRationalPower-nonnegative :
   (ρ : ℚ⁺) →
   (n : ℕ) →
   Rational.0ℚ ℚOrder.≤ rationalPower (radius ρ) n
-rationalPower-nonnegative ρ n =
+positiveRationalPower-nonnegative ρ n =
   Rational.<→≤
     {p = Rational.0ℚ}
     {q = rationalPower (radius ρ) n}
@@ -122,233 +55,6 @@ rationalPower-nonnegative ρ n =
       (λ q → Rational.0ℚ ℚOrder.< q)
       (positivePower-radius ρ n)
       (positivePower ρ n .snd))
-
-
-rationalGeometricSegmentSumℚ :
-  ℚ →
-  ℕ →
-  ℕ →
-  ℚ
-rationalGeometricSegmentSumℚ r m zero =
-  Rational.0ℚ
-rationalGeometricSegmentSumℚ r m (suc k) =
-  rationalPower r m ℚ.+ rationalGeometricSegmentSumℚ r (suc m) k
-
-
-rationalGeometricSegmentFiniteIdentity :
-  (r : ℚ) →
-  (m k : ℕ) →
-  (Rational.1ℚ ℚ.- r) ℚ.· rationalGeometricSegmentSumℚ r m k ≡
-  rationalPower r m ℚ.- rationalPower r (m Nat.+ k)
-rationalGeometricSegmentFiniteIdentity r m zero =
-  SolverHelpers.segment-zero ℚCommRing r (rationalPower r m) ∙
-  cong
-    (λ p → rationalPower r m ℚ.- p)
-    (cong (rationalPower r) (sym (Nat.+-zero m)))
-rationalGeometricSegmentFiniteIdentity r m (suc k) =
-  SolverHelpers.segment-distrib ℚCommRing r p S ∙
-  cong
-    (((Rational.1ℚ ℚ.- r) ℚ.· p) ℚ.+_)
-    (rationalGeometricSegmentFiniteIdentity r (suc m) k) ∙
-  SolverHelpers.segment-step ℚCommRing r p t ∙
-  cong
-    (λ q → p ℚ.- q)
-    (cong (rationalPower r) (sym (Nat.+-suc m k)))
-  where
-  p : ℚ
-  p =
-    rationalPower r m
-
-  S : ℚ
-  S =
-    rationalGeometricSegmentSumℚ r (suc m) k
-
-  t : ℚ
-  t =
-    rationalPower r (suc m Nat.+ k)
-
-
-positiveGeometricGap :
-  ℚ⁺ →
-  ℚ
-positiveGeometricGap ρ =
-  Rational.1ℚ ℚ.- radius ρ
-
-
-positiveGeometricGap-positive :
-  (ρ : ℚ⁺) →
-  radius ρ ℚOrder.< Rational.1ℚ →
-  Rational.0ℚ ℚOrder.< positiveGeometricGap ρ
-positiveGeometricGap-positive ρ ρ<1 =
-  Rational.diff-positive {p = radius ρ} {q = Rational.1ℚ} ρ<1
-
-
-positiveGeometricPowerStep :
-  (ρ : ℚ⁺) →
-  ℚ⁺ →
-  ℚ
-positiveGeometricPowerStep ρ ε =
-  (radius ε ℚ.· positiveGeometricGap ρ) ℚ.· positiveGeometricGap ρ
-
-
-positiveGeometricPowerStep-positive :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  (ε : ℚ⁺) →
-  Rational.0ℚ ℚOrder.< positiveGeometricPowerStep ρ ε
-positiveGeometricPowerStep-positive ρ ρ<1 ε =
-  Rational.mul-positive
-    {a = radius ε ℚ.· gap}
-    {b = gap}
-    (Rational.mul-positive {a = radius ε} {b = gap} (ε .snd) gap>0)
-    gap>0
-  where
-  gap : ℚ
-  gap =
-    positiveGeometricGap ρ
-
-  gap>0 : Rational.0ℚ ℚOrder.< gap
-  gap>0 =
-    positiveGeometricGap-positive ρ ρ<1
-
-
-PositiveGeometricPowerModulusTest :
-  (ρ : ℚ⁺) →
-  ℚ⁺ →
-  ℕ →
-  Type₀
-PositiveGeometricPowerModulusTest ρ ε n =
-  Rational.1ℚ ℚOrder.< Rational.natMul n (positiveGeometricPowerStep ρ ε)
-
-
-positiveGeometricPowerModulusTest-zero :
-  (ρ : ℚ⁺) →
-  (ε : ℚ⁺) →
-  ¬ PositiveGeometricPowerModulusTest ρ ε zero
-positiveGeometricPowerModulusTest-zero ρ ε test =
-  ℚOrder.isAsym<
-    Rational.0ℚ
-    Rational.1ℚ
-    Rational.0<1
-    (subst
-      (λ q → Rational.1ℚ ℚOrder.< q)
-      (Rational.natMul-zero (positiveGeometricPowerStep ρ ε))
-      test)
-
-
-positiveGeometricPowerModulusLeast :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  (ε : ℚ⁺) →
-  BoundedLeast (PositiveGeometricPowerModulusTest ρ ε)
-positiveGeometricPowerModulusLeast ρ ρ<1 ε =
-  boundedLeast
-    (λ n → Rational.dec< Rational.1ℚ
-      (Rational.natMul n (positiveGeometricPowerStep ρ ε)))
-    bound
-    boundWorks
-  where
-  boundData :
-    Σ[ n ∈ ℕ ] PositiveGeometricPowerModulusTest ρ ε n
-  boundData =
-    Rational.archimedean
-      Rational.1ℚ
-      (positiveGeometricPowerStep ρ ε)
-      (positiveGeometricPowerStep-positive ρ ρ<1 ε)
-
-  bound : ℕ
-  bound =
-    boundData .fst
-
-  boundWorks : PositiveGeometricPowerModulusTest ρ ε bound
-  boundWorks =
-    boundData .snd
-
-
-positiveGeometricPowerModulus :
-  (ρ : ℚ⁺) →
-  radius ρ ℚOrder.< Rational.1ℚ →
-  ℚ⁺ →
-  ℕ
-positiveGeometricPowerModulus ρ ρ<1 ε =
-  positiveGeometricPowerModulusLeast ρ ρ<1 ε .fst
-
-
-positiveGeometricPowerModulus-large :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  (ε : ℚ⁺) →
-  PositiveGeometricPowerModulusTest
-    ρ
-    ε
-    (positiveGeometricPowerModulus ρ ρ<1 ε)
-positiveGeometricPowerModulus-large ρ ρ<1 ε =
-  positiveGeometricPowerModulusLeast ρ ρ<1 ε .snd .fst
-
-
-positiveGeometricPowerStep-mono≤ :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  {ε δ : ℚ⁺} →
-  radius ε ℚOrder.≤ radius δ →
-  positiveGeometricPowerStep ρ ε ℚOrder.≤ positiveGeometricPowerStep ρ δ
-positiveGeometricPowerStep-mono≤ ρ ρ<1 {ε = ε} {δ = δ} ε≤δ =
-  ℚOrder.≤-·o
-    (radius ε ℚ.· gap)
-    (radius δ ℚ.· gap)
-    gap
-    gap≥0
-    (ℚOrder.≤-·o
-      (radius ε)
-      (radius δ)
-      gap
-      gap≥0
-      ε≤δ)
-  where
-  gap : ℚ
-  gap =
-    positiveGeometricGap ρ
-
-  gap≥0 : Rational.0ℚ ℚOrder.≤ gap
-  gap≥0 =
-    Rational.<→≤
-      {p = Rational.0ℚ}
-      {q = gap}
-      (positiveGeometricGap-positive ρ ρ<1)
-
-
-positiveGeometricPowerModulus-antitone :
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  AntitoneNatModulus (positiveGeometricPowerModulus ρ ρ<1)
-positiveGeometricPowerModulus-antitone ρ ρ<1 {ε = ε} {δ = δ} ε≤δ =
-  boundedLeast-monotone
-    (positiveGeometricPowerModulusLeast ρ ρ<1 ε)
-    (positiveGeometricPowerModulusLeast ρ ρ<1 δ)
-    ε-test→δ-test
-  where
-  step≤ :
-    positiveGeometricPowerStep ρ ε ℚOrder.≤
-    positiveGeometricPowerStep ρ δ
-  step≤ =
-    positiveGeometricPowerStep-mono≤
-      ρ
-      ρ<1
-      {ε = ε}
-      {δ = δ}
-      ε≤δ
-
-  ε-test→δ-test :
-    (n : ℕ) →
-    PositiveGeometricPowerModulusTest ρ ε n →
-    PositiveGeometricPowerModulusTest ρ δ n
-  ε-test→δ-test n ε-test =
-    Rational.<≤-trans
-      {p = Rational.1ℚ}
-      {q = Rational.natMul n (positiveGeometricPowerStep ρ ε)}
-      {r = Rational.natMul n (positiveGeometricPowerStep ρ δ)}
-      ε-test
-      (Rational.natMul-factor-mono-≤ n step≤)
 
 
 positiveGeometricLinearFactor-positive :
@@ -465,7 +171,7 @@ positiveGeometricPower-linear-bound ρ ρ<1 (suc n) =
     (sym step-path)
     (Rational.≤-trans
       (Rational.mul-left-nonnegative-≤
-        (rationalPower-nonnegative ρ n)
+        (positiveRationalPower-nonnegative ρ n)
         (positiveGeometricLinearFactor-step≤ ρ ρ<1 n))
       (positiveGeometricPower-linear-bound ρ ρ<1 n))
   where
@@ -644,7 +350,7 @@ positiveGeometricScaledSegment≤power ρ m k =
     (λ x → x ℚOrder.≤ rationalPower q m)
     (sym segment-gap≡power-diff)
     (Rational.sub-nonnegative-right≤
-      (rationalPower-nonnegative ρ (m Nat.+ k)))
+      (positiveRationalPower-nonnegative ρ (m Nat.+ k)))
   where
   q : ℚ
   q =
@@ -689,6 +395,18 @@ positiveGeometricScaledSegmentUpperBoundFromPower ρ powerUpper ε m k μ≤m =
     (powerUpper ε m μ≤m)
 
 
+positiveGeometricScaledSegmentUpperBoundFromRatio :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  PositiveGeometricScaledSegmentUpperBound
+    ρ
+    (positiveGeometricPowerModulus ρ ρ<1)
+positiveGeometricScaledSegmentUpperBoundFromRatio ρ ρ<1 =
+  positiveGeometricScaledSegmentUpperBoundFromPower
+    ρ
+    (positiveGeometricPowerScaledUpperBoundFromRatio ρ ρ<1)
+
+
 PositiveGeometricSegmentUpperBound :
   ℚ⁺ →
   (ℚ⁺ → ℕ) →
@@ -724,9 +442,7 @@ positiveGeometricSegmentUpperBoundFromRatio ρ ρ<1 =
   positiveGeometricSegmentUpperBoundFromScaled
     ρ
     ρ<1
-    (positiveGeometricScaledSegmentUpperBoundFromPower
-      ρ
-      (positiveGeometricPowerScaledUpperBoundFromRatio ρ ρ<1))
+    (positiveGeometricScaledSegmentUpperBoundFromRatio ρ ρ<1)
 
 
 scaledGeometricSegmentModulus :

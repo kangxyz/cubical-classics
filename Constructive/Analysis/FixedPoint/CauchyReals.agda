@@ -4,13 +4,13 @@ Cauchy-real fixed-point corollaries
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.FixedPoint.Reals where
+module Constructive.Analysis.FixedPoint.CauchyReals where
 
 open import Cubical.Foundations.Prelude
 import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.Analysis.Metric.Base
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational

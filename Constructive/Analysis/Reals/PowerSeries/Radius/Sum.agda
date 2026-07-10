@@ -15,9 +15,10 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd ; _×_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁)
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -40,7 +41,7 @@ HasPowerSeriesOnBallWith :
   (ℚ⁺ → ℕ) →
   Type₀
 HasPowerSeriesOnBallWith a ρ μ =
-  AntitoneTailModulus μ ×
+  AntitoneNatModulus μ ×
   ((h : ℝᶜ) →
     BoundedByᶜ ρ h →
     PowerSeriesTailBound a h μ)
@@ -48,7 +49,7 @@ HasPowerSeriesOnBallWith a ρ μ =
 
 hasPowerSeriesOnBallWith :
   {a : PowerSeries} {ρ : ℚ⁺} {μ : ℚ⁺ → ℕ} →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ((h : ℝᶜ) →
     BoundedByᶜ ρ h →
     PowerSeriesTailBound a h μ) →
@@ -63,7 +64,7 @@ module HasPowerSeriesOnBallWith
     {μ : ℚ⁺ → ℕ}
     (convergence : HasPowerSeriesOnBallWith a ρ μ) where
   antitoneModulus :
-    AntitoneTailModulus μ
+    AntitoneNatModulus μ
   antitoneModulus =
     convergence .fst
 

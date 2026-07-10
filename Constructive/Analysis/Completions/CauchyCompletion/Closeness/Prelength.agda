@@ -4,7 +4,7 @@ Prelength-style predicate bundles for alternative closeness
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Prelength where
+module Constructive.Analysis.Completions.CauchyCompletion.Closeness.Prelength where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv

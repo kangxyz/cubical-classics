@@ -19,7 +19,8 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
-open import Constructive.Analysis.Completions.DedekindCompletion
+open import Constructive.Analysis.Completions.DedekindCompletion.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Order
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Approximation
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.AdditiveGroup

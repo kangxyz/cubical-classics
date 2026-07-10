@@ -14,9 +14,9 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment
+open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Base
   using (bounded-byᶜ-scale-unitInterval ; bounded-byᶜ-zero ; segmentPoint)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
 open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.BoundedSegment
   using (zeroDerivativeWithinDomainSegment)
 open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Rules
@@ -35,19 +35,20 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplicat
   using (scalarMulᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative.Core
+  using (atanhDerivativePowerSeriesReciprocalOnBall)
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative.Within
   using
-    ( atanhDerivativePowerSeriesReciprocalOnBall
-    ; atanhWithinDerivativeModulus
+    ( atanhWithinDerivativeModulus
     ; atanhᶜFromSubunitBoundHasDerivativeWithinDomainAtWith
     )
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Base
   using
     ( logOnePlusPowerSeriesOnSubunitBallWith
     ; logOnePlusᶜWithinSubunitBall
     ; logOnePlusᶜWithinSubunitBall-zero
     )
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.Core
   using
     ( logTransformᶜ-onePlus-path
     ; logOnePlusᶜWithinSubunitBall-global

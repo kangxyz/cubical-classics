@@ -27,7 +27,7 @@ open import Constructive.Analysis.Reals.Series
     ; tailSum
     ; tailSum-suc-start
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positivePower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)

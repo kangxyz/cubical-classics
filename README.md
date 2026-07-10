@@ -91,10 +91,15 @@ not automatically stable interfaces merely because their files are visible.
 | [`Constructive.Algebra.OrderedCommRing`](Constructive/Algebra/OrderedCommRing.agda) | Ordered-ring properties, Archimedean structure, morphisms, and univalence. |
 | [`Constructive.Algebra.OrderedField`](Constructive/Algebra/OrderedField.agda) | Ordered fields, properties, and morphisms. |
 | [`Constructive.Analysis.Completions`](Constructive/Analysis/Completions.agda) | Generic Cauchy and Dedekind completions. |
-| [`Constructive.Analysis.Metric`](Constructive/Analysis/Metric.agda) | Precision-indexed metric spaces, maps, Cauchy data, and completion instances. |
+| [`Constructive.Analysis.Modulus`](Constructive/Analysis/Modulus.agda) | Shared natural-number precision moduli. |
+| [`Constructive.Analysis.GeometricDecay`](Constructive/Analysis/GeometricDecay.agda) | Shared rational geometric identities, moduli, and decay rates. |
+| [`Constructive.Analysis.Metric.Core`](Constructive/Analysis/Metric/Core.agda) | Precision-indexed metric spaces, maps, Cauchy data, and total boundedness. |
+| [`Constructive.Analysis.Metric`](Constructive/Analysis/Metric.agda) | Metric core plus base-space instances. |
 | [`Constructive.Analysis.Reals`](Constructive/Analysis/Reals.agda) | Constructive real instances, sequences, locators, intervals, IVT, and series. |
-| [`Constructive.Analysis.Reals.Calculus.Derivative`](Constructive/Analysis/Reals/Calculus/Derivative.agda) | The current one-variable derivative interface; there is no common calculus aggregate yet. |
-| [`Constructive.Analysis.Reals.PowerSeries`](Constructive/Analysis/Reals/PowerSeries.agda) | Cauchy-real power-series theory and elementary instances. |
+| [`Constructive.Analysis.Reals.Calculus`](Constructive/Analysis/Reals/Calculus.agda) | One-variable derivatives, rules, domains, and bounded-segment criteria. |
+| [`Constructive.Analysis.Reals.PowerSeries.Core`](Constructive/Analysis/Reals/PowerSeries/Core.agda) | Power-series coefficients, convergence, bounds, algebra, and formal differentiation. |
+| [`Constructive.Analysis.Reals.PowerSeries.Calculus`](Constructive/Analysis/Reals/PowerSeries/Calculus.agda) | Power-series continuity, analyticity, termwise differentiation, and re-centering. |
+| [`Constructive.Analysis.Reals.PowerSeries`](Constructive/Analysis/Reals/PowerSeries.agda) | Role-based umbrella including core theory, calculus, examples, and elementary functions. |
 | [`Constructive.Analysis.FixedPoint`](Constructive/Analysis/FixedPoint.agda) | Constructive fixed-point interfaces and Banach contraction results. |
 | [`Classical.Axioms`](Classical/Axioms.agda) | `Oracle`, choice, excluded middle, and `AC→LEM`. |
 | [`Classical.DedekindCut`](Classical/DedekindCut.agda) | Oracle-based Dedekind cuts, algebra, completeness, and universal property. |

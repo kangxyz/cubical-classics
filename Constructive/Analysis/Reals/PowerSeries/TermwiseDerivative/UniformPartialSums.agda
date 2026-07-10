@@ -15,9 +15,9 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
   using (HasDerivativeAtWith)
-open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment
+open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Base
   using
     ( BoundedOnBallWith
     ; HasDerivativeOnBallWith

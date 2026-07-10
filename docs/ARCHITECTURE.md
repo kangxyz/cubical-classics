@@ -41,14 +41,38 @@ not define a separate assumption boundary.
 | `Constructive.Foundations` | Predicative foundational interfaces, including constructive powersets. |
 | `Constructive.Data` | Rational, positive-rational, closeness, bound, grid, and coefficient support. |
 | `Constructive.Algebra` | Ordered algebra, Archimedean structures, morphisms, instances, and univalence. |
+| `Constructive.Analysis.Modulus` | Shared natural-number moduli indexed by positive rational precision. |
+| `Constructive.Analysis.GeometricDecay` | Rational geometric identities, antitone moduli, and decay rates shared by series and fixed-point theory. |
 | `Constructive.Analysis.Completions` | Generic Cauchy and two-sided located Dedekind completions. |
-| `Constructive.Analysis.Metric` | Positive-rational precision metrics, maps, Cauchy data, and instances. |
+| `Constructive.Analysis.Metric.Core` | Positive-rational precision metrics, maps, Cauchy data, and total boundedness. |
 | `Constructive.Analysis.Reals` | Rational real instances and real-specific sequences, intervals, IVT, calculus, series, and power series. |
 | `Constructive.Analysis.FixedPoint` | Generic constructive contraction data and Cauchy-real corollaries. |
 | `Classical.Axioms` | The `Oracle` boundary, choice, excluded middle, and resizing support. |
 | `Classical.Foundations` | Impredicative powersets and related classical infrastructure. |
 | `Classical.DedekindCut` | Oracle-based cut completion and its universal property. |
 | `Classical.Topology` and `Classical.Analysis` | Classical topology and exact real-analysis theorems. |
+
+The constructive-analysis dependency spine is intentionally narrower than the
+legacy umbrella modules suggest:
+
+```text
+Metric.Core ──> CauchyCompletion ──> CauchyReals.Metric
+     │                                      │
+     └────────────────────────────────────────> FixedPoint
+                                            ▲
+Modulus ──> GeometricDecay ───────────────────────────┘
+
+CauchyReals.Metric + Modulus ──> Sequences ──> Series ──┐
+CauchyReals ──> Interval ──┬──> IVT                         │
+                           └──> Calculus ─────────────────────────────┤
+GeometricDecay ───────────────────────────────────────────────┤
+                                                            v
+                                                       PowerSeries
+```
+
+New internal code should use the role-specific entry points in the diagram or
+table below so a low-level dependency does not accidentally acquire
+elementary-function or proof-pipeline dependencies.
 
 ## Completion And Real Boundaries
 
@@ -65,6 +89,10 @@ specializes that construction to the rational metric space. Its main type
 approximations; it is not presented as a quotient of rational Cauchy sequences.
 Real-specific arithmetic, order, and Archimedean results belong in this
 specialization rather than the generic completion.
+
+[`Constructive.Analysis.Reals.CauchyReals.Metric`](../Constructive/Analysis/Reals/CauchyReals/Metric.agda)
+owns the Cauchy-real metric instance and completeness package. Real-specific
+instances do not belong under the generic `Metric.Instances` namespace.
 
 ### Dedekind completion
 
@@ -90,6 +118,12 @@ classical MacNeille completeness for the constructive completion under
 The generic metric API is indexed by positive rational precision. Real-specific
 locatedness, interval, sequence, IVT, series, and power-series interfaces live
 under `Constructive.Analysis.Reals`.
+
+Natural-number convergence and tail moduli are owned by
+[`Constructive.Analysis.Modulus`](../Constructive/Analysis/Modulus.agda).
+Geometric decay needed by both series and Banach iteration is owned by
+[`Constructive.Analysis.GeometricDecay`](../Constructive/Analysis/GeometricDecay.agda),
+rather than duplicated under either consumer.
 
 A bare Cauchy real, a located Cauchy real, and a real supplied with explicit
 rational bounds support different theorem statements. In particular, a
@@ -122,12 +156,21 @@ for the exact public surface. Import the aggregate when one is available.
 | [`Constructive.Analysis.Completions`](../Constructive/Analysis/Completions.agda) | `aggregate` | Generic Cauchy and Dedekind completions. |
 | [`Constructive.Analysis.Completions.CauchyCompletion`](../Constructive/Analysis/Completions/CauchyCompletion.agda) | `aggregate` | HoTT-style Cauchy completion. |
 | [`Constructive.Analysis.Completions.DedekindCompletion`](../Constructive/Analysis/Completions/DedekindCompletion.agda) | `aggregate` | Constructive two-sided located-cut completion. |
-| [`Constructive.Analysis.Metric`](../Constructive/Analysis/Metric.agda) | `aggregate` | Metric interfaces, maps, Cauchy data, and completion instances. |
+| [`Constructive.Analysis.Completions.DedekindCompletion.Arithmetic`](../Constructive/Analysis/Completions/DedekindCompletion/Arithmetic.agda) | `aggregate` | Arithmetic and Archimedean structure on generic Dedekind completions. |
+| [`Constructive.Analysis.Modulus`](../Constructive/Analysis/Modulus.agda) | `direct` | Shared natural-number precision moduli and antitone combinators. |
+| [`Constructive.Analysis.GeometricDecay`](../Constructive/Analysis/GeometricDecay.agda) | `aggregate` | Rational geometric identities, moduli, and decay rates. |
+| [`Constructive.Analysis.Metric.Core`](../Constructive/Analysis/Metric/Core.agda) | `aggregate` | Metric interfaces, maps, Cauchy data, and total boundedness. |
+| [`Constructive.Analysis.Metric`](../Constructive/Analysis/Metric.agda) | `aggregate` | Metric core and base-space instances. |
 | [`Constructive.Analysis.Reals`](../Constructive/Analysis/Reals.agda) | `aggregate` | Constructive real instances, sequences, locators, intervals, IVT, and series. |
+| [`Constructive.Analysis.Reals.CauchyReals.Metric`](../Constructive/Analysis/Reals/CauchyReals/Metric.agda) | `direct` | Cauchy-real metric instance and completeness package. |
 | [`Constructive.Analysis.Reals.Sequences`](../Constructive/Analysis/Reals/Sequences.agda) | `aggregate` | Sequence convergence, Cauchy data, subsequences, maps, algebra, and order. |
 | [`Constructive.Analysis.Reals.Series`](../Constructive/Analysis/Reals/Series.agda) | `aggregate` | Finite sums, tails, Cauchy series, and comparison. |
-| [`Constructive.Analysis.Reals.Calculus.Derivative`](../Constructive/Analysis/Reals/Calculus/Derivative.agda) | `direct` | One-variable derivative interface. |
-| [`Constructive.Analysis.Reals.PowerSeries`](../Constructive/Analysis/Reals/PowerSeries.agda) | `aggregate` | Power-series theory and elementary instances. |
+| [`Constructive.Analysis.Reals.Calculus`](../Constructive/Analysis/Reals/Calculus.agda) | `aggregate` | One-variable derivatives, rules, domains, and bounded-segment criteria. |
+| [`Constructive.Analysis.Reals.PowerSeries.Core`](../Constructive/Analysis/Reals/PowerSeries/Core.agda) | `aggregate` | Coefficients, convergence, bounds, algebra, Cauchy products, and formal differentiation. |
+| [`Constructive.Analysis.Reals.PowerSeries.Calculus`](../Constructive/Analysis/Reals/PowerSeries/Calculus.agda) | `aggregate` | Continuity, analyticity, termwise differentiation, re-centering, and derivative analyticity. |
+| [`Constructive.Analysis.Reals.PowerSeries.Examples`](../Constructive/Analysis/Reals/PowerSeries/Examples.agda) | `aggregate` | Polynomial and geometric examples. |
+| [`Constructive.Analysis.Reals.PowerSeries.Elementary`](../Constructive/Analysis/Reals/PowerSeries/Elementary.agda) | `aggregate` | Exponential, trigonometric, logarithmic, and arctangent constructions. |
+| [`Constructive.Analysis.Reals.PowerSeries`](../Constructive/Analysis/Reals/PowerSeries.agda) | `aggregate` | Role-based umbrella for core theory, calculus, examples, and elementary functions. |
 | [`Constructive.Analysis.FixedPoint`](../Constructive/Analysis/FixedPoint.agda) | `aggregate` | Fixed-point interfaces, Banach contraction, and Cauchy-real results. |
 | [`Classical.Axioms`](../Classical/Axioms.agda) | `aggregate` | Oracle, choice, excluded middle, and `AC→LEM`. |
 | [`Classical.Foundations.Powerset`](../Classical/Foundations/Powerset.agda) | `aggregate` | Impredicative powerset interfaces. |
@@ -153,8 +196,16 @@ A file's existence does not by itself make it a stable dependency.
 - Modules or directories named `Internal`, local helper modules, and proof
   plumbing are implementation details unless a public aggregate explicitly
   promotes their declarations.
+- Narrow bridge modules such as arithmetic estimates may be imported directly
+  by sibling developments without making their implementation `Internal`
+  modules part of a broad aggregate.
 - A file whose name matches a directory is not necessarily an aggregate. Read
   its imports before assuming that it reexports the directory.
+
+Ownership moves update repository imports directly. Use the canonical owner,
+including `FixedPoint.CauchyReals` for real-specific fixed-point corollaries,
+and prefer the role-specific power-series aggregates when the full umbrella is
+unnecessary.
 
 When a stable module path, documented role, or architectural boundary changes,
 update this guide in the same change. Exact aggregate import lists stay in the

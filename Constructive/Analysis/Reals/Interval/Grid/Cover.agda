@@ -17,8 +17,8 @@ open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.TotallyBounded
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.Interval
-open import Constructive.Analysis.Reals.Interval.Grid
+open import Constructive.Analysis.Reals.Interval.Base
+open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Data.PositiveRationals
 
 

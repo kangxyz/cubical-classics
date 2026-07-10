@@ -19,7 +19,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; ∣_∣₁ ; squash₁)
 
 open import Constructive.Analysis.Metric.Base
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Map
 open import Constructive.Analysis.Metric.TotallyBounded
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
@@ -30,7 +30,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Density
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
   using (negᶜ-pres≤ᶜ)
-open import Constructive.Analysis.Reals.Interval
+open import Constructive.Analysis.Reals.Interval.Base
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals.Base as RationalBase
 

@@ -13,7 +13,7 @@ open import Cubical.Data.Rationals using (ℚ)
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -26,8 +26,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.Series
-  using (AntitoneTailModulus ; TailBound)
-open import Constructive.Analysis.Reals.Sequences.Base
+  using (TailBound)
+open import Constructive.Analysis.Modulus
   using (maxModulus ; splitModulus)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
@@ -62,7 +62,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
     ( PowerSeriesMajorizedOnBall
     ; majorizedOnBall→hasPowerSeriesOnBallWith
     )
-open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
   using (PowerSeriesCoefficientBounds)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals

@@ -12,7 +12,7 @@ open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Map
 open import Constructive.Analysis.Completions.CauchyCompletion.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.ReflexiveSymmetric
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Computed
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Computed
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Rounded
 open import Constructive.Data.PositiveRationals
 

@@ -1,26 +1,20 @@
 {-
 
-Part of Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative
+Algebraic rules for one-dimensional derivatives
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Rules where
+module Constructive.Analysis.Reals.Calculus.Derivative.Rules where
 
 open import Cubical.Foundations.Prelude
 
 open import Cubical.Algebra.CommRing
-import Cubical.Data.Nat as Nat
-open import Cubical.Data.Nat using (ℕ ; max ; suc ; zero)
-import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Metric.Instances.Rationals
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -29,54 +23,119 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Base using (_≤ᶜ_)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
   using (bounded-byᶜ-mul)
-open import Constructive.Analysis.Reals.Series
-  using
-    ( partialSum
-    ; partialSum-add
-    ; seriesSumFromFiniteTailBoundConvergesAt
-    )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
-  using (realPower ; realPowerBoundsFromBound)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
-  using (positivePower)
-open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.Algebra
-  using
-    ( addPowerSeries
-    ; addPowerSeriesTerm
-    ; bounded-byᶜ-zero
-    ; powerSeriesPartialSum-add
-    ; powerSeriesPartialSum-shift
-    ; shiftPowerSeries
-    )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic
-  using
-    ( HasPowerSeriesAtWith
-    ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith
-    )
-open import Constructive.Analysis.Reals.PowerSeries.Radius
-open import Constructive.Analysis.Reals.PowerSeries.Differentiation
-  using
-    ( derivativePowerSeries
-    ; derivativePrimitivePowerSeries
-    ; naturalReal
-    ; primitivePowerSeries
-    )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence
-  using (derivativePrimitivePowerSeriesInfiniteRadius)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
-open ClosenessOf RationalsMetricSpace
 
-open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Internal
-open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Index
-open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Finite
+private
+  module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
+    open CommRingStr (𝓡 .snd)
+
+    linear-remainder-add :
+      (Fh Fx Gh Gx df dg h : 𝓡 .fst) →
+      (((Fh + Gh) + (- (Fx + Gx))) + (- ((df + dg) · h))) ≡
+      (((Fh + (- Fx)) + (- (df · h))) +
+        ((Gh + (- Gx)) + (- (dg · h))))
+    linear-remainder-add _ _ _ _ _ _ _ =
+      solve! 𝓡
+
+    linear-remainder-neg :
+      (Fh Fx d h : 𝓡 .fst) →
+      ((- Fh) + (- (- Fx))) + (- ((- d) · h)) ≡
+      - ((Fh + (- Fx)) + (- (d · h)))
+    linear-remainder-neg _ _ _ _ =
+      solve! 𝓡
+
+    linear-remainder-rational-scale :
+      (q Fh Fx d h : 𝓡 .fst) →
+      ((q · Fh) + (- (q · Fx))) + (- ((q · d) · h)) ≡
+      q · ((Fh + (- Fx)) + (- (d · h)))
+    linear-remainder-rational-scale _ _ _ _ _ =
+      solve! 𝓡
+
+    linear-remainder-left-scale :
+      (c Fh Fx d h : 𝓡 .fst) →
+      ((c · Fh) + (- (c · Fx))) + (- ((c · d) · h)) ≡
+      c · ((Fh + (- Fx)) + (- (d · h)))
+    linear-remainder-left-scale _ _ _ _ _ =
+      solve! 𝓡
+
+    identity-product-remainder-decomposition :
+      (x h fh fx d : 𝓡 .fst) →
+      (((x + h) · fh) + (- (x · fx))) +
+        (- ((fx + (x · d)) · h))
+      ≡
+      ((x + h) · ((fh + (- fx)) + (- (d · h)))) +
+      ((d · h) · h)
+    identity-product-remainder-decomposition _ _ _ _ _ =
+      solve! 𝓡
+
+    identity-linear-remainder-zero :
+      (x h : 𝓡 .fst) →
+      ((x + h) + (- x)) + (- (1r · h)) ≡ 0r
+    identity-linear-remainder-zero _ _ =
+      solve! 𝓡
+
+    constant-linear-remainder-zero :
+      (c h : 𝓡 .fst) →
+      (c + (- c)) + (- (0r · h)) ≡ 0r
+    constant-linear-remainder-zero _ _ =
+      solve! 𝓡
+
+  half-product≡ :
+    (ε η : ℚ⁺) →
+    half⁺ ε *⁺ η ≡ half⁺ (ε *⁺ η)
+  half-product≡ ε η =
+    ℚ⁺Path
+      (sym (ℚ.·Assoc (radius ε) Rational.1/2 (radius η)) ∙
+       cong (radius ε ℚ.·_) (ℚ.·Comm Rational.1/2 (radius η)) ∙
+       ℚ.·Assoc (radius ε) (radius η) Rational.1/2)
+
+  two-half-products≡ :
+    (ε η : ℚ⁺) →
+    (half⁺ ε *⁺ η) +⁺ (half⁺ ε *⁺ η) ≡ ε *⁺ η
+  two-half-products≡ ε η =
+    cong₂ _+⁺_ (half-product≡ ε η) (half-product≡ ε η) ∙
+    half⁺+half⁺≡ (ε *⁺ η)
+
+  scale-product≡ :
+    (κ ε η : ℚ⁺) →
+    κ *⁺ ((posInv⁺ κ *⁺ ε) *⁺ η) ≡ ε *⁺ η
+  scale-product≡ κ ε η =
+    cong (κ *⁺_) (*⁺-assoc (posInv⁺ κ) ε η) ∙
+    sym (*⁺-assoc κ (posInv⁺ κ) (ε *⁺ η)) ∙
+    cong (λ θ → θ *⁺ (ε *⁺ η)) (*⁺-posInv-right κ) ∙
+    *⁺-identity-left (ε *⁺ η)
+
+  scale-precision-cancel :
+    (κ ε : ℚ⁺) →
+    κ *⁺ (posInv⁺ κ *⁺ ε) ≡ ε
+  scale-precision-cancel κ ε =
+    sym (*⁺-assoc κ (posInv⁺ κ) ε) ∙
+    cong (λ θ → θ *⁺ ε) (*⁺-posInv-right κ) ∙
+    *⁺-identity-left ε
+
+  zeroBound :
+    (ε : ℚ⁺) →
+    BoundedByᶜ ε 0ᶜ
+  zeroBound ε =
+    rational-closed-bound→boundedᶜ
+      ε
+      Rational.0ℚ
+      (rational-closed-boundᶜ
+        0≤ε
+        (subst
+          (λ q → q ℚOrder.≤ radius ε)
+          (sym Rational.neg-zero)
+          0≤ε))
+    where
+    0≤ε : Rational.0ℚ ℚOrder.≤ radius ε
+    0≤ε =
+      ℚOrder.<Weaken≤ Rational.0ℚ (radius ε) (ε .snd)
 
 derivativeConstantAtWith :
   {c x : ℝᶜ} →
@@ -96,7 +155,7 @@ derivativeConstantAtWith
         CauchyRealsCommRing
         c
         h))
-    (bounded-byᶜ-zero (ε *⁺ η))
+    (zeroBound (ε *⁺ η))
 
 
 derivativeIdentityAtWith :
@@ -117,7 +176,7 @@ derivativeIdentityAtWith
         CauchyRealsCommRing
         x
         h))
-    (bounded-byᶜ-zero (ε *⁺ η))
+    (zeroBound (ε *⁺ η))
 
 
 hasDerivativeAtWith-cong :

@@ -8,6 +8,7 @@ module Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.StrictSubba
 
 open import Cubical.Foundations.Prelude
 
+open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.CommRing.Instances.Rationals using (ℚCommRing)
 import Cubical.Data.Nat as Nat
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
@@ -15,7 +16,9 @@ import Cubical.Data.Nat.Order as NatOrder
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (_,_)
+open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
   using (0ᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
@@ -40,25 +43,16 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
   using (≤ℚ→rational≤ᶜ)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; TailBound
+    ( TailBound
     ; drop
     ; drop-index
     ; tailSum-one
     )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
+open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
-  using
-    ( positiveGeometricFiniteTailBoundFromRatio
-    ; positiveGeometricPowerModulus
-    ; positiveGeometricPowerModulus-antitone
-    ; positiveGeometricTerm
-    ; positivePower
-    ; positivePower-radius
-    ; positiveRationalPower-nonnegative
-    )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
+open import Constructive.Analysis.GeometricDecay.Rational
   using (rationalPower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)
@@ -68,18 +62,54 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; rationalScaleTailBound
     )
 open import Constructive.Analysis.Reals.PowerSeries.Base
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
+  using
+    ( positiveRationalSelfBounded
+    ; powerSeriesCoefficientFromRationalProbe
+    )
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
+  using
+    ( absᶜ-mul≤product
+    ; absᶜ-rational-nonnegative
+    ; absᶜ-scalarMul≤
+    ; derivativeStrictSubballRatio
+    ; geometricLinearCoefficient≤
+    ; mulᶜ-nonnegative
+    ; rationalRatioPowerTimesPower
+    ; ratioPowerTimesScalePower
+    ; tripleScalarProductPath
+    )
 open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.StrictSubball.OnBall.Base
+
+
+private
+  module SolverHelpers {ℓ : Level} (𝓡 : CommRing ℓ) where
+    open CommRingStr (𝓡 .snd)
+
+    weighted-scale-sigma-cancel-form :
+      (i b p s sn : 𝓡 .fst) →
+      ((i · b) · p) · (s · sn) ≡ (i · s) · ((b · p) · sn)
+    weighted-scale-sigma-cancel-form _ _ _ _ _ = solve! 𝓡
+
+    coefficient-sigma-cancel-form :
+      (N i r s : 𝓡 .fst) →
+      ((N · i) · r) · s ≡ N · ((i · s) · r)
+    coefficient-sigma-cancel-form _ _ _ _ = solve! 𝓡
+
+    weighted-ratio-scale-form :
+      (N r s t : 𝓡 .fst) →
+      ((N · r) · s) · t ≡ N · ((r · s) · t)
+    weighted-ratio-scale-form _ _ _ _ = solve! 𝓡
 
 
 constantTailModulusAntitone :
   {N : ℕ} →
-  AntitoneTailModulus (λ _ → N)
+  AntitoneNatModulus (λ _ → N)
 constantTailModulusAntitone _ =
   zero , refl
 
@@ -123,7 +153,7 @@ derivativeStrictSubballFromOnBallMajorTail {ρ = ρ} {σ = σ} ρ<σ =
 derivativeStrictSubballFromOnBallMajorAntitone :
   {ρ σ : ℚ⁺} →
   (ρ<σ : radius ρ ℚOrder.< radius σ) →
-  AntitoneTailModulus
+  AntitoneNatModulus
     (derivativeStrictSubballFromOnBallGeometricModulus {ρ = ρ} {σ = σ} ρ<σ)
 derivativeStrictSubballFromOnBallMajorAntitone {ρ = ρ} {σ = σ} ρ<σ =
   rationalScaleModulus-antitone

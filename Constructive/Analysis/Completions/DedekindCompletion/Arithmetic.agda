@@ -22,3 +22,4 @@ open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Orde
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedCommRing public
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Inverse public
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedHeytingField public
+open import Constructive.Analysis.Completions.DedekindCompletion.Archimedean public

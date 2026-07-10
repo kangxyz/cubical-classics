@@ -72,15 +72,14 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
   using (≤ℚ→rational≤ᶜ)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; drop
     ; tailBound-drop
     )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using
     ( positiveGeometricGap
     ; positiveGeometricPower-linear-bound
@@ -88,7 +87,7 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
     ; positivePower-radius
     ; positiveRationalPower-nonnegative
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
+open import Constructive.Analysis.GeometricDecay.Rational
   using (rationalPower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)

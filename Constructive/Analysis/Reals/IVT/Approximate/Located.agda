@@ -26,10 +26,11 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
   using (≤ℚ→rational≤ᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
-open import Constructive.Analysis.Reals.Interval
-open import Constructive.Analysis.Reals.Interval.Grid
+open import Constructive.Analysis.Reals.Interval.Base
+open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Analysis.Reals.Interval.Grid.Affine
 open import Constructive.Analysis.Reals.Interval.Grid.Rational
+open import Constructive.Analysis.Reals.Interval.Order using (gapᶜ)
 open import Constructive.Analysis.Reals.IVT.Approximate.Budget
   using
     ( IVTErrorBudget

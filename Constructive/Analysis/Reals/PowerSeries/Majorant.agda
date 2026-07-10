@@ -13,6 +13,7 @@ open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
   using (scalarMulᶜ-nonnegative ; scalarMulᶜ-pres≤ᶜ-scalar)
@@ -46,7 +47,7 @@ PowerSeriesMajorizedOnBall a ρ v μ =
       BoundedByᶜ ρ h →
       SeriesMajorizedBy (powerSeriesTerm a h) v) ]
     Σ[ majorTail ∈ TailBound v μ ]
-      AntitoneTailModulus μ
+      AntitoneNatModulus μ
 
 
 module PowerSeriesMajorizedOnBall where
@@ -69,7 +70,7 @@ module PowerSeriesMajorizedOnBall where
   majorAntitone :
     {a : PowerSeries} {ρ : ℚ⁺} {v : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
     PowerSeriesMajorizedOnBall a ρ v μ →
-    AntitoneTailModulus μ
+    AntitoneNatModulus μ
   majorAntitone majorized =
     majorized .snd .snd
 
@@ -230,7 +231,7 @@ powerSeriesMajorizedOnBallFromTermBounds :
     absᶜ (powerSeriesTerm a h n) ≤ᶜ v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   PowerSeriesMajorizedOnBall a ρ v μ
 powerSeriesMajorizedOnBallFromTermBounds
   termBounds
@@ -258,7 +259,7 @@ powerSeriesMajorizedOnBallFromBoundedTerms :
   ((n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   PowerSeriesMajorizedOnBall a ρ v μ
 powerSeriesMajorizedOnBallFromBoundedTerms
   {a = a}
@@ -348,7 +349,7 @@ hasPowerSeriesOnBallWithFromTermBounds :
     absᶜ (powerSeriesTerm a h n) ≤ᶜ v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBallWith a ρ μ
 hasPowerSeriesOnBallWithFromTermBounds
   {a = a}
@@ -386,7 +387,7 @@ hasPowerSeriesOnBallFromTermBounds :
     absᶜ (powerSeriesTerm a h n) ≤ᶜ v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBall a ρ
 hasPowerSeriesOnBallFromTermBounds
   {a = a}
@@ -422,7 +423,7 @@ hasPowerSeriesOnBallWithFromBoundedTerms :
   ((n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBallWith a ρ μ
 hasPowerSeriesOnBallWithFromBoundedTerms
   {a = a}
@@ -466,7 +467,7 @@ hasPowerSeriesOnBallFromBoundedTerms :
   ((n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
   ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
   TailBound v μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBall a ρ
 hasPowerSeriesOnBallFromBoundedTerms
   {a = a}

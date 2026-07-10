@@ -30,19 +30,23 @@ more specific import.
 - **Located Cauchy-real data.**  Public aggregate:
   [`Constructive.Analysis.Reals.Locator`][locator].  `Locator` is defined in
   [`Locator.Base`][locator-base].
-- **Precision moduli and uniformly continuous maps.**  Public aggregate:
-  [`Constructive.Analysis.Metric`][metric].  The definitions are in
-  [`Metric.Map`][metric-map].
-- **Power-series convergence and analytic-at predicates.**  Public aggregate:
-  [`Constructive.Analysis.Reals.PowerSeries`][power-series].  The core
-  definitions are in [`PowerSeries.Radius.Sum`][radius-sum] and
+- **Precision moduli and uniformly continuous maps.**  Public entries:
+  [`Constructive.Analysis.Modulus`][modulus] for natural-number moduli and
+  [`Constructive.Analysis.Metric.Core`][metric-core] for metric maps.  The map
+  definitions are in [`Metric.Map`][metric-map].
+- **Power-series convergence and analytic-at predicates.**  Public entries:
+  [`PowerSeries.Core`][power-series-core] and
+  [`PowerSeries.Calculus`][power-series-calculus].  The defining modules are
+  [`PowerSeries.Radius.Sum`][radius-sum] and
   [`PowerSeries.Analytic.Core`][analytic-core].
-- **Coefficient bounds and continuity data.**  Public aggregate:
-  [`Constructive.Analysis.Reals.PowerSeries`][power-series].  The definitions
-  are in [`PowerSeries.Continuity.Core`][continuity-core].
+- **Coefficient bounds and continuity data.**  Public entries:
+  [`PowerSeries.Core`][power-series-core] and
+  [`PowerSeries.Calculus`][power-series-calculus].  The definitions are in
+  [`PowerSeries.Bounds`][power-series-bounds] and
+  [`PowerSeries.Continuity.Core`][continuity-core].
 - **Majorant-bearing power series.**  Public aggregate:
-  [`Constructive.Analysis.Reals.PowerSeries`][power-series].  The definition
-  is in [`PowerSeries.Majorant`][majorant].
+  [`PowerSeries.Core`][power-series-core].  The definition is in
+  [`PowerSeries.Majorant`][majorant].
 
 The public aggregate is the stable consumer entry point.  Defining modules are
 listed so maintainers can inspect the exact record or alias without treating
@@ -53,9 +57,12 @@ an internal proof module as a second public API.
 [cauchy-bounded]: ../Constructive/Analysis/Reals/CauchyReals/Order/Bounded.agda
 [locator]: ../Constructive/Analysis/Reals/Locator.agda
 [locator-base]: ../Constructive/Analysis/Reals/Locator/Base.agda
-[metric]: ../Constructive/Analysis/Metric.agda
+[modulus]: ../Constructive/Analysis/Modulus.agda
+[metric-core]: ../Constructive/Analysis/Metric/Core.agda
 [metric-map]: ../Constructive/Analysis/Metric/Map.agda
-[power-series]: ../Constructive/Analysis/Reals/PowerSeries.agda
+[power-series-core]: ../Constructive/Analysis/Reals/PowerSeries/Core.agda
+[power-series-calculus]: ../Constructive/Analysis/Reals/PowerSeries/Calculus.agda
+[power-series-bounds]: ../Constructive/Analysis/Reals/PowerSeries/Bounds.agda
 [radius-sum]: ../Constructive/Analysis/Reals/PowerSeries/Radius/Sum.agda
 [analytic-core]: ../Constructive/Analysis/Reals/PowerSeries/Analytic/Core.agda
 [continuity-core]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Core.agda

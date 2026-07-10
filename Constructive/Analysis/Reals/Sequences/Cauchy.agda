@@ -15,8 +15,9 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base
+open import Constructive.Analysis.Modulus
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.Sequences.Base

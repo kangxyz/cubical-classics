@@ -11,16 +11,20 @@ open import Cubical.Foundations.Prelude
 import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Cubical.Data.Nat using (ℕ)
-open import Constructive.Analysis.Reals.Sequences.Base
+open import Constructive.Analysis.Modulus
   using (maxModulus)
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
   using (rationalScaleModulus)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
+  using
+    ( derivativeStrictSubballRatio
+    ; derivativeStrictSubballRatio<1
+    )
 
 
 derivativeStrictSubballOuterRatio :

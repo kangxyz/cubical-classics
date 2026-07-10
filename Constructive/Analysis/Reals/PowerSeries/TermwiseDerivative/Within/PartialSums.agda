@@ -15,9 +15,9 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (squash₁)
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
   using (HasDerivativeAtWith)
-open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment
+open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Base
   using (HasDerivativeOnBallWith ; isPropHasDerivativeAtWith)
 open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Margin
 open import Constructive.Analysis.Reals.CauchyReals.Base

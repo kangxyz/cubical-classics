@@ -18,10 +18,11 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Data.Sum as Sum using (inl ; inr)
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
@@ -386,24 +387,6 @@ tailBound-lift-drop {u = u} {μ = μ} m dropTail ε n k m+μ≤n =
     cong (_+ μ ε) (Nat.+-comm m j) ∙
     sym (Nat.+-assoc j m (μ ε)) ∙
     j+m+μ≡n
-
-
-AntitoneTailModulus :
-  (ℚ⁺ → ℕ) →
-  Type₀
-AntitoneTailModulus μ =
-  {ε δ : ℚ⁺} →
-  radius ε ℚOrder.≤ radius δ →
-  NatOrder._≤_ (μ δ) (μ ε)
-
-
-antitoneTailModulus-lift-drop :
-  {μ : ℚ⁺ → ℕ} →
-  (m : ℕ) →
-  AntitoneTailModulus μ →
-  AntitoneTailModulus (λ ε → m + μ ε)
-antitoneTailModulus-lift-drop m μ-ant ε≤δ =
-  NatOrder.≤-k+ (μ-ant ε≤δ)
 
 
 tailBound-pair :

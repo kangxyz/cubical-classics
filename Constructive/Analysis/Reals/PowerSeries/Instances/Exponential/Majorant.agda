@@ -18,6 +18,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
@@ -29,8 +30,9 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Base
   using (_≤ᶜ_ ; ≤ᶜ-refl)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
   using (HasDerivativeAtWith)
+open import Constructive.Analysis.Reals.Calculus.Derivative.Rules
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
@@ -38,15 +40,8 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
     ( bounded-byᶜ-abs
     ; bounded-byᶜ-scale-rational-closed-bound
     )
+open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
-  using
-    ( positiveGeometricPowerModulus
-    ; positiveGeometricPowerModulus-antitone
-    ; positiveGeometricFiniteTailBoundFromRatio
-    ; positiveGeometricTerm
-    ; positiveGeometricTerm-nonnegative
-    ; positivePower
-    )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using
     ( RealGeometricBound
@@ -523,7 +518,7 @@ expScaledGeometricTailBound scale σ σ<1 =
 expScaledGeometricModulusAntitone :
   (scale σ : ℚ⁺) →
   (σ<1 : radius σ ℚOrder.< RationalBase.1ℚ) →
-  AntitoneTailModulus
+  AntitoneNatModulus
     (rationalScaleModulus
       (radius scale)
       (positiveGeometricPowerModulus σ σ<1))

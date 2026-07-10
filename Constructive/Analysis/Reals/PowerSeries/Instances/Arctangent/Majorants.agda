@@ -18,15 +18,8 @@ open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
   using (≤ᶜ-refl)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
-  using
-    ( positiveGeometricFiniteTailBoundFromRatio
-    ; positiveGeometricPowerModulus
-    ; positiveGeometricPowerModulus-antitone
-    ; positiveGeometricTerm
-    ; positiveGeometricTerm-nonnegative
-    ; positivePower
-    )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using
     ( RealGeometricBound

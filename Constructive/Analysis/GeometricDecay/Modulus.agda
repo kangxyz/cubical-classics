@@ -1,23 +1,20 @@
 {-
 
-Antitone moduli for positive geometric majorants
+Antitone moduli for positive geometric decay
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
-module Constructive.Analysis.Reals.Series.Instances.Geometric.Modulus where
+module Constructive.Analysis.GeometricDecay.Modulus where
 
 open import Cubical.Foundations.Prelude
 
-open import Cubical.Data.Empty as Empty
-open import Cubical.Data.Nat using (ℕ ; zero ; suc)
-import Cubical.Data.Nat.Order as NatOrder
+open import Cubical.Data.Nat using (ℕ ; zero)
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
-open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; _×_)
-import Cubical.Data.Sum as Sum
-open import Cubical.Relation.Nullary using (Dec ; yes ; no ; ¬_)
+open import Cubical.Data.Sigma using (Σ-syntax)
+open import Cubical.Relation.Nullary using (¬_)
 
-open import Constructive.Analysis.Reals.Series.Tail using (AntitoneTailModulus)
+open import Constructive.Analysis.Modulus
 open import Constructive.Data.PositiveRationals
 open import Constructive.Preliminary.Nat.BoundedSearch
 import Constructive.Data.Rationals as Rational
@@ -123,8 +120,7 @@ positiveGeometricPowerModulusLeast ρ ρ<1 ε =
 positiveGeometricPowerModulus :
   (ρ : ℚ⁺) →
   radius ρ ℚOrder.< Rational.1ℚ →
-  ℚ⁺ →
-  ℕ
+  NatModulus
 positiveGeometricPowerModulus ρ ρ<1 ε =
   positiveGeometricPowerModulusLeast ρ ρ<1 ε .fst
 
@@ -175,7 +171,7 @@ positiveGeometricPowerStep-mono≤ ρ ρ<1 {ε = ε} {δ = δ} ε≤δ =
 positiveGeometricPowerModulus-antitone :
   (ρ : ℚ⁺) →
   (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  AntitoneTailModulus (positiveGeometricPowerModulus ρ ρ<1)
+  AntitoneNatModulus (positiveGeometricPowerModulus ρ ρ<1)
 positiveGeometricPowerModulus-antitone ρ ρ<1 {ε = ε} {δ = δ} ε≤δ =
   boundedLeast-monotone
     (positiveGeometricPowerModulusLeast ρ ρ<1 ε)

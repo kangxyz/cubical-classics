@@ -15,12 +15,15 @@ import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Modulus
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedMultiplication
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedReciprocal
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision
+  using (BoundedAwayPositiveᶜ ; reciprocalPositiveᶜ)
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+  using (boundedMulᶜ-close ; boundedReciprocalᶜ ; boundedReciprocalᶜ-continuous)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
@@ -139,7 +142,7 @@ positiveReciprocalSequence :
   ((n : ℕ) → BoundedAwayPositiveᶜ ε (u n)) →
   Sequence
 positiveReciprocalSequence ε u u-away n =
-  boundedAwayReciprocalᶜ ε (u n) (u-away n)
+  reciprocalPositiveᶜ ε (u n) (u-away n)
 
 
 BoundedAwayNegativeᶜ :
@@ -457,7 +460,7 @@ boundedAwayReciprocalConvergesTo :
   ConvergesTo u x →
   ConvergesTo
     (positiveReciprocalSequence ε u u-away)
-    (boundedAwayReciprocalᶜ ε x x-away)
+    (reciprocalPositiveᶜ ε x x-away)
 boundedAwayReciprocalConvergesTo ε {u = u} {x = x} u-away x-away (μ , u→x) =
   mapUniformlyContinuousConverges
     {f = boundedReciprocalᶜ (half⁺ ε)}
@@ -477,7 +480,7 @@ boundedAwayNegativeReciprocalConvergesTo :
   ConvergesTo u x →
   ConvergesTo
     (negativeReciprocalSequence ε u u-away)
-    (-ᶜ boundedAwayReciprocalᶜ ε (-ᶜ x) x-away)
+    (-ᶜ reciprocalPositiveᶜ ε (-ᶜ x) x-away)
 boundedAwayNegativeReciprocalConvergesTo ε {u = u} {x = x} u-away x-away u→x =
   negConvergesTo
     (boundedAwayReciprocalConvergesTo

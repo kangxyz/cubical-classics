@@ -6,18 +6,21 @@ Subunit-ball convergence for atanh and atan
 {-# OPTIONS --safe --lossy-unification #-}
 module Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Convergence where
 
+open import Cubical.Foundations.Prelude using (sym)
 open import Cubical.Data.Nat using (ℕ)
 open import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (_,_)
 
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.PowerSeries.Base
+open import Constructive.Analysis.Reals.PowerSeries.Differentiation
+  using (derivativePowerSeries)
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Bounds
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Coefficients
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Majorants
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
@@ -93,6 +96,19 @@ atanhPowerSeriesOnSubunitBallWith =
   unitCoefficientPowerSeriesOnSubunitBallWith
     atanhPowerSeries
     atanhPowerSeriesCoefficientBoundOne
+
+
+atanhDerivativePowerSeriesOnSubunitBallWith :
+  (ρ : ℚ⁺) →
+  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
+  HasPowerSeriesOnBallWith
+    (derivativePowerSeries atanhPowerSeries)
+    ρ
+    (positiveGeometricPowerModulus ρ ρ<1)
+atanhDerivativePowerSeriesOnSubunitBallWith ρ ρ<1 =
+  hasPowerSeriesOnBallWith-cong
+    (λ n → sym (derivativePowerSeries-atanh n))
+    (evenGeometricPowerSeriesOnSubunitBallWith ρ ρ<1)
 
 
 atanPowerSeriesOnSubunitBallWith :

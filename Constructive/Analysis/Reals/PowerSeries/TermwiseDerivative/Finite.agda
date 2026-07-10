@@ -20,7 +20,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Metric.Instances.Rationals
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -42,7 +42,7 @@ open import Constructive.Analysis.Reals.Series
     )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positivePower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
@@ -54,7 +54,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
     ; powerSeriesPartialSum-shift
     ; shiftPowerSeries
     )
-open import Constructive.Analysis.Reals.PowerSeries.Analytic
+open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
   using
     ( HasPowerSeriesAtWith
     ; centeredPowerSeriesSumEverywhereHasPowerSeriesAtWith

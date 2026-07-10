@@ -4,7 +4,7 @@ Computed alternative closeness, point source case
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Computed where
+module Constructive.Analysis.Completions.CauchyCompletion.Closeness.Computed where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
@@ -15,7 +15,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Base
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Internal.Prelength
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Prelength
 open import Constructive.Analysis.Completions.CauchyCompletion.Induction
 open import Constructive.Analysis.Completions.CauchyCompletion.Recursion
 open import Constructive.Data.PositiveRationals

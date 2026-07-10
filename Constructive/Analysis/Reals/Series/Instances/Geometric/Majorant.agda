@@ -19,8 +19,10 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 import Cubical.Data.Sum as Sum
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.GeometricDecay
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
@@ -31,7 +33,9 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
-open import Constructive.Analysis.Reals.Series
+open import Constructive.Analysis.Reals.Series.Cauchy
+open import Constructive.Analysis.Reals.Series.Comparison
+open import Constructive.Analysis.Reals.Series.Tail
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
@@ -256,7 +260,7 @@ rationalGeometricSeriesTailBoundFromMajorant :
   TailBound
     (positiveGeometricTerm (RationalGeometricBound.ratioBound bound))
     μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   RationalGeometricTailBound r (λ ε → μ (half⁺ ε))
 rationalGeometricSeriesTailBoundFromMajorant r bound majorTail μ-antitone =
   tailBound→SeriesTailBound
@@ -312,7 +316,7 @@ rationalGeometricSumFromMajorant :
   TailBound
     (positiveGeometricTerm (RationalGeometricBound.ratioBound bound))
     μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ℝᶜ
 rationalGeometricSumFromMajorant r bound μ majorTail μ-antitone =
   seriesSumFromFiniteTailBound

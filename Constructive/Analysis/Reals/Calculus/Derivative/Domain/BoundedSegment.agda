@@ -17,9 +17,9 @@ open import Cubical.Data.Sigma using (Σ-syntax)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Metric.Base
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment
+open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Base
   using
     ( gridPointFrom
     ; bounded-byᶜ-zero
@@ -37,7 +37,7 @@ open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment
     ; unitFractionStepBound
     ; unitFractionTimes≤
     )
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base

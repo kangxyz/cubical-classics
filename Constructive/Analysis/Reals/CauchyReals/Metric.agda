@@ -4,7 +4,7 @@ The Cauchy-real metric space
 
 -}
 {-# OPTIONS --safe #-}
-module Constructive.Analysis.Metric.Instances.CauchyReals where
+module Constructive.Analysis.Reals.CauchyReals.Metric where
 
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy

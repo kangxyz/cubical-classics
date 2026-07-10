@@ -19,7 +19,7 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -64,8 +64,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
   using (diffᶜ-nonnegative→≤ᶜ ; ≤ᶜ-add)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; comparisonTest
     ; diff-close-zero→close
@@ -119,8 +118,13 @@ open ClosenessOf RationalsMetricSpace
 import Constructive.Analysis.Reals.Sequences.Algebra as SeqAlg
 import Constructive.Analysis.Reals.Sequences.Convergence as SeqConv
 import Constructive.Analysis.Reals.Sequences.Order as SeqOrder
-open import Constructive.Analysis.Reals.Sequences.Base
-  using (maxModulus ; maxModulus-left≤ ; maxModulus-right≤)
+open import Constructive.Analysis.Modulus
+  using
+    ( AntitoneNatModulus
+    ; maxModulus
+    ; maxModulus-left≤
+    ; maxModulus-right≤
+    )
 
 open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Internal
 open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Core
@@ -137,7 +141,7 @@ cauchyProductPowerSeriesMajorizedOnBallFromMajorants :
   PowerSeriesMajorizedOnBall a ρ A ν →
   PowerSeriesMajorizedOnBall b ρ B τ →
   TailBound (sequenceCauchyProduct A B) μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   PowerSeriesMajorizedOnBall
     (cauchyProductPowerSeries a b)
     ρ
@@ -215,7 +219,7 @@ cauchyProductPowerSeriesOnBallWithFromMajorants :
   PowerSeriesMajorizedOnBall a ρ A ν →
   PowerSeriesMajorizedOnBall b ρ B τ →
   TailBound (sequenceCauchyProduct A B) μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBallWith
     (cauchyProductPowerSeries a b)
     ρ
@@ -236,7 +240,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndRemainderBound :
   (left : PowerSeriesMajorizedOnBall a ρ A ν) →
   (right : PowerSeriesMajorizedOnBall b ρ B τ) →
   (productTail : TailBound (sequenceCauchyProduct A B) μ) →
-  (productAntitone : AntitoneTailModulus μ) →
+  (productAntitone : AntitoneNatModulus μ) →
   (h : ℝᶜ) →
   (h-bound : BoundedByᶜ ρ h) →
   (κ ι : ℚ⁺) →
@@ -324,7 +328,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndMajorantRemainderBound :
   (left : PowerSeriesMajorizedOnBall a ρ A ν) →
   (right : PowerSeriesMajorizedOnBall b ρ B τ) →
   (productTail : TailBound (sequenceCauchyProduct A B) μ) →
-  (productAntitone : AntitoneTailModulus μ) →
+  (productAntitone : AntitoneNatModulus μ) →
   (h : ℝᶜ) →
   (h-bound : BoundedByᶜ ρ h) →
   (κ ι : ℚ⁺) →
@@ -413,7 +417,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTailSubset :
   (left : PowerSeriesMajorizedOnBall a ρ A ν) →
   (right : PowerSeriesMajorizedOnBall b ρ B τ) →
   (productTail : TailBound (sequenceCauchyProduct A B) μ) →
-  (productAntitone : AntitoneTailModulus μ) →
+  (productAntitone : AntitoneNatModulus μ) →
   (h : ℝᶜ) →
   (h-bound : BoundedByᶜ ρ h) →
   (κ ι : ℚ⁺) →
@@ -519,7 +523,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTailWithPartialBo
   (left : PowerSeriesMajorizedOnBall a ρ A ν) →
   (right : PowerSeriesMajorizedOnBall b ρ B τ) →
   (productTail : TailBound (sequenceCauchyProduct A B) μ) →
-  (productAntitone : AntitoneTailModulus μ) →
+  (productAntitone : AntitoneNatModulus μ) →
   (h : ℝᶜ) →
   (h-bound : BoundedByᶜ ρ h) →
   (κ ι : ℚ⁺) →
@@ -621,7 +625,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTailAndSumBounds 
   (left : PowerSeriesMajorizedOnBall a ρ A ν) →
   (right : PowerSeriesMajorizedOnBall b ρ B τ) →
   (productTail : TailBound (sequenceCauchyProduct A B) μ) →
-  (productAntitone : AntitoneTailModulus μ) →
+  (productAntitone : AntitoneNatModulus μ) →
   (h : ℝᶜ) →
   (h-bound : BoundedByᶜ ρ h) →
   (κ ι : ℚ⁺) →
@@ -713,7 +717,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTailAndSumBounds
     HasPowerSeriesOnBallWith.tailBound rightConvergence h h-bound
 
   rightAntitone :
-    AntitoneTailModulus τ
+    AntitoneNatModulus τ
   rightAntitone =
     HasPowerSeriesOnBallWith.antitoneModulus rightConvergence
 
@@ -725,7 +729,7 @@ cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTail :
   (left : PowerSeriesMajorizedOnBall a ρ A ν) →
   (right : PowerSeriesMajorizedOnBall b ρ B τ) →
   (productTail : TailBound (sequenceCauchyProduct A B) μ) →
-  (productAntitone : AntitoneTailModulus μ) →
+  (productAntitone : AntitoneNatModulus μ) →
   (h : ℝᶜ) →
   (h-bound : BoundedByᶜ ρ h) →
   powerSeriesSumOnBall
@@ -847,7 +851,7 @@ cauchyProductPowerSeriesOnBallFromMajorants :
   PowerSeriesMajorizedOnBall a ρ A ν →
   PowerSeriesMajorizedOnBall b ρ B τ →
   TailBound (sequenceCauchyProduct A B) μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   HasPowerSeriesOnBall (cauchyProductPowerSeries a b) ρ
 cauchyProductPowerSeriesOnBallFromMajorants left right productTail productAntitone =
   majorizedOnBall→hasPowerSeriesOnBall

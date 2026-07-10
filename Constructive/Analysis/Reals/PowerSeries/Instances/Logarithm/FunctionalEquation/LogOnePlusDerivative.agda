@@ -14,22 +14,23 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Margin
   using (boundedSecondDerivativeMarginModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
   using (HasDerivativeWithinDomainAtWith)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
   using (scalarMulᶜ-rational)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
+  using (positiveRationalSelfBounded)
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using (derivativePowerSeries ; derivativePowerSeries-cong)
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
   using
     ( derivativeStrictSubballModulus
     ; derivativeStrictSubballScale
-    ; positiveRationalSelfBounded
     )
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.StrictSubball
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.StrictSubball.Core
   using
     ( derivativePowerSeriesMajorizedOnStrictSubballFromMajorizedOnBall
     ; derivativePowerSeriesStrictSubballMajorant
@@ -38,7 +39,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Majoran
   using (unitCoefficientPowerSeriesMajorizedOnBall)
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Geometric
   using (alternatingGeometricPowerSeries)
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Base
   using
     ( alternatingGeometricPowerSeriesCoefficientBoundOne
     ; derivativePowerSeries-logOnePlus
@@ -64,16 +65,12 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.SecondDer
     )
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.UniformPartialSums
   using (partialSumsDerivativeTargetModulus)
-open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Within
+open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Within.Core
   using
     ( powerSeriesSumWithinDomainFormalDerivativeAtWithFromSecondDerivativeBound
     )
+open import Constructive.Analysis.GeometricDecay
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
-  using
-    ( positiveGeometricPowerModulus
-    ; positiveGeometricTerm
-    ; positivePower
-    )
 open import Constructive.Data.PositiveRationals
   using
     ( ℚ⁺

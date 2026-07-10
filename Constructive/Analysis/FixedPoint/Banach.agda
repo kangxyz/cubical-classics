@@ -14,12 +14,13 @@ import Cubical.Data.Nat.Order as NatOrder
 import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; ΣPathP)
 
+open import Constructive.Analysis.GeometricDecay.Rate
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy
+open import Constructive.Analysis.Modulus
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
-open import Constructive.Analysis.FixedPoint.Base public
-open import Constructive.Analysis.FixedPoint.Rate
+open import Constructive.Analysis.FixedPoint.Base
 open import Constructive.Analysis.FixedPoint.Iteration
 
 private

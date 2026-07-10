@@ -72,15 +72,14 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
   using (≤ℚ→rational≤ᶜ)
 open import Constructive.Analysis.Reals.Series
   using
-    ( AntitoneTailModulus
-    ; SeriesMajorizedBy
+    ( SeriesMajorizedBy
     ; TailBound
     ; drop
     ; tailBound-drop
     )
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using
     ( positiveGeometricGap
     ; positiveGeometricPower-linear-bound
@@ -88,12 +87,18 @@ open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
     ; positivePower-radius
     ; positiveRationalPower-nonnegative
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
+open import Constructive.Analysis.GeometricDecay.Rational
   using (rationalPower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
+  using
+    ( positiveRationalSelfBounded
+    ; powerSeriesCoefficientFromRationalProbe
+    ; realPower-rational-positive
+    )
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using
@@ -355,79 +360,6 @@ derivativeStrictSubballModulus {ρ = ρ} {σ = σ} ρ<σ ν =
   rationalScaleModulus
     (radius (derivativeStrictSubballScale ρ σ ρ<σ))
     ν
-
-positiveRationalSelfBounded :
-  (ρ : ℚ⁺) →
-  BoundedByᶜ ρ (rational (radius ρ))
-positiveRationalSelfBounded ρ =
-  rational-closed-bound→boundedᶜ
-    ρ
-    (radius ρ)
-    (rational-closed-boundᶜ
-      (Rational.≤-refl (radius ρ))
-      negρ≤ρ)
-  where
-  0≤ρ : Rational.0ℚ ℚOrder.≤ radius ρ
-  0≤ρ =
-    Rational.<→≤
-      {p = Rational.0ℚ}
-      {q = radius ρ}
-      (ρ .snd)
-
-  negρ≤0 : ℚ.- radius ρ ℚOrder.≤ Rational.0ℚ
-  negρ≤0 =
-    Rational.neg-nonpositive 0≤ρ
-
-  negρ≤ρ : ℚ.- radius ρ ℚOrder.≤ radius ρ
-  negρ≤ρ =
-    Rational.≤-trans
-      {p = ℚ.- radius ρ}
-      {q = Rational.0ℚ}
-      {r = radius ρ}
-      negρ≤0
-      0≤ρ
-
-realPower-rational-positive :
-  (ρ : ℚ⁺) →
-  (n : ℕ) →
-  realPower (rational (radius ρ)) n ≡
-  rational (radius (positivePower ρ n))
-realPower-rational-positive ρ zero =
-  refl
-realPower-rational-positive ρ (suc n) =
-  cong
-    (λ p → rational (radius ρ) ·ᶜ p)
-    (realPower-rational-positive ρ n) ∙
-  mulᶜ-rational-rational (radius ρ) (radius (positivePower ρ n))
-
-powerSeriesCoefficientFromRationalProbe :
-  (ρ : ℚ⁺) →
-  (a : PowerSeries) →
-  (n : ℕ) →
-  scalarMulᶜ
-    (radius (posInv⁺ (positivePower ρ n)))
-    (powerSeriesTerm a (rational (radius ρ)) n)
-  ≡ a n
-powerSeriesCoefficientFromRationalProbe ρ a n =
-  cong
-    (scalarMulᶜ invρⁿ)
-    (cong (a n ·ᶜ_) (realPower-rational-positive ρ n) ∙
-      mulᶜ-rational-right (a n) ρⁿ) ∙
-  scalarMulᶜ-assoc invρⁿ ρⁿ (a n) ∙
-  cong (λ q → scalarMulᶜ q (a n)) invρⁿ*ρⁿ≡1 ∙
-  scalarMulᶜ-one (a n)
-  where
-  ρⁿ : ℚ
-  ρⁿ =
-    radius (positivePower ρ n)
-
-  invρⁿ : ℚ
-  invρⁿ =
-    radius (posInv⁺ (positivePower ρ n))
-
-  invρⁿ*ρⁿ≡1 : invρⁿ ℚ.· ρⁿ ≡ Rational.1ℚ
-  invρⁿ*ρⁿ≡1 =
-    cong radius (*⁺-posInv-left (positivePower ρ n))
 
 naturalRealBound :
   (n : ℕ) →

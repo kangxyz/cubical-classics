@@ -17,12 +17,13 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.Data.Sum as Sum using (inl ; inr)
 
+open import Constructive.Analysis.GeometricDecay.Rate
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy
+open import Constructive.Analysis.Modulus
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
-open import Constructive.Analysis.FixedPoint.Base public
-open import Constructive.Analysis.FixedPoint.Rate
+open import Constructive.Analysis.FixedPoint.Base
 
 private
   variable
@@ -55,19 +56,6 @@ contraction-precision≤ ρ ρ<1 ε =
     {p = radius (ρ *⁺ ε)}
     {q = radius ε}
     (contraction-precision< ρ ρ<1 ε)
-
-
-half-mono-≤ :
-  {ε δ : ℚ⁺} →
-  radius ε ℚOrder.≤ radius δ →
-  radius (half⁺ ε) ℚOrder.≤ radius (half⁺ δ)
-half-mono-≤ {ε = ε} {δ = δ} ε≤δ =
-  ℚOrder.≤-·o
-    (radius ε)
-    (radius δ)
-    Rational.1/2
-    (Rational.<→≤ {p = Rational.0ℚ} {q = Rational.1/2} Rational.0<1/2)
-    ε≤δ
 
 
 iterate :

@@ -16,6 +16,7 @@ open import Cubical.Relation.Nullary using (¬_)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Instances.Rationals
+open import Constructive.Analysis.Modulus
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Apartness

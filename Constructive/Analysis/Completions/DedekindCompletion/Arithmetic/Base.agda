@@ -17,7 +17,8 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 import Constructive.Algebra.LinearlyOrderedCommRing.Base as LinearBase
 open import Constructive.Algebra.LinearlyOrderedField
-open import Constructive.Analysis.Completions.DedekindCompletion
+open import Constructive.Analysis.Completions.DedekindCompletion.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Order
 open import Constructive.Analysis.Completions.DedekindCompletion.Approximation
 open import Constructive.Foundations.Powerset hiding (Pred)
 

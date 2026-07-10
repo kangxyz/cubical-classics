@@ -18,8 +18,8 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; _×_)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
-open import Constructive.Analysis.Reals.Interval
-open import Constructive.Analysis.Reals.Interval.Grid
+open import Constructive.Analysis.Reals.Interval.Base
+open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Data.PositiveRationals
 open import Constructive.Data.Rationals.Closeness
 import Constructive.Data.Rationals as Rational

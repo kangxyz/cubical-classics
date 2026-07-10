@@ -13,20 +13,23 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.Series using (SeriesMajorizedBy)
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
   using
     ( PowerSeriesCoefficientBounds
     ; PowerSeriesCoefficientBoundsWith
-    ; powerSeriesBallTermBoundsFromMajorantBoundsWith
     ; powerSeriesCoefficientBoundPrecisionFromBallTermBounds
     ; powerSeriesCoefficientBoundsFromBallTermBoundsWith
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
+  using
+    ( powerSeriesBallTermBoundsFromMajorantBoundsWith
     ; powerSeriesLimitApproximationIndex
     ; powerSeriesPartialSumsModulusFromCoefficientBounds
     )

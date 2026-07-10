@@ -19,9 +19,10 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst)
 import Cubical.Data.Sum as Sum
 open import Cubical.Tactics.CommRingSolver.Reflection
 
+open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy as MetricCauchy
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
@@ -38,11 +39,15 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
-open import Constructive.Analysis.Reals.Series
+open import Constructive.Analysis.Reals.Series.Cauchy
+open import Constructive.Analysis.Reals.Series.Comparison
+open import Constructive.Analysis.Reals.Series.Finite
+open import Constructive.Analysis.Reals.Series.Tail
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Algebra
+open import Constructive.Analysis.GeometricDecay
+open import Constructive.Analysis.GeometricDecay.Algebra
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Rational
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
@@ -236,7 +241,7 @@ realGeometricSeriesTailBoundFromMajorant :
   PositiveGeometricFiniteTailBound
     (RealGeometricBound.ratioBound bound)
     μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   RealGeometricTailBound x terms (λ ε → μ (half⁺ ε))
 realGeometricSeriesTailBoundFromMajorant x terms bound majorant {μ = μ} majorTail μ-antitone =
   tailBound→SeriesTailBound
@@ -334,7 +339,7 @@ realGeometricSumFromMajorant :
   PositiveGeometricFiniteTailBound
     (RealGeometricBound.ratioBound bound)
     μ →
-  AntitoneTailModulus μ →
+  AntitoneNatModulus μ →
   ℝᶜ
 realGeometricSumFromMajorant x terms bound majorant μ majorTail μ-antitone =
   seriesSumFromFiniteTailBound
@@ -883,7 +888,7 @@ realGeometricNeumannRightInverseFromPowerBounds
   μ =
     positiveGeometricPowerModulus ρ ρ<1
 
-  μ-antitone : AntitoneTailModulus μ
+  μ-antitone : AntitoneNatModulus μ
   μ-antitone =
     positiveGeometricPowerModulus-antitone ρ ρ<1
 

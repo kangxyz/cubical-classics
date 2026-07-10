@@ -61,22 +61,25 @@ open import Constructive.Analysis.Reals.Series.Comparison
   using (seriesMajorizedByTerms ; tailSum-comparison)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Majorant
   using (bounded-byᶜ-abs)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positivePower)
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower ; realPowerBoundsFromBound)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Pointwise
   using (partialSum-mulLeft)
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
+  using
+    ( positiveRationalSelfBounded
+    ; powerSeriesCoefficientFromRationalProbe
+    ; realPower-rational-positive
+    )
+open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Estimates
   using
     ( absᶜ-mul≤product
     ; absᶜ-rational-nonnegative
     ; absᶜ-scalarMul≤
     ; mulᶜ-nonnegative
-    ; positiveRationalSelfBounded
-    ; powerSeriesCoefficientFromRationalProbe
-    ; realPower-rational-positive
     ; tripleScalarProductPath
     )
 open import Constructive.Analysis.Reals.PowerSeries.Majorant

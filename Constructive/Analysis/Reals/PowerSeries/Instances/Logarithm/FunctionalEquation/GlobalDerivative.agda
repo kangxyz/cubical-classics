@@ -15,7 +15,7 @@ open import Cubical.Data.Sigma using (_×_)
 open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
 open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Rules
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -30,13 +30,14 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
   using (bounded-byᶜ-mul)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative.Core
+  using (atanhDerivativePowerSeriesReciprocalOnBall)
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative.Within
   using
-    ( atanhDerivativePowerSeriesReciprocalOnBall
-    ; atanhWithinDerivativeModulus
+    ( atanhWithinDerivativeModulus
     ; atanhᶜFromSubunitBoundHasDerivativeWithinDomainAtWith
     )
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.Core
   using (onePlusStrictSubunitDomain)
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.AtanhTransport
   using (atanhᶜFromSubunitBound-argument-path)

@@ -15,7 +15,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.Interval
+open import Constructive.Analysis.Reals.Interval.Base
 
 
 gapᶜ : ℝᶜ → ℝᶜ → ℝᶜ

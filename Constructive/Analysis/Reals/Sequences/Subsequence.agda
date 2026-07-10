@@ -11,6 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (ℕ ; zero ; _+_)
 import Cubical.Data.Nat.Order as NatOrder
 
+open import Constructive.Analysis.Modulus
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.Sequences.Base
 open import Constructive.Analysis.Reals.Sequences.Cauchy

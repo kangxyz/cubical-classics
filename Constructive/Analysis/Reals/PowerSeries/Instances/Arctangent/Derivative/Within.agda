@@ -13,7 +13,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.Calculus.Derivative.BoundedSegment.Margin
   using (boundedSecondDerivativeMarginModulus)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
   using (HasDerivativeWithinDomainAtWith)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
@@ -21,15 +21,11 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.PowerSeries.Differentiation
   using (derivativePowerSeries)
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Coefficients
-  using
-    ( atanhPowerSeries
-    ; derivativePowerSeries-atanh
-    ; evenGeometricPowerSeries
-    )
+  using (atanhPowerSeries)
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Convergence
   using
-    ( atanhPowerSeriesOnSubunitBallWith
-    ; evenGeometricPowerSeriesOnSubunitBallWith
+    ( atanhDerivativePowerSeriesOnSubunitBallWith
+    ; atanhPowerSeriesOnSubunitBallWith
     )
 open import Constructive.Analysis.Reals.PowerSeries.Instances.Arctangent.Derivative.Bounds
   using (atanhSecondDerivativePartialSumsBoundOnStrictSubball)
@@ -45,11 +41,11 @@ open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.UniformPa
   using (partialSumsDerivativeTargetModulus)
 open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.SecondDerivativePartialSumBounds.Finite
   using (PowerSeriesSecondDerivativePartialSumsBoundOnBall)
-open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Within
+open import Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Within.Core
   using
     ( powerSeriesSumWithinDomainFormalDerivativeAtWithFromSecondDerivativeBound
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
   using
@@ -137,19 +133,6 @@ atanhWithinDerivativeModulus ρ rho<1 =
     (boundedSecondDerivativeMarginModulus
       (atanhDerivativeMargin ρ rho<1)
       (atanhSecondDerivativePartialSumsBoundData ρ rho<1 .fst))
-
-
-atanhDerivativePowerSeriesOnSubunitBallWith :
-  (ρ : ℚ⁺) →
-  (rho<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  HasPowerSeriesOnBallWith
-    (derivativePowerSeries atanhPowerSeries)
-    ρ
-    (positiveGeometricPowerModulus ρ rho<1)
-atanhDerivativePowerSeriesOnSubunitBallWith ρ rho<1 =
-  hasPowerSeriesOnBallWith-cong
-    (λ n → sym (derivativePowerSeries-atanh n))
-    (evenGeometricPowerSeriesOnSubunitBallWith ρ rho<1)
 
 
 atanhᶜFromSubunitBoundHasDerivativeWithinDomainAtWith :

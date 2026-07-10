@@ -37,7 +37,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using (majorizedOnBall→hasPowerSeriesOnBallWith)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Recenter
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
 open import Constructive.Data.PositiveRationals
   using

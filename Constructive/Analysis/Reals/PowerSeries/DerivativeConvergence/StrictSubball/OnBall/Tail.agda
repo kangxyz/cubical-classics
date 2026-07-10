@@ -40,7 +40,7 @@ open import Constructive.Analysis.Reals.Series
     ; partialSum-comparison
     ; tailSum
     )
-open import Constructive.Analysis.Reals.Sequences.Base
+open import Constructive.Analysis.Modulus
   using
     ( maxModulus-antitone
     ; maxModulus-left≤

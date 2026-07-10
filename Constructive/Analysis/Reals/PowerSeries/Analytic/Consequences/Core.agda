@@ -15,7 +15,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Data.Sigma using (Σ-syntax ; _,_ ; fst ; snd)
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
@@ -27,11 +27,12 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
-open import Constructive.Analysis.Reals.Calculus.Derivative
+open import Constructive.Analysis.Reals.Calculus.Derivative.Base
   using (HasDerivativeAtWith ; hasDerivativeAtWith-local-cong)
+open import Constructive.Analysis.Reals.Calculus.Derivative.Rules
 open import Constructive.Analysis.Reals.Series
-  using (AntitoneTailModulus ; SeriesMajorizedBy ; TailBound)
-open import Constructive.Analysis.Reals.Sequences.Base
+  using (SeriesMajorizedBy ; TailBound)
+open import Constructive.Analysis.Modulus
   using (maxModulus ; splitModulus)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
@@ -66,11 +67,15 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
     ( PowerSeriesMajorizedOnBall
     ; majorizedOnBall→hasPowerSeriesOnBallWith
     )
-open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
   using
     ( PowerSeriesCoefficientBounds
     ; PowerSeriesCoefficientBoundsWith
-    ; PowerSeriesPartialSumsUniformlyContinuousOnBall
+    ; powerSeriesCoefficientBoundPrecisionFromBallTermBounds
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
+  using
+    ( PowerSeriesPartialSumsUniformlyContinuousOnBall
     ; PowerSeriesPartialSumsUniformlyContinuousOnBallWith
     ; centeredPowerSeriesSumUniformlyContinuousFromBallTermBounds
     ; centeredPowerSeriesSumUniformlyContinuousFromBallTermBoundsCanonical
@@ -83,7 +88,6 @@ open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
     ; centeredPowerSeriesSumUniformlyContinuousFromMajorantBoundsCanonical
     ; centeredPowerSeriesSumUniformlyContinuousFromMajorantBoundsCanonicalWith
     ; centeredPowerSeriesSumUniformlyContinuousFromPartialSums
-    ; powerSeriesCoefficientBoundPrecisionFromBallTermBounds
     ; powerSeriesLimitApproximationIndex
     ; powerSeriesPartialSumsModulusFromCoefficientBounds
     ; powerSeriesSumContinuousAtFromBallTermBounds

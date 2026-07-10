@@ -17,7 +17,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Metric.Map using (PrecisionModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition

@@ -11,7 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Nat using (suc ; zero)
 import Cubical.Data.Rationals.Order as ℚOrder
 
-open import Constructive.Analysis.Reals.Calculus.Derivative.Domain
+open import Constructive.Analysis.Reals.Calculus.Derivative.Domain.Base
   using (domainValueAlongPath)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -25,7 +25,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Algebra
 open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
   using (AnalyticWithinAt ; HasPowerSeriesWithinAtWith)
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm
+open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Base
   using
     ( logOnePlusPowerSeries
     ; logOnePlusPowerSeriesOnSubunitBallWith
@@ -40,9 +40,9 @@ open import Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.Series
   using (partialSum ; partialSum-snoc ; partialSum-zero)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Positive
+open import Constructive.Analysis.GeometricDecay
   using (positiveGeometricPowerModulus)
-open import Constructive.Analysis.Reals.Sequences.Base
+open import Constructive.Analysis.Modulus
   using (maxModulus ; splitModulus)
 open import Constructive.Data.PositiveRationals
 

@@ -14,7 +14,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 
 open import Constructive.Analysis.Metric.Base
   using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
   using (_+ᶜ_)
@@ -36,7 +36,7 @@ open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.DerivativeConvergence.Internal
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
   using (positiveRationalSelfBounded)
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using (PowerSeriesMajorizedOnBall ; majorizedOnBall→hasPowerSeriesOnBallWith)

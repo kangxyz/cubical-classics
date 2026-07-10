@@ -18,7 +18,7 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 open import Cubical.HITs.PropositionalTruncation as Prop
 
 open import Constructive.Analysis.Metric.Base using (MetricSpace)
-open import Constructive.Analysis.Metric.Instances.CauchyReals
+open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
@@ -31,7 +31,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
   using (realPower)
-open import Constructive.Analysis.Reals.Sequences.Base
+open import Constructive.Analysis.Modulus
   using
     ( maxModulus
     ; maxModulus-antitone

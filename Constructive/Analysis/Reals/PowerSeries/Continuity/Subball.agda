@@ -17,6 +17,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
   using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.Series using (SeriesMajorizedBy)
 open import Constructive.Analysis.Reals.PowerSeries.Base
+open import Constructive.Analysis.Reals.PowerSeries.Bounds
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.PowerSeries.Continuity.Core
 open import Constructive.Data.PositiveRationals
