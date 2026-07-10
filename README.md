@@ -101,9 +101,9 @@ not automatically stable interfaces merely because their files are visible.
 | [`Classical.DedekindCompletion`](Classical/DedekindCompletion.agda) | Classical MacNeille completeness of constructive Dedekind completions. |
 | [`Classical.Analysis.Real`](Classical/Analysis/Real.agda) | The classical real-number base interface. |
 
-The [architecture guide](docs/ARCHITECTURE.md) records the direct public
-exports of these aggregates and the classical analysis modules that currently
-have no common aggregate.
+The [architecture guide](docs/ARCHITECTURE.md) records the broader stable-entry
+map and explains which entries are aggregates or direct modules. The linked
+Agda source is authoritative for exact reexports.
 
 ## Documentation
 

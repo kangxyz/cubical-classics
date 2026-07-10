@@ -70,9 +70,8 @@ specialization rather than the generic completion.
 
 [`Constructive.Analysis.Completions.DedekindCompletion`](../Constructive/Analysis/Completions/DedekindCompletion.agda)
 is the generic constructive two-sided located-cut completion over a linearly
-ordered field. Its public aggregate exports the base, order, approximation, and
-completeness interfaces. Arithmetic and Archimedean support exist as direct
-submodules but are not reexported by that aggregate.
+ordered field and owns its generic order, approximation, and completeness
+interfaces.
 
 [`Constructive.Analysis.Reals.DedekindReals`](../Constructive/Analysis/Reals/DedekindReals.agda)
 is the rational instance and preserves the public `ℝᴰ` interface.
@@ -105,93 +104,43 @@ or approximate forms justified by their data.
 ## Stable Public Entry Points
 
 An aggregate module is a preferred public entry point when it reexports its
-interface with `open import … public`. The lists below reflect the current direct
-public imports. Import the aggregate unless a documented result is deliberately
-outside it.
+interface with `open import … public`; a `direct` entry is stable even though no
+suitable aggregate currently owns it. This table records stable paths and
+mathematical roles, not each reexport. The linked Agda source is authoritative
+for the exact public surface. Import the aggregate when one is available.
 
-### Constructive algebra and data
+<!-- BEGIN STABLE PUBLIC ENTRY TABLE -->
+| Module | Kind | Scope |
+| --- | --- | --- |
+| [`Constructive.Data.Rationals`](../Constructive/Data/Rationals.agda) | `aggregate` | Rational arithmetic, bounds, Archimedean, and grid support. |
+| [`Constructive.Algebra.Order`](../Constructive/Algebra/Order.agda) | `aggregate` | Constructive MacNeille completeness. |
+| [`Constructive.Algebra.OrderedCommRing`](../Constructive/Algebra/OrderedCommRing.agda) | `aggregate` | Ordered commutative rings, properties, Archimedean structure, morphisms, and univalence. |
+| [`Constructive.Algebra.LinearlyOrderedCommRing`](../Constructive/Algebra/LinearlyOrderedCommRing.agda) | `aggregate` | Linearly ordered commutative rings and their core properties. |
+| [`Constructive.Algebra.OrderedField`](../Constructive/Algebra/OrderedField.agda) | `aggregate` | Ordered fields, properties, and morphisms. |
+| [`Constructive.Algebra.OrderedHeytingField`](../Constructive/Algebra/OrderedHeytingField.agda) | `aggregate` | Ordered Heyting fields. |
+| [`Constructive.Algebra.LinearlyOrderedField`](../Constructive/Algebra/LinearlyOrderedField.agda) | `aggregate` | Linearly ordered fields and Archimedean properties. |
+| [`Constructive.Analysis.Completions`](../Constructive/Analysis/Completions.agda) | `aggregate` | Generic Cauchy and Dedekind completions. |
+| [`Constructive.Analysis.Completions.CauchyCompletion`](../Constructive/Analysis/Completions/CauchyCompletion.agda) | `aggregate` | HoTT-style Cauchy completion. |
+| [`Constructive.Analysis.Completions.DedekindCompletion`](../Constructive/Analysis/Completions/DedekindCompletion.agda) | `aggregate` | Constructive two-sided located-cut completion. |
+| [`Constructive.Analysis.Metric`](../Constructive/Analysis/Metric.agda) | `aggregate` | Metric interfaces, maps, Cauchy data, and completion instances. |
+| [`Constructive.Analysis.Reals`](../Constructive/Analysis/Reals.agda) | `aggregate` | Constructive real instances, sequences, locators, intervals, IVT, and series. |
+| [`Constructive.Analysis.Reals.Sequences`](../Constructive/Analysis/Reals/Sequences.agda) | `aggregate` | Sequence convergence, Cauchy data, subsequences, maps, algebra, and order. |
+| [`Constructive.Analysis.Reals.Series`](../Constructive/Analysis/Reals/Series.agda) | `aggregate` | Finite sums, tails, Cauchy series, and comparison. |
+| [`Constructive.Analysis.Reals.Calculus.Derivative`](../Constructive/Analysis/Reals/Calculus/Derivative.agda) | `direct` | One-variable derivative interface. |
+| [`Constructive.Analysis.Reals.PowerSeries`](../Constructive/Analysis/Reals/PowerSeries.agda) | `aggregate` | Power-series theory and elementary instances. |
+| [`Constructive.Analysis.FixedPoint`](../Constructive/Analysis/FixedPoint.agda) | `aggregate` | Fixed-point interfaces, Banach contraction, and Cauchy-real results. |
+| [`Classical.Axioms`](../Classical/Axioms.agda) | `aggregate` | Oracle, choice, excluded middle, and `AC→LEM`. |
+| [`Classical.Foundations.Powerset`](../Classical/Foundations/Powerset.agda) | `aggregate` | Impredicative powerset interfaces. |
+| [`Classical.DedekindCut`](../Classical/DedekindCut.agda) | `aggregate` | Classical cuts, algebra, completeness, and universal property. |
+| [`Classical.DedekindCompletion`](../Classical/DedekindCompletion.agda) | `aggregate` | Classical MacNeille completeness for constructive completions. |
+| [`Classical.Topology.Metric`](../Classical/Topology/Metric.agda) | `aggregate` | Classical metric-space base interface. |
+| [`Classical.Analysis.Real`](../Classical/Analysis/Real.agda) | `aggregate` | Classical real-number base interface. |
+| [`Classical.Analysis.Real.Topology`](../Classical/Analysis/Real/Topology.agda) | `direct` | Real topology, intervals, and Heine–Borel. |
+| [`Classical.Analysis.Real.Sequence`](../Classical/Analysis/Real/Sequence.agda) | `direct` | Real sequences, Bolzano–Weierstrass, and completeness. |
+| [`Classical.Analysis.Function.Continuity`](../Classical/Analysis/Function/Continuity.agda) | `direct` | Continuous real functions and the intermediate value theorem. |
+<!-- END STABLE PUBLIC ENTRY TABLE -->
 
-- [`Constructive.Data.Rationals`](../Constructive/Data/Rationals.agda) exports
-  rational base, multiplication, inverse, scaling, bounds, Archimedean, and
-  grid support.
-- [`Constructive.Algebra.Order`](../Constructive/Algebra/Order.agda) exports
-  constructive MacNeille completeness.
-- [`Constructive.Algebra.OrderedCommRing`](../Constructive/Algebra/OrderedCommRing.agda)
-  exports Cubical's ordered-commutative-ring interface together with local
-  properties, Archimedean structure, morphisms, and univalence.
-- [`Constructive.Algebra.LinearlyOrderedCommRing`](../Constructive/Algebra/LinearlyOrderedCommRing.agda)
-  exports selected ordered-ring structure plus its local base and properties.
-  Its instance, morphism, Archimedean, and univalence modules are direct imports
-  rather than exports of this aggregate.
-- [`Constructive.Algebra.OrderedField`](../Constructive/Algebra/OrderedField.agda)
-  exports its base, properties, and morphisms.
-- [`Constructive.Algebra.OrderedHeytingField`](../Constructive/Algebra/OrderedHeytingField.agda)
-  exports its base interface.
-- [`Constructive.Algebra.LinearlyOrderedField`](../Constructive/Algebra/LinearlyOrderedField.agda)
-  exports its base, Archimedean interface, and properties.
-
-### Constructive analysis
-
-- [`Constructive.Analysis.Completions`](../Constructive/Analysis/Completions.agda)
-  exports both `CauchyCompletion` and `DedekindCompletion`.
-- [`Constructive.Analysis.Completions.CauchyCompletion`](../Constructive/Analysis/Completions/CauchyCompletion.agda)
-  exports `Base`, `Definitions`, `Induction`, `Recursion`, `Closeness`,
-  `MetricSpace`, `Completeness`, and `Extension`.
-- [`Constructive.Analysis.Completions.DedekindCompletion`](../Constructive/Analysis/Completions/DedekindCompletion.agda)
-  exports `Base`, `Order`, `Approximation`, and `Completeness`.
-- [`Constructive.Analysis.Metric`](../Constructive/Analysis/Metric.agda) exports
-  metric `Base`, `Map`, and `Cauchy`, the generic Cauchy completion, and the
-  rational and Cauchy-real metric instances. `TotallyBounded` is currently a
-  direct module, not an export of this aggregate.
-- [`Constructive.Analysis.Reals`](../Constructive/Analysis/Reals.agda) exports
-  `DedekindReals`, `CauchyReals`, `Comparison`, `Sequences`, `Locator`, the
-  interval and grid interfaces, interval completeness, total boundedness,
-  compactness and extrema, `IVT`, `Series`, and series instances. It does not
-  reexport `PowerSeries` or `FixedPoint`.
-- [`Constructive.Analysis.Reals.Sequences`](../Constructive/Analysis/Reals/Sequences.agda)
-  exports sequence base, convergence, Cauchy, subsequence, map, algebra, and
-  order interfaces.
-- [`Constructive.Analysis.Reals.Series`](../Constructive/Analysis/Reals/Series.agda)
-  exports finite sums, tail data, Cauchy series, and comparison.
-- [`Constructive.Analysis.Reals.Calculus.Derivative`](../Constructive/Analysis/Reals/Calculus/Derivative.agda)
-  is the direct public module for the current one-variable derivative
-  interface. There is no common `Constructive.Analysis.Reals.Calculus`
-  aggregate yet.
-- [`Constructive.Analysis.Reals.PowerSeries`](../Constructive/Analysis/Reals/PowerSeries.agda)
-  exports `Base`, `Radius`, `Continuity`, `Analytic`, `Majorant`, `Algebra`,
-  `CauchyProduct`, `Differentiation`, `DerivativeConvergence`,
-  `TermwiseDerivative`, `Recenter`, `DerivativeAnalytic`, and `Instances`.
-  The instances aggregate includes the elementary series and the
-  domain-evidenced analyticity theorem for `atanh`.
-- [`Constructive.Analysis.FixedPoint`](../Constructive/Analysis/FixedPoint.agda)
-  exports `Base`, `Banach`, and the Cauchy-real results in `Reals`.
-
-### Classical modules
-
-- [`Classical.Axioms`](../Classical/Axioms.agda) defines `Oracle` and `AC→LEM`
-  and publicly exports `Choice` and `ExcludedMiddle`. Resizing is a direct
-  module, not an export of the aggregate.
-- [`Classical.Foundations.Powerset`](../Classical/Foundations/Powerset.agda)
-  exports its base, membership, Boolean, properties, finite big-operation, and
-  finiteness interfaces.
-- [`Classical.DedekindCut`](../Classical/DedekindCut.agda) exports `Base`,
-  `Archimedean`, `Algebra`, `Signature`, `Order`, `Multiplication`,
-  `Completeness`, and `UniversalProperty`.
-- [`Classical.DedekindCompletion`](../Classical/DedekindCompletion.agda) exports
-  `MacNeilleCompleteness` for the constructive completion.
-- [`Classical.Topology.Metric`](../Classical/Topology/Metric.agda) exports only
-  its metric base interface.
-- [`Classical.Analysis.Real`](../Classical/Analysis/Real.agda) exports only the
-  classical real base interface.
-
-There is currently no aggregate for all classical topology or real analysis.
-Notable direct public modules include
-[`Classical.Analysis.Real.Topology`](../Classical/Analysis/Real/Topology.agda),
-[`Classical.Analysis.Real.Sequence`](../Classical/Analysis/Real/Sequence.agda),
-and
-[`Classical.Analysis.Function.Continuity`](../Classical/Analysis/Function/Continuity.agda)
-for the corresponding public results. The last module contains the classical
-continuous-function and intermediate-value interfaces.
+Run `scripts/check-architecture.sh` after editing this table.
 
 ## Public Versus Internal Modules
 
@@ -207,9 +156,9 @@ A file's existence does not by itself make it a stable dependency.
 - A file whose name matches a directory is not necessarily an aggregate. Read
   its imports before assuming that it reexports the directory.
 
-When a stable module path or an aggregate's direct public imports change,
-update the relevant aggregate and this guide in the same change. Update the
+When a stable module path, documented role, or architectural boundary changes,
+update this guide in the same change. Exact aggregate import lists stay in the
+Agda source and do not need to be copied here. Update the
 [project README](../README.md) only when its short stable-entry list or the
 user-facing mathematical story changes. Do not expand either document into an
-inventory of every helper or theorem; the checked Agda source remains
-authoritative.
+inventory of every helper or theorem.

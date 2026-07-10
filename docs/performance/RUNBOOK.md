@@ -301,16 +301,14 @@ the same change.
 
 Stop local refactoring once the touched module and nearest aggregate check in
 normal cached mode. Run the repository's documented verification matrix. At a
-minimum, inspect the worktree and check both unstaged and staged diffs:
+minimum, inspect the worktree and run the complete whitespace check:
 
 ```sh
 git status --short
-git diff --check HEAD --
-git diff --cached --check
+scripts/check-worktree-whitespace.sh
 ```
 
-These commands do not cover untracked files. Follow the complete untracked-file
-procedure in the [development guide](../DEVELOPMENT.md#complete-diff-and-whitespace-checks)
-before reporting completion. Run broader Agda checks only when the change
-touches shared interfaces, module paths, foundational definitions, or aggregate
-exports.
+The [development guide](../DEVELOPMENT.md#complete-diff-and-whitespace-checks)
+owns the checker details and path-scoping rules. Run broader Agda checks only
+when the change touches shared interfaces, module paths, foundational
+definitions, or aggregate exports.

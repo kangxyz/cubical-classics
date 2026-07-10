@@ -56,7 +56,8 @@ foundational definition:
 - run the broad checks required by the verification matrix.
 
 A new internal file or private helper does not by itself require a README
-edit.
+edit. Run `scripts/check-architecture.sh` after editing the documented stable
+entry points.
 
 ## Verification Matrix
 
@@ -94,38 +95,24 @@ passed.
 
 ## Complete Diff And Whitespace Checks
 
-Plain `git diff --check` covers only unstaged tracked changes.  Before
-reporting completion, cover every state explicitly:
+Before reporting completion, inspect the worktree and run the repository
+checker:
 
 ```sh
 git status --short
-git diff --check HEAD --
-git diff --cached --check
+scripts/check-worktree-whitespace.sh
 ```
 
-`git diff --check HEAD --` checks all tracked working-tree content against
-`HEAD`, including staged and unstaged changes.  The cached form checks the
-exact staged snapshot before a commit.
-
-Untracked files have no diff base and are omitted from both commands.  Inspect
-every in-scope path listed by `git status --short`.  This zsh loop applies
-Git's whitespace checker to all untracked files without modifying the index:
+With no arguments, the script checks unstaged, staged, and untracked files
+across the worktree without modifying the index. Optional arguments are Git
+pathspecs, interpreted from the repository root, for a narrower check:
 
 ```sh
-while IFS= read -r -d '' file; do
-  git diff --no-index --check -- /dev/null "$file"
-  exit_code=$?
-  if (( exit_code > 1 )); then
-    exit "$exit_code"
-  fi
-done < <(git ls-files --others --exclude-standard -z)
+scripts/check-worktree-whitespace.sh -- docs README.md
 ```
 
-For `git diff --no-index`, status `1` means an ordinary content difference
-from the empty file; a status greater than `1` indicates a check error such as
-trailing whitespace.  Restrict the `git ls-files` command with `-- <paths>`
-when unrelated untracked user work exists, and still inspect that worktree
-state so it is not accidentally staged or reported as agent output.
+Always review `git status --short` separately so unrelated user work is not
+staged or reported as part of the change.
 
 ## Performance Triage
 
