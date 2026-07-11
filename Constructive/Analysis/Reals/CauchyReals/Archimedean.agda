@@ -26,7 +26,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Ordered
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarOrder
 open import Constructive.Analysis.Reals.CauchyReals.Base

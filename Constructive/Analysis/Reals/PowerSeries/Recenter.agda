@@ -3,10 +3,36 @@
 Power-series re-centering infrastructure.
 
 -}
-{-# OPTIONS --safe --lossy-unification #-}
+{-# OPTIONS --safe #-}
 module Constructive.Analysis.Reals.PowerSeries.Recenter where
 
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.Base public
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.StrictSubball public
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.Theorem public
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.Analytic public
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.Coefficients
+  public
+  using
+    ( recenterCoefficientTerm
+    ; recenterCoefficientPartial
+    ; RecenterCoefficientConvergenceData
+    ; recenterCoefficientSumWith
+    ; RecenterPowerSeriesData
+    ; recenterPowerSeriesWith
+    ; recenterCoefficientConvergenceDataAtZero
+    ; recenterPowerSeriesDataAtZero
+    ; recenterCoefficientSumAtZero-path
+    ; recenterPowerSeriesWithAtZero-path
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.Bounds
+  public
+  using (recenterShiftedDisplacementBound)
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.StrictSubball
+  public
+  using
+    ( recenterPowerSeriesDataFromMajorizedOnStrictSubball
+    ; recenterPowerSeriesOnStrictSubballFromMajorizedOnBall
+    ; centeredPowerSeriesSumRecenteredOnStrictSubball
+    )
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.Analytic
+  public
+  using
+    ( centeredPowerSeriesWithinBallHasPowerSeriesWithinAtWithFromMajorized
+    ; centeredPowerSeriesWithinBallAnalyticWithinAtFromMajorized
+    )

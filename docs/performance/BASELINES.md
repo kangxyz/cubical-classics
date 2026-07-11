@@ -64,76 +64,93 @@ benchmark.
   completed in about 186.6 seconds, but the sandbox rejected the resource
   query with `sysctl kern.clockrate: Operation not permitted`.
 - **Profile signal:**
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.Global`:
+  - `Constructive.Analysis.Reals.PowerSeries.Elementary.Logarithm.Global`:
     about 11.3 seconds
   - `Constructive.Analysis.Reals.PowerSeries.Radius.Centered`: about
     9.0 seconds
-  - `Constructive.Analysis.Reals.Series.Instances.Geometric.Positive`:
+  - `Constructive.Analysis.Reals.Series.Geometric.Positive`:
     about 7.8 seconds
   - `Constructive.Data.Rationals.Archimedean`: about 7.1 seconds
-  - `Constructive.Analysis.Reals.Locator.Base`: about 5.7 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.GlobalDerivative`:
+  - `Constructive.Analysis.Reals.Locator`: about 5.7 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Elementary.Logarithm.FunctionalEquation.GlobalDerivative`:
     about 5.6 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.QuotientDerivative`:
+  - `Constructive.Analysis.Reals.PowerSeries.Elementary.Logarithm.FunctionalEquation.QuotientDerivative`:
     about 5.4 seconds
   - `Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision`:
     about 5.1 seconds
 - **Status:** no confirmed whole-`Constructive` proof-packaging or positivity
-  outlier remains. `Constructive.Analysis.Reals.PowerSeries.Radius.Sum`,
+  outlier remains. `Constructive.Analysis.Reals.PowerSeries.Convergence`,
   which dominated the prior whole-`Constructive` profile at about 58.1
   seconds, is now about 228 milliseconds.
 
 ### PowerSeries Aggregate
 
-- **Date:** 2026-07-10
-- **Repository state:** working tree after the PowerSeries RHS cleanup
-  described in [case studies](CASE_STUDIES.md)
+- **Date:** 2026-07-11
+- **Repository state:** commit `0c622dfa` plus the uncommitted constructive
+  Analysis consolidation described in [case studies](CASE_STUDIES.md)
 - **Agda:** 2.8.0; `--profile=modules`
-- **Cubical:** unknown (not recorded)
-- **Environment:** macOS local sandbox; CPU and memory not recorded
+- **Cubical:** library registration from the invoking environment; revision
+  not recorded
+- **Environment:** macOS Darwin 25.5.0 arm64 local sandbox; CPU and memory not
+  recorded
 - **Recipe:** cold local aggregate profile
 - **Command:** fresh temporary copy via the runbook recipe, then
   `agda --profile=modules Constructive/Analysis/Reals/PowerSeries.agda`
-- **Result:** about 99.8 seconds; RSS not recorded
+- **Result:** Agda total 135.529 seconds; wall 137.58 seconds; RSS not recorded
 - **Profile signal:**
-  - `Constructive.Analysis.Reals.PowerSeries.TermwiseDerivative.Theorem`:
-    about 4.1 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.GlobalDerivative`:
-    about 3.6 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.QuotientDerivative`:
-    about 3.4 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.GlobalAnalytic`:
-    about 2.9 seconds
-  - `Constructive.Analysis.Reals.PowerSeries.Instances.Logarithm.FunctionalEquation.LogOnePlusGlobal`:
-    about 1.0 seconds
-- **Status:** no confirmed anomalously slow PowerSeries files remain. The
-  residual PowerSeries costs are RHS/reflection-heavy proof bridges, not
-  positivity or record-packaging outliers.
+  - `Constructive.Analysis.Reals.PowerSeries.Radius.Centered`: about
+    9.8 seconds
+  - `Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision`:
+    about 8.5 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Recenter.Coefficients`: about
+    5.2 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Elementary.Logarithm.FunctionalEquation.GlobalDerivative`:
+    about 5.3 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Elementary.Logarithm.FunctionalEquation.Algebra`:
+    about 4.6 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Elementary.Logarithm.FunctionalEquation.QuotientDerivative`:
+    about 4.9 seconds
+  - `Constructive.Analysis.Reals.PowerSeries.Differentiation.Limit`:
+    about 4.8 seconds
+- **Status:** the same-machine Phase 0 baseline was Agda total 151.347 seconds
+  and wall 153.55 seconds, so this run is about 10.5% faster. Repeated cold
+  runs on the nearly final tree ranged from 153.024 to 135.529 seconds, so the
+  result establishes no regression but is not evidence for attributing the
+  full difference to one source change. The older 99.8-second snapshot used a
+  different repository state and is retained in
+  [case studies](CASE_STUDIES.md), not treated as a like-for-like threshold.
+  No positivity or record-packaging outlier reappeared.
 
 ### Constructive Reals Aggregate
 
-- **Date:** 2026-07-08
-- **Repository state:** after the constructive real-analysis performance
-  cleanup described in [case studies](CASE_STUDIES.md)
-- **Agda:** 2.8.0; additional options not recorded
-- **Cubical:** unknown (not recorded)
-- **Environment:** machine details unknown; maximum RSS was measured on macOS
-- **Recipe:** cold local aggregate profile, with a matching cold resource run
-- **Command:** `agda --profile=modules Constructive/Analysis/Reals.agda` for
-  the module profile and
-  `/usr/bin/time -l agda Constructive/Analysis/Reals.agda` for the resource
-  run; the exact temporary-copy command was not recorded
-- **Result:** about 104 seconds in the module profile and about 106 seconds in
-  the resource run; `2061697024` bytes (about 2.06 GB) maximum RSS
+- **Date:** 2026-07-11
+- **Repository state:** commit `0c622dfa` plus the uncommitted constructive
+  Analysis consolidation described in [case studies](CASE_STUDIES.md)
+- **Agda:** 2.8.0; `--profile=modules`
+- **Cubical:** library registration from the invoking environment; revision
+  not recorded
+- **Environment:** macOS Darwin 25.5.0 arm64 local sandbox; CPU and memory not
+  recorded
+- **Recipe:** cold local aggregate profile
+- **Command:** fresh temporary copy via the runbook recipe, then
+  `agda --profile=modules Constructive/Analysis/Reals.agda`
+- **Result:** Agda total 103.201 seconds; wall 104.55 seconds; RSS not recorded
 - **Profile signal:**
-  - `Constructive.Data.Rationals.Archimedean`: about 7.2 seconds
-  - `Constructive.Analysis.Reals.CauchyReals.Order.Bounded`: about 5.9 seconds
-  - `Constructive.Analysis.Reals.Locator.Base`: about 5.7 seconds
+  - `Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision`:
+    about 8.3 seconds
+  - `Constructive.Data.Rationals.Archimedean`: about 6.9 seconds
+  - `Constructive.Analysis.Reals.Locator`: about 6.1 seconds
+  - `Constructive.Analysis.Reals.Series.Geometric.Real`: about 5.3 seconds
   - `Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication`:
-    about 4.2 seconds
-  - `Constructive.Data.Rationals.Bounds`: about 4.0 seconds
-- **Status:** no single-file Constructive Reals outlier remained on the scale
-  of the fixed 17-42 second modules
+    about 4.3 seconds
+  - `Constructive.Data.Rationals.Bounds`: about 3.8 seconds
+- **Status:** the same-machine Phase 0 baseline was Agda total 116.446 seconds
+  and wall 118.18 seconds, so this run is about 11.4% faster. A preceding run
+  on the nearly final tree reported 116.390 seconds, confirming substantial
+  cold-run variance; use the result as a no-regression signal rather than a
+  precise speedup claim. The older approximately 104-second snapshot had
+  incomplete environment and temporary-copy metadata. No single-file outlier
+  remains on the scale of the fixed 17-42 second modules.
 
 ## Open Diagnostics
 

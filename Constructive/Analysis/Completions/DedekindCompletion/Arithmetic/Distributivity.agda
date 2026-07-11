@@ -11,10 +11,10 @@ open import Cubical.Foundations.Prelude
 open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Analysis.Completions.DedekindCompletion.Base
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Addition
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Negation
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.AdditiveGroup
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.NonNegative
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.NonnegativeProduct
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Multiplication
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Difference
 
@@ -30,11 +30,10 @@ module MultiplicationDistributivity
   baseField = 𝒜 .fst
 
   open CompletionBase baseField
-  open ArithmeticBase 𝒜
-  open Addition {ℓᴾ}
+  open Addition 𝒜 {ℓᴾ}
   open Negation 𝒜 {ℓᴾ}
   open AdditiveGroup 𝒜 {ℓᴾ}
-  open NonNegativeMultiplication 𝒜 {ℓᴾ}
+  open NonnegativeProduct 𝒜 {ℓᴾ}
   open Multiplication 𝒜 {ℓᴾ}
   open DifferenceProperties 𝒜 {ℓᴾ}
 

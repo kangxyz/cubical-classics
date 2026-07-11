@@ -12,8 +12,8 @@ import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.ReflexiveSymmetric
-open import Constructive.Analysis.Completions.CauchyCompletion.Extension.Unary.Core
-open import Constructive.Analysis.Completions.CauchyCompletion.MetricSpace
+open import Constructive.Analysis.Completions.CauchyCompletion.Extension.Uniqueness
+open import Constructive.Analysis.Completions.CauchyCompletion.Metric
 open import Constructive.Data.PositiveRationals
 
 private
@@ -25,7 +25,7 @@ module CompletenessOf (𝓜 : MetricSpace ℓ ℓ') where
   open CompletionOf 𝓜
   open ClosenessOf 𝓜
     using (close-refl)
-  open ExtensionOf 𝓜
+  open UniquenessOf 𝓜
     using (limit-close-intro)
   open MetricSpaceOf 𝓜
 

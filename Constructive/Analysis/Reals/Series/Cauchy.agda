@@ -32,7 +32,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
@@ -57,105 +57,94 @@ partialSumSequence u =
   partialSum u
 
 
-seriesRegularCauchyWithModulus :
-  (u : ℕ → ℝᶜ) →
-  NatModulus →
-  Type₀
-seriesRegularCauchyWithModulus u μ =
-  SeqCauchy.RegularCauchyWithModulus (partialSumSequence u) μ
+private
+  seriesRegularCauchyWithModulus :
+    (u : ℕ → ℝᶜ) →
+    NatModulus →
+    Type₀
+  seriesRegularCauchyWithModulus u μ =
+    SeqCauchy.RegularCauchyWithModulus (partialSumSequence u) μ
 
 
-SeriesTailBound :
-  (ℕ → ℝᶜ) →
-  (ℚ⁺ → ℕ) →
-  Type₀
-SeriesTailBound u μ =
-  (ε δ : ℚ⁺) →
-  BoundedByᶜ
-    (half⁺ (ε +⁺ δ))
-    (partialSum u (μ ε) +ᶜ (-ᶜ partialSum u (μ δ)))
-
-
-abstract
-  tailBound→SeriesTailBound :
-    {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
-    TailBound u μ →
-    AntitoneNatModulus μ →
-    SeriesTailBound u (λ ε → μ (half⁺ ε))
-  tailBound→SeriesTailBound {u = u} {μ = μ} tailBound μ-antitone ε δ =
-    tailBound-pair
-      tailBound
-      κ
-      (μ (half⁺ ε))
-      (μ (half⁺ δ))
-      μκ≤με/2
-      μκ≤μδ/2
-    where
-    κ : ℚ⁺
-    κ =
-      half⁺ (ε +⁺ δ)
-
-    ε≤ε+δ : radius ε ℚOrder.≤ radius (ε +⁺ δ)
-    ε≤ε+δ =
-      ℚOrder.<Weaken≤ (radius ε) (radius (ε +⁺ δ)) (summand-left<sum ε δ)
-
-    δ≤ε+δ : radius δ ℚOrder.≤ radius (ε +⁺ δ)
-    δ≤ε+δ =
-      ℚOrder.<Weaken≤ (radius δ) (radius (ε +⁺ δ)) (summand-right<sum ε δ)
-
-    ε/2≤κ : radius (half⁺ ε) ℚOrder.≤ radius κ
-    ε/2≤κ =
-      half-mono-≤ {ε = ε} {δ = ε +⁺ δ} ε≤ε+δ
-
-    δ/2≤κ : radius (half⁺ δ) ℚOrder.≤ radius κ
-    δ/2≤κ =
-      half-mono-≤ {ε = δ} {δ = ε +⁺ δ} δ≤ε+δ
-
-    μκ≤με/2 : NatOrder._≤_ (μ κ) (μ (half⁺ ε))
-    μκ≤με/2 =
-      μ-antitone ε/2≤κ
-
-    μκ≤μδ/2 : NatOrder._≤_ (μ κ) (μ (half⁺ δ))
-    μκ≤μδ/2 =
-      μ-antitone δ/2≤κ
-
-
-diff-close-zero→close :
-  {x y : ℝᶜ} {ε : ℚ⁺} →
-  (x +ᶜ (-ᶜ y)) ∼[ ε ] 0ᶜ →
-  x ∼[ ε ] y
-diff-close-zero→close {x = x} {y = y} {ε = ε} diff∼0 =
-  subst2
-    (λ u v → u ∼[ ε ] v)
-    (minus-plus-cancel-right x y)
-    (add-zero-left y)
-    (add-close-left diff∼0 y)
-
-
-seriesTailBound→regularCauchyWithModulus :
-  {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
-  SeriesTailBound u μ →
-  seriesRegularCauchyWithModulus u μ
-seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound ε δ =
-  diff-close-zero→close
-    (bounded-byᶜ-close-zero
+  SeriesTailBound :
+    (ℕ → ℝᶜ) →
+    (ℚ⁺ → ℕ) →
+    Type₀
+  SeriesTailBound u μ =
+    (ε δ : ℚ⁺) →
+    BoundedByᶜ
       (half⁺ (ε +⁺ δ))
-      (ε +⁺ δ)
       (partialSum u (μ ε) +ᶜ (-ᶜ partialSum u (μ δ)))
-      (tailBound ε δ)
-      (half< (ε +⁺ δ)))
 
 
-seriesCauchyApproximationFromTailBound :
-  (u : ℕ → ℝᶜ) →
-  (μ : ℚ⁺ → ℕ) →
-  SeriesTailBound u μ →
-  MetricCauchy.CauchyApproximation CauchyRealsMetricSpace
-seriesCauchyApproximationFromTailBound u μ tailBound =
-  SeqCauchy.sequenceCauchyApproximation
-    (partialSumSequence u)
-    μ
-    (seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound)
+  abstract
+    tailBound→SeriesTailBound :
+      {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+      TailBound u μ →
+      AntitoneNatModulus μ →
+      SeriesTailBound u (λ ε → μ (half⁺ ε))
+    tailBound→SeriesTailBound {u = u} {μ = μ} tailBound μ-antitone ε δ =
+      tailBound-pair
+        tailBound
+        κ
+        (μ (half⁺ ε))
+        (μ (half⁺ δ))
+        μκ≤με/2
+        μκ≤μδ/2
+      where
+      κ : ℚ⁺
+      κ =
+        half⁺ (ε +⁺ δ)
+
+      ε≤ε+δ : radius ε ℚOrder.≤ radius (ε +⁺ δ)
+      ε≤ε+δ =
+        ℚOrder.<Weaken≤ (radius ε) (radius (ε +⁺ δ)) (summand-left<sum ε δ)
+
+      δ≤ε+δ : radius δ ℚOrder.≤ radius (ε +⁺ δ)
+      δ≤ε+δ =
+        ℚOrder.<Weaken≤ (radius δ) (radius (ε +⁺ δ)) (summand-right<sum ε δ)
+
+      ε/2≤κ : radius (half⁺ ε) ℚOrder.≤ radius κ
+      ε/2≤κ =
+        half-mono-≤ {ε = ε} {δ = ε +⁺ δ} ε≤ε+δ
+
+      δ/2≤κ : radius (half⁺ δ) ℚOrder.≤ radius κ
+      δ/2≤κ =
+        half-mono-≤ {ε = δ} {δ = ε +⁺ δ} δ≤ε+δ
+
+      μκ≤με/2 : NatOrder._≤_ (μ κ) (μ (half⁺ ε))
+      μκ≤με/2 =
+        μ-antitone ε/2≤κ
+
+      μκ≤μδ/2 : NatOrder._≤_ (μ κ) (μ (half⁺ δ))
+      μκ≤μδ/2 =
+        μ-antitone δ/2≤κ
+
+
+  seriesTailBound→regularCauchyWithModulus :
+    {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
+    SeriesTailBound u μ →
+    seriesRegularCauchyWithModulus u μ
+  seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound ε δ =
+    diff-close-zero→close
+      (bounded-byᶜ-close-zero
+        (half⁺ (ε +⁺ δ))
+        (ε +⁺ δ)
+        (partialSum u (μ ε) +ᶜ (-ᶜ partialSum u (μ δ)))
+        (tailBound ε δ)
+        (half< (ε +⁺ δ)))
+
+
+  seriesCauchyApproximationFromTailBound :
+    (u : ℕ → ℝᶜ) →
+    (μ : ℚ⁺ → ℕ) →
+    SeriesTailBound u μ →
+    MetricCauchy.CauchyApproximation CauchyRealsMetricSpace
+  seriesCauchyApproximationFromTailBound u μ tailBound =
+    SeqCauchy.sequenceCauchyApproximation
+      (partialSumSequence u)
+      μ
+      (seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound)
 
 
 seriesCauchyApproximationFromFiniteTailBound :
@@ -171,16 +160,17 @@ seriesCauchyApproximationFromFiniteTailBound u μ tailBound μ-antitone =
     (tailBound→SeriesTailBound {u = u} {μ = μ} tailBound μ-antitone)
 
 
-seriesSum :
-  (u : ℕ → ℝᶜ) →
-  (μ : ℚ⁺ → ℕ) →
-  SeriesTailBound u μ →
-  ℝᶜ
-seriesSum u μ tailBound =
-  SeqCauchy.cauchyLimit
-    (partialSumSequence u)
-    μ
-    (seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound)
+private
+  seriesSum :
+    (u : ℕ → ℝᶜ) →
+    (μ : ℚ⁺ → ℕ) →
+    SeriesTailBound u μ →
+    ℝᶜ
+  seriesSum u μ tailBound =
+    SeqCauchy.cauchyLimit
+      (partialSumSequence u)
+      μ
+      (seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound)
 
 
 seriesSumFromFiniteTailBound :
@@ -196,18 +186,19 @@ seriesSumFromFiniteTailBound u μ tailBound μ-antitone =
     (tailBound→SeriesTailBound {u = u} {μ = μ} tailBound μ-antitone)
 
 
-seriesSumConverges :
-  (u : ℕ → ℝᶜ) →
-  (μ : ℚ⁺ → ℕ) →
-  (tailBound : SeriesTailBound u μ) →
-  MetricCauchy.ConvergesTo
-    (seriesCauchyApproximationFromTailBound u μ tailBound)
-    (seriesSum u μ tailBound)
-seriesSumConverges u μ tailBound =
-  SeqCauchy.regularCauchyLimitConverges
-    (partialSumSequence u)
-    μ
-    (seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound)
+private
+  seriesSumConverges :
+    (u : ℕ → ℝᶜ) →
+    (μ : ℚ⁺ → ℕ) →
+    (tailBound : SeriesTailBound u μ) →
+    MetricCauchy.ConvergesTo
+      (seriesCauchyApproximationFromTailBound u μ tailBound)
+      (seriesSum u μ tailBound)
+  seriesSumConverges u μ tailBound =
+    SeqCauchy.regularCauchyLimitConverges
+      (partialSumSequence u)
+      μ
+      (seriesTailBound→regularCauchyWithModulus {u = u} {μ = μ} tailBound)
 
 
 seriesSumFromFiniteTailBoundConverges :
@@ -379,7 +370,7 @@ seriesSumFromFiniteTailBound-mul-left-convergesAt
 
   mul-converges :
     SeqConv.ConvergesTo
-      (SeqAlg.mulRightSequence a (partialSumSequence u))
+      (λ n → a ·ᶜ partialSumSequence u n)
       (a ·ᶜ seriesSumFromFiniteTailBound u μ tailBound μ-antitone)
   mul-converges =
     SeqAlg.mulRightConvergesToWithBound
@@ -393,7 +384,7 @@ seriesSumFromFiniteTailBound-mul-left-convergesAt
         μ-antitone)
 
 
-seriesSumFromFiniteTailBound-drop :
+seriesSumFromFiniteTailBound-shift :
   (u : ℕ → ℝᶜ) →
   (μ : ℚ⁺ → ℕ) →
   (tailBound : TailBound u μ) →
@@ -402,11 +393,11 @@ seriesSumFromFiniteTailBound-drop :
   seriesSumFromFiniteTailBound u μ tailBound μ-antitone ≡
   partialSum u m +ᶜ
   seriesSumFromFiniteTailBound
-    (drop m u)
+    (shift m u)
     μ
-    (tailBound-drop tailBound m)
+    (tailBound-shift tailBound m)
     μ-antitone
-seriesSumFromFiniteTailBound-drop u μ tailBound μ-antitone m =
+seriesSumFromFiniteTailBound-shift u μ tailBound μ-antitone m =
   MetricSpace.close-separated
     CauchyRealsMetricSpace
     limitPoint
@@ -417,17 +408,17 @@ seriesSumFromFiniteTailBound-drop u μ tailBound μ-antitone m =
   limitPoint =
     seriesSumFromFiniteTailBound u μ tailBound μ-antitone
 
-  dropLimit : ℝᶜ
-  dropLimit =
+  shiftLimit : ℝᶜ
+  shiftLimit =
     seriesSumFromFiniteTailBound
-      (drop m u)
+      (shift m u)
       μ
-      (tailBound-drop tailBound m)
+      (tailBound-shift tailBound m)
       μ-antitone
 
   shiftedLimit : ℝᶜ
   shiftedLimit =
-    partialSum u m +ᶜ dropLimit
+    partialSum u m +ᶜ shiftLimit
 
   closeAt :
     (ε : ℚ⁺) →
@@ -467,20 +458,20 @@ seriesSumFromFiniteTailBound-drop u μ tailBound μ-antitone m =
 
     limit∼target :
       limitPoint ∼[ η ]
-      (partialSum u m +ᶜ partialSum (drop m u) n)
+      (partialSum u m +ᶜ partialSum (shift m u) n)
     limit∼target =
       subst
         (λ z → limitPoint ∼[ η ] z)
         (partialSum-append u m n)
         limit∼partial
 
-    drop∼partial :
-      dropLimit ∼[ η ] partialSum (drop m u) n
-    drop∼partial =
+    shift∼partial :
+      shiftLimit ∼[ η ] partialSum (shift m u) n
+    shift∼partial =
       seriesSumFromFiniteTailBoundConvergesAt
-        (drop m u)
+        (shift m u)
         μ
-        (tailBound-drop tailBound m)
+        (tailBound-shift tailBound m)
         μ-antitone
         η
         n
@@ -488,20 +479,9 @@ seriesSumFromFiniteTailBound-drop u μ tailBound μ-antitone m =
 
     shifted∼target :
       shiftedLimit ∼[ η ]
-      (partialSum u m +ᶜ partialSum (drop m u) n)
+      (partialSum u m +ᶜ partialSum (shift m u) n)
     shifted∼target =
-      add-close-right (partialSum u m) drop∼partial
-
-
-absoluteSummable→SeriesTailBound :
-  {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
-  AbsolutelySummableWith u μ →
-  AntitoneNatModulus μ →
-  SeriesTailBound u (λ ε → μ (half⁺ ε))
-absoluteSummable→SeriesTailBound absTail μ-antitone =
-  tailBound→SeriesTailBound
-    (absoluteSummable→tailBound absTail)
-    μ-antitone
+      add-close-right (partialSum u m) shift∼partial
 
 
 absoluteSummable→seriesSum :

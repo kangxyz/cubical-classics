@@ -60,8 +60,8 @@ module Impredicativity (decide : LEM) where
 
   -- Law of Excluded Middle implies Propositional Resizing
 
-  drop : Drop
-  drop = LEM→Drop decide
+  shift : Drop
+  shift = LEM→Drop decide
 
   resizing : Resizing
   resizing = LEM→Resizing decide

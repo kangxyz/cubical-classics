@@ -18,30 +18,10 @@ open import Constructive.Analysis.FixedPoint.Base
 open import Constructive.Analysis.FixedPoint.Banach
 
 
-CauchyRealsFixedPoint :
-  (ℝᶜ → ℝᶜ) →
-  Type₀
-CauchyRealsFixedPoint =
-  FixedPoint {𝓜 = CauchyRealsMetricSpace}
-
-
-CauchyRealsContraction :
-  Type₀
-CauchyRealsContraction =
-  Contraction CauchyRealsMetricSpace
-
-
-CauchyRealsPicardSeed :
-  (ℝᶜ → ℝᶜ) →
-  Type₀
-CauchyRealsPicardSeed =
-  PicardSeed CauchyRealsMetricSpace
-
-
 cauchyRealsBanachFixedPoint :
-  (c : CauchyRealsContraction) →
-  CauchyRealsPicardSeed (Contraction.map c) →
-  CauchyRealsFixedPoint (Contraction.map c)
+  (c : Contraction CauchyRealsMetricSpace) →
+  PicardSeed CauchyRealsMetricSpace (Contraction.map c) →
+  FixedPoint {𝓜 = CauchyRealsMetricSpace} (Contraction.map c)
 cauchyRealsBanachFixedPoint c seed =
   banachFixedPoint
     CauchyRealsMetricSpace
@@ -58,7 +38,7 @@ cauchyRealsBanachFrom :
   (x₀ : ℝᶜ) →
   (η : ℚ⁺) →
   MetricSpace.Close CauchyRealsMetricSpace x₀ η (f x₀) →
-  CauchyRealsFixedPoint f
+  FixedPoint {𝓜 = CauchyRealsMetricSpace} f
 cauchyRealsBanachFrom ρ ρ<1 f f-contr x₀ η x₀∼fx₀ =
   banachFrom
     CauchyRealsMetricSpace

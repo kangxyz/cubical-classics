@@ -16,15 +16,15 @@ import Cubical.Data.Nat.Order as NatOrder
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Power
   using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Algebra.Core
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.Coefficients
 
 zeroPowerSeriesTerm :
   (h : ℝᶜ) →
@@ -100,12 +100,12 @@ constantPowerSeriesTerm-suc c h n =
   mulᶜ-zero-left (realPower h (suc n))
 
 
-drop-positive-constantPowerSeriesTerm :
+shift-positive-constantPowerSeriesTerm :
   (c h : ℝᶜ) →
   (m n : ℕ) →
-  drop (suc m) (powerSeriesTerm (constantPowerSeries c) h) n ≡ 0ᶜ
-drop-positive-constantPowerSeriesTerm c h m n =
-  drop-index
+  shift (suc m) (powerSeriesTerm (constantPowerSeries c) h) n ≡ 0ᶜ
+shift-positive-constantPowerSeriesTerm c h m n =
+  shift-index
     (suc m)
     (powerSeriesTerm (constantPowerSeries c) h)
     n ∙
@@ -122,7 +122,7 @@ tailSum-constantPowerSeriesTerm c h zero k 1≤0 =
 tailSum-constantPowerSeriesTerm c h (suc m) k _ =
   cong
     (λ u → partialSum u k)
-    (funExt (drop-positive-constantPowerSeriesTerm c h m)) ∙
+    (funExt (shift-positive-constantPowerSeriesTerm c h m)) ∙
   partialSum-zero-sequence k
 
 

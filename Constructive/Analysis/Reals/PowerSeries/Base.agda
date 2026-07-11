@@ -15,7 +15,7 @@ import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Power
   using (realPower)
 open import Constructive.Data.PositiveRationals
 

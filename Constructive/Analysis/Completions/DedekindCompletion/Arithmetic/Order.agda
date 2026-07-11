@@ -19,11 +19,13 @@ open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Analysis.Completions.DedekindCompletion.Base
 open import Constructive.Analysis.Completions.DedekindCompletion.Order
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Approximation
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Addition
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Negation
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.AdditiveGroup
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.NonNegative
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.NonnegativeProduct
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Multiplication
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.MultiplicationNegation
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Difference
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Distributivity
 open import Constructive.Foundations.Powerset hiding (Pred)
@@ -55,12 +57,11 @@ module OrderProperties
       )
   open LinearlyOrderedFieldStr orderedBaseField
 
-  open ArithmeticBase 𝒜
-  open Approximation {ℓᴾ}
-  open Addition {ℓᴾ}
+  open CompletionApproximation 𝒜 {ℓᴾ = ℓᴾ}
+  open Addition 𝒜 {ℓᴾ}
   open Negation 𝒜 {ℓᴾ}
   open AdditiveGroup 𝒜 {ℓᴾ}
-  open NonNegativeMultiplication 𝒜 {ℓᴾ}
+  open NonnegativeProduct 𝒜 {ℓᴾ}
   open Multiplication 𝒜 {ℓᴾ}
   open MultiplicationNegation 𝒜 {ℓᴾ}
   open DifferenceProperties 𝒜 {ℓᴾ}

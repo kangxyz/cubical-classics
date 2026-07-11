@@ -19,15 +19,15 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Algebra.Core
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.Coefficients
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.ZeroConstant
-open import Constructive.Analysis.Reals.PowerSeries.Algebra.Pointwise
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.Finite
 
 powerSeriesSumOnBall-zero :
   {a : PowerSeries} →

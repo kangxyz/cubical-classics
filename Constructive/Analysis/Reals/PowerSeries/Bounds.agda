@@ -22,10 +22,10 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
   using (scalarMulᶜ ; scalarMulᶜ-assoc ; scalarMulᶜ-one)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.GeometricDecay
   using (positivePower)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Power
   using (realPower)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Data.PositiveRationals

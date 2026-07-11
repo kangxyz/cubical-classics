@@ -8,8 +8,6 @@ module Constructive.Analysis.Reals.Interval where
 
 open import Constructive.Analysis.Reals.Interval.Base public
 open import Constructive.Analysis.Reals.Interval.Order public
-open import Constructive.Analysis.Reals.Interval.Grid public
 open import Constructive.Analysis.Reals.Interval.Completeness public
 open import Constructive.Analysis.Reals.Interval.TotallyBounded public
-open import Constructive.Analysis.Reals.Interval.Compact public
 open import Constructive.Analysis.Reals.Interval.Extrema public

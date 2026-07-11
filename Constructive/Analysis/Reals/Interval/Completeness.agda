@@ -11,7 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Constructive.Analysis.Metric.Base
 import Constructive.Analysis.Metric.Cauchy as MetricCauchy
 open import Constructive.Analysis.Reals.CauchyReals.Metric
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice
+open import Constructive.Analysis.Reals.CauchyReals.Lattice
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.Interval.Base

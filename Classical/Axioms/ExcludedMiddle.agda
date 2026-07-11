@@ -122,7 +122,7 @@ open DropProp
 
 LEM→Drop : LEM → Drop
 LEM→Drop decide (P , h) .lower = Bool→Type (Dec→Bool (decide h)) , isPropBool→Type
-LEM→Drop decide (P , h) .dropEquiv = Dec≃DecBool h (decide h)
+LEM→Drop decide (P , h) .shiftEquiv = Dec≃DecBool h (decide h)
 
 LEM→Resizing : LEM → Resizing
 LEM→Resizing decide = Drop→Resizing (LEM→Drop decide)

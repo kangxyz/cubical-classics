@@ -39,11 +39,9 @@ open import Constructive.Algebra.LinearlyOrderedField.Archimedean
 open import Constructive.Analysis.Completions.DedekindCompletion.Base
 open import Constructive.Analysis.Completions.DedekindCompletion.Order
 open import Constructive.Analysis.Completions.DedekindCompletion.Completeness
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Addition
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Multiplication
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.CommRing
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedCommRing
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedHeytingField
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Structures
 
 private
   variable
@@ -121,15 +119,14 @@ module LinearlyOrderedFieldStructure
 
   module Base = CompletionBase baseField
   module CO = CompletionOrderAliases 𝒜 {ℓᴾ}
-  module Arith = ArithmeticBase 𝒜
-  module Addition = Arith.Addition
+  module AdditionAtLevel = Addition 𝒜 {ℓᴾ}
   module Mul = Multiplication 𝒜 {ℓᴾ}
   module CR = CommRingStructure 𝒜 {ℓᴾ}
   module OCR = OrderedCommRingStructure 𝒜 {ℓᴾ}
   module OHF = OrderedHeytingFieldStructure 𝒜 {ℓᴾ}
 
   open Base using (DedekindCompletion)
-  open Addition {ℓᴾ} using (0𝔻 ; 1𝔻)
+  open AdditionAtLevel using (0𝔻 ; 1𝔻)
   open Mul using (_*𝔻_)
 
   trichotomy :

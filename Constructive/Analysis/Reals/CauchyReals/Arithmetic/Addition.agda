@@ -11,8 +11,6 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
-import Constructive.Analysis.Completions.CauchyCompletion.Extension as GenericExtension
-open import Constructive.Analysis.Completions.CauchyCompletion.Induction
 open import Constructive.Analysis.Metric.Map
 open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
@@ -23,9 +21,6 @@ open import Constructive.Analysis.Reals.CauchyReals.Extension
 open ClosenessOf RationalsMetricSpace
 open ComputedOf RationalsMetricSpace
 open RoundedOf RationalsMetricSpace
-open GenericExtension.ExtensionOf RationalsMetricSpace
-  using (limit-limit-intro)
-open InductionOf RationalsMetricSpace
 
 
 private
@@ -169,127 +164,42 @@ add-continuous-right x =
     (add-nonexpanding-right x)
 
 
-private
-  addZeroRightKit : PropInductionKit ℓ-zero
-  addZeroRightKit .PropInductionKit.A x =
-    x +ᶜ 0ᶜ ≡ x
-  addZeroRightKit .PropInductionKit.isPropA x =
-    isSetCompletion (x +ᶜ 0ᶜ) x
-  addZeroRightKit .PropInductionKit.point* q =
-    cong rational (ℚ.+IdR q)
-  addZeroRightKit .PropInductionKit.limit* x add0At =
-    path
-      (limit (cauchy-approximation f fCauchy))
-      (limit x)
-      closeAt
-    where
-    f : ℚ⁺ → ℝᶜ
-    f ε = approximate x ε +ᶜ 0ᶜ
-
-    fCauchy : (ε δ : ℚ⁺) → f ε ∼[ ε +⁺ δ ] f δ
-    fCauchy ε δ =
-      add-close-left (isRegular x ε δ) 0ᶜ
-
-    closeAt :
-      (ε : ℚ⁺) →
-      limit (cauchy-approximation f fCauchy) ∼[ ε ] limit x
-    closeAt ε =
-      limit-limit-intro
-        (cauchy-approximation f fCauchy)
-        x
-        ε δ δ δ+δ<ε
-        (subst
-          (λ z → z ∼[ ε ⊖ (δ +⁺ δ) [ δ+δ<ε ] ] approximate x δ)
-          (sym (add0At δ))
-          (close-refl (approximate x δ)
-            (ε ⊖ (δ +⁺ δ) [ δ+δ<ε ])))
-      where
-      δ : ℚ⁺
-      δ = quarter⁺ ε
-
-      δ+δ<ε : δ +⁺ δ <⁺ ε
-      δ+δ<ε = quarter-sum< ε
-
-  module AddZeroRightInduction = PropInduction addZeroRightKit
-
-
 add-zero-right : (x : ℝᶜ) → x +ᶜ 0ᶜ ≡ x
 add-zero-right =
-  AddZeroRightInduction.ind
-
-
-private
-  addZeroLeftKit : PropInductionKit ℓ-zero
-  addZeroLeftKit .PropInductionKit.A x =
-    0ᶜ +ᶜ x ≡ x
-  addZeroLeftKit .PropInductionKit.isPropA x =
-    isSetCompletion (0ᶜ +ᶜ x) x
-  addZeroLeftKit .PropInductionKit.point* q =
-    cong rational (ℚ.+IdL q)
-  addZeroLeftKit .PropInductionKit.limit* x add0At =
-    path
-      (limit (cauchy-approximation f fCauchy))
-      (limit x)
-      closeAt
-    where
-    f : ℚ⁺ → ℝᶜ
-    f ε = 0ᶜ +ᶜ approximate x ε
-
-    fCauchy : (ε δ : ℚ⁺) → f ε ∼[ ε +⁺ δ ] f δ
-    fCauchy ε δ =
-      add-close-right 0ᶜ (isRegular x ε δ)
-
-    closeAt :
-      (ε : ℚ⁺) →
-      limit (cauchy-approximation f fCauchy) ∼[ ε ] limit x
-    closeAt ε =
-      limit-limit-intro
-        (cauchy-approximation f fCauchy)
-        x
-        ε δ δ δ+δ<ε
-        (subst
-          (λ z → z ∼[ ε ⊖ (δ +⁺ δ) [ δ+δ<ε ] ] approximate x δ)
-          (sym (add0At δ))
-          (close-refl (approximate x δ)
-            (ε ⊖ (δ +⁺ δ) [ δ+δ<ε ])))
-      where
-      δ : ℚ⁺
-      δ = quarter⁺ ε
-
-      δ+δ<ε : δ +⁺ δ <⁺ ε
-      δ+δ<ε = quarter-sum< ε
-
-  module AddZeroLeftInduction = PropInduction addZeroLeftKit
+  nonexpanding-equal
+    (λ x → x +ᶜ 0ᶜ)
+    (λ x → x)
+    (add-nonexpanding-left 0ᶜ)
+    (id-nonexpanding CauchyRealsMetricSpace)
+    λ q →
+      add-rational q 0ℚ ∙
+      cong rational (ℚ.+IdR q)
 
 
 add-zero-left : (x : ℝᶜ) → 0ᶜ +ᶜ x ≡ x
 add-zero-left =
-  AddZeroLeftInduction.ind
-
-
-add-comm-rational-left :
-  (q : ℚ) (y : ℝᶜ) →
-  rational q +ᶜ y ≡ y +ᶜ rational q
-add-comm-rational-left q =
   nonexpanding-equal
-    (λ y → rational q +ᶜ y)
-    (λ y → y +ᶜ rational q)
-    (add-nonexpanding-right (rational q))
-    (add-nonexpanding-left (rational q))
-    (λ r → cong rational (ℚ.+Comm q r))
+    (λ x → 0ᶜ +ᶜ x)
+    (λ x → x)
+    (add-nonexpanding-right 0ᶜ)
+    (id-nonexpanding CauchyRealsMetricSpace)
+    λ q →
+      add-rational 0ℚ q ∙
+      cong rational (ℚ.+IdL q)
 
 
 add-comm :
   (x y : ℝᶜ) →
   x +ᶜ y ≡ y +ᶜ x
-add-comm x y =
-  nonexpanding-equal
-    (λ z → z +ᶜ y)
-    (λ z → y +ᶜ z)
-    (add-nonexpanding-left y)
-    (add-nonexpanding-right y)
-    (λ q → add-comm-rational-left q y)
-    x
+add-comm =
+  binary-nonexpanding-equal
+    _+ᶜ_
+    (λ x y → y +ᶜ x)
+    add-nonexpanding-left
+    add-nonexpanding-right
+    add-nonexpanding-right
+    add-nonexpanding-left
+    λ q r → cong rational (ℚ.+Comm q r)
 
 
 add-assoc-rational-rational-left :

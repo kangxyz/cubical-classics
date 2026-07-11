@@ -10,7 +10,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.HLevels
 
 open import Cubical.Data.Int using (pos)
-open import Cubical.Data.Nat using (zero ; suc)
+open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 open import Cubical.Data.NatPlusOne using (1+_)
 open import Cubical.Data.Rationals as ℚ using (ℚ ; [_/_])
 import Cubical.Data.Rationals.Order as ℚOrder
@@ -199,6 +199,23 @@ posInv⁺ : ℚ⁺ → ℚ⁺
 posInv⁺ ε =
   Rational.posInv (radius ε) (ε .snd) ,
   Rational.posInv-positive {q = radius ε} (ε .snd)
+
+
+ratio⁺ : ℚ⁺ → ℚ⁺ → ℚ⁺
+ratio⁺ ρ σ =
+  ρ *⁺ posInv⁺ σ
+
+
+ratio⁺<1 :
+  {ρ σ : ℚ⁺} →
+  radius ρ ℚOrder.< radius σ →
+  radius (ratio⁺ ρ σ) ℚOrder.< Rational.1ℚ
+ratio⁺<1 {ρ = ρ} {σ = σ} ρ<σ =
+  Rational.div-positive-denom-<1
+    {q = radius ρ}
+    {a = radius σ}
+    ρ<σ
+    (σ .snd)
 
 
 *⁺-posInv-right : (ε : ℚ⁺) → ε *⁺ posInv⁺ ε ≡ 1⁺
@@ -437,3 +454,120 @@ three-quarter< ε =
       (λ ρ → κ <⁺ ρ)
       (sym (quarter-sum-difference≡ ε δ<ε))
       (summand-left<sum (quarter⁺ ε) (quarter⁺ ε))
+
+
+unitFraction⁺ : ℕ → ℚ⁺
+unitFraction⁺ n =
+  Rational.unitFraction n ,
+  Rational.unitFraction-positive n
+
+
+scale-posInv-cancel :
+  (κ ε : ℚ⁺) →
+  κ *⁺ (posInv⁺ κ *⁺ ε) ≡ ε
+scale-posInv-cancel κ ε =
+  sym (*⁺-assoc κ (posInv⁺ κ) ε) ∙
+  cong (λ ρ → ρ *⁺ ε) (*⁺-posInv-right κ) ∙
+  *⁺-identity-left ε
+
+
+posInv-scale-cancel :
+  (κ ε : ℚ⁺) →
+  posInv⁺ κ *⁺ (κ *⁺ ε) ≡ ε
+posInv-scale-cancel κ ε =
+  sym (*⁺-assoc (posInv⁺ κ) κ ε) ∙
+  cong (λ ρ → ρ *⁺ ε) (*⁺-posInv-left κ) ∙
+  *⁺-identity-left ε
+
+
+scale-mono-< :
+  (κ ε δ : ℚ⁺) →
+  ε <⁺ δ →
+  κ *⁺ ε <⁺ κ *⁺ δ
+scale-mono-< κ ε δ ε<δ =
+  Rational.mul-left-positive-<
+    {a = radius κ}
+    {b = radius ε}
+    {c = radius δ}
+    (κ .snd)
+    ε<δ
+
+
+scale-mono-≤ :
+  (κ ε δ : ℚ⁺) →
+  radius ε ℚOrder.≤ radius δ →
+  radius (κ *⁺ ε) ℚOrder.≤ radius (κ *⁺ δ)
+scale-mono-≤ κ ε δ ε≤δ =
+  subst2
+    ℚOrder._≤_
+    (ℚ.·Comm (radius ε) (radius κ))
+    (ℚ.·Comm (radius δ) (radius κ))
+    (ℚOrder.≤-·o
+      (radius ε)
+      (radius δ)
+      (radius κ)
+      (ℚOrder.<Weaken≤ 0ℚ (radius κ) (κ .snd))
+      ε≤δ)
+
+
+half⁺-product≡ :
+  (ε η : ℚ⁺) →
+  half⁺ ε *⁺ η ≡ half⁺ (ε *⁺ η)
+half⁺-product≡ ε η =
+  ℚ⁺Path
+    (sym (ℚ.·Assoc (radius ε) 1/2 (radius η)) ∙
+     cong
+       (radius ε ℚ.·_)
+       (ℚ.·Comm 1/2 (radius η)) ∙
+     ℚ.·Assoc (radius ε) (radius η) 1/2)
+
+
+quarter⁺-product≡ :
+  (ε η : ℚ⁺) →
+  quarter⁺ ε *⁺ η ≡ quarter⁺ (ε *⁺ η)
+quarter⁺-product≡ ε η =
+  half⁺-product≡ (half⁺ ε) η ∙
+  cong half⁺ (half⁺-product≡ ε η)
+
+
+two-half⁺-products≡ :
+  (ε η : ℚ⁺) →
+  (half⁺ ε *⁺ η) +⁺ (half⁺ ε *⁺ η) ≡ ε *⁺ η
+two-half⁺-products≡ ε η =
+  cong₂ _+⁺_ (half⁺-product≡ ε η) (half⁺-product≡ ε η) ∙
+  half⁺+half⁺≡ (ε *⁺ η)
+
+
+four-quarter⁺-sum≡ :
+  (ε : ℚ⁺) →
+  (quarter⁺ ε +⁺ quarter⁺ ε) +⁺
+    (quarter⁺ ε +⁺ quarter⁺ ε)
+  ≡ ε
+four-quarter⁺-sum≡ ε =
+  cong₂
+    _+⁺_
+    (ℚ⁺Path (quarter-sum≡half ε))
+    (ℚ⁺Path (quarter-sum≡half ε)) ∙
+  half⁺+half⁺≡ ε
+
+
+four-quarter⁺≡ :
+  (ε : ℚ⁺) →
+  ((quarter⁺ ε +⁺ quarter⁺ ε) +⁺ quarter⁺ ε) +⁺ quarter⁺ ε
+  ≡ ε
+four-quarter⁺≡ ε =
+  +⁺-assoc
+    (quarter⁺ ε +⁺ quarter⁺ ε)
+    (quarter⁺ ε)
+    (quarter⁺ ε) ∙
+  four-quarter⁺-sum≡ ε
+
+
+scale-posInv-product-cancel :
+  (κ ε η : ℚ⁺) →
+  κ *⁺ ((posInv⁺ κ *⁺ ε) *⁺ η) ≡ ε *⁺ η
+scale-posInv-product-cancel κ ε η =
+  cong (κ *⁺_) (*⁺-assoc (posInv⁺ κ) ε η) ∙
+  sym (*⁺-assoc κ (posInv⁺ κ) (ε *⁺ η)) ∙
+  cong (λ θ → θ *⁺ (ε *⁺ η)) (*⁺-posInv-right κ) ∙
+  *⁺-identity-left (ε *⁺ η)

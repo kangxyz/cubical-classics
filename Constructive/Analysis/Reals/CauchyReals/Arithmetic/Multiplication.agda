@@ -16,7 +16,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedMultiplication
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
@@ -28,7 +28,7 @@ open RoundedOf RationalsMetricSpace
 open import Constructive.Analysis.Metric.Map
 open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Extension
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Density
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
@@ -62,26 +62,6 @@ private
       isSetCompletion
       (mulWithBoundᶜ x y)
       (mulWithBoundᶜ-constant x y)
-
-  scale-precision-cancel :
-    (κ ε : ℚ⁺) →
-    κ *⁺ (posInv⁺ κ *⁺ ε) ≡ ε
-  scale-precision-cancel κ ε =
-    sym (*⁺-assoc κ (posInv⁺ κ) ε) ∙
-    cong (λ ρ → ρ *⁺ ε) (*⁺-posInv-right κ) ∙
-    *⁺-identity-left ε
-
-  scale-precision-mono :
-    (κ ε δ : ℚ⁺) →
-    ε <⁺ δ →
-    κ *⁺ ε <⁺ κ *⁺ δ
-  scale-precision-mono κ ε δ ε<δ =
-    Rational.mul-left-positive-<
-      {a = radius κ}
-      {b = radius ε}
-      {c = radius δ}
-      (κ .snd)
-      ε<δ
 
   four-eighths< :
     (ε : ℚ⁺) →
@@ -154,8 +134,8 @@ private
   scale-smallPrecision-left κ ρ α φ =
     subst
       (λ θ → κ *⁺ smallPrecision κ ρ α φ <⁺ θ)
-      (scale-precision-cancel κ α)
-      (scale-precision-mono
+      (scale-posInv-cancel κ α)
+      (scale-mono-<
         κ
         (smallPrecision κ ρ α φ)
         (posInv⁺ κ *⁺ α)
@@ -167,8 +147,8 @@ private
   scale-smallPrecision-right κ ρ α φ =
     subst
       (λ θ → ρ *⁺ smallPrecision κ ρ α φ <⁺ θ)
-      (scale-precision-cancel ρ α)
-      (scale-precision-mono
+      (scale-posInv-cancel ρ α)
+      (scale-mono-<
         ρ
         (smallPrecision κ ρ α φ)
         (posInv⁺ ρ *⁺ α)

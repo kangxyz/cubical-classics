@@ -52,22 +52,22 @@ not define a separate assumption boundary.
 | `Classical.DedekindCut` | Oracle-based cut completion and its universal property. |
 | `Classical.Topology` and `Classical.Analysis` | Classical topology and exact real-analysis theorems. |
 
-The constructive-analysis dependency spine is intentionally narrower than the
-legacy umbrella modules suggest:
+The constructive-analysis dependency spine follows mathematical ownership:
 
 ```text
-Metric.Core ──> CauchyCompletion ──> CauchyReals.Metric
-     │                                      │
-     └────────────────────────────────────────> FixedPoint
-                                            ▲
-Modulus ──> GeometricDecay ───────────────────────────┘
+Metric + Modulus + GeometricDecay
+  ├──> CauchyCompletion ──> CauchyReals
+  ├──> DedekindCompletion ──> DedekindReals
+  └──> FixedPoint
 
-CauchyReals.Metric + Modulus ──> Sequences ──> Series ──┐
-CauchyReals ──> Interval ──┬──> IVT                         │
-                           └──> Calculus ─────────────────────────────┤
-GeometricDecay ───────────────────────────────────────────────┤
-                                                            v
-                                                       PowerSeries
+CauchyReals
+  ├──> Locator ──> Interval ──> IVT
+  ├──> Sequences ──> Series ──> PowerSeries.Core
+  └──> Calculus ──> PowerSeries.Calculus
+
+PowerSeries.Core + PowerSeries.Calculus
+  ├──> PowerSeries.Examples
+  └──> PowerSeries.Elementary
 ```
 
 New internal code should use the role-specific entry points in the diagram or
@@ -103,7 +103,7 @@ interfaces.
 
 [`Constructive.Analysis.Reals.DedekindReals`](../Constructive/Analysis/Reals/DedekindReals.agda)
 is the rational instance and preserves the public `ℝᴰ` interface.
-[`Constructive.Analysis.Reals.Comparison`](../Constructive/Analysis/Reals/Comparison.agda)
+[`Constructive.Analysis.Reals.CauchyToDedekind`](../Constructive/Analysis/Reals/CauchyToDedekind.agda)
 contains comparison maps between constructive real presentations.
 
 [`Classical.DedekindCut`](../Classical/DedekindCut.agda) is a separate,
@@ -162,14 +162,20 @@ for the exact public surface. Import the aggregate when one is available.
 | [`Constructive.Analysis.Metric.Core`](../Constructive/Analysis/Metric/Core.agda) | `aggregate` | Metric interfaces, maps, Cauchy data, and total boundedness. |
 | [`Constructive.Analysis.Metric`](../Constructive/Analysis/Metric.agda) | `aggregate` | Metric core and base-space instances. |
 | [`Constructive.Analysis.Reals`](../Constructive/Analysis/Reals.agda) | `aggregate` | Constructive real instances, sequences, locators, intervals, IVT, and series. |
+| [`Constructive.Analysis.Reals.CauchyReals`](../Constructive/Analysis/Reals/CauchyReals.agda) | `aggregate` | HoTT Cauchy reals, arithmetic, order, metric completeness, and Archimedean structure. |
 | [`Constructive.Analysis.Reals.CauchyReals.Metric`](../Constructive/Analysis/Reals/CauchyReals/Metric.agda) | `direct` | Cauchy-real metric instance and completeness package. |
+| [`Constructive.Analysis.Reals.DedekindReals`](../Constructive/Analysis/Reals/DedekindReals.agda) | `direct` | Rational specialization of the constructive Dedekind completion. |
+| [`Constructive.Analysis.Reals.CauchyToDedekind`](../Constructive/Analysis/Reals/CauchyToDedekind.agda) | `direct` | Canonical comparison from Cauchy reals to Dedekind reals. |
+| [`Constructive.Analysis.Reals.Locator`](../Constructive/Analysis/Reals/Locator.agda) | `direct` | Chosen rational approximation and located-map data for Cauchy reals. |
+| [`Constructive.Analysis.Reals.Interval`](../Constructive/Analysis/Reals/Interval.agda) | `aggregate` | Closed intervals, completeness, total boundedness, grids, and approximate extrema. |
+| [`Constructive.Analysis.Reals.IVT`](../Constructive/Analysis/Reals/IVT.agda) | `aggregate` | Constructive uniform and located approximate intermediate-value theorems. |
 | [`Constructive.Analysis.Reals.Sequences`](../Constructive/Analysis/Reals/Sequences.agda) | `aggregate` | Sequence convergence, Cauchy data, subsequences, maps, algebra, and order. |
-| [`Constructive.Analysis.Reals.Series`](../Constructive/Analysis/Reals/Series.agda) | `aggregate` | Finite sums, tails, Cauchy series, and comparison. |
+| [`Constructive.Analysis.Reals.Series`](../Constructive/Analysis/Reals/Series.agda) | `aggregate` | Finite sums, tails, Cauchy series, Neumann inverses, comparison, rearrangement, Cauchy products, and geometric series. |
 | [`Constructive.Analysis.Reals.Calculus`](../Constructive/Analysis/Reals/Calculus.agda) | `aggregate` | One-variable derivatives, rules, domains, and bounded-segment criteria. |
 | [`Constructive.Analysis.Reals.PowerSeries.Core`](../Constructive/Analysis/Reals/PowerSeries/Core.agda) | `aggregate` | Coefficients, convergence, bounds, algebra, Cauchy products, and formal differentiation. |
-| [`Constructive.Analysis.Reals.PowerSeries.Calculus`](../Constructive/Analysis/Reals/PowerSeries/Calculus.agda) | `aggregate` | Continuity, analyticity, termwise differentiation, re-centering, and derivative analyticity. |
+| [`Constructive.Analysis.Reals.PowerSeries.Calculus`](../Constructive/Analysis/Reals/PowerSeries/Calculus.agda) | `aggregate` | Continuity, analyticity, differentiation, re-centering, and derivative analyticity. |
 | [`Constructive.Analysis.Reals.PowerSeries.Examples`](../Constructive/Analysis/Reals/PowerSeries/Examples.agda) | `aggregate` | Polynomial and geometric examples. |
-| [`Constructive.Analysis.Reals.PowerSeries.Elementary`](../Constructive/Analysis/Reals/PowerSeries/Elementary.agda) | `aggregate` | Exponential, trigonometric, logarithmic, and arctangent constructions. |
+| [`Constructive.Analysis.Reals.PowerSeries.Elementary`](../Constructive/Analysis/Reals/PowerSeries/Elementary.agda) | `aggregate` | Exponential, trigonometric, hyperbolic-arctangent, arctangent, and logarithmic constructions. |
 | [`Constructive.Analysis.Reals.PowerSeries`](../Constructive/Analysis/Reals/PowerSeries.agda) | `aggregate` | Role-based umbrella for core theory, calculus, examples, and elementary functions. |
 | [`Constructive.Analysis.FixedPoint`](../Constructive/Analysis/FixedPoint.agda) | `aggregate` | Fixed-point interfaces, Banach contraction, and Cauchy-real results. |
 | [`Classical.Axioms`](../Classical/Axioms.agda) | `aggregate` | Oracle, choice, excluded middle, and `AC→LEM`. |

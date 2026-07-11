@@ -18,13 +18,13 @@ open import Constructive.Analysis.Reals.CauchyReals.Metric
   using (CauchyRealsMetricSpace)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Structures
   using (CauchyRealsCommRing)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Ordered
   using (bounded-byᶜ-mul)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Analysis.Reals.Series
@@ -33,7 +33,7 @@ open import Constructive.Analysis.Reals.Series
     ; partialSum
     ; seriesSumFromFiniteTailBoundConvergesAt
     )
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Power
   using (realPower)
 open import Constructive.Data.PositiveRationals
 

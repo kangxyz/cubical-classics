@@ -3,7 +3,7 @@
 Rational and positive-rational geometric decay
 
 -}
-{-# OPTIONS --safe --lossy-unification #-}
+{-# OPTIONS --safe #-}
 module Constructive.Analysis.GeometricDecay where
 
 open import Constructive.Analysis.GeometricDecay.Rational public

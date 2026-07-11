@@ -10,7 +10,7 @@ open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Metric.Cauchy
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Completions.CauchyCompletion.Completeness
-open import Constructive.Analysis.Completions.CauchyCompletion.MetricSpace
+open import Constructive.Analysis.Completions.CauchyCompletion.Metric
 
 
 CauchyRealsMetricSpace : MetricSpace _ _

@@ -17,15 +17,15 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
   using (add-cancel-left)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
   using (BoundedByᶜ)
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
+open import Constructive.Analysis.Reals.PowerSeries.Analytic.Base
   using
     ( AnalyticAt
     ; HasPowerSeriesAtWith
     )
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.Differentiation
+open import Constructive.Analysis.Reals.PowerSeries.FormalDerivative
   using (derivativePowerSeries)
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using
@@ -270,50 +270,6 @@ private
 
     expansionPath =
       snd modelExpansion
-
-
-derivativePowerSeriesModelAnalyticAtFromMajorized :
-  {a : PowerSeries} →
-  {c x : ℝᶜ} →
-  {δ τ σ : ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {ν : ℚ⁺ → ℕ} →
-  (derivativeRadius : HasInfinitePowerSeriesRadius (derivativePowerSeries a)) →
-  (d-bound : BoundedByᶜ δ (centeredDisplacement c x)) →
-  (margin : radius (δ +⁺ τ) ℚOrder.< radius σ) →
-  (majorized : PowerSeriesMajorizedOnBall (derivativePowerSeries a) σ v ν) →
-  AnalyticAt
-    (centeredPowerSeriesSumEverywhere
-      (derivativePowerSeries a)
-      c
-      derivativeRadius)
-    x
-derivativePowerSeriesModelAnalyticAtFromMajorized
-    {a = a}
-    {c = c}
-    {x = x}
-    {δ = δ}
-    {τ = τ}
-    {σ = σ}
-    {ν = ν}
-    derivativeRadius
-    d-bound
-    margin
-    majorized =
-  recenterPowerSeriesWith
-    (derivativePowerSeries a)
-    (centeredDisplacement c x)
-    (recenterPowerSeriesDataFromMajorizedOnStrictSubball
-      d-bound
-      margin
-      majorized) ,
-  τ ,
-  ν ,
-  derivativePowerSeriesModelHasPowerSeriesAtWithFromMajorized
-    derivativeRadius
-    d-bound
-    margin
-    majorized
 
 
 derivativeFunctionAnalyticAtFromModelPathAndMajorized :

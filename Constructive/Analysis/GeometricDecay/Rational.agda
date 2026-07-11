@@ -8,13 +8,27 @@ module Constructive.Analysis.GeometricDecay.Rational where
 
 open import Cubical.Foundations.Prelude
 
+open import Cubical.Algebra.CommRing
 open import Cubical.Algebra.CommRing.Instances.Rationals using (ℚCommRing)
 import Cubical.Data.Nat as Nat
 open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 open import Cubical.Data.Rationals as ℚ using (ℚ)
+import Cubical.Data.Rationals.Order as ℚOrder
+open import Cubical.Tactics.CommRingSolver.Reflection
 import Constructive.Data.Rationals as Rational
 
 open import Constructive.Analysis.GeometricDecay.Algebra
+
+
+private
+  module RatioSolverHelpers {ℓ : Level} (𝒩 : CommRing ℓ) where
+    open CommRingStr (𝒩 .snd)
+
+    power-step :
+      (q qn s sn : 𝒩 .fst) →
+      (q · qn) · (s · sn) ≡ (q · s) · (qn · sn)
+    power-step _ _ _ _ =
+      solve! 𝒩
 
 rationalPower :
   ℚ →
@@ -24,6 +38,39 @@ rationalPower r zero =
   Rational.1ℚ
 rationalPower r (suc n) =
   r ℚ.· rationalPower r n
+
+
+rationalRatioPowerTimesPower :
+  (r s : ℚ) →
+  (0<s : Rational.0ℚ ℚOrder.< s) →
+  (n : ℕ) →
+  rationalPower (r ℚ.· Rational.posInv s 0<s) n ℚ.·
+    rationalPower s n
+  ≡
+  rationalPower r n
+rationalRatioPowerTimesPower r s 0<s zero =
+  ℚ.·IdL Rational.1ℚ
+rationalRatioPowerTimesPower r s 0<s (suc n) =
+  RatioSolverHelpers.power-step
+    ℚCommRing
+    q
+    (rationalPower q n)
+    s
+    (rationalPower s n) ∙
+  cong₂
+    (λ x y → x ℚ.· y)
+    q*s≡r
+    (rationalRatioPowerTimesPower r s 0<s n)
+  where
+  q : ℚ
+  q =
+    r ℚ.· Rational.posInv s 0<s
+
+  q*s≡r : q ℚ.· s ≡ r
+  q*s≡r =
+    sym (ℚ.·Assoc r (Rational.posInv s 0<s) s) ∙
+    cong (r ℚ.·_) (Rational.posInv-left s 0<s) ∙
+    ℚ.·IdR r
 
 
 rationalGeometricPartialSumℚ :

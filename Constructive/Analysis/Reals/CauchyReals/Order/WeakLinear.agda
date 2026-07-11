@@ -24,7 +24,7 @@ open ClosenessOf RationalsMetricSpace
 open ComputedOf RationalsMetricSpace
 open RoundedOf RationalsMetricSpace
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
+open import Constructive.Analysis.Reals.CauchyReals.Order.Approximation
 open import Constructive.Analysis.Reals.CauchyReals.Order.Density
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive

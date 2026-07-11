@@ -19,7 +19,7 @@ open import Constructive.Data.PositiveRationals
 open ClosenessOf RationalsMetricSpace
 open ComputedOf RationalsMetricSpace
 open RoundedOf RationalsMetricSpace
-open GenericExtension.ExtensionOf RationalsMetricSpace
+open GenericExtension.UniquenessOf RationalsMetricSpace
   using (limit-close-intro)
 open InductionOf RationalsMetricSpace
 

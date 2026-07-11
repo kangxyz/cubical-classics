@@ -8,90 +8,50 @@ module Constructive.Analysis.Reals.DedekindReals where
 
 open import Cubical.Foundations.Prelude
 
+open import Cubical.Algebra.CommRing using (CommRing)
+open import Cubical.Algebra.OrderedCommRing using (OrderedCommRing)
 open import Cubical.Data.Rationals using (ℚ)
 
+import Constructive.Algebra.OrderedHeytingField.Base as OrderedHeytingField
 open import Constructive.Algebra.LinearlyOrderedField.Instances.Rationals
   using (ℚLinearlyOrderedField ; ℚArchimedeanLinearlyOrderedField)
-import Constructive.Analysis.Completions.DedekindCompletion.Approximation as CompletionApproximation
 import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic as CompletionArithmetic
 import Constructive.Analysis.Completions.DedekindCompletion.Base as CompletionBase
-import Constructive.Analysis.Completions.DedekindCompletion.Completeness as CompletionCompleteness
-import Constructive.Analysis.Completions.DedekindCompletion.Order as CompletionOrder
 
 private
   variable
     ℓ : Level
 
 
-baseField = ℚLinearlyOrderedField
+  baseField = ℚLinearlyOrderedField
 
-archimedeanBaseField = ℚArchimedeanLinearlyOrderedField
+  archimedeanBaseField = ℚArchimedeanLinearlyOrderedField
 
-
-module Base = CompletionBase.CompletionBase baseField
-module Order = CompletionOrder.CompletionOrder baseField
-module ArithmeticBase = CompletionArithmetic.ArithmeticBase archimedeanBaseField
+  module RationalCompletion = CompletionBase.CompletionBase baseField
 
 
 ℝᴰ : (ℓ : Level) → Type (ℓ-suc ℓ)
-ℝᴰ = Base.DedekindCompletion
-
-DedekindReals : (ℓ : Level) → Type (ℓ-suc ℓ)
-DedekindReals = ℝᴰ
-
+ℝᴰ = RationalCompletion.DedekindCompletion
 
 ℚ→ℝᴰ : (ℓ : Level) → ℚ → ℝᴰ ℓ
-ℚ→ℝᴰ = Base.K→𝔻
+ℚ→ℝᴰ = RationalCompletion.K→𝔻
 
 
-module Approximation {ℓ : Level} =
-  CompletionApproximation.CompletionApproximation archimedeanBaseField {ℓᴾ = ℓ}
+ℝᴰCommRing : (ℓ : Level) → CommRing (ℓ-suc ℓ)
+ℝᴰCommRing ℓ =
+  CompletionArithmetic.CommRingStructure.DedekindCompletionCommRing
+    archimedeanBaseField {ℓᴾ = ℓ}
 
-module Completeness {ℓ : Level} =
-  CompletionCompleteness.CompletionCompleteness archimedeanBaseField ℓ
+
+ℝᴰOrderedCommRing : (ℓ : Level) → OrderedCommRing (ℓ-suc ℓ) ℓ
+ℝᴰOrderedCommRing ℓ =
+  CompletionArithmetic.OrderedCommRingStructure.DedekindCompletionOrderedCommRing
+    archimedeanBaseField {ℓᴾ = ℓ}
 
 
-module Addition {ℓ : Level} =
-  ArithmeticBase.Addition {ℓ}
-
-module Negation {ℓ : Level} =
-  CompletionArithmetic.Negation archimedeanBaseField {ℓᴾ = ℓ}
-
-module AdditiveGroup {ℓ : Level} =
-  CompletionArithmetic.AdditiveGroup archimedeanBaseField {ℓᴾ = ℓ}
-
-module Difference {ℓ : Level} =
-  CompletionArithmetic.Difference archimedeanBaseField {ℓᴾ = ℓ}
-
-module NonNegativeMultiplication {ℓ : Level} =
-  CompletionArithmetic.NonNegativeMultiplication archimedeanBaseField {ℓᴾ = ℓ}
-
-module NonNegativeProperties {ℓ : Level} =
-  CompletionArithmetic.NonNegativeProperties archimedeanBaseField {ℓᴾ = ℓ}
-
-module Multiplication {ℓ : Level} =
-  CompletionArithmetic.Multiplication archimedeanBaseField {ℓᴾ = ℓ}
-
-module Unit {ℓ : Level} =
-  CompletionArithmetic.UnitProperties archimedeanBaseField {ℓᴾ = ℓ}
-
-module Distributivity {ℓ : Level} =
-  CompletionArithmetic.MultiplicationDistributivity archimedeanBaseField {ℓᴾ = ℓ}
-
-module Associativity {ℓ : Level} =
-  CompletionArithmetic.MultiplicationAssociativity archimedeanBaseField {ℓᴾ = ℓ}
-
-module CommRing {ℓ : Level} =
-  CompletionArithmetic.CommRingStructure archimedeanBaseField {ℓᴾ = ℓ}
-
-module OrderProperties {ℓ : Level} =
-  CompletionArithmetic.OrderProperties archimedeanBaseField {ℓᴾ = ℓ}
-
-module OrderedCommRing {ℓ : Level} =
-  CompletionArithmetic.OrderedCommRingStructure archimedeanBaseField {ℓᴾ = ℓ}
-
-module Inverse {ℓ : Level} =
-  CompletionArithmetic.Inverse archimedeanBaseField {ℓᴾ = ℓ}
-
-module OrderedHeytingField {ℓ : Level} =
-  CompletionArithmetic.OrderedHeytingFieldStructure archimedeanBaseField {ℓᴾ = ℓ}
+ℝᴰOrderedHeytingField :
+  (ℓ : Level) →
+  OrderedHeytingField.OrderedHeytingField (ℓ-suc ℓ) ℓ
+ℝᴰOrderedHeytingField ℓ =
+  CompletionArithmetic.OrderedHeytingFieldStructure.DedekindCompletionOrderedHeytingField
+    archimedeanBaseField {ℓᴾ = ℓ}

@@ -28,14 +28,14 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
     ; mulᶜ-rational-right
     )
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Ordered
   using (bounded-byᶜ-mul)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.Series
   using (seriesSumFromFiniteTailBoundConvergesAt)
 open import Constructive.Analysis.Reals.PowerSeries.Algebra
-  using (bounded-byᶜ-zero ; shiftPowerSeries ; powerSeriesPartialSum-shift)
+  using (shiftPowerSeries ; powerSeriesPartialSum-shift)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Bounds
 open import Constructive.Analysis.Reals.PowerSeries.Radius
@@ -44,34 +44,14 @@ import Constructive.Data.Rationals as Rational
 
 
 module PartialSumProofs where
-  scale-precision-cancel :
-    (κ ε : ℚ⁺) →
-    κ *⁺ (posInv⁺ κ *⁺ ε) ≡ ε
-  scale-precision-cancel κ ε =
-    sym (*⁺-assoc κ (posInv⁺ κ) ε) ∙
-    cong (λ ρ → ρ *⁺ ε) (*⁺-posInv-right κ) ∙
-    *⁺-identity-left ε
-
-  scale-precision-mono :
-    (κ ε δ : ℚ⁺) →
-    ε <⁺ δ →
-    κ *⁺ ε <⁺ κ *⁺ δ
-  scale-precision-mono κ ε δ ε<δ =
-    Rational.mul-left-positive-<
-      {a = radius κ}
-      {b = radius ε}
-      {c = radius δ}
-      (κ .snd)
-      ε<δ
-
   scale-half-precision< :
     (κ ε : ℚ⁺) →
     κ *⁺ half⁺ (posInv⁺ κ *⁺ ε) <⁺ ε
   scale-half-precision< κ ε =
     subst
       (λ θ → κ *⁺ half⁺ (posInv⁺ κ *⁺ ε) <⁺ θ)
-      (scale-precision-cancel κ ε)
-      (scale-precision-mono
+      (scale-posInv-cancel κ ε)
+      (scale-mono-<
         κ
         (half⁺ (posInv⁺ κ *⁺ ε))
         (posInv⁺ κ *⁺ ε)

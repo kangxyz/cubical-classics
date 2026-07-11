@@ -30,11 +30,12 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
   using (≤ᶜ-add ; negᶜ-pres≤ᶜ)
+open import Constructive.Analysis.Reals.Sequences.Subsequence public using (shift)
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 
@@ -42,44 +43,34 @@ open ClosenessOf RationalsMetricSpace
 
 open import Constructive.Analysis.Reals.Series.Finite
 
-drop :
-  ℕ →
-  (ℕ → ℝᶜ) →
-  ℕ →
-  ℝᶜ
-drop zero u =
-  u
-drop (suc n) u =
-  drop n (λ k → u (suc k))
 
-
-drop-index :
+shift-index :
   (m : ℕ) →
   (u : ℕ → ℝᶜ) →
   (n : ℕ) →
-  drop m u n ≡ u (m + n)
-drop-index zero u n =
+  shift m u n ≡ u (m + n)
+shift-index zero u n =
   refl
-drop-index (suc m) u n =
-  drop-index m (λ k → u (suc k)) n
+shift-index (suc m) u n =
+  shift-index m (λ k → u (suc k)) n
 
 
-drop-suc :
+shift-suc :
   (m : ℕ) →
   (u : ℕ → ℝᶜ) →
-  (λ n → drop m u (suc n)) ≡ drop (suc m) u
-drop-suc zero u =
+  (λ n → shift m u (suc n)) ≡ shift (suc m) u
+shift-suc zero u =
   refl
-drop-suc (suc m) u =
-  drop-suc m (λ n → u (suc n))
+shift-suc (suc m) u =
+  shift-suc m (λ n → u (suc n))
 
 
-drop-zero :
+shift-zero :
   (m : ℕ) →
   (u : ℕ → ℝᶜ) →
-  drop m u zero ≡ u m
-drop-zero m u =
-  drop-index m u zero ∙
+  shift m u zero ≡ u m
+shift-zero m u =
+  shift-index m u zero ∙
   cong u (Nat.+-zero m)
 
 
@@ -89,25 +80,25 @@ tailSum :
   ℕ →
   ℝᶜ
 tailSum u m k =
-  partialSum (drop m u) k
+  partialSum (shift m u) k
 
 
-drop-+ :
+shift-+ :
   (m n : ℕ) →
   (u : ℕ → ℝᶜ) →
-  drop n (drop m u) ≡ drop (m + n) u
-drop-+ zero n u =
+  shift n (shift m u) ≡ shift (m + n) u
+shift-+ zero n u =
   refl
-drop-+ (suc m) n u =
-  drop-+ m n (λ k → u (suc k))
+shift-+ (suc m) n u =
+  shift-+ m n (λ k → u (suc k))
 
 
-tailSum-drop :
+tailSum-shift :
   (u : ℕ → ℝᶜ) →
   (m n k : ℕ) →
-  tailSum (drop m u) n k ≡ tailSum u (m + n) k
-tailSum-drop u m n k =
-  cong (λ v → partialSum v k) (drop-+ m n u)
+  tailSum (shift m u) n k ≡ tailSum u (m + n) k
+tailSum-shift u m n k =
+  cong (λ v → partialSum v k) (shift-+ m n u)
 
 
 tailSum-zero :
@@ -122,7 +113,7 @@ tailSum-suc :
   (u : ℕ → ℝᶜ) →
   (m k : ℕ) →
   tailSum u m (suc k) ≡
-  drop m u zero +ᶜ tailSum (λ n → drop m u (suc n)) zero k
+  shift m u zero +ᶜ tailSum (λ n → shift m u (suc n)) zero k
 tailSum-suc u m k =
   refl
 
@@ -135,8 +126,8 @@ tailSum-suc-start :
 tailSum-suc-start u m k =
   cong₂
     _+ᶜ_
-    (drop-zero m u)
-    (cong (λ v → partialSum v k) (drop-suc m u))
+    (shift-zero m u)
+    (cong (λ v → partialSum v k) (shift-suc m u))
 
 
 tailSum-one :
@@ -241,54 +232,54 @@ partialSum-diff-left-tail≤ u m n (k , k+m≡n) =
     add-zero-left (-ᶜ tail)
 
 
-drop-absoluteTerms :
+shift-absoluteTerms :
   (m : ℕ) →
   (u : ℕ → ℝᶜ) →
-  drop m (λ n → absᶜ (u n)) ≡ (λ n → absᶜ (drop m u n))
-drop-absoluteTerms zero u =
+  shift m (λ n → absᶜ (u n)) ≡ (λ n → absᶜ (shift m u n))
+shift-absoluteTerms zero u =
   refl
-drop-absoluteTerms (suc m) u =
-  drop-absoluteTerms m (λ n → u (suc n))
+shift-absoluteTerms (suc m) u =
+  shift-absoluteTerms m (λ n → u (suc n))
 
 
-drop-add :
+shift-add :
   (m : ℕ) →
   (u v : ℕ → ℝᶜ) →
-  drop m (λ n → u n +ᶜ v n) ≡
-  (λ n → drop m u n +ᶜ drop m v n)
-drop-add zero u v =
+  shift m (λ n → u n +ᶜ v n) ≡
+  (λ n → shift m u n +ᶜ shift m v n)
+shift-add zero u v =
   refl
-drop-add (suc m) u v =
-  drop-add m (λ n → u (suc n)) (λ n → v (suc n))
+shift-add (suc m) u v =
+  shift-add m (λ n → u (suc n)) (λ n → v (suc n))
 
 
-drop-neg :
+shift-neg :
   (m : ℕ) →
   (u : ℕ → ℝᶜ) →
-  drop m (λ n → -ᶜ u n) ≡
-  (λ n → -ᶜ drop m u n)
-drop-neg zero u =
+  shift m (λ n → -ᶜ u n) ≡
+  (λ n → -ᶜ shift m u n)
+shift-neg zero u =
   refl
-drop-neg (suc m) u =
-  drop-neg m (λ n → u (suc n))
+shift-neg (suc m) u =
+  shift-neg m (λ n → u (suc n))
 
 
 tailSum-absoluteTerms :
   (u : ℕ → ℝᶜ) →
   (m k : ℕ) →
   tailSum (λ n → absᶜ (u n)) m k ≡
-  partialSum (λ n → absᶜ (drop m u n)) k
+  partialSum (λ n → absᶜ (shift m u n)) k
 tailSum-absoluteTerms u m k =
-  cong (λ v → partialSum v k) (drop-absoluteTerms m u)
+  cong (λ v → partialSum v k) (shift-absoluteTerms m u)
 
 
 tailSum-abs-bound :
   (u : ℕ → ℝᶜ) →
   (m k : ℕ) →
   absᶜ (tailSum u m k) ≤ᶜ
-  partialSum (λ n → absᶜ (drop m u n)) k
+  partialSum (λ n → absᶜ (shift m u n)) k
 tailSum-abs-bound u m k =
-  partialSum-abs-bound (drop m u) k
+  partialSum-abs-bound (shift m u) k
 
 
 tailSum-nonnegative :
@@ -298,11 +289,11 @@ tailSum-nonnegative :
   0ᶜ ≤ᶜ tailSum u m k
 tailSum-nonnegative u 0≤u m k =
   partialSum-nonnegative
-    (drop m u)
+    (shift m u)
     (λ n →
       subst
         (λ x → 0ᶜ ≤ᶜ x)
-        (sym (drop-index m u n))
+        (sym (shift-index m u n))
         (0≤u (m + n)))
     k
 
@@ -313,8 +304,8 @@ tailSum-add :
   tailSum (λ n → u n +ᶜ v n) m k ≡
   tailSum u m k +ᶜ tailSum v m k
 tailSum-add u v m k =
-  cong (λ w → partialSum w k) (drop-add m u v) ∙
-  partialSum-add (drop m u) (drop m v) k
+  cong (λ w → partialSum w k) (shift-add m u v) ∙
+  partialSum-add (shift m u) (shift m v) k
 
 
 tailSum-neg :
@@ -322,8 +313,8 @@ tailSum-neg :
   (m k : ℕ) →
   tailSum (λ n → -ᶜ u n) m k ≡ -ᶜ tailSum u m k
 tailSum-neg u m k =
-  cong (λ w → partialSum w k) (drop-neg m u) ∙
-  partialSum-neg (drop m u) k
+  cong (λ w → partialSum w k) (shift-neg m u) ∙
+  partialSum-neg (shift m u) k
 
 
 TailBound :
@@ -337,15 +328,15 @@ TailBound u μ =
   BoundedByᶜ ε (tailSum u m k)
 
 
-tailBound-drop :
+tailBound-shift :
   {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
   TailBound u μ →
   (m : ℕ) →
-  TailBound (drop m u) μ
-tailBound-drop {u = u} tailBound m ε n k μ≤n =
+  TailBound (shift m u) μ
+tailBound-shift {u = u} tailBound m ε n k μ≤n =
   subst
     (BoundedByᶜ ε)
-    (sym (tailSum-drop u m n k))
+    (sym (tailSum-shift u m n k))
     (tailBound ε (m + n) k μ≤m+n)
   where
   μ≤m+n : NatOrder._≤_ _ (m + n)
@@ -353,16 +344,16 @@ tailBound-drop {u = u} tailBound m ε n k μ≤n =
     NatOrder.≤-trans μ≤n (m , refl)
 
 
-tailBound-lift-drop :
+tailBound-lift-shift :
   {u : ℕ → ℝᶜ} {μ : ℚ⁺ → ℕ} →
   (m : ℕ) →
-  TailBound (drop m u) μ →
+  TailBound (shift m u) μ →
   TailBound u (λ ε → m + μ ε)
-tailBound-lift-drop {u = u} {μ = μ} m dropTail ε n k m+μ≤n =
+tailBound-lift-shift {u = u} {μ = μ} m shiftTail ε n k m+μ≤n =
   subst
     (BoundedByᶜ ε)
-    (tailSum-drop u m d k ∙ cong (λ l → tailSum u l k) m+d≡n)
-    (dropTail ε d k μ≤d)
+    (tailSum-shift u m d k ∙ cong (λ l → tailSum u l k) m+d≡n)
+    (shiftTail ε d k μ≤d)
   where
   j : ℕ
   j =
@@ -480,7 +471,7 @@ absoluteSummable→tailBound {u = u} absTail ε m k μ≤m =
 
   absTailSum : ℝᶜ
   absTailSum =
-    partialSum (λ n → absᶜ (drop m u n)) k
+    partialSum (λ n → absᶜ (shift m u n)) k
 
   absTailBound : BoundedByᶜ ε (tailSum (absoluteTerms u) m k)
   absTailBound =

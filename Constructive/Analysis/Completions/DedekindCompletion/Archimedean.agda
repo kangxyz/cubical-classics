@@ -18,9 +18,9 @@ open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Analysis.Completions.DedekindCompletion.Base
 open import Constructive.Analysis.Completions.DedekindCompletion.Order
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Addition
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Order
-import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.OrderedCommRing as CompletionOrderedCommRing
+import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Structures as CompletionOrderedCommRing
 
 private
   variable
@@ -59,8 +59,7 @@ module OrderedCommRingArchimedean
       ; sucn⋆q≡n⋆q+q to sucn⋆Kq≡n⋆Kq+q
       )
 
-  open ArithmeticBase 𝒜
-  open Addition {ℓᴾ}
+  open Addition 𝒜 {ℓᴾ}
   open OrderProperties 𝒜 {ℓᴾ} using (∃lower>0)
   open CompletionOrderedCommRing.OrderedCommRingStructure 𝒜 {ℓᴾ}
     using (DedekindCompletionOrderedCommRing)

@@ -17,7 +17,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop
   using (∥_∥₁ ; squash₁)
 
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedReciprocal
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedReciprocal
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation

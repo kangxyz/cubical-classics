@@ -26,10 +26,10 @@ more specific import.
 - **HoTT Cauchy reals, closeness, and boundedness.**  Public aggregate:
   [`Constructive.Analysis.Reals.CauchyReals`][cauchy-reals].  The relevant
   definitions are in [`CauchyReals.Base`][cauchy-base] and
-  [`CauchyReals.Order.Bounded`][cauchy-bounded].
+  [`CauchyReals.Order.Bounds`][cauchy-bounds].
 - **Located Cauchy-real data.**  Public aggregate:
   [`Constructive.Analysis.Reals.Locator`][locator].  `Locator` is defined in
-  [`Locator.Base`][locator-base].
+  [`Locator`][locator].
 - **Precision moduli and uniformly continuous maps.**  Public entries:
   [`Constructive.Analysis.Modulus`][modulus] for natural-number moduli and
   [`Constructive.Analysis.Metric.Core`][metric-core] for metric maps.  The map
@@ -37,15 +37,15 @@ more specific import.
 - **Power-series convergence and analytic-at predicates.**  Public entries:
   [`PowerSeries.Core`][power-series-core] and
   [`PowerSeries.Calculus`][power-series-calculus].  The defining modules are
-  [`PowerSeries.Radius.Sum`][radius-sum] and
-  [`PowerSeries.Analytic.Core`][analytic-core].
+  [`PowerSeries.Convergence`][power-series-convergence] and
+  [`PowerSeries.Analytic.Base`][analytic-base].
 - **Coefficient bounds and continuity data.**  Public entries:
   [`PowerSeries.Core`][power-series-core] and
   [`PowerSeries.Calculus`][power-series-calculus].  The definitions are in
   [`PowerSeries.Bounds`][power-series-bounds] and
   [`PowerSeries.Continuity.PartialSums`][continuity-partial-sums],
-  [`PowerSeries.Continuity.Limit`][continuity-limit], and
-  [`PowerSeries.Continuity.Theorem`][continuity-theorem].
+  [`PowerSeries.Continuity.Limit`][continuity-limit], and the public
+  [`PowerSeries.Continuity`][continuity].
 - **Majorant-bearing power series.**  Public aggregate:
   [`PowerSeries.Core`][power-series-core].  The definition is in
   [`PowerSeries.Majorant`][majorant].
@@ -56,20 +56,19 @@ an internal proof module as a second public API.
 
 [cauchy-reals]: ../Constructive/Analysis/Reals/CauchyReals.agda
 [cauchy-base]: ../Constructive/Analysis/Reals/CauchyReals/Base.agda
-[cauchy-bounded]: ../Constructive/Analysis/Reals/CauchyReals/Order/Bounded.agda
+[cauchy-bounds]: ../Constructive/Analysis/Reals/CauchyReals/Order/Bounds.agda
 [locator]: ../Constructive/Analysis/Reals/Locator.agda
-[locator-base]: ../Constructive/Analysis/Reals/Locator/Base.agda
 [modulus]: ../Constructive/Analysis/Modulus.agda
 [metric-core]: ../Constructive/Analysis/Metric/Core.agda
 [metric-map]: ../Constructive/Analysis/Metric/Map.agda
 [power-series-core]: ../Constructive/Analysis/Reals/PowerSeries/Core.agda
 [power-series-calculus]: ../Constructive/Analysis/Reals/PowerSeries/Calculus.agda
 [power-series-bounds]: ../Constructive/Analysis/Reals/PowerSeries/Bounds.agda
-[radius-sum]: ../Constructive/Analysis/Reals/PowerSeries/Radius/Sum.agda
-[analytic-core]: ../Constructive/Analysis/Reals/PowerSeries/Analytic/Core.agda
+[power-series-convergence]: ../Constructive/Analysis/Reals/PowerSeries/Convergence.agda
+[analytic-base]: ../Constructive/Analysis/Reals/PowerSeries/Analytic/Base.agda
 [continuity-partial-sums]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/PartialSums.agda
 [continuity-limit]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Limit.agda
-[continuity-theorem]: ../Constructive/Analysis/Reals/PowerSeries/Continuity/Theorem.agda
+[continuity]: ../Constructive/Analysis/Reals/PowerSeries/Continuity.agda
 [majorant]: ../Constructive/Analysis/Reals/PowerSeries/Majorant.agda
 
 ## Cauchy Reals And Located Data
@@ -203,10 +202,12 @@ that is, a concrete rational bound for each coefficient.  This is the data
 needed to build Lipschitz estimates for finite partial sums and hence explicit
 uniform-continuity moduli.
 
-Majorant data is another valid data-rich route.  A majorant provides rational
-or explicitly bounded comparison terms and can often produce the estimates
-needed for convergence and continuity without asking users for individual
-coefficient bounds.
+Majorant data is the canonical weighted route to convergence and strict-
+subball differentiation.  The current majorant package compares against
+Cauchy-real terms; it does not by itself choose rational bounds for the finite
+coefficient prefix.  Therefore an explicit continuity modulus still uses
+`PowerSeriesCoefficientBounds` unless the caller supplies an enriched
+majorant carrying those chosen rational bounds.
 
 ## Radius And Coefficient Bounds
 

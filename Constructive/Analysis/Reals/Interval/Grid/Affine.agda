@@ -20,15 +20,15 @@ open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Quantitative
   using (bounded-real-right-multiplierᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Ordered
   using (scalarMulᶜ-nonnegative ; scalarMulᶜ-pres≤ᶜ-scalar)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Properties
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
@@ -36,7 +36,7 @@ open import Constructive.Analysis.Reals.Interval.Base
 open import Constructive.Analysis.Reals.Interval.Order using (gapᶜ)
 open import Constructive.Analysis.Reals.Interval.Grid.Base
 open import Constructive.Analysis.Reals.Interval.Grid.Rational
-open import Constructive.Analysis.Reals.Locator.Base
+open import Constructive.Analysis.Reals.Locator
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
 

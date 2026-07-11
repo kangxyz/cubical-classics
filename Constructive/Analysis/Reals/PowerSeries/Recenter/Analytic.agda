@@ -16,9 +16,9 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
   using (add-cancel-left)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
   using (BoundedByᶜ)
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
+open import Constructive.Analysis.Reals.PowerSeries.Analytic.Base
   using
     ( AnalyticWithinAt
     ; HasPowerSeriesWithinAtWith
@@ -31,10 +31,10 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
     ; majorizedOnBall→hasPowerSeriesOnBallWith
     )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.Base
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.StrictSubball
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.Coefficients
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.Bounds
   using (recenterShiftedDisplacementBound)
-open import Constructive.Analysis.Reals.PowerSeries.Recenter.Theorem
+open import Constructive.Analysis.Reals.PowerSeries.Recenter.StrictSubball
   using
     ( centeredPowerSeriesSumRecenteredOnStrictSubball
     ; recenterPowerSeriesDataFromMajorizedOnStrictSubball

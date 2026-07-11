@@ -15,7 +15,8 @@ open import Cubical.HITs.PropositionalTruncation as Prop
 
 open import Constructive.Analysis.Metric.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Base
-open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.Prelength
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.PrecisionRelation
+open import Constructive.Analysis.Completions.CauchyCompletion.Closeness.PredicateRelation
 open import Constructive.Analysis.Completions.CauchyCompletion.Induction
 open import Constructive.Analysis.Completions.CauchyCompletion.Recursion
 open import Constructive.Data.PositiveRationals
@@ -28,7 +29,8 @@ private
 
 module ComputedOf (𝓜 : MetricSpace ℓ ℓ') where
   open CompletionOf 𝓜
-  open PrelengthOf 𝓜
+  open PrecisionRelationOf 𝓜
+  open PredicateRelationOf 𝓜
   open InductionOf 𝓜
   open RecursionOf 𝓜
 

@@ -24,11 +24,11 @@ open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice
+open import Constructive.Analysis.Reals.CauchyReals.Lattice
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Density
 open import Constructive.Analysis.Reals.CauchyReals.Order.Properties
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational

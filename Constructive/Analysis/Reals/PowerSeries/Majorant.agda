@@ -15,21 +15,19 @@ open import Cubical.Data.Sigma using (Σ-syntax ; _,_)
 
 open import Constructive.Analysis.Modulus using (AntitoneNatModulus)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Ordered
   using (scalarMulᶜ-nonnegative ; scalarMulᶜ-pres≤ᶜ-scalar)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
   using (scalarMulᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
   using (_≤ᶜ_ ; ≤ᶜ-trans)
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude using (absᶜ)
 open import Constructive.Analysis.Reals.Series
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Quantitative
   using (bounded-byᶜ-abs≤rational)
 open import Constructive.Analysis.Reals.PowerSeries.Base
-open import Constructive.Analysis.Reals.PowerSeries.Algebra.Core
-  using (bounded-byᶜ-zero)
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 import Constructive.Data.Rationals as Rational
@@ -82,6 +80,8 @@ module PowerSeriesMajorizedOnBall where
       0ᶜ ≤ᶜ v n
     majorantNonnegative {a = a} {ρ = ρ} {v = v} {μ = μ} majorized n =
       SeriesMajorizedBy.majorantNonnegative
+        {u = powerSeriesTerm a 0ᶜ}
+        {v = v}
         (termMajorized
           {a = a}
           {ρ = ρ}
@@ -234,12 +234,16 @@ powerSeriesMajorizedOnBallFromTermBounds :
   AntitoneNatModulus μ →
   PowerSeriesMajorizedOnBall a ρ v μ
 powerSeriesMajorizedOnBallFromTermBounds
+  {a = a}
+  {v = v}
   termBounds
   majorantNonnegative
   majorTail
   majorAntitone =
   (λ h h-bound →
     seriesMajorizedByTerms
+      {u = powerSeriesTerm a h}
+      {v = v}
       (termBounds h h-bound)
       majorantNonnegative) ,
   majorTail ,
@@ -336,159 +340,3 @@ majorizedOnBall→hasPowerSeriesOnBall {a = a} {ρ = ρ} {v = v} {μ = μ} major
     {v = v}
     {μ = μ}
     majorized
-
-
-hasPowerSeriesOnBallWithFromTermBounds :
-  {a : PowerSeries} →
-  {ρ : ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {μ : ℚ⁺ → ℕ} →
-  ((h : ℝᶜ) →
-    BoundedByᶜ ρ h →
-    (n : ℕ) →
-    absᶜ (powerSeriesTerm a h n) ≤ᶜ v n) →
-  ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
-  TailBound v μ →
-  AntitoneNatModulus μ →
-  HasPowerSeriesOnBallWith a ρ μ
-hasPowerSeriesOnBallWithFromTermBounds
-  {a = a}
-  {ρ = ρ}
-  {v = v}
-  {μ = μ}
-  termBounds
-  majorantNonnegative
-  majorTail
-  majorAntitone =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    {a = a}
-    {ρ = ρ}
-    {v = v}
-    {μ = μ}
-    (powerSeriesMajorizedOnBallFromTermBounds
-      {a = a}
-      {ρ = ρ}
-      {v = v}
-      {μ = μ}
-      termBounds
-      majorantNonnegative
-      majorTail
-      majorAntitone)
-
-
-hasPowerSeriesOnBallFromTermBounds :
-  {a : PowerSeries} →
-  {ρ : ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {μ : ℚ⁺ → ℕ} →
-  ((h : ℝᶜ) →
-    BoundedByᶜ ρ h →
-    (n : ℕ) →
-    absᶜ (powerSeriesTerm a h n) ≤ᶜ v n) →
-  ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
-  TailBound v μ →
-  AntitoneNatModulus μ →
-  HasPowerSeriesOnBall a ρ
-hasPowerSeriesOnBallFromTermBounds
-  {a = a}
-  {ρ = ρ}
-  {v = v}
-  {μ = μ}
-  termBounds
-  majorantNonnegative
-  majorTail
-  majorAntitone =
-  μ ,
-  hasPowerSeriesOnBallWithFromTermBounds
-    {a = a}
-    {ρ = ρ}
-    {v = v}
-    {μ = μ}
-    termBounds
-    majorantNonnegative
-    majorTail
-    majorAntitone
-
-
-hasPowerSeriesOnBallWithFromBoundedTerms :
-  {a : PowerSeries} →
-  {ρ : ℚ⁺} →
-  {κ : ℕ → ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {μ : ℚ⁺ → ℕ} →
-  ((h : ℝᶜ) →
-    BoundedByᶜ ρ h →
-    (n : ℕ) →
-    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
-  ((n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
-  ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
-  TailBound v μ →
-  AntitoneNatModulus μ →
-  HasPowerSeriesOnBallWith a ρ μ
-hasPowerSeriesOnBallWithFromBoundedTerms
-  {a = a}
-  {ρ = ρ}
-  {κ = κ}
-  {v = v}
-  {μ = μ}
-  termBounds
-  bound≤majorant
-  majorantNonnegative
-  majorTail
-  majorAntitone =
-  majorizedOnBall→hasPowerSeriesOnBallWith
-    {a = a}
-    {ρ = ρ}
-    {v = v}
-    {μ = μ}
-    (powerSeriesMajorizedOnBallFromBoundedTerms
-      {a = a}
-      {ρ = ρ}
-      {κ = κ}
-      {v = v}
-      {μ = μ}
-      termBounds
-      bound≤majorant
-      majorantNonnegative
-      majorTail
-      majorAntitone)
-
-
-hasPowerSeriesOnBallFromBoundedTerms :
-  {a : PowerSeries} →
-  {ρ : ℚ⁺} →
-  {κ : ℕ → ℚ⁺} →
-  {v : ℕ → ℝᶜ} →
-  {μ : ℚ⁺ → ℕ} →
-  ((h : ℝᶜ) →
-    BoundedByᶜ ρ h →
-    (n : ℕ) →
-    BoundedByᶜ (κ n) (powerSeriesTerm a h n)) →
-  ((n : ℕ) → rational (radius (κ n)) ≤ᶜ v n) →
-  ((n : ℕ) → 0ᶜ ≤ᶜ v n) →
-  TailBound v μ →
-  AntitoneNatModulus μ →
-  HasPowerSeriesOnBall a ρ
-hasPowerSeriesOnBallFromBoundedTerms
-  {a = a}
-  {ρ = ρ}
-  {κ = κ}
-  {v = v}
-  {μ = μ}
-  termBounds
-  bound≤majorant
-  majorantNonnegative
-  majorTail
-  majorAntitone =
-  μ ,
-  hasPowerSeriesOnBallWithFromBoundedTerms
-    {a = a}
-    {ρ = ρ}
-    {κ = κ}
-    {v = v}
-    {μ = μ}
-    termBounds
-    bound≤majorant
-    majorantNonnegative
-    majorTail
-    majorAntitone

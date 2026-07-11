@@ -21,13 +21,11 @@ open import Cubical.Tactics.CommRingSolver.Reflection
 
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.CommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Structures
   using (CauchyRealsCommRing)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.Series
-  using (partialSum)
-open import Constructive.Analysis.Reals.Series.Instances.Geometric.Real
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Power
   using (realPower)
 import Constructive.Data.Rationals as Rational
 
@@ -218,41 +216,3 @@ binomialTheoremᶜ n x y =
   sym (ringPowerᶜ≡realPower (x +ᶜ y) n) ∙
   CRBinomial.BinomialThm n x y ∙
   CRSum.∑Ext (ringBinomialVec≡binomialVecᶜ n x y)
-
-
-antiDiagonalSumᶜ :
-  (ℕ → ℕ → ℝᶜ) →
-  ℕ →
-  ℝᶜ
-antiDiagonalSumᶜ u m =
-  partialSum (λ n → u n (m ∸ n)) (suc m)
-
-
-triangularRowsSumᶜ :
-  (ℕ → ℕ → ℝᶜ) →
-  ℕ →
-  ℝᶜ
-triangularRowsSumᶜ u N =
-  partialSum (λ n → partialSum (u n) (N ∸ n)) N
-
-
-triangularDiagonalsSumᶜ :
-  (ℕ → ℕ → ℝᶜ) →
-  ℕ →
-  ℝᶜ
-triangularDiagonalsSumᶜ u N =
-  partialSum (antiDiagonalSumᶜ u) N
-
-
-
-
-
-
-triangularRowsSumᶜ-suc :
-  (u : ℕ → ℕ → ℝᶜ) →
-  (N : ℕ) →
-  triangularRowsSumᶜ u (suc N) ≡
-  partialSum (u zero) (suc N) +ᶜ
-  triangularRowsSumᶜ (λ n k → u (suc n) k) N
-triangularRowsSumᶜ-suc u N =
-  refl

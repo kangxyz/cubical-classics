@@ -21,21 +21,21 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
   using (-ᶜ_)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
   using (BoundedByᶜ)
-open import Constructive.Analysis.Reals.Calculus.Derivative.Base
+open import Constructive.Analysis.Reals.Calculus.DerivativeData
   using (HasDerivativeAtWith ; hasDerivativeAtWith-local-cong)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Bounds
   using (PowerSeriesCoefficientBounds)
-open import Constructive.Analysis.Reals.PowerSeries.Continuity.Theorem
+open import Constructive.Analysis.Reals.PowerSeries.Continuity
   using
     ( centeredPowerSeriesSumUniformlyContinuousFromCoefficientBounds
     )
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
+open import Constructive.Analysis.Reals.PowerSeries.Analytic.Base
 open import Constructive.Analysis.Reals.PowerSeries.Analytic.Continuity
 
 

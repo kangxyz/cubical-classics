@@ -20,7 +20,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
+open import Constructive.Analysis.Reals.CauchyReals.Order.Approximation
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Properties
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational

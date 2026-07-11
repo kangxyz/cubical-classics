@@ -191,13 +191,13 @@ cauchyWithAntitoneLimitConverges u μ u-cauchy μ-ant ε n μhalf≤n =
   β<α =
     half< (half⁺ ε)
 
-  α≤? : radius β ℚOrder.≤ radius α
-  α≤? =
+  β≤α : radius β ℚOrder.≤ radius α
+  β≤α =
     ℚOrder.<Weaken≤ (radius β) (radius α) β<α
 
   μα≤μβ : NatOrder._≤_ (μ α) (μ β)
   μα≤μβ =
-    μ-ant {ε = β} {δ = α} α≤?
+    μ-ant {ε = β} {δ = α} β≤α
 
   u-regular : RegularCauchyWithModulus u μ
   u-regular =

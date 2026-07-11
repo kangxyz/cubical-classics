@@ -54,11 +54,6 @@ splitModulus μ ε =
   μ (half⁺ ε)
 
 
-quarterModulus : NatModulus → NatModulus
-quarterModulus μ ε =
-  μ (quarter⁺ ε)
-
-
 half-mono-≤ :
   {ε δ : ℚ⁺} →
   radius ε ℚOrder.≤ radius δ →
@@ -81,20 +76,6 @@ splitModulus-antitone μ-ant {ε = ε} {δ = δ} ε≤δ =
     {ε = half⁺ ε}
     {δ = half⁺ δ}
     (half-mono-≤ {ε = ε} {δ = δ} ε≤δ)
-
-
-quarterModulus-antitone :
-  {μ : NatModulus} →
-  AntitoneNatModulus μ →
-  AntitoneNatModulus (quarterModulus μ)
-quarterModulus-antitone μ-ant {ε = ε} {δ = δ} ε≤δ =
-  μ-ant
-    {ε = quarter⁺ ε}
-    {δ = quarter⁺ δ}
-    (half-mono-≤
-      {ε = half⁺ ε}
-      {δ = half⁺ δ}
-      (half-mono-≤ {ε = ε} {δ = δ} ε≤δ))
 
 
 maxModulus-antitone :

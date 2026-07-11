@@ -55,7 +55,7 @@ Resizing₀→Resizing resizing₀ {ℓ = ℓ} {ℓ' = ℓ'} =
 record DropProp (P : hProp ℓ) : Type (ℓ-suc ℓ) where
   field
     lower : hProp ℓ-zero
-    dropEquiv : P .fst ≃ lower .fst
+    shiftEquiv : P .fst ≃ lower .fst
 
 open DropProp
 
@@ -67,34 +67,34 @@ Drop = {ℓ : Level} → (P : hProp ℓ) → DropProp P
 
 Resizing→Drop : Resizing → Drop
 Resizing→Drop resizing P .lower = invIsEq resizing P
-Resizing→Drop resizing P .dropEquiv =
+Resizing→Drop resizing P .shiftEquiv =
   compEquiv (pathToEquiv (λ i → secIsEq resizing P (~ i) .fst)) (invEquiv LiftEquiv)
 
 module _
-  {drop : Drop}{ℓ : Level} where
+  {shift : Drop}{ℓ : Level} where
 
   liftp : hProp ℓ-zero → hProp ℓ
   liftp = liftProp {ℓ = ℓ-zero} ℓ
 
   resize : hProp ℓ → hProp ℓ-zero
-  resize P = drop P .lower
+  resize P = shift P .lower
 
   liftp-resize : (P : hProp _) → liftp (resize P) ≡ P
-  liftp-resize P i .fst = ua (compEquiv (invEquiv LiftEquiv) (invEquiv (drop P .dropEquiv))) i
+  liftp-resize P i .fst = ua (compEquiv (invEquiv LiftEquiv) (invEquiv (shift P .shiftEquiv))) i
   liftp-resize P i .snd = pathIsProp (λ i → liftp-resize P i .fst) (liftp (resize P) .snd) (P .snd) i
 
   resize-liftp : (P : hProp _) → resize (liftp P) ≡ P
-  resize-liftp P i .fst = ua (compEquiv (invEquiv (drop (liftp P) .dropEquiv)) (invEquiv LiftEquiv)) i
+  resize-liftp P i .fst = ua (compEquiv (invEquiv (shift (liftp P) .shiftEquiv)) (invEquiv LiftEquiv)) i
   resize-liftp P i .snd = pathIsProp (λ i → resize-liftp P i .fst) (resize (liftp P) .snd) (P .snd) i
 
   isEquiv-resize : isEquiv liftp
   isEquiv-resize = isoToEquiv (iso liftp resize liftp-resize resize-liftp) .snd
 
 Drop→Resizing₀ : Drop → Resizing₀
-Drop→Resizing₀ drop = isEquiv-resize {drop = drop}
+Drop→Resizing₀ shift = isEquiv-resize {shift = shift}
 
 Drop→Resizing : Drop → Resizing
-Drop→Resizing drop = Resizing₀→Resizing (Drop→Resizing₀ drop)
+Drop→Resizing shift = Resizing₀→Resizing (Drop→Resizing₀ shift)
 
 
 {-

@@ -64,13 +64,13 @@ module ClosenessOf (𝓜 : MetricSpace ℓ ℓ') where
       i
 
 
-  ArbitrarilyClose : Completion → Completion → Type ℓᶜ
-  ArbitrarilyClose x y = (ε : ℚ⁺) → x ∼[ ε ] y
+  private
+    ArbitrarilyClose : Completion → Completion → Type ℓᶜ
+    ArbitrarilyClose x y = (ε : ℚ⁺) → x ∼[ ε ] y
 
-
-  isPropArbitrarilyClose : (x y : Completion) → isProp (ArbitrarilyClose x y)
-  isPropArbitrarilyClose x y =
-    isPropΠ λ ε → squash
+    isPropArbitrarilyClose : (x y : Completion) → isProp (ArbitrarilyClose x y)
+    isPropArbitrarilyClose x y =
+      isPropΠ λ ε → squash
 
 
   isSetCompletion : isSet Completion

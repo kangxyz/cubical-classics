@@ -20,7 +20,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.Series
 open import Constructive.Analysis.Modulus
   using (maxModulus ; splitModulus)
@@ -28,9 +28,9 @@ open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Algebra.Core
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.Coefficients
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.ZeroConstant
-open import Constructive.Analysis.Reals.PowerSeries.Algebra.Pointwise
+open import Constructive.Analysis.Reals.PowerSeries.Algebra.Finite
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Sums
 open import Constructive.Analysis.Reals.PowerSeries.Algebra.Additive
 
@@ -463,52 +463,3 @@ powerSeriesSumOnBallFrom-realScale :
   x ·ᶜ powerSeriesSumOnBallFrom a ρ convergence h h-bound
 powerSeriesSumOnBallFrom-realScale x κ x-bound (μ , convergence) h h-bound =
   powerSeriesSumOnBall-realScale x κ x-bound convergence h h-bound
-
-
-powerSeriesSumOnBall-subWithMax :
-  {a b : PowerSeries} →
-  {ρ : ℚ⁺} →
-  {μ ν : ℚ⁺ → ℕ} →
-  (left : HasPowerSeriesOnBallWith a ρ μ) →
-  (right : HasPowerSeriesOnBallWith b ρ ν) →
-  (h : ℝᶜ) →
-  (h-bound : BoundedByᶜ ρ h) →
-  powerSeriesSumOnBall
-    (subPowerSeries a b)
-    ρ
-    (splitModulus (maxModulus μ ν))
-    (subPowerSeriesOnBallWithMax left right)
-    h
-    h-bound
-  ≡
-  powerSeriesSumOnBall a ρ μ left h h-bound +ᶜ
-  (-ᶜ powerSeriesSumOnBall b ρ ν right h h-bound)
-powerSeriesSumOnBall-subWithMax left right h h-bound =
-  powerSeriesSumOnBall-addWithMax
-    left
-    (negPowerSeriesOnBallWith right)
-    h
-    h-bound ∙
-  cong
-    (powerSeriesSumOnBall _ _ _ left h h-bound +ᶜ_)
-    (powerSeriesSumOnBall-neg right h h-bound)
-
-
-powerSeriesSumOnBallFrom-sub :
-  {a b : PowerSeries} →
-  {ρ : ℚ⁺} →
-  (left : HasPowerSeriesOnBall a ρ) →
-  (right : HasPowerSeriesOnBall b ρ) →
-  (h : ℝᶜ) →
-  (h-bound : BoundedByᶜ ρ h) →
-  powerSeriesSumOnBallFrom
-    (subPowerSeries a b)
-    ρ
-    (subPowerSeriesOnBall left right)
-    h
-    h-bound
-  ≡
-  powerSeriesSumOnBallFrom a ρ left h h-bound +ᶜ
-  (-ᶜ powerSeriesSumOnBallFrom b ρ right h h-bound)
-powerSeriesSumOnBallFrom-sub (μ , left) (ν , right) h h-bound =
-  powerSeriesSumOnBall-subWithMax left right h h-bound

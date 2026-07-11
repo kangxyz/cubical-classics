@@ -22,13 +22,13 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedDivision
   using (BoundedAwayPositiveᶜ ; reciprocalPositiveᶜ)
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Estimates
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Quantitative
   using (boundedMulᶜ-close ; boundedReciprocalᶜ ; boundedReciprocalᶜ-continuous)
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.Sequences.Base
 open import Constructive.Analysis.Reals.Sequences.Convergence
 open import Constructive.Analysis.Reals.Sequences.Map
@@ -38,34 +38,14 @@ import Constructive.Data.Rationals as Rational
 open ClosenessOf RationalsMetricSpace
 
 private
-  scale-precision-cancel :
-    (κ ε : ℚ⁺) →
-    κ *⁺ (posInv⁺ κ *⁺ ε) ≡ ε
-  scale-precision-cancel κ ε =
-    sym (*⁺-assoc κ (posInv⁺ κ) ε) ∙
-    cong (λ ρ → ρ *⁺ ε) (*⁺-posInv-right κ) ∙
-    *⁺-identity-left ε
-
-  scale-precision-mono :
-    (κ ε δ : ℚ⁺) →
-    ε <⁺ δ →
-    κ *⁺ ε <⁺ κ *⁺ δ
-  scale-precision-mono κ ε δ ε<δ =
-    Rational.mul-left-positive-<
-      {a = radius κ}
-      {b = radius ε}
-      {c = radius δ}
-      (κ .snd)
-      ε<δ
-
   scaledHalf< :
     (κ ε : ℚ⁺) →
     κ *⁺ half⁺ (posInv⁺ κ *⁺ ε) <⁺ ε
   scaledHalf< κ ε =
     subst
       (λ ρ → κ *⁺ half⁺ (posInv⁺ κ *⁺ ε) <⁺ ρ)
-      (scale-precision-cancel κ ε)
-      (scale-precision-mono
+      (scale-posInv-cancel κ ε)
+      (scale-mono-<
         κ
         (half⁺ (posInv⁺ κ *⁺ ε))
         (posInv⁺ κ *⁺ ε)
@@ -79,16 +59,6 @@ private
     μ (half⁺ (posInv⁺ κ *⁺ half⁺ ε))
 
 
-zeroSequence : Sequence
-zeroSequence =
-  constantSequence 0ᶜ
-
-
-oneSequence : Sequence
-oneSequence =
-  constantSequence 1ᶜ
-
-
 addSequence : Sequence → Sequence → Sequence
 addSequence u v n =
   u n +ᶜ v n
@@ -99,11 +69,6 @@ negSequence u n =
   -ᶜ u n
 
 
-subSequence : Sequence → Sequence → Sequence
-subSequence u v n =
-  u n +ᶜ (-ᶜ v n)
-
-
 scalarMulSequence : ℚ → Sequence → Sequence
 scalarMulSequence q u n =
   scalarMulᶜ q (u n)
@@ -112,16 +77,6 @@ scalarMulSequence q u n =
 mulSequence : Sequence → Sequence → Sequence
 mulSequence u v n =
   u n ·ᶜ v n
-
-
-mulLeftSequence : Sequence → ℝᶜ → Sequence
-mulLeftSequence u y n =
-  u n ·ᶜ y
-
-
-mulRightSequence : ℝᶜ → Sequence → Sequence
-mulRightSequence x v n =
-  x ·ᶜ v n
 
 
 EventuallyBoundedByWith :
@@ -184,18 +139,6 @@ negativeReciprocalSequence :
   Sequence
 negativeReciprocalSequence ε u u-away =
   negSequence (positiveReciprocalSequence ε (negSequence u) u-away)
-
-
-zeroSequenceConvergesTo :
-  ConvergesTo zeroSequence 0ᶜ
-zeroSequenceConvergesTo =
-  constantConvergesTo 0ᶜ
-
-
-oneSequenceConvergesTo :
-  ConvergesTo oneSequence 1ᶜ
-oneSequenceConvergesTo =
-  constantConvergesTo 1ᶜ
 
 
 addConvergesWithModulus :
@@ -268,7 +211,7 @@ subConvergesTo :
   {x y : ℝᶜ} →
   ConvergesTo u x →
   ConvergesTo v y →
-  ConvergesTo (subSequence u v) (x +ᶜ (-ᶜ y))
+  ConvergesTo (λ n → u n +ᶜ (-ᶜ v n)) (x +ᶜ (-ᶜ y))
 subConvergesTo u→x v→y =
   addConvergesTo u→x (negConvergesTo v→y)
 
@@ -293,7 +236,7 @@ mulLeftConvergesToWithBound :
   {u : Sequence} →
   {x : ℝᶜ} →
   ConvergesTo u x →
-  ConvergesTo (mulLeftSequence u y) (x ·ᶜ y)
+  ConvergesTo (λ n → u n ·ᶜ y) (x ·ᶜ y)
 mulLeftConvergesToWithBound κ y y-bound (μ , u→x) =
   mapUniformlyContinuousConverges
     {μu = μ}
@@ -308,7 +251,7 @@ mulRightConvergesToWithBound :
   {v : Sequence} →
   {y : ℝᶜ} →
   ConvergesTo v y →
-  ConvergesTo (mulRightSequence x v) (x ·ᶜ y)
+  ConvergesTo (λ n → x ·ᶜ v n) (x ·ᶜ y)
 mulRightConvergesToWithBound κ x x-bound (ν , v→y) =
   mapUniformlyContinuousConverges
     {μu = ν}

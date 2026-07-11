@@ -31,30 +31,6 @@ mapSequence f u n =
   f (u n)
 
 
-mapSequence-id :
-  (u : Sequence) →
-  mapSequence (λ x → x) u ≡ u
-mapSequence-id u =
-  refl
-
-
-mapSequence-comp :
-  (f g : ℝᶜ → ℝᶜ) →
-  (u : Sequence) →
-  mapSequence f (mapSequence g u) ≡
-  mapSequence (λ x → f (g x)) u
-mapSequence-comp f g u =
-  refl
-
-
-mapConstantSequence :
-  (f : ℝᶜ → ℝᶜ) →
-  (x : ℝᶜ) →
-  mapSequence f (constantSequence x) ≡ constantSequence (f x)
-mapConstantSequence f x =
-  refl
-
-
 mapUniformlyContinuousWithConverges :
   {f : ℝᶜ → ℝᶜ} →
   {u : Sequence} →

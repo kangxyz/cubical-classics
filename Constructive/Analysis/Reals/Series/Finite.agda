@@ -26,10 +26,11 @@ open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.AdditiveGroup
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
@@ -39,182 +40,183 @@ import Constructive.Data.Rationals as Rational
 
 open ClosenessOf RationalsMetricSpace
 
-sumFin :
-  (n : ℕ) →
-  (Fin n → ℝᶜ) →
-  ℝᶜ
-sumFin zero _ =
-  0ᶜ
-sumFin (suc n) x =
-  x Fin.zero +ᶜ sumFin n (λ i → x (Fin.suc i))
+private
+  sumFin :
+    (n : ℕ) →
+    (Fin n → ℝᶜ) →
+    ℝᶜ
+  sumFin zero _ =
+    0ᶜ
+  sumFin (suc n) x =
+    x Fin.zero +ᶜ sumFin n (λ i → x (Fin.suc i))
 
 
-sumFin-zero :
-  (x : Fin zero → ℝᶜ) →
-  sumFin zero x ≡ 0ᶜ
-sumFin-zero x =
-  refl
+  sumFin-zero :
+    (x : Fin zero → ℝᶜ) →
+    sumFin zero x ≡ 0ᶜ
+  sumFin-zero x =
+    refl
 
 
-sumFin-suc :
-  (n : ℕ) →
-  (x : Fin (suc n) → ℝᶜ) →
-  sumFin (suc n) x ≡
-  x Fin.zero +ᶜ sumFin n (λ i → x (Fin.suc i))
-sumFin-suc n x =
-  refl
+  sumFin-suc :
+    (n : ℕ) →
+    (x : Fin (suc n) → ℝᶜ) →
+    sumFin (suc n) x ≡
+    x Fin.zero +ᶜ sumFin n (λ i → x (Fin.suc i))
+  sumFin-suc n x =
+    refl
 
 
-sumFin-one :
-  (x : Fin (suc zero) → ℝᶜ) →
-  sumFin (suc zero) x ≡ x Fin.zero
-sumFin-one x =
-  add-zero-right (x Fin.zero)
+  sumFin-one :
+    (x : Fin (suc zero) → ℝᶜ) →
+    sumFin (suc zero) x ≡ x Fin.zero
+  sumFin-one x =
+    add-zero-right (x Fin.zero)
 
 
-sumFin-zero-sequence :
-  (n : ℕ) →
-  sumFin n (λ _ → 0ᶜ) ≡ 0ᶜ
-sumFin-zero-sequence zero =
-  refl
-sumFin-zero-sequence (suc n) =
-  cong (0ᶜ +ᶜ_) (sumFin-zero-sequence n) ∙
-  add-zero-left 0ᶜ
+  sumFin-zero-sequence :
+    (n : ℕ) →
+    sumFin n (λ _ → 0ᶜ) ≡ 0ᶜ
+  sumFin-zero-sequence zero =
+    refl
+  sumFin-zero-sequence (suc n) =
+    cong (0ᶜ +ᶜ_) (sumFin-zero-sequence n) ∙
+    add-zero-left 0ᶜ
 
 
-sumFin-add :
-  (n : ℕ) →
-  (x y : Fin n → ℝᶜ) →
-  sumFin n (λ i → x i +ᶜ y i) ≡
-  sumFin n x +ᶜ sumFin n y
-sumFin-add zero x y =
-  sym (add-zero-left 0ᶜ)
-sumFin-add (suc n) x y =
-  cong ((x Fin.zero +ᶜ y Fin.zero) +ᶜ_) (sumFin-add n x-tail y-tail) ∙
-  add-interchange (x Fin.zero) (y Fin.zero) (sumFin n x-tail) (sumFin n y-tail)
-  where
-  x-tail : Fin n → ℝᶜ
-  x-tail i =
-    x (Fin.suc i)
+  sumFin-add :
+    (n : ℕ) →
+    (x y : Fin n → ℝᶜ) →
+    sumFin n (λ i → x i +ᶜ y i) ≡
+    sumFin n x +ᶜ sumFin n y
+  sumFin-add zero x y =
+    sym (add-zero-left 0ᶜ)
+  sumFin-add (suc n) x y =
+    cong ((x Fin.zero +ᶜ y Fin.zero) +ᶜ_) (sumFin-add n x-tail y-tail) ∙
+    add-interchange (x Fin.zero) (y Fin.zero) (sumFin n x-tail) (sumFin n y-tail)
+    where
+    x-tail : Fin n → ℝᶜ
+    x-tail i =
+      x (Fin.suc i)
 
-  y-tail : Fin n → ℝᶜ
-  y-tail i =
-    y (Fin.suc i)
-
-
-sumFin-neg :
-  (n : ℕ) →
-  (x : Fin n → ℝᶜ) →
-  sumFin n (λ i → -ᶜ x i) ≡ -ᶜ sumFin n x
-sumFin-neg zero x =
-  sym neg-zeroᶜ
-sumFin-neg (suc n) x =
-  cong ((-ᶜ x Fin.zero) +ᶜ_) (sumFin-neg n x-tail) ∙
-  sym (neg-add (x Fin.zero) (sumFin n x-tail))
-  where
-  x-tail : Fin n → ℝᶜ
-  x-tail i =
-    x (Fin.suc i)
+    y-tail : Fin n → ℝᶜ
+    y-tail i =
+      y (Fin.suc i)
 
 
-sumFin-++Fin :
-  (n m : ℕ) →
-  (x : Fin n → ℝᶜ) →
-  (y : Fin m → ℝᶜ) →
-  sumFin (n + m) (Fin._++Fin_ x y) ≡
-  sumFin n x +ᶜ sumFin m y
-sumFin-++Fin zero m x y =
-  sym (add-zero-left (sumFin m y))
-sumFin-++Fin (suc n) m x y =
-  cong (x Fin.zero +ᶜ_) (sumFin-++Fin n m x-tail y) ∙
-  add-assoc (x Fin.zero) (sumFin n x-tail) (sumFin m y)
-  where
-  x-tail : Fin n → ℝᶜ
-  x-tail i =
-    x (Fin.suc i)
+  sumFin-neg :
+    (n : ℕ) →
+    (x : Fin n → ℝᶜ) →
+    sumFin n (λ i → -ᶜ x i) ≡ -ᶜ sumFin n x
+  sumFin-neg zero x =
+    sym neg-zeroᶜ
+  sumFin-neg (suc n) x =
+    cong ((-ᶜ x Fin.zero) +ᶜ_) (sumFin-neg n x-tail) ∙
+    sym (neg-add (x Fin.zero) (sumFin n x-tail))
+    where
+    x-tail : Fin n → ℝᶜ
+    x-tail i =
+      x (Fin.suc i)
 
 
-sumFin-abs-bound :
-  (n : ℕ) →
-  (x : Fin n → ℝᶜ) →
-  absᶜ (sumFin n x) ≤ᶜ sumFin n (λ i → absᶜ (x i))
-sumFin-abs-bound zero x =
-  subst
-    (λ w → w ≤ᶜ 0ᶜ)
-    (sym absᶜ-zero)
-    (≤ᶜ-refl 0ᶜ)
-sumFin-abs-bound (suc n) x =
-  ≤ᶜ-trans
-    {x = absᶜ (x Fin.zero +ᶜ sumFin n x-tail)}
-    {y = absᶜ (x Fin.zero) +ᶜ absᶜ (sumFin n x-tail)}
-    {z = absᶜ (x Fin.zero) +ᶜ sumFin n abs-tail}
-    (absᶜ-triangle (x Fin.zero) (sumFin n x-tail))
-    (≤ᶜ-add
-      {a = absᶜ (x Fin.zero)}
-      {b = absᶜ (x Fin.zero)}
-      {c = absᶜ (sumFin n x-tail)}
-      {d = sumFin n abs-tail}
-      (≤ᶜ-refl (absᶜ (x Fin.zero)))
-      (sumFin-abs-bound n x-tail))
-  where
-  x-tail : Fin n → ℝᶜ
-  x-tail i =
-    x (Fin.suc i)
-
-  abs-tail : Fin n → ℝᶜ
-  abs-tail i =
-    absᶜ (x-tail i)
+  sumFin-++Fin :
+    (n m : ℕ) →
+    (x : Fin n → ℝᶜ) →
+    (y : Fin m → ℝᶜ) →
+    sumFin (n + m) (Fin._++Fin_ x y) ≡
+    sumFin n x +ᶜ sumFin m y
+  sumFin-++Fin zero m x y =
+    sym (add-zero-left (sumFin m y))
+  sumFin-++Fin (suc n) m x y =
+    cong (x Fin.zero +ᶜ_) (sumFin-++Fin n m x-tail y) ∙
+    add-assoc (x Fin.zero) (sumFin n x-tail) (sumFin m y)
+    where
+    x-tail : Fin n → ℝᶜ
+    x-tail i =
+      x (Fin.suc i)
 
 
-sumFin-mono :
-  (n : ℕ) →
-  (x y : Fin n → ℝᶜ) →
-  ((i : Fin n) → x i ≤ᶜ y i) →
-  sumFin n x ≤ᶜ sumFin n y
-sumFin-mono zero x y x≤y =
-  ≤ᶜ-refl 0ᶜ
-sumFin-mono (suc n) x y x≤y =
-  ≤ᶜ-add
-    {a = x Fin.zero}
-    {b = y Fin.zero}
-    {c = sumFin n x-tail}
-    {d = sumFin n y-tail}
-    (x≤y Fin.zero)
-    (sumFin-mono n x-tail y-tail λ i → x≤y (Fin.suc i))
-  where
-  x-tail : Fin n → ℝᶜ
-  x-tail i =
-    x (Fin.suc i)
+  sumFin-abs-bound :
+    (n : ℕ) →
+    (x : Fin n → ℝᶜ) →
+    absᶜ (sumFin n x) ≤ᶜ sumFin n (λ i → absᶜ (x i))
+  sumFin-abs-bound zero x =
+    subst
+      (λ w → w ≤ᶜ 0ᶜ)
+      (sym absᶜ-zero)
+      (≤ᶜ-refl 0ᶜ)
+  sumFin-abs-bound (suc n) x =
+    ≤ᶜ-trans
+      {x = absᶜ (x Fin.zero +ᶜ sumFin n x-tail)}
+      {y = absᶜ (x Fin.zero) +ᶜ absᶜ (sumFin n x-tail)}
+      {z = absᶜ (x Fin.zero) +ᶜ sumFin n abs-tail}
+      (absᶜ-triangle (x Fin.zero) (sumFin n x-tail))
+      (≤ᶜ-add
+        {a = absᶜ (x Fin.zero)}
+        {b = absᶜ (x Fin.zero)}
+        {c = absᶜ (sumFin n x-tail)}
+        {d = sumFin n abs-tail}
+        (≤ᶜ-refl (absᶜ (x Fin.zero)))
+        (sumFin-abs-bound n x-tail))
+    where
+    x-tail : Fin n → ℝᶜ
+    x-tail i =
+      x (Fin.suc i)
 
-  y-tail : Fin n → ℝᶜ
-  y-tail i =
-    y (Fin.suc i)
-
-
-sumFin-nonnegative :
-  (n : ℕ) →
-  (x : Fin n → ℝᶜ) →
-  ((i : Fin n) → 0ᶜ ≤ᶜ x i) →
-  0ᶜ ≤ᶜ sumFin n x
-sumFin-nonnegative n x 0≤x =
-  subst
-    (λ z → z ≤ᶜ sumFin n x)
-    (sumFin-zero-sequence n)
-    (sumFin-mono n (λ _ → 0ᶜ) x 0≤x)
+    abs-tail : Fin n → ℝᶜ
+    abs-tail i =
+      absᶜ (x-tail i)
 
 
-sumFin-comparison :
-  (n : ℕ) →
-  (x y : Fin n → ℝᶜ) →
-  ((i : Fin n) → absᶜ (x i) ≤ᶜ y i) →
-  absᶜ (sumFin n x) ≤ᶜ sumFin n y
-sumFin-comparison n x y x≤y =
-  ≤ᶜ-trans
-    {x = absᶜ (sumFin n x)}
-    {y = sumFin n (λ i → absᶜ (x i))}
-    {z = sumFin n y}
-    (sumFin-abs-bound n x)
-    (sumFin-mono n (λ i → absᶜ (x i)) y x≤y)
+  sumFin-mono :
+    (n : ℕ) →
+    (x y : Fin n → ℝᶜ) →
+    ((i : Fin n) → x i ≤ᶜ y i) →
+    sumFin n x ≤ᶜ sumFin n y
+  sumFin-mono zero x y x≤y =
+    ≤ᶜ-refl 0ᶜ
+  sumFin-mono (suc n) x y x≤y =
+    ≤ᶜ-add
+      {a = x Fin.zero}
+      {b = y Fin.zero}
+      {c = sumFin n x-tail}
+      {d = sumFin n y-tail}
+      (x≤y Fin.zero)
+      (sumFin-mono n x-tail y-tail λ i → x≤y (Fin.suc i))
+    where
+    x-tail : Fin n → ℝᶜ
+    x-tail i =
+      x (Fin.suc i)
+
+    y-tail : Fin n → ℝᶜ
+    y-tail i =
+      y (Fin.suc i)
+
+
+  sumFin-nonnegative :
+    (n : ℕ) →
+    (x : Fin n → ℝᶜ) →
+    ((i : Fin n) → 0ᶜ ≤ᶜ x i) →
+    0ᶜ ≤ᶜ sumFin n x
+  sumFin-nonnegative n x 0≤x =
+    subst
+      (λ z → z ≤ᶜ sumFin n x)
+      (sumFin-zero-sequence n)
+      (sumFin-mono n (λ _ → 0ᶜ) x 0≤x)
+
+
+  sumFin-comparison :
+    (n : ℕ) →
+    (x y : Fin n → ℝᶜ) →
+    ((i : Fin n) → absᶜ (x i) ≤ᶜ y i) →
+    absᶜ (sumFin n x) ≤ᶜ sumFin n y
+  sumFin-comparison n x y x≤y =
+    ≤ᶜ-trans
+      {x = absᶜ (sumFin n x)}
+      {y = sumFin n (λ i → absᶜ (x i))}
+      {z = sumFin n y}
+      (sumFin-abs-bound n x)
+      (sumFin-mono n (λ i → absᶜ (x i)) y x≤y)
 
 
 partialSum :
@@ -255,6 +257,25 @@ partialSum-add :
   partialSum u n +ᶜ partialSum v n
 partialSum-add u v n =
   sumFin-add n (λ i → u (Fin.toℕ i)) (λ i → v (Fin.toℕ i))
+
+
+partialSum-mulLeft :
+  (x : ℝᶜ) →
+  (u : ℕ → ℝᶜ) →
+  (n : ℕ) →
+  partialSum (λ k → x ·ᶜ u k) n ≡
+  x ·ᶜ partialSum u n
+partialSum-mulLeft x u zero =
+  sym (mulᶜ-zero-right x)
+partialSum-mulLeft x u (suc n) =
+  cong
+    ((x ·ᶜ u zero) +ᶜ_)
+    (partialSum-mulLeft x (λ k → u (suc k)) n) ∙
+  sym
+    (mulᶜ-distrib-right
+      x
+      (u zero)
+      (partialSum (λ k → u (suc k)) n))
 
 
 partialSum-neg :

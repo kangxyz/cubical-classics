@@ -18,7 +18,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Metric
 open import Constructive.Analysis.Metric.Instances.Rationals
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.Interval.Base
-open import Constructive.Analysis.Reals.Locator.Map
+open import Constructive.Analysis.Reals.Locator
 open import Constructive.Data.PositiveRationals
 
 open ClosenessOf RationalsMetricSpace

@@ -14,7 +14,7 @@ open import Cubical.HITs.PropositionalTruncation as Prop using (∥_∥₁)
 
 open import Constructive.Analysis.Metric.TotallyBounded
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
 open import Constructive.Analysis.Reals.Interval.Base
 open import Constructive.Analysis.Reals.Interval.Grid.Base
@@ -22,7 +22,7 @@ open import Constructive.Analysis.Reals.Interval.Grid.Affine using (locatedGapBo
 open import Constructive.Analysis.Reals.Interval.Grid.Cover
 open import Constructive.Analysis.Reals.Interval.Grid.Offset
 open import Constructive.Analysis.Reals.Interval.Order
-open import Constructive.Analysis.Reals.Locator.Base
+open import Constructive.Analysis.Reals.Locator
 open import Constructive.Data.PositiveRationals
 
 

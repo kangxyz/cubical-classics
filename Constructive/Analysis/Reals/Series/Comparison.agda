@@ -30,7 +30,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
 open import Constructive.Analysis.Reals.CauchyReals.Order.StrictPositive
@@ -49,8 +49,8 @@ SeriesMajorizedBy :
   Type₀
 SeriesMajorizedBy u v =
   Σ[ termMajorized ∈
-      ((m n : ℕ) → absᶜ (drop m u n) ≤ᶜ drop m v n) ]
-    ((m n : ℕ) → 0ᶜ ≤ᶜ drop m v n)
+      ((m n : ℕ) → absᶜ (shift m u n) ≤ᶜ shift m v n) ]
+    ((m n : ℕ) → 0ᶜ ≤ᶜ shift m v n)
 
 
 module SeriesMajorizedBy where
@@ -58,7 +58,7 @@ module SeriesMajorizedBy where
     {u v : ℕ → ℝᶜ} →
     SeriesMajorizedBy u v →
     (m n : ℕ) →
-    absᶜ (drop m u n) ≤ᶜ drop m v n
+    absᶜ (shift m u n) ≤ᶜ shift m v n
   termMajorized majorized =
     majorized .fst
 
@@ -66,7 +66,7 @@ module SeriesMajorizedBy where
     {u v : ℕ → ℝᶜ} →
     SeriesMajorizedBy u v →
     (m n : ℕ) →
-    0ᶜ ≤ᶜ drop m v n
+    0ᶜ ≤ᶜ shift m v n
   majorantNonnegative majorized =
     majorized .snd
 
@@ -81,21 +81,21 @@ seriesMajorizedByTerms {u = u} {v = v} term≤ 0≤major =
   where
   termMajorized :
     (m n : ℕ) →
-    absᶜ (drop m u n) ≤ᶜ drop m v n
+    absᶜ (shift m u n) ≤ᶜ shift m v n
   termMajorized m n =
     subst2
       (λ x y → absᶜ x ≤ᶜ y)
-      (sym (drop-index m u n))
-      (sym (drop-index m v n))
+      (sym (shift-index m u n))
+      (sym (shift-index m v n))
       (term≤ (m Nat.+ n))
 
   majorantNonnegative :
     (m n : ℕ) →
-    0ᶜ ≤ᶜ drop m v n
+    0ᶜ ≤ᶜ shift m v n
   majorantNonnegative m n =
     subst
       (λ y → 0ᶜ ≤ᶜ y)
-      (sym (drop-index m v n))
+      (sym (shift-index m v n))
       (0≤major (m Nat.+ n))
 
 
@@ -106,8 +106,8 @@ tailSum-comparison :
   absᶜ (tailSum u m k) ≤ᶜ tailSum v m k
 tailSum-comparison {u = u} {v = v} majorized m k =
   partialSum-comparison
-    (drop m u)
-    (drop m v)
+    (shift m u)
+    (shift m v)
     (SeriesMajorizedBy.termMajorized majorized m)
     k
 
@@ -163,19 +163,6 @@ comparisonTest {u = u} {v = v} majorized {μ = μ} v-tail ε m k μ≤m =
       {z = rational (radius ε)}
       (≤ᶜabsᶜ-right tail)
       absTail≤ε
-
-
-comparisonSeriesTailBound :
-  {u v : ℕ → ℝᶜ} →
-  SeriesMajorizedBy u v →
-  {μ : ℚ⁺ → ℕ} →
-  TailBound v μ →
-  AntitoneNatModulus μ →
-  SeriesTailBound u (λ ε → μ (half⁺ ε))
-comparisonSeriesTailBound majorized v-tail μ-antitone =
-  tailBound→SeriesTailBound
-    (comparisonTest majorized v-tail)
-    μ-antitone
 
 
 comparisonSeriesSum :

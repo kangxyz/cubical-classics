@@ -9,7 +9,7 @@ import Cubical.Data.Rationals.Order as ℚOrder
 open import Cubical.Relation.Nullary
 
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice
+open import Constructive.Analysis.Reals.CauchyReals.Lattice
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Completions.CauchyCompletion.Closeness
 open import Constructive.Analysis.Metric.Instances.Rationals

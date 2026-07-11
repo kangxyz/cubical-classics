@@ -19,7 +19,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
   using (-ᶜ_)
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
   using (BoundedByᶜ)
 open import Constructive.Analysis.Reals.Series
   using (TailBound)
@@ -51,8 +51,9 @@ open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct
     ( cauchyProductPowerSeries
     ; cauchyProductPowerSeriesOnBallWithFromMajorants
     ; cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTail
-    ; sequenceCauchyProduct
     )
+open import Constructive.Analysis.Reals.Series.CauchyProduct
+  using (sequenceCauchyProduct)
 open import Constructive.Analysis.Reals.PowerSeries.Majorant
   using
     ( PowerSeriesMajorizedOnBall
@@ -61,7 +62,7 @@ open import Constructive.Analysis.Reals.PowerSeries.Majorant
 open import Constructive.Analysis.Reals.PowerSeries.Radius
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Analytic.Core
+open import Constructive.Analysis.Reals.PowerSeries.Analytic.Base
 
 hasPowerSeriesAtWith-congFunction :
   {f g : ℝᶜ → ℝᶜ} →

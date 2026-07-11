@@ -3,17 +3,31 @@
 Cauchy-product coefficients for power series
 
 -}
-{-# OPTIONS --safe --lossy-unification #-}
+{-# OPTIONS --safe #-}
 module Constructive.Analysis.Reals.PowerSeries.CauchyProduct where
 
-open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Core
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Coefficients
   public
   using
     ( cauchyProductPowerSeries
-    ; sequenceCauchyProduct
-    ; sequenceCauchyProduct-zero
-    ; sequenceCauchyProduct-suc
-    ; sequenceCauchyProduct-cong
+    ; cauchyProductPowerSeries-zero
+    ; cauchyProductPowerSeries-suc
+    ; cauchyProductPowerSeries-suc-right
+    ; cauchyProductPowerSeries-cong
+    ; cauchyProductPowerSeries-cong-left
+    ; cauchyProductPowerSeries-zero-left
+    ; cauchyProductPowerSeries-zero-right
+    ; cauchyProductPowerSeries-constant-left
+    ; cauchyProductPowerSeries-one-left
+    ; cauchyProductPowerSeries-comm
+    ; cauchyProductPowerSeries-add-left
+    ; cauchyProductPowerSeries-neg-left
+    ; cauchyProductPowerSeries-sub-left
+    ; cauchyProductPowerSeries-rationalScale-left
     )
-open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Algebra public
-open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Theorem public
+open import Constructive.Analysis.Reals.PowerSeries.CauchyProduct.Convergence
+  public
+  using
+    ( cauchyProductPowerSeriesOnBallWithFromMajorants
+    ; cauchyProductPowerSeriesSumOnBallProductFromMajorantsAndProductTail
+    )

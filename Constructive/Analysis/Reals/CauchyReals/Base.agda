@@ -22,8 +22,3 @@ open Completion.CompletionOf RationalsMetricSpace
     ; point to rational
     )
   public
-
-
-CauchyReals : Type₀
-CauchyReals =
-  ℝᶜ

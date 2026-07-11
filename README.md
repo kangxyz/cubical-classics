@@ -99,6 +99,8 @@ not automatically stable interfaces merely because their files are visible.
 | [`Constructive.Analysis.Reals.Calculus`](Constructive/Analysis/Reals/Calculus.agda) | One-variable derivatives, rules, domains, and bounded-segment criteria. |
 | [`Constructive.Analysis.Reals.PowerSeries.Core`](Constructive/Analysis/Reals/PowerSeries/Core.agda) | Power-series coefficients, convergence, bounds, algebra, and formal differentiation. |
 | [`Constructive.Analysis.Reals.PowerSeries.Calculus`](Constructive/Analysis/Reals/PowerSeries/Calculus.agda) | Power-series continuity, analyticity, termwise differentiation, and re-centering. |
+| [`Constructive.Analysis.Reals.PowerSeries.Examples`](Constructive/Analysis/Reals/PowerSeries/Examples.agda) | Finite-support polynomial and geometric examples. |
+| [`Constructive.Analysis.Reals.PowerSeries.Elementary`](Constructive/Analysis/Reals/PowerSeries/Elementary.agda) | Exponential, trigonometric, atanh, arctangent, and logarithm constructions. |
 | [`Constructive.Analysis.Reals.PowerSeries`](Constructive/Analysis/Reals/PowerSeries.agda) | Role-based umbrella including core theory, calculus, examples, and elementary functions. |
 | [`Constructive.Analysis.FixedPoint`](Constructive/Analysis/FixedPoint.agda) | Constructive fixed-point interfaces and Banach contraction results. |
 | [`Classical.Axioms`](Classical/Axioms.agda) | `Oracle`, choice, excluded middle, and `AC→LEM`. |

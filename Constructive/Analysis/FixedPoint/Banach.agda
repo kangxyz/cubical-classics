@@ -40,20 +40,6 @@ record BanachProblem (𝓜 : MetricSpace ℓ ℓ') : Type (ℓ-max ℓ ℓ') whe
       PicardSeed 𝓜 (Contraction.map contraction)
 
 
-banachApproximation :
-  (𝓜 : MetricSpace ℓ ℓ') →
-  (ρ : ℚ⁺) →
-  (ρ<1 : radius ρ ℚOrder.< Rational.1ℚ) →
-  {f : MetricSpace.Carrier 𝓜 → MetricSpace.Carrier 𝓜} →
-  IsContractionWith 𝓜 ρ f →
-  (x₀ : MetricSpace.Carrier 𝓜) →
-  (η : ℚ⁺) →
-  MetricSpace.Close 𝓜 x₀ η (f x₀) →
-  CauchyApproximation 𝓜
-banachApproximation =
-  picardCauchyApproximation
-
-
 banachLimit :
   (𝓜 : MetricSpace ℓ ℓ') →
   IsCauchyComplete 𝓜 →
@@ -66,7 +52,7 @@ banachLimit :
   MetricSpace.Close 𝓜 x₀ η (f x₀) →
   MetricSpace.Carrier 𝓜
 banachLimit 𝓜 complete ρ ρ<1 f-contr x₀ η x₀∼fx₀ =
-  limitPoint (complete (banachApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀))
+  limitPoint (complete (picardCauchyApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀))
 
 
 banachLimitConverges :
@@ -80,17 +66,13 @@ banachLimitConverges :
   (η : ℚ⁺) →
   (x₀∼fx₀ : MetricSpace.Close 𝓜 x₀ η (f x₀)) →
   ConvergesTo
-    (banachApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀)
+    (picardCauchyApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀)
     (banachLimit 𝓜 complete ρ ρ<1 f-contr x₀ η x₀∼fx₀)
 banachLimitConverges 𝓜 complete ρ ρ<1 f-contr x₀ η x₀∼fx₀ =
-  converges (complete (banachApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀))
+  converges (complete (picardCauchyApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀))
 
 
 private
-  n≤sucn : (n : ℕ) → NatOrder._≤_ n (suc n)
-  n≤sucn n =
-    suc zero , refl
-
   n≤n : (n : ℕ) → NatOrder._≤_ n n
   n≤n n =
     zero , refl
@@ -117,7 +99,7 @@ banachLimitFixed 𝓜 complete ρ ρ<1 {f = f} f-contr x₀ η x₀∼fx₀ =
 
   approximation : CauchyApproximation 𝓜
   approximation =
-    banachApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀
+    picardCauchyApproximation 𝓜 ρ ρ<1 f-contr x₀ η x₀∼fx₀
 
   p : MetricSpace.Carrier 𝓜
   p =
@@ -191,7 +173,7 @@ banachLimitFixed 𝓜 complete ρ ρ<1 {f = f} f-contr x₀ η x₀∼fx₀ =
 
     μα≤sucn : NatOrder._≤_ (μ (half⁺ α)) (suc n)
     μα≤sucn =
-      NatOrder.≤-trans μα≤n (n≤sucn n)
+      NatOrder.≤-trans μα≤n NatOrder.≤-sucℕ
 
     xn+1∼xn :
       MetricSpace.Close 𝓜 (iterate f x₀ (suc n)) α (iterate f x₀ n)
@@ -209,7 +191,7 @@ banachLimitFixed 𝓜 complete ρ ρ<1 {f = f} f-contr x₀ η x₀∼fx₀ =
         n
         (suc n)
         (n≤n (suc n))
-        (n≤sucn n)
+        NatOrder.≤-sucℕ
         μα≤sucn
         μα≤n
 

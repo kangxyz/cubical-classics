@@ -17,7 +17,8 @@ open import Constructive.Algebra.LinearlyOrderedCommRing.Archimedean
 open import Constructive.Algebra.LinearlyOrderedField
 open import Constructive.Analysis.Completions.DedekindCompletion.Base
 open import Constructive.Analysis.Completions.DedekindCompletion.Order
-open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Base
+open import Constructive.Analysis.Completions.DedekindCompletion.Approximation
+open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Addition
 open import Constructive.Analysis.Completions.DedekindCompletion.Arithmetic.Negation
 open import Constructive.Foundations.Powerset hiding (Pred)
 
@@ -36,9 +37,8 @@ module AdditiveGroup (𝒜 : ArchimedeanLinearlyOrderedField ℓ ℓ') {ℓᴾ :
   open LinearlyOrderedFieldStr 𝒦
     renaming (+-Pres≥0 to K+-Pres≥0)
 
-  open ArithmeticBase 𝒜
-  open Approximation {ℓᴾ}
-  open Addition {ℓᴾ}
+  open CompletionApproximation 𝒜 {ℓᴾ = ℓᴾ}
+  open Addition 𝒜 {ℓᴾ}
   open Negation 𝒜 {ℓᴾ}
 
   +-invR :

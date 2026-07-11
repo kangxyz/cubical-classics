@@ -1,6 +1,6 @@
 {-
 
-Part of Constructive.Analysis.Reals.PowerSeries.Radius
+Centered power-series sums
 
 -}
 {-# OPTIONS --safe --lossy-unification #-}
@@ -19,13 +19,13 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Base
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
 open import Constructive.Analysis.Reals.CauchyReals.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
   using (neg-zeroᶜ)
 open import Constructive.Analysis.Reals.PowerSeries.Base
 open import Constructive.Data.PositiveRationals
 
-open import Constructive.Analysis.Reals.PowerSeries.Radius.Sum
+open import Constructive.Analysis.Reals.PowerSeries.Convergence
 open import Constructive.Analysis.Reals.PowerSeries.Radius.Everywhere
 
 centeredDisplacement :

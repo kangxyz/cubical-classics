@@ -11,7 +11,7 @@ open import Cubical.Foundations.Prelude
 open import Cubical.Data.Rationals as ℚ using (ℚ)
 import Cubical.Data.Rationals.Order as ℚOrder
 
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Lattice
+open import Constructive.Analysis.Reals.CauchyReals.Lattice
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.ScalarMultiplication
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Metric.Map

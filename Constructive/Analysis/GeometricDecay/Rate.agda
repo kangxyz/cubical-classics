@@ -43,6 +43,25 @@ positivePower-radius ρ (suc n) =
   cong (radius ρ ℚ.·_) (positivePower-radius ρ n)
 
 
+ratioPowerTimesPositivePower :
+  (ρ σ : ℚ⁺) →
+  (n : ℕ) →
+  rationalPower (radius (ratio⁺ ρ σ)) n ℚ.·
+    radius (positivePower σ n)
+  ≡
+  radius (positivePower ρ n)
+ratioPowerTimesPositivePower ρ σ n =
+  cong
+    (rationalPower (radius (ratio⁺ ρ σ)) n ℚ.·_)
+    (positivePower-radius σ n) ∙
+  rationalRatioPowerTimesPower
+    (radius ρ)
+    (radius σ)
+    (σ .snd)
+    n ∙
+  sym (positivePower-radius ρ n)
+
+
 positiveRationalPower-nonnegative :
   (ρ : ℚ⁺) →
   (n : ℕ) →

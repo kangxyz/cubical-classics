@@ -23,7 +23,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Addition
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Inverse
   using (right-inverse-uniqueᶜ)
 open import
-  Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedReciprocal
+  Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedReciprocal
   public
   using
     ( BoundedAwayPositiveᶜ
@@ -34,10 +34,10 @@ open import
     ; positive-rational-awayᶜ
     )
 open import
-  Constructive.Analysis.Reals.CauchyReals.Arithmetic.Internal.BoundedReciprocal
+  Constructive.Analysis.Reals.CauchyReals.Arithmetic.BoundedReciprocal
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Multiplication
 open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Negation
-open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
+open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.Ordered
   using
     ( CauchyRealsOrderedCommRing
     ; bounded-byᶜ-mul
@@ -46,7 +46,7 @@ open import Constructive.Analysis.Reals.CauchyReals.Arithmetic.OrderedCommRing
     )
 open import Constructive.Analysis.Reals.CauchyReals.Base
 open import Constructive.Analysis.Reals.CauchyReals.Order.Base
-open import Constructive.Analysis.Reals.CauchyReals.Order.Bounded
+open import Constructive.Analysis.Reals.CauchyReals.Order.Bounds
 open import Constructive.Analysis.Reals.CauchyReals.Order.Magnitude
   using (neg-zeroᶜ)
 open import Constructive.Analysis.Reals.CauchyReals.Order.Rational
@@ -61,34 +61,14 @@ private
   module CauchyRealsOrdered =
     OrderedProperties.OrderedCommRingTheory CauchyRealsOrderedCommRing
 
-  scale-precision-cancel :
-    (κ ε : ℚ⁺) →
-    κ *⁺ (posInv⁺ κ *⁺ ε) ≡ ε
-  scale-precision-cancel κ ε =
-    sym (*⁺-assoc κ (posInv⁺ κ) ε) ∙
-    cong (λ ρ → ρ *⁺ ε) (*⁺-posInv-right κ) ∙
-    *⁺-identity-left ε
-
-  scale-precision-mono :
-    (κ ε δ : ℚ⁺) →
-    ε <⁺ δ →
-    κ *⁺ ε <⁺ κ *⁺ δ
-  scale-precision-mono κ ε δ ε<δ =
-    Rational.mul-left-positive-<
-      {a = radius κ}
-      {b = radius ε}
-      {c = radius δ}
-      (κ .snd)
-      ε<δ
-
   scale-half-inverse< :
     (κ ε : ℚ⁺) →
     κ *⁺ half⁺ (posInv⁺ κ *⁺ ε) <⁺ ε
   scale-half-inverse< κ ε =
     subst
       (λ θ → κ *⁺ half⁺ (posInv⁺ κ *⁺ ε) <⁺ θ)
-      (scale-precision-cancel κ ε)
-      (scale-precision-mono
+      (scale-posInv-cancel κ ε)
+      (scale-mono-<
         κ
         (half⁺ (posInv⁺ κ *⁺ ε))
         (posInv⁺ κ *⁺ ε)
@@ -234,7 +214,7 @@ reciprocalPositiveᶜ-posInv-bound ε x x-bound =
       x
       r
       r-nonnegative
-      (x-bound .BoundedAwayPositiveᶜ.lowerᶜ)
+      (x-bound)
 
   ε*r≤1 :
     rational (radius ε) ·ᶜ r ≤ᶜ 1ᶜ
@@ -493,6 +473,7 @@ divideByPositiveᶜ-bound κ ε x y x-bound y-bound =
 
 record PositiveBoundedDomainᶜ (x : ℝᶜ) : Type₀ where
   constructor positive-bounded-domainᶜ
+  no-eta-equality
 
   field
     lower : ℚ⁺
@@ -502,30 +483,6 @@ record PositiveBoundedDomainᶜ (x : ℝᶜ) : Type₀ where
 
 
 open PositiveBoundedDomainᶜ public
-
-
-oneBoundedᶜ :
-  BoundedByᶜ 1⁺ 1ᶜ
-oneBoundedᶜ =
-  rational-closed-bound→boundedᶜ
-    1⁺
-    Rational.1ℚ
-    (rational-closed-boundᶜ
-      (Rational.≤-refl Rational.1ℚ)
-      -1≤1)
-  where
-  -1≤1 :
-    Rational.-1ℚ ℚOrder.≤ Rational.1ℚ
-  -1≤1 =
-    Rational.<→≤
-      {p = Rational.-1ℚ}
-      {q = Rational.1ℚ}
-      (ℚOrder.isTrans<
-        Rational.-1ℚ
-        Rational.0ℚ
-        Rational.1ℚ
-        Rational.-1<0
-        Rational.0<1)
 
 
 positiveBoundedDomain-add-one :
@@ -550,7 +507,7 @@ positiveBoundedDomain-add-one {x = x} domain =
           {b = x}
           {c = 1ᶜ}
           {d = 1ᶜ}
-          (lowerBound domain .BoundedAwayPositiveᶜ.lowerᶜ)
+          (lowerBound domain)
           (≤ᶜ-refl 1ᶜ)))
 
   upper' : BoundedByᶜ (upper domain +⁺ 1⁺) (x +ᶜ 1ᶜ)

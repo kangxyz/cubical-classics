@@ -23,26 +23,11 @@ shift k u n =
   u (k + n)
 
 
-tail :
-  ℕ →
-  Sequence →
-  Sequence
-tail =
-  shift
-
-
 IsSubsequenceIndex :
   (ℕ → ℕ) →
   Type₀
 IsSubsequenceIndex φ =
   (n : ℕ) → NatOrder._≤_ n (φ n)
-
-
-IsMonotoneSubsequenceIndex :
-  (ℕ → ℕ) →
-  Type₀
-IsMonotoneSubsequenceIndex φ =
-  (m n : ℕ) → NatOrder._≤_ m n → NatOrder._≤_ (φ m) (φ n)
 
 
 subsequence :
@@ -107,33 +92,3 @@ subsequenceCauchyWithModulus {μ = μ} {φ = φ} φ-lower u-cauchy ε m n μ≤m
     (φ n)
     (NatOrder.≤-trans μ≤m (φ-lower m))
     (NatOrder.≤-trans μ≤n (φ-lower n))
-
-
-subsequence-id :
-  (u : Sequence) →
-  subsequence (λ n → n) u ≡ u
-subsequence-id u =
-  refl
-
-
-subsequence-comp :
-  (φ ψ : ℕ → ℕ) →
-  (u : Sequence) →
-  subsequence φ (subsequence ψ u) ≡
-  subsequence (λ n → ψ (φ n)) u
-subsequence-comp φ ψ u =
-  refl
-
-
-shift-zero :
-  (u : Sequence) →
-  shift zero u ≡ u
-shift-zero u =
-  refl
-
-
-tail-zero :
-  (u : Sequence) →
-  tail zero u ≡ u
-tail-zero =
-  shift-zero
